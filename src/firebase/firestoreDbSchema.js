@@ -3,25 +3,31 @@ export const firestoreDbSchema = ({ username, email }) => {
     const firestoreSchema = {
         email: email,
         username: username,
-        role: '',
+        role: 'Admin',
         // owner, coworker
-        store: '',
+        store: '엘파르케_양재',
         // 매장명_지점
-        photoUrl: '',
-        ownerPhone: '',
-        members:
-            //회원DB
-            [...firestoreMemebersFieldSchema],
+        photoUrl: 'img.jpn',
+        ownerPhone: '010-7178-1117', //ex) '010-xxxx-xxxx' || null,
+        //회원DB
+        members: [...firestoreMemebersFieldSchema],
 
+        //매출DB
         sales: {
             ...firestoreSalesFieldSchema,
         },
+
+        //상품DB
         products: {
             ...firestoreProductsFieldSchema,
         },
+
+        //마케팅DB
         marketing: {
             ...firestoreMarketingFieldSchema,
         },
+
+        //컨설팅DB
         consulting: {
             ...firestoreConsultingFieldSchema,
         },
@@ -36,8 +42,8 @@ export const firestoreMemebersFieldSchema = [
     {
         typeFormToken: '',
         memberNumber: '', //회원번호
-        createdDate: '', //date 생성날짜
-        createdTime: '', //time 생성시간T04:10:42.000Z
+        createdDate: '', //date 생성날짜 2023-04-23
+        createdTime: '', //time 생성시간 04:10:42
         name: '', //이름
         phone: '', //전화번호
         sex: '', //성별
@@ -55,28 +61,31 @@ export const firestoreMemebersFieldSchema = [
         lifetimeValue: '', //LTV - 누적결제금액
         amountPaymentAverage: '', //평균결제금액
         audience: '', //오디언스
-        activation: '', //활성여부
+        activation: false, //활성여부 false || true
 
+        //이용가능상품
         availableProducts: [
             {
-                activateProduct: '', //활성상품
-                startDate: '', //시작일
-                endDate: '', //종료일
-                dDays: '', //남은일수
+                activateProduct: '레슨', //활성상품
+                startDate: '2023-05-24', //시작일
+                endDate: '2023-05-30', //종료일
+                dDays: '6', //남은일수 endDate - startDate
             },
             {
-                activateProduct: '', //활성상품
-                startDate: '', //시작일
-                endDate: '', //종료일
-                dDays: '', //남은일수
+                activateProduct: '락커', //활성상품
+                startDate: '2023-02-19', //시작일
+                endDate: '2023-07-19', //종료일
+                dDays: '120', //남은일수
             },
-        ], //이용가능상품
+        ],
+
+        //이용불가상품
         unavailableProducts: [
             {
-                inactiveProduct: '', //종료상품
-                startDate: '', //시작일 ex 2023-04-26
-                endDate: '', //종료일 ex 2023-05-25
-                dDays: '', //남은일수
+                inactiveProduct: '락커', //종료상품
+                startDate: '2023-02-19', //시작일
+                endDate: '2023-02-19', //종료일
+                dDays: 0, //남은일수
             },
         ],
     },
