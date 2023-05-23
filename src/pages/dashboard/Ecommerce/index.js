@@ -26,7 +26,7 @@ const EcommerceDashboard = (): React$Element<React$FragmentType> => {
     };
 
     useEffect(() => {
-        getFirestoreUserData();
+        getFirestoreUserData('rnfkd@naver.com');
     }, []);
 
     return (
