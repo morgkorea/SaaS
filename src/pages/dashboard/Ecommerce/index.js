@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -14,6 +14,8 @@ import SalesChart from './SalesChart';
 import Activity from './Activity';
 import Products from './Products';
 
+import { getFirestoreUserData } from '../../../firebase/firestore';
+
 const EcommerceDashboard = (): React$Element<React$FragmentType> => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -22,6 +24,10 @@ const EcommerceDashboard = (): React$Element<React$FragmentType> => {
             setSelectedDate(date);
         }
     };
+
+    useEffect(() => {
+        getFirestoreUserData();
+    }, []);
 
     return (
         <>
