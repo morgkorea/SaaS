@@ -106,12 +106,12 @@ const ProfileMenus = [
     {
         label: 'Lock Screen',
         icon: 'mdi mdi-lock-outline',
-        redirectTo: '/account/lock-screen',
+        redirectTo: '/account/lock-screen2',
     },
     {
         label: 'Logout',
         icon: 'mdi mdi-logout',
-        redirectTo: '/account/logout',
+        redirectTo: '/account/logout2',
     },
 ];
 

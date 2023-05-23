@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 
 type ProfileMenuItem = {
     label: string,
@@ -25,6 +26,11 @@ const ProfileDropdown = (props: ProfileDropdownProps, state: ProfileDropdownStat
     const profilePic = props.profilePic || null;
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const { username, role } = useSelector((state) => ({
+        username: state.Auth.user?.username || '',
+        role: state.Auth.user?.role || '',
+    }));
+
     /*
      * toggle profile-dropdown
      */
@@ -45,8 +51,8 @@ const ProfileDropdown = (props: ProfileDropdownProps, state: ProfileDropdownStat
                     <img src={profilePic} className="rounded-circle" alt="user" />
                 </span>
                 <span>
-                    <span className="account-user-name">{props.username}</span>
-                    <span className="account-position">{props.userTitle}</span>
+                    <span className="account-user-name">{username}</span>
+                    <span className="account-position">{role}</span>
                 </span>
             </Dropdown.Toggle>
             <Dropdown.Menu align={'end'} className="dropdown-menu-animated topbar-dropdown-menu profile-dropdown">

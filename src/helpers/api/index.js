@@ -1,4 +1,34 @@
 // @flow
-import { login, logout, signup, forgotPassword, forgotPasswordConfirm } from './auth';
+import {
+    login,
+    logout,
+    signup,
+    forgotPassword,
+    forgotPasswordConfirm,
+    firebaseLogin,
+    firebaseSignup,
+    firebaseLogout,
+    firebaseFakeSingupForEmailVerification,
+    firebaseSendEmailVerification,
+    firebaseWatchEmailVerification,
+    firebaseForgotPasswordSendPasswordResetEmail,
+    firebaseDeleteUser,
+    firebaseUpdateProfile,
+} from './auth';
 
-export { login, logout, signup, forgotPassword, forgotPasswordConfirm };
+export {
+    login,
+    logout,
+    signup,
+    forgotPassword,
+    forgotPasswordConfirm,
+    firebaseLogin,
+    firebaseSignup,
+    firebaseLogout,
+    firebaseFakeSingupForEmailVerification,
+    firebaseSendEmailVerification,
+    firebaseWatchEmailVerification,
+    firebaseForgotPasswordSendPasswordResetEmail,
+    firebaseDeleteUser,
+    firebaseUpdateProfile,
+};

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 // images
 import LogoLight from '../../assets/images/logo.png';
 import LogoDark from '../../assets/images/logo-dark.png';
+import BestifyLogo from '../../assets/images/png/bestifyLogo.png';
 
 type AccountLayoutProps = {
     bottomLinks?: React$Element<any>,
@@ -27,34 +28,8 @@ const AccountLayout = ({ bottomLinks, children }: AccountLayoutProps): React$Ele
     return (
         <>
             <div className="auth-fluid">
-                {/* Auth fluid left content */}
-                <div className="auth-fluid-form-box">
-                    <div className="align-items-center d-flex h-100">
-                        <Card.Body>
-                            {/* logo */}
-                            <div className="auth-brand text-center text-lg-start">
-                                <Link to="/" className="logo-dark">
-                                    <span>
-                                        <img src={LogoDark} alt="" height="18" />
-                                    </span>
-                                </Link>
-                                <Link to="/" className="logo-light">
-                                    <span>
-                                        <img src={LogoLight} alt="" height="18" />
-                                    </span>
-                                </Link>
-                            </div>
-
-                            {children}
-
-                            {/* footer links */}
-                            {bottomLinks}
-                        </Card.Body>
-                    </div>
-                </div>
-
                 {/* Auth fluid right content */}
-                <div className="auth-fluid-right text-center">
+                <div className="auth-fluid-left text-center">
                     <div className="auth-user-testimonial">
                         <h2 className="mb-3">{t('I love the color!')}</h2>
                         <p className="lead">
@@ -63,6 +38,31 @@ const AccountLayout = ({ bottomLinks, children }: AccountLayoutProps): React$Ele
                             <i className="mdi mdi-format-quote-close"></i>
                         </p>
                         <p>{t('- Hyper Admin User')}</p>
+                    </div>
+                </div>
+                {/* Auth fluid left content */}
+                <div className="auth-fluid-form-box">
+                    <div className="align-items-center d-flex h-100">
+                        <Card.Body>
+                            {/* logo */}
+                            <div className="auth-brand text-center text-lg-start">
+                                <Link to="/" className="logo-dark">
+                                    <div>
+                                        <img src={BestifyLogo} alt="" height="27" />
+                                    </div>
+                                </Link>
+                                <Link to="/" className="logo-light">
+                                    <div>
+                                        <img src={BestifyLogo} alt="" height="27" />
+                                    </div>
+                                </Link>
+                            </div>
+
+                            {children}
+
+                            {/* footer links */}
+                            {bottomLinks}
+                        </Card.Body>
                     </div>
                 </div>
             </div>

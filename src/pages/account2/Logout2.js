@@ -20,9 +20,9 @@ const BottomLink = () => {
     return (
         <footer className="footer footer-alt">
             <p className="text-muted">
-                {t('Back to ')}{' '}
-                <Link to={'/account/login'} className="text-muted ms-1">
-                    <b>{t('Log In')}</b>
+                {t('로그인 화면으로')}{' '}
+                <Link to={'/account/login2'} className="text-muted ms-1">
+                    <b>{t('이동하기')}</b>
                 </Link>
             </p>
         </footer>
@@ -41,8 +41,8 @@ const Logout2 = (): React$Element<any> | React$Element<React$FragmentType> => {
         <>
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center">
-                    <h4 className="mt-0">{t('See You Again !')}</h4>
-                    <p className="text-muted mb-4">{t('You are now successfully sign out.')}</p>
+                    <h4 className="mt-0">{t('로그아웃 완료')}</h4>
+                    <p className="text-muted mb-4">{t('안전하게 로그아웃 되셨어요.')}</p>
                 </div>
 
                 <div className="logout-icon m-auto">

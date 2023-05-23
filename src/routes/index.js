@@ -151,7 +151,7 @@ const Widgets = React.lazy(() => import('../pages/uikit/Widgets'));
 const GoogleMaps = React.lazy(() => import('../pages/maps/GoogleMaps'));
 const VectorMaps = React.lazy(() => import('../pages/maps/VectorMaps'));
 
-const loading = () => <div className=""></div>;
+const loading = () => <div className="">...Loading</div>;
 
 type LoadComponentProps = {
     component: React.LazyExoticComponent<() => JSX.Element>,

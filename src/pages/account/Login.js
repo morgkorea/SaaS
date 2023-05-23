@@ -44,20 +44,22 @@ const Login = (): React$Element<any> => {
         dispatch(resetAuth());
     }, [dispatch]);
 
-    const { loading, userLoggedIn, user, error } = useSelector((state) => ({
-        loading: state.Auth.loading,
-        user: state.Auth.user,
-        error: state.Auth.error,
-        userLoggedIn: state.Auth.userLoggedIn,
-    }));
+    const { loading, userLoggedIn, user, error } = useSelector((state) => {
+        return {
+            loading: state.Auth.loading,
+            user: state.Auth.user,
+            error: state.Auth.error,
+            userLoggedIn: state.Auth.userLoggedIn,
+        };
+    });
 
     /*
     form validation schema
     */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            username: yup.string().required(t('Please enter Username')),
-            password: yup.string().required(t('Please enter Password')),
+            username: yup.string().required(t('Please enter E-mail')).email(t('유효한 이메일을 입력해 주세요')),
+            password: yup.string().required(t('Please enter Password')).min(6).required(t('6글자 이상 입력하세요')),
         })
     );
 
@@ -86,12 +88,9 @@ const Login = (): React$Element<any> => {
                     </Alert>
                 )}
 
-                <VerticalForm
-                    onSubmit={onSubmit}
-                    resolver={schemaResolver}
-                    defaultValues={{ username: 'test', password: 'test' }}>
+                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver}>
                     <FormInput
-                        label={t('Username')}
+                        label={t('E-mail')}
                         type="text"
                         name="username"
                         placeholder={t('Enter your Username')}

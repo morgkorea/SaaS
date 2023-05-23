@@ -1,5 +1,6 @@
 // @flow
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, Link } from 'react-router-dom';
 import { Button, Alert, Row, Col } from 'react-bootstrap';
@@ -8,7 +9,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 //actions
-import { resetAuth, signupUser } from '../../redux/actions';
+import { signupUser, sendVerifyingEmail } from '../../redux/actions';
 
 // components
 import { VerticalForm, FormInput } from '../../components/';
@@ -34,27 +35,39 @@ const BottomLink = () => {
 };
 
 const Register = (): React$Element<React$FragmentType> => {
+    const [emailAddress, setEmailAddress] = useState('');
+    const [emailVerifying, setEmailVerifying] = useState(false); //initial value must be false
+
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    const { loading, userSignUp, error } = useSelector((state) => ({
+    const { loading, userSignUp, error, registerError } = useSelector((state) => ({
         loading: state.Auth.loading,
         error: state.Auth.error,
         userSignUp: state.Auth.userSignUp,
+        registerError: state.Auth.registerError,
     }));
 
-    useEffect(() => {
-        dispatch(resetAuth());
-    }, [dispatch]);
+    const { isEmailVerified, isEmailVerifying } = useSelector((state) => ({
+        isEmailVerified: state.Auth.emailVerified,
+        isEmailVerifying: state.Auth.sendVerifyingEmail,
+    }));
 
     /*
      * form validation schema
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            fullname: yup.string().required(t('Please enter Fullname')),
+            // fullname: yup.string().required(t('Please enter Fullname')),
             email: yup.string().required('Please enter Email').email('Please enter valid Email'),
-            password: yup.string().required(t('Please enter Password')),
+            password: yup.string().required(t('Please enter Password')).min(6).required(`6글자 이상 입력하세요`),
+            passwordconfirm: yup
+                .string()
+                .required('please confirm your password')
+                .oneOf([yup.ref('password')], 'password must be match'),
+            // .when('password', (password, field) =>
+            //     password ? field.required('password confirm').oneOf([yup.ref('password'),null]) : field
+            // )
         })
     );
 
@@ -62,7 +75,16 @@ const Register = (): React$Element<React$FragmentType> => {
      * handle form submission
      */
     const onSubmit = (formData) => {
-        dispatch(signupUser(formData['fullname'], formData['email'], formData['password']));
+        dispatch(signupUser(formData['email'], formData['password']));
+    };
+
+    const getEmailAddress = (event) => {
+        setEmailAddress(event.target.value);
+    };
+
+    const getVerfiedUserFromFirebase = () => {
+        dispatch(sendVerifyingEmail(emailAddress));
+        setEmailVerifying(true);
     };
 
     return (
@@ -77,32 +99,56 @@ const Register = (): React$Element<React$FragmentType> => {
                     </p>
                 </div>
 
-                {error && (
+                {isEmailVerifying ? (
+                    !isEmailVerified ? (
+                        <Alert variant="primary" className="my-2">
+                            인증 이메일이 발송되었습니다. 이메일을 확인해주세요.
+                        </Alert>
+                    ) : (
+                        <Alert variant="success" className="my-2">
+                            인증되었습니다
+                        </Alert>
+                    )
+                ) : (
+                    error && (
+                        <Alert variant="danger" className="my-2">
+                            {error}
+                        </Alert>
+                    )
+                )}
+
+                {registerError && (
                     <Alert variant="danger" className="my-2">
-                        {error}
+                        {registerError}
                     </Alert>
                 )}
 
-                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{}}>
-                    <FormInput
-                        label={t('Full Name')}
-                        type="text"
-                        name="fullname"
-                        placeholder={t('Enter your name')}
-                        containerClass={'mb-3'}
-                    />
+                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{ email: '', password: '' }}>
                     <FormInput
                         label={t('Email address')}
-                        type="email"
+                        type="input"
                         name="email"
                         placeholder={t('Enter your email')}
-                        containerClass={'mb-3'}
+                        containerStyle={{ display: 'flex' }}
+                        emailVerfication={true}
+                        isEmailVerifying={isEmailVerifying}
+                        onChange={getEmailAddress}
+                        getVerfiedUserFromFirebase={getVerfiedUserFromFirebase}
+                        isEmailVerified={isEmailVerified}
                     />
+
                     <FormInput
                         label={t('Password')}
                         type="password"
                         name="password"
                         placeholder={t('Enter your password')}
+                        containerClass={'mb-3'}
+                    />
+                    <FormInput
+                        label={t('Password confirm')}
+                        type="password"
+                        name="passwordconfirm"
+                        placeholder={t('Confirm your password')}
                         containerClass={'mb-3'}
                     />
                     <FormInput
@@ -113,7 +159,7 @@ const Register = (): React$Element<React$FragmentType> => {
                     />
 
                     <div className="mb-3 mb-0 text-center">
-                        <Button variant="primary" type="submit" disabled={loading}>
+                        <Button variant="primary" type="submit" disabled={loading || !isEmailVerified}>
                             {t('Sign Up')}
                         </Button>
                     </div>
