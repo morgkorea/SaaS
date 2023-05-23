@@ -1,4 +1,4 @@
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { getDatabase, ref, child, get } from 'firebase/database';
 
 import { firestoreDB } from './firebase';
@@ -49,54 +49,16 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
     } catch (error) {
         console.error(error);
     }
+};
 
-    // console.log('state', email);
+export const getFirestoreUserData = async (email) => {
+    const docRef = doc(firestoreDB, 'Users', email);
+    const docSnap = await getDoc(docRef);
 
-    // try {
-
-    // }catch{
-
-    // }
-    // const dbRef = ref(getDatabase());
-    // return await get(child(dbRef, `members/${email.toLowerCase().replace('@', 'ATSIGN').replace('.', 'DOT')}`))
-    //     .then((snapshot) => {
-    //         if (snapshot.exists()) {
-    //             const pushData = snapshot.val().map((member) => {
-    //                 let schema = { ...firestoreMemebersFieldSchema[0] };
-
-    //                 for (let key in member) {
-    //                     if (schema.hasOwnProperty(key) && key === 'createdTime') {
-    //                         const dateTime = new Date(member[key]);
-    //                         const createdDate = dateTime.toISOString().split('T')[0];
-    //                         const createdTime = dateTime.toISOString().split('T')[1].split('.')[0];
-    //                         schema['createdDate'] = createdDate;
-    //                         schema['createdTime'] = createdTime;
-    //                     } else if (schema.hasOwnProperty(key) && key !== 'createdTime') {
-    //                         schema[key] = member[key];
-    //                     }
-    //                 }
-    //                 return schema;
-    //             });
-
-    //            updateDoc(
-    //                 doc(firestoreDB, 'Users', `${email}`),
-    //                 { members: arrayUnion(...pushData) }
-    //                     .then(() => {
-    //                         console.log('reatime db updated successfully', { members: arrayUnion(...pushData) });
-    //                     })
-    //                     .catch((error) => {
-    //                         console.log('reatime db error: ' + error);
-    //                     })
-    //             );
-
-    //             console.log(snapshot.val());
-    //             console.log(pushData);
-    //             console.log('FirestoreDB syncronized with realtimeDB');
-    //         } else {
-    //             console.log('No data available');
-    //         }
-    //     })
-    //     .catch((error) => {
-    //         console.error(error);
-    //     });
+    if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
+    } else {
+        // docSnap.data() will be undefined in this case
+        console.log('No such document!');
+    }
 };
