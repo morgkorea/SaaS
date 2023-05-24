@@ -86,7 +86,7 @@ const MenuItem = ({ item, className, linkClassName }) => {
         </li>
     );
 };
-
+const menuItemTitleHandler = () => {};
 const MenuItemLink = ({ item, className }) => {
     return (
         <Link
