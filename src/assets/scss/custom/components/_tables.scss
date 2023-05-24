@@ -40,6 +40,10 @@
             border-top-color: inherit;
         }
     }
+    > :not(caption) > * > * {
+        // 하은 - 수정하기
+        padding: $table-cell-padding-y $table-cell-padding-x;
+    }
 }
 
 // Tables fluid

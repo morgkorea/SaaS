@@ -1,21 +1,13 @@
-// @flow
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import '@fullcalendar/react';
 import { Draggable } from '@fullcalendar/interaction';
 import classNames from 'classnames';
-
-// components
-import PageTitle from '../../../components/PageTitle';
-
 import Calendar from './Calendar';
 import AddEditEvent from './AddEditEvent';
-
-// dummy data
 import { defaultEvents } from './data';
 
 const SidePanel = () => {
-    // external events
     const externalEvents = [
         {
             id: 1,
@@ -62,38 +54,11 @@ const SidePanel = () => {
                     );
                 })}
             </div>
-
-            <div className="mt-5 d-none d-xl-block">
-                <h5 className="text-center">How It Works ?</h5>
-
-                <ul className="ps-3">
-                    <li className="text-muted mb-3">
-                        It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged.
-                    </li>
-                    <li className="text-muted mb-3">
-                        Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of
-                        the more obscure Latin words, consectetur, from a Lorem Ipsum passage.
-                    </li>
-                    <li className="text-muted mb-3">
-                        It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged.
-                    </li>
-                </ul>
-            </div>
         </>
     );
 };
 
-type CalendarAppState = {
-    show?: boolean,
-    isEditable?: boolean,
-    events?: Array<any>,
-    eventData?: any,
-    dateInfo?: any,
-};
-
-const CalendarApp = (state: CalendarAppState): React$Element<React$FragmentType> => {
+const CalendarApp = (state: CalendarAppState) => {
     /*
      * modal handeling
      */
@@ -218,49 +183,35 @@ const CalendarApp = (state: CalendarAppState): React$Element<React$FragmentType>
 
     return (
         <>
-            <PageTitle
-                breadCrumbItems={[
-                    { label: 'Apps', path: '/apps/calendar' },
-                    { label: 'Calendar', path: '/apps/calendar', active: true },
-                ]}
-                title={'Calendar'}
-            />
+            <Card>
+                <Card.Body>
+                    <Row>
+                        <Col xl={12}>
+                            <Calendar
+                                onDateClick={onDateClick}
+                                onEventClick={onEventClick}
+                                onDrop={onDrop}
+                                onEventDrop={onEventDrop}
+                                events={events}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xl={2}>
+                            <div className="d-grid mt-2">
+                                <Button
+                                    className="btn btn-lg font-16 btn-danger"
+                                    id="btn-new-event"
+                                    onClick={onOpenModal}>
+                                    <i className="mdi mdi-plus-circle-outline"></i> Create New Event
+                                </Button>
+                            </div>
+                            <SidePanel />
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>
 
-            <Row>
-                <Col>
-                    <Card>
-                        <Card.Body>
-                            <Row>
-                                <Col xl={3}>
-                                    <div className="d-grid">
-                                        {/* add events */}
-                                        <Button
-                                            className="btn btn-lg font-16 btn-danger"
-                                            id="btn-new-event"
-                                            onClick={onOpenModal}>
-                                            <i className="mdi mdi-plus-circle-outline"></i> Create New Event
-                                        </Button>
-                                    </div>
-
-                                    <SidePanel />
-                                </Col>
-                                <Col xl={9}>
-                                    {/* fullcalendar control */}
-                                    <Calendar
-                                        onDateClick={onDateClick}
-                                        onEventClick={onEventClick}
-                                        onDrop={onDrop}
-                                        onEventDrop={onEventDrop}
-                                        events={events}
-                                    />
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-
-            {/* add new event modal */}
             {show ? (
                 <AddEditEvent
                     isOpen={show}

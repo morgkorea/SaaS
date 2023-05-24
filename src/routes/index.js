@@ -30,10 +30,14 @@ const ForgetPassword2 = React.lazy(() => import('../pages/account2/ForgetPasswor
 const LockScreen2 = React.lazy(() => import('../pages/account2/LockScreen2'));
 
 // dashboard
-const AnalyticsDashboard = React.lazy(() => import('../pages/dashboard/Analytics'));
-const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Ecommerce'));
-const ProjectDashboard = React.lazy(() => import('../pages/dashboard/Project'));
-const EWalletDashboard = React.lazy(() => import('../pages/dashboard/E-Wallet'));
+const AnalyticsDashboard = React.lazy(() => import('../pages/dashboard/Member'));
+const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Sales'));
+const ProjectDashboard = React.lazy(() => import('../pages/dashboard/SalesStatus'));
+const MarketingDashboard = React.lazy(() => import('../pages/dashboard/Marketing'));
+const MarketingDashboard2 = React.lazy(() => import('../pages/dashboard/Marketing2'));
+const Counsel = React.lazy(() => import('../pages/dashboard/Counsel'));
+const Crm = React.lazy(() => import('../pages/dashboard/CRM'));
+const SalesDB = React.lazy(() => import('../pages/dashboard/SalesDB'));
 
 // apps
 const CalendarApp = React.lazy(() => import('../pages/apps/Calendar'));
@@ -252,8 +256,24 @@ const AllRoutes = () => {
                             element: <LoadComponent component={ProjectDashboard} />,
                         },
                         {
-                            path: 'e-wallet',
-                            element: <LoadComponent component={EWalletDashboard} />,
+                            path: 'marketing',
+                            element: <LoadComponent component={MarketingDashboard} />,
+                        },
+                        {
+                            path: 'marketing2',
+                            element: <LoadComponent component={MarketingDashboard2} />,
+                        },
+                        {
+                            path: 'counsel',
+                            element: <LoadComponent component={Counsel} />,
+                        },
+                        {
+                            path: 'crm',
+                            element: <LoadComponent component={Crm} />,
+                        },
+                        {
+                            path: 'sales-db',
+                            element: <LoadComponent component={SalesDB} />,
                         },
                     ],
                 },

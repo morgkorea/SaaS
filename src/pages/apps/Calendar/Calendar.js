@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -7,24 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import BootstrapTheme from '@fullcalendar/bootstrap';
 
-type CalendarProps = {
-    onDateClick: (value: any) => void,
-    onEventClick: (value: any) => void,
-    onEventDrop: (value: any) => void,
-    onDrop: (value: any) => void,
-    events: Array<any>,
-};
-
-const Calendar = ({
-    onDateClick,
-    onEventClick,
-    onDrop,
-    onEventDrop,
-    events,
-}: CalendarProps): React$Element<React$FragmentType> => {
-    /*
-     * handle calendar methods
-     */
+const Calendar = ({ onDateClick, onEventClick, onDrop, onEventDrop, events }) => {
     const handleDateClick = (arg) => {
         onDateClick(arg);
     };
@@ -40,7 +22,6 @@ const Calendar = ({
 
     return (
         <>
-            {/* full calendar control */}
             <div id="calendar">
                 <FullCalendar
                     initialView="dayGridMonth"

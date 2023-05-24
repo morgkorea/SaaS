@@ -34,10 +34,6 @@ const SellerBox = (): React$Element<any> => {
                         <strong>Location :</strong> <span className="ms-2">USA</span>
                     </p>
 
-                    <p className="text-muted">
-                        <strong>Languages :</strong>
-                        <span className="ms-2"> English, German, Spanish </span>
-                    </p>
                     <p className="text-muted mb-0">
                         <strong>Elsewhere :</strong>
                         <Link className="d-inline-block ms-2 text-muted" to="#">
