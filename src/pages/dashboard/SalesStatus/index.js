@@ -8,10 +8,10 @@ import ProductSales from './ProductSales';
 import SalesChart from './SalesChart';
 import RevenueChart from './RevenueChart';
 
-
+import { ButtonsGroup } from './ButtonsGroup.js';
 const SalesStatus = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
-
+    const [selectedPeriod, setSelectedPeriod] = useState('month');
     const onDateChange = (date) => {
         if (date) {
             setSelectedDate(date);
@@ -19,11 +19,17 @@ const SalesStatus = () => {
     };
     return (
         <>
-           <Row>
+            <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
                         <div className="page-title-right">
                             <form className="d-flex">
+                                <div className="btn-group">
+                                    <ButtonsGroup
+                                        selectedPeriod={selectedPeriod}
+                                        setSelectedPeriod={setSelectedPeriod}
+                                    />
+                                </div>
                                 <div className="input-group">
                                     <HyperDatepicker
                                         value={selectedDate}

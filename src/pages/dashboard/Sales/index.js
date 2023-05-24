@@ -1,10 +1,13 @@
 // @flow
 import React, { useState, useEffect } from 'react';
+
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import HyperDatepicker from '../../../components/Datepicker';
 import PerformanceChart from './PerformanceChart';
+
+import { getFirestoreUserData } from '../../../firebase/firestore';
 
 import Products from './Products';
 import Statistics from './Statistics';
@@ -21,7 +24,9 @@ const SalesDashboard = () => {
         }
     };
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        getFirestoreUserData();
+    }, []);
 
     return (
         <>
