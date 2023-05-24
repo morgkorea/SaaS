@@ -1,7 +1,7 @@
 const defaultEvents = [
     {
         id: 1,
-        title: 'Interview - Backend Engineer',
+        title: '오늘!',
         start: new Date(),
         className: 'bg-success',
     },

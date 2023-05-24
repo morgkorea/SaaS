@@ -1,17 +1,49 @@
 //
 // react select
 //
+.react-select {
+  position: relative;
+  width: 100%;
+  margin-right: 15px;
+  .react-select__control {
+    min-height: auto;
+  }
+  .react-select__indicator {
+    padding: 0;
+    width: 15px;
+    height: 15px;
+  }
+  .react-select__input-container {
+    padding: 0;
+    margin: 0;
+  }
+}
 
 .react-select {
   > div {
-    border: $input-border-width solid $input-border-color;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #727CF5;
+    box-sizing: border-box;
     background-color: $input-bg !important;
-
-    &:hover {
-      border: $input-border-width solid $input-border-color;
+    padding: 0;
+    margin: 0;
+    > div {
+      padding: 0;
+      margin: 0;
     }
   }
 }
+
+.editInput {
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #727CF5;
+  box-sizing: border-box; 
+}
+
+
 
 .react-select__control--is-focused {
   border-color: $input-focus-border-color !important;
@@ -40,7 +72,7 @@
 }
 
 .react-select__option {
-  padding: $dropdown-item-padding-y $dropdown-item-padding-x !important;
+  // padding: $dropdown-item-padding-y $dropdown-item-padding-x !important;
   color: $dropdown-link-color !important;
 
   &:hover {
@@ -104,7 +136,7 @@
 .app-search {
   .react-select__menu-list {
     .react-select__option {
-      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+      // padding: $dropdown-item-padding-y $dropdown-item-padding-x;
       color: #{map-get($grays, "700")};
       background-color: transparent;
       .dropdown-item {

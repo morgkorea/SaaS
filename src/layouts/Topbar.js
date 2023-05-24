@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import { showRightSidebar, changeSidebarType } from '../redux/actions';
 
 // components
-import LanguageDropdown from '../components/LanguageDropdown';
 import NotificationDropdown from '../components/NotificationDropdown';
 import ProfileDropdown from '../components/ProfileDropdown';
 import SearchDropdown from '../components/SearchDropdown';
@@ -189,9 +188,6 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                         <li className="notification-list topbar-dropdown d-xl-none">
                             <SearchDropdown />
                         </li>
-                        <li className="dropdown notification-list topbar-dropdown d-none d-lg-block">
-                            <LanguageDropdown />
-                        </li>
                         <li className="dropdown notification-list">
                             <NotificationDropdown notifications={Notifications} />
                         </li>
@@ -209,8 +205,8 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                             <ProfileDropdown
                                 profilePic={profilePic}
                                 menuItems={ProfileMenus}
-                                username={'Dominic Keller'}
-                                userTitle={'Founder'}
+                                username={'주용환'}
+                                userTitle={'대표'}
                             />
                         </li>
                     </ul>

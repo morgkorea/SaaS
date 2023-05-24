@@ -2,6 +2,13 @@
 // avatar.scss (avatar thumbnail sizes)
 //
 
+.edit-btn-area {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  cursor: pointer;
+}
+
 .avatar-xs {
   height: 1.5rem;
   width: 1.5rem;

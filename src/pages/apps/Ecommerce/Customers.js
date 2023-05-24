@@ -1,14 +1,11 @@
-// @flow
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import classNames from 'classnames';
 
-// components
 import PageTitle from '../../../components/PageTitle';
 import Table from '../../../components/Table';
 
-// dummy data
 import { customers } from './Data';
 
 /* name column render */
@@ -60,14 +57,16 @@ const ActionColumn = ({ row }) => {
 
 const columns = [
     {
-        Header: 'Customer',
+        Header: '성함',
+        // Header: 'Customer',
         accessor: 'name',
         sort: true,
         Cell: NameColumn,
         classes: 'table-user',
     },
     {
-        Header: 'Phone',
+        Header: '연락처',
+        // Header: 'Phone',
         accessor: 'phone',
         sort: true,
     },
@@ -77,17 +76,20 @@ const columns = [
         sort: true,
     },
     {
-        Header: 'Location',
+        Header: '위치',
+        // Header: 'Location',
         accessor: 'location',
         sort: true,
     },
     {
-        Header: 'Created On',
+        Header: '생성날짜',
+        // Header: 'Created On',
         accessor: 'created_on',
         sort: true,
     },
     {
-        Header: 'Status',
+        Header: '활성',
+        // Header: 'Status',
         accessor: 'status',
         sort: true,
         Cell: StatusColumn,
@@ -116,8 +118,7 @@ const sizePerPageList = [
     },
 ];
 
-// main component
-const Customers = (): React$Element<React$FragmentType> => {
+const Customers = () => {
     return (
         <>
             <PageTitle
@@ -129,7 +130,7 @@ const Customers = (): React$Element<React$FragmentType> => {
                         active: true,
                     },
                 ]}
-                title={'Customers'}
+                title={'회원DB'}
             />
 
             <Row>
@@ -166,7 +167,7 @@ const Customers = (): React$Element<React$FragmentType> => {
                                 isSelectable={true}
                                 isSearchable={true}
                                 tableClass="table-striped"
-                                searchBoxClass="mt-2 mb-3"
+                                // searchBoxClass="mt-2 mb-3"
                             />
                         </Card.Body>
                     </Card>
