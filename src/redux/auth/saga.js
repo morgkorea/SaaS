@@ -1,17 +1,34 @@
 // @flow
 import { all, fork, put, takeEvery, call } from 'redux-saga/effects';
 
+// crypto password
+import CryptoJS from 'crypto-js';
+
 import {
-    login as loginApi,
-    logout as logoutApi,
-    signup as signupApi,
     forgotPassword as forgotPasswordApi,
     forgotPasswordConfirm,
+    firebaseLogin as firebaseLoginApi,
+    firebaseSignup as firebasefirebaseSignupApi,
+    firebaseLogout as firebaseLogoutApi,
+    firebaseFakeSingupForEmailVerification as firebaseFakeSingupForEmailVerificationApi,
+    firebaseSendEmailVerification as firebaseSendEmailVerificationApi,
+    firebaseWatchEmailVerification as firebaseWatchEmailVerificationApi,
+    firebaseForgotPasswordSendPasswordResetEmail as firebaseForgotPasswordSendPasswordResetEmailApi,
+    firebaseUpdateProfile as firebaseUpdateProfileApi,
+    firebaseDeleteUser as firebaseDeleteUserApi,
 } from '../../helpers/';
-
 import { APICore, setAuthorization } from '../../helpers/api/apiCore';
-import { authApiResponseSuccess, authApiResponseError } from './actions';
+
 import { AuthActionTypes } from './constants';
+import { authApiResponseSuccess, authApiResponseError } from './actions';
+
+import { firestoreDB } from '../../firebase/firebase';
+import { firestoreDbSchema } from '../../firebase/firestoreDbSchema';
+import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+
+import { errorConverter } from '../../utils/errorConverter';
 
 const api = new APICore();
 
@@ -19,18 +36,41 @@ const api = new APICore();
  * Login the user
  * @param {*} payload - username and password
  */
-function* login({ payload: { username, password } }) {
+
+function* login({ payload: { email, password } }) {
     try {
-        const response = yield call(loginApi, { username, password });
-        const user = response.data;
-        // NOTE - You can change this according to response format from your api
-        api.setLoggedInUser(user);
-        setAuthorization(user['token']);
-        yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, user));
+        const response = yield call(firebaseLoginApi, { email, password });
+
+        console.log(response);
+
+        yield call(firestoreMembersDataSyncWithRealtime, email); //firestore users : { memebers: []} synchronized with realtime db
+
+        const firebaseAuthSession = {
+            id: response.user.uid,
+            email: response.user.email,
+            username: response.user.displayName || '',
+            role: 'Admin',
+            token: response.user.accessToken,
+            refreshToken: response.user.refreshToken,
+            // lastName: 'user', //optional
+            // password: 'test', //optional
+            // accessToken: response.user.accessToken, //optional
+            // providerData: response.user.providerData,
+            // operationType: response.operationType,
+            // proviersDAta : response.user.providerData
+        };
+
+        console.log('firebaseUser', response);
+
+        api.setLoggedInUser(firebaseAuthSession);
+        // setAuthorization(firebaseAuthSession.data['token']); axios http header jwt token setup
+        yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
     } catch (error) {
-        yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, error));
+        console.log('login error message: ' + error.message);
+        yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, errorConverter(error.code)));
         api.setLoggedInUser(null);
         setAuthorization(null);
+        console.log(errorConverter(error.code));
     }
 }
 
@@ -39,35 +79,104 @@ function* login({ payload: { username, password } }) {
  */
 function* logout() {
     try {
-        yield call(logoutApi);
+        const response = yield call(firebaseLogoutApi);
         api.setLoggedInUser(null);
         setAuthorization(null);
+
         yield put(authApiResponseSuccess(AuthActionTypes.LOGOUT_USER, {}));
     } catch (error) {
-        yield put(authApiResponseError(AuthActionTypes.LOGOUT_USER, error));
+        yield put(authApiResponseError(AuthActionTypes.LOGOUT_USER, errorConverter(error.code)));
     }
 }
 
-function* signup({ payload: { fullname, email, password } }) {
+function* signup({ payload: { username, email, password } }) {
     try {
-        const response = yield call(signupApi, { fullname, email, password });
-        const user = response.data;
-        // api.setLoggedInUser(user);
+        // 회원가입 Api
+        const response = yield call(firebasefirebaseSignupApi, { email, password });
+
+        // username update
+        yield call(firebaseUpdateProfileApi, { username });
+
+        // 회원 Firebase RealtimeDB Init 스키마 생성 & 연동
+
+        const firebaseAuthSession = {
+            id: response.user.uid,
+            email: response.user.email,
+            username: response.user.displayName || username,
+            lastName: 'user', //optional
+            password: 'test', //optional
+            role: 'Admin',
+            token: response.user.accessToken,
+            refreshToken: response.refreshToken,
+            providerData: response.user.providerData,
+            operationType: response.operationType,
+        };
+
+        console.log('firebaseDBSchema', firestoreDbSchema({ username, email }));
+
+        //Firestore DB init setup , signup과 함께 DB 구조 생성
+        yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email }));
+
+        //firestore users : { memebers: []} synchronized with realtime db
+        yield call(firestoreMembersDataSyncWithRealtime, email);
+
+        api.setLoggedInUser(firebaseAuthSession);
+
         // setAuthorization(user['token']);
-        yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, user));
+        yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, firebaseAuthSession));
     } catch (error) {
-        yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, error));
+        console.log('signup error message :', error.message);
+
         api.setLoggedInUser(null);
-        setAuthorization(null);
+        yield call(firebaseDeleteUserApi);
+        yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, errorConverter(error.code)));
+
+        // setAuthorization(null);
     }
 }
 
-function* forgotPassword({ payload: { username } }) {
+//이메일 인증
+function* fakeSignupForEmailVerification({ payload: { email } }) {
     try {
-        const response = yield call(forgotPasswordApi, { username });
-        yield put(authApiResponseSuccess(AuthActionTypes.FORGOT_PASSWORD, response.data));
+        const array = new Uint32Array(1);
+        const temporalPassword = window.crypto.getRandomValues(array)[0].toString();
+        const encryptedPassword = CryptoJS.AES.encrypt(
+            temporalPassword,
+            `${process.env.REACT_APP_FIREBASE_CRYPTO_SECRET_KEY}`
+        ).toString();
+
+        yield call(firebaseFakeSingupForEmailVerificationApi, { email, encryptedPassword });
+
+        yield call(firebaseSendEmailVerificationApi);
+
+        yield put(authApiResponseSuccess(AuthActionTypes.SEND_VERIFYING_EMAIL));
+
+        yield call(firebaseWatchEmailVerificationApi);
+
+        yield put(authApiResponseSuccess(AuthActionTypes.EMAIL_VERIFIED));
     } catch (error) {
-        yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, error));
+        yield put(authApiResponseError(AuthActionTypes.EMAIL_VERIFIED, errorConverter(error.code)));
+
+        yield put(authApiResponseError(AuthActionTypes.SEND_VERIFYING_EMAIL));
+
+        console.log('fakeSignupForEmailVerification', error);
+    }
+}
+
+function* forgotPassword({ payload: { email } }) {
+    try {
+        const response = yield call(firebaseForgotPasswordSendPasswordResetEmailApi, { email });
+        console.log('firebaseForgotPasswordSendPasswordResetEmailApi', response);
+        yield put(
+            authApiResponseSuccess(AuthActionTypes.FORGOT_PASSWORD, {
+                data: '발송된 E-mail을 확인하고 비밀번호를 변경해주세요.',
+            })
+        );
+    } catch (error) {
+        console.log('firebaseForgotPasswordSendPasswordResetEmailApi ERROR ocurred!!!');
+        yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, errorConverter(error.code)));
+
+        console.log(error);
     }
 }
 
@@ -91,6 +200,9 @@ export function* watchLogout(): any {
 export function* watchSignup(): any {
     yield takeEvery(AuthActionTypes.SIGNUP_USER, signup);
 }
+export function* watchFakeSignupForEmailVerification(): any {
+    yield takeEvery(AuthActionTypes.SEND_VERIFYING_EMAIL, fakeSignupForEmailVerification);
+}
 
 export function* watchForgotPassword(): any {
     yield takeEvery(AuthActionTypes.FORGOT_PASSWORD, forgotPassword);
@@ -105,6 +217,7 @@ function* authSaga(): any {
         fork(watchLoginUser),
         fork(watchLogout),
         fork(watchSignup),
+        fork(watchFakeSignupForEmailVerification),
         fork(watchForgotPassword),
         fork(watchForgotPasswordChange),
     ]);

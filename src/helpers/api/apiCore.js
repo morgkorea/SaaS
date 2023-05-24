@@ -3,6 +3,17 @@ import axios from 'axios';
 
 import config from '../../config';
 
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    sendEmailVerification,
+    deleteUser,
+    sendPasswordResetEmail,
+    updateProfile,
+} from 'firebase/auth';
+
 // content type
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.baseURL = config.API_URL;
@@ -41,7 +52,7 @@ axios.interceptors.response.use(
     }
 );
 
-const AUTH_SESSION_KEY = 'hyper_user';
+const AUTH_SESSION_KEY = 'Besitfy_Auth';
 
 /**
  * Sets the default authorization
@@ -56,6 +67,7 @@ const getUserFromSession = () => {
     const user = sessionStorage.getItem(AUTH_SESSION_KEY);
     return user ? (typeof user == 'object' ? user : JSON.parse(user)) : null;
 };
+
 class APICore {
     /**
      * Fetches data from given url
@@ -110,6 +122,85 @@ class APICore {
     /**
      * post given data to url
      */
+
+    //firebase auth func api
+
+    firebaseLogin = (params) => {
+        console.log(params);
+        const auth = getAuth();
+        return signInWithEmailAndPassword(auth, params.email, params.password);
+    };
+
+    firebaseSignup = (params) => {
+        console.log(params);
+        const auth = getAuth();
+        return createUserWithEmailAndPassword(auth, params.email, params.password);
+    };
+
+    firebaseFakeSingupForEmailVerification = (params) => {
+        console.log(params);
+        const auth = getAuth();
+        return createUserWithEmailAndPassword(auth, params.email, params.encryptedPassword);
+    };
+
+    firebaseLogout = () => {
+        const auth = getAuth();
+        return signOut(auth);
+    };
+
+    firebaseSendEmailVerification = () => {
+        const auth = getAuth();
+        return sendEmailVerification(auth.currentUser);
+    };
+
+    firebaseWatchEmailVerification = () => {
+        return new Promise((resolve, reject) => {
+            const interval = setInterval(() => {
+                const auth = getAuth();
+                const user = auth.currentUser;
+                user?.reload();
+
+                console.log('fakeSignupForEmailVerification:', user?.emailVerified);
+
+                if (user?.emailVerified) {
+                    deleteUser(user)
+                        .then(() => {
+                            clearInterval(interval);
+                            resolve(); // 작업이 성공적으로 완료되면 resolve 호출
+                        })
+                        .catch((error) => {
+                            clearInterval(interval);
+                            reject(error); // 작업 중에 에러가 발생하면 reject 호출
+                        });
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                console.log('setTimeout executed');
+                reject(new Error('Timeout')); // 타임아웃이 발생하면 reject 호출
+            }, 180000);
+        });
+    };
+
+    firebaseForgotPasswordSendPasswordResetEmail = (params) => {
+        const auth = getAuth();
+        return sendPasswordResetEmail(auth, params.email);
+    };
+
+    firebaseUpdateProfile = (params) => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        return updateProfile(user, { displayName: params.username });
+    };
+
+    firebaseDeleteUser = () => {
+        const auth = getAuth();
+        if (auth.currentUser) {
+            return deleteUser(user);
+        }
+    };
+
     create = (url, data) => {
         return axios.post(url, data);
     };
@@ -176,12 +267,17 @@ class APICore {
         if (!user || (user && !user.token)) {
             return false;
         }
-        const decoded = jwtDecode(user.token);
-        const currentTime = Date.now() / 1000;
-        if (decoded.exp < currentTime) {
-            console.warn('access token expired');
-            return false;
-        } else {
+        // const decoded = jwtDecode(user.token);
+        // const currentTime = Date.now() / 1000;
+        // if (decoded.exp < currentTime) {
+        //     // const auth = getAuth();
+        //     console.warn('access token expired');
+        //     // sessionStorage.removeItem(AUTH_SESSION_KEY);
+        //     // signOut(auth);
+        //     return false;
+        // }
+        else {
+            console.log('isUserAuthenticated', user);
             return true;
         }
     };
@@ -197,6 +293,7 @@ class APICore {
      * Returns the logged in user
      */
     getLoggedInUser = () => {
+        // firebaseOnAuthStateChanged();
         return getUserFromSession();
     };
 
@@ -215,7 +312,8 @@ Check if token available in session
 let user = getUserFromSession();
 if (user) {
     const { token } = user;
-    if (token) {
+    console.log('getUserFromSession', token);
+    if (token && user?.emailVerified) {
         setAuthorization(token);
     }
 }

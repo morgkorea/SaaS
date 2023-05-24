@@ -9,6 +9,7 @@ type SpinnerProps = {
     type?: 'bordered' | 'grow',
     color?: string,
     children?: any,
+    style: any,
 };
 
 /**
@@ -19,6 +20,7 @@ const Spinner = (props: SpinnerProps): React$Element<any> => {
     const Tag = props.tag || 'div';
     const color = props.color || 'secondary';
     const size = props.size || '';
+    const style = props.style || {};
 
     return (
         <Tag
@@ -31,7 +33,8 @@ const Spinner = (props: SpinnerProps): React$Element<any> => {
                 [`text-${color}`],
                 { [`avatar-${size}`]: size },
                 props.className
-            )}>
+            )}
+            style={style}>
             {children}
         </Tag>
     );

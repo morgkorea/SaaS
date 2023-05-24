@@ -1,10 +1,16 @@
+<<<<<<< HEAD:src/pages/dashboard/Sales/index.js
 import React, { useState } from 'react';
+=======
+// @flow
+import React, { useState, useEffect } from 'react';
+>>>>>>> 763f8c226a71f63d4c4283a12b8c374c36ad98bf:src/pages/dashboard/Ecommerce/index.js
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import HyperDatepicker from '../../../components/Datepicker';
 import PerformanceChart from './PerformanceChart';
 
+<<<<<<< HEAD:src/pages/dashboard/Sales/index.js
 import Products from './Products';
 import Statistics from './Statistics';
 import SalesChart from './SalesChart';
@@ -12,6 +18,11 @@ import RevenueChart from './RevenueChart';
 import Products2 from './Products2';
 
 const SalesDashboard = () => {
+=======
+import { getFirestoreUserData } from '../../../firebase/firestore';
+
+const EcommerceDashboard = (): React$Element<React$FragmentType> => {
+>>>>>>> 763f8c226a71f63d4c4283a12b8c374c36ad98bf:src/pages/dashboard/Ecommerce/index.js
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const onDateChange = (date) => {
@@ -19,6 +30,10 @@ const SalesDashboard = () => {
             setSelectedDate(date);
         }
     };
+
+    useEffect(() => {
+        getFirestoreUserData();
+    }, []);
 
     return (
         <>
