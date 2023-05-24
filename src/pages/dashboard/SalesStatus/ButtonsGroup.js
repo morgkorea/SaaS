@@ -5,17 +5,37 @@ import { Row, Col, Card, Button, ButtonGroup, DropdownButton, Dropdown } from 'r
 export const ButtonsGroup = ({ selectedPeriod, setSelectedPeriod }) => {
     const handleSelectedStateChange = (e) => {
         setSelectedPeriod(e.target.value);
-        console.log(e.tartget.value);
     };
     return (
-        <ButtonGroup className="mb-2">
-            <Button onClick={handleSelectedStateChange} variant="primary">
+        <ButtonGroup style={{ background: '#EEF2F7', marginRight: '9px', fontSize: '14px' }}>
+            <Button
+                style={{
+                    minWidth: '55.71px',
+                    padding: '10px,13px,10px,13px',
+                }}
+                onClick={handleSelectedStateChange}
+                value="month"
+                variant={selectedPeriod === 'month' ? 'primary' : 'disabled'}>
                 월간
             </Button>
-            <Button onClick={handleSelectedStateChange} variant="primary">
+            <Button
+                style={{
+                    minWidth: '55.71px',
+                    padding: '10px,13px,10px,13px',
+                }}
+                onClick={handleSelectedStateChange}
+                value="week"
+                variant={selectedPeriod === 'week' ? 'primary' : 'disabled'}>
                 주간
             </Button>
-            <Button value="일간" onClick={handleSelectedStateChange} variant="primary">
+            <Button
+                style={{
+                    minWidth: '55.71px',
+                    padding: '10px,13px,10px,13px',
+                }}
+                onClick={handleSelectedStateChange}
+                value="day"
+                variant={selectedPeriod === 'day' ? 'primary' : 'disabled'}>
                 일간
             </Button>
         </ButtonGroup>

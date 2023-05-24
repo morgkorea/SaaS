@@ -14,6 +14,7 @@ const SalesStatus = () => {
     const [selectedPeriod, setSelectedPeriod] = useState('month');
     const onDateChange = (date) => {
         if (date) {
+            console.log(date);
             setSelectedDate(date);
         }
     };
@@ -33,6 +34,7 @@ const SalesStatus = () => {
                                 <div className="input-group">
                                     <HyperDatepicker
                                         value={selectedDate}
+                                        maxDate={new Date()}
                                         inputClass="form-control-light"
                                         onChange={(date) => {
                                             onDateChange(date);
