@@ -29,7 +29,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         icon="mdi mdi-account-multiple"
                         description="Number of Customers"
                         title="타석"
-                        stats={amountBatterBoxSales.batterBox}
+                        stats={amountBatterBoxSales.batterBox + '원'}
                         trend={{
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
