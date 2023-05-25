@@ -93,31 +93,40 @@ export const firestoreMemebersFieldSchema = [
 
 export const firestoreSalesFieldSchema = [
     {
-        paymentNumber: '', //결제번호
-        paymentDate: '', //결제일
+        paymentNumber: '111', //결제번호
+        paymentDate: '2023-05-01', //결제일
+        paymentTime: '09:12:30', //결제시간
         registrationType: '', //등록구분
         memeberNumber: '', //회원번호
-        name: '', //이름
-        phone: '', //전화번호
+        name: '유승훈', //이름
+        phone: '010-7178-1117', //전화번호
         products: [
             {
-                product: '', //상품
-                regularPrice: '', //상품 정상가
-                discountRate: '', // 할인율
-                discountPrice: '', //할인가
+                product: '장갑', //상품
+                regularPrice: '10000', //상품 정상가
+                discountRate: '10%', // 할인율
+                discountPrice: '9000', //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
+            },
+            {
+                product: '레슨', //상품
+                regularPrice: '100000', //상품 정상가
+                discountRate: '20%', // 할인율
+                discountPrice: '80000', //할인가
+                startDate: '2022-05-16', // 시작일
+                endDate: '2022-06-16', // 종료일
             },
         ],
         totalPaymentPrice: '', //결제총액
         outstandingPrice: '', //미결제금액
-        paymentMethod: '', //결제수단
-        recieptNumber: '', // 결제번호
-        paymentMemo: '', //결제메모
-        refundRequest_date: '', //환불요청일 2023-09-23
-        refundDate: '', //환불일 2023-10-22
-        refundPrice: '', //환불액
-        refundReason: '',
+        paymentMethod: '카드', //결제수단
+        recieptNumber: '002', // 결제번호
+        paymentMemo: '메모', //결제메모
+        refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
+        refundDate: '2023-05-17', //환불일 2023-10-22
+        refundPrice: '89000', //환불액
+        refundReason: '단순변심', //환불사유
     },
 ];
 export const firestoreProductsFieldSchema = {

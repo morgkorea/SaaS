@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col, Card, Button, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Button, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 
 export const ButtonsGroup = ({ selectedPeriod, setSelectedPeriod }) => {
     const handleSelectedStateChange = (e) => {

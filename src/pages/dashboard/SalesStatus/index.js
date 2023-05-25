@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import HyperDatepicker from '../../../components/Datepicker';
@@ -9,15 +9,106 @@ import SalesChart from './SalesChart';
 import RevenueChart from './RevenueChart';
 
 import { ButtonsGroup } from './ButtonsGroup.js';
+
+import { format, subMonths, subWeeks, subDays, addDays, parseISO } from 'date-fns';
+
 const SalesStatus = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedPeriod, setSelectedPeriod] = useState('month');
+    const [periodDate, setPeroidDate] = useState(new Date());
     const onDateChange = (date) => {
         if (date) {
             console.log(date);
             setSelectedDate(date);
         }
     };
+    const firestoreSalesFieldSchema = {
+        paymentNumber: '111', //결제번호
+        paymentDate: '2023-05-01', //결제일
+        paymentTime: '09:12:30', //결제시간
+        registrationType: '', //등록구분
+        memeberNumber: '', //회원번호
+        name: '유승훈', //이름
+        phone: '010-7178-1117', //전화번호
+        products: [
+            {
+                product: '장갑', //상품
+                regularPrice: '10000', //상품 정상가
+                discountRate: '10%', // 할인율
+                discountPrice: '9000', //할인가
+                startDate: '', // 시작일
+                endDate: '', // 종료일
+            },
+            {
+                product: '레슨', //상품
+                regularPrice: '100000', //상품 정상가
+                discountRate: '20%', // 할인율
+                discountPrice: '80000', //할인가
+                startDate: '2022-05-16', // 시작일
+                endDate: '2022-06-16', // 종료일
+            },
+            {
+                product: '타석', //상품
+                regularPrice: '100000', //상품 정상가
+                discountRate: '20%', // 할인율
+                discountPrice: '80000', //할인가
+                startDate: '2022-05-16', // 시작일
+                endDate: '2022-06-16', // 종료일
+            },
+            {
+                product: '락커', //상품
+                regularPrice: '100000', //상품 정상가
+                discountRate: '20%', // 할인율
+                discountPrice: '80000', //할인가
+                startDate: '2022-05-16', // 시작일
+                endDate: '2022-06-16', // 종료일
+            },
+        ],
+        totalPaymentPrice: '', //결제총액
+        outstandingPrice: '', //미결제금액
+        paymentMethod: '카드', //결제수단
+        recieptNumber: '002', // 결제번호
+        paymentMemo: '메모', //결제메모
+        refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
+        refundDate: '2023-05-17', //환불일 2023-10-22
+        refundPrice: '89000', //환불액
+        refundReason: '단순변심', //환불사유
+    };
+
+    // const mockupDate = [...Array(60)].fill(firestoreSalesFieldSchema);
+    const mockupDate = Array.from({ length: 60 }, (_, index) => {
+        const paymentDate = new Date('2023-04-10');
+        paymentDate.setDate(paymentDate.getDate() + index);
+        return {
+            ...firestoreSalesFieldSchema,
+            paymentDate: paymentDate.toISOString().split('T')[0],
+            paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
+        };
+    }).filter((ele) => {
+        const paymentDate = new Date(ele.paymentDate);
+        return paymentDate <= new Date() && paymentDate >= periodDate;
+    });
+
+    useEffect(() => {}, []);
+
+    useEffect(() => {
+        const currentDate = new Date();
+
+        switch (selectedPeriod) {
+            case 'month':
+                return setPeroidDate(subMonths(currentDate, 1));
+            case 'week':
+                return setPeroidDate(subWeeks(currentDate, 1));
+            case 'day':
+                return setPeroidDate(subDays(currentDate, 1));
+
+            default:
+        }
+    }, [selectedPeriod]);
+    console.log(periodDate.toISOString(), mockupDate);
+
+    //매출 : 매출 DB created time 으로 정렬 후 월,주,일 로 출력
+
     return (
         <>
             <Row>
