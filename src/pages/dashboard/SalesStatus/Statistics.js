@@ -3,22 +3,26 @@ import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
 const Statistics = ({ sortedByPeriodSalesData }) => {
+    const [amountTotalPrice, setAmountTotalPrice] = useState(0);
     const [amountBatterBoxSales, setAmountBetterboxSales] = useState('');
 
-    useEffect(() => {
-        const amountOfElements = {
-            batterBox: '',
-            lesson: '',
-            locker: '',
-            etc: '',
-        };
+    const sumTotalPaymentPrice = (sortedByPeriodSalesData) => {
         if (sortedByPeriodSalesData) {
-            amountOfElements.batterBox = sortedByPeriodSalesData.reduce((acc, curr) => {
+            const totalPayment = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return acc + curr.totalPaymentPrice;
             }, 0);
+            setAmountTotalPrice(totalPayment);
         }
+    };
 
-        setAmountBetterboxSales(amountOfElements);
+    // const totalSales = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+    //     return [...acc, ...curr.products];
+    // }, []);
+
+    // console.log(totalSales);
+
+    useEffect(() => {
+        sumTotalPaymentPrice(sortedByPeriodSalesData);
     }, [sortedByPeriodSalesData]);
 
     return (
@@ -29,7 +33,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         icon="mdi mdi-account-multiple"
                         description="Number of Customers"
                         title="타석"
-                        stats={amountBatterBoxSales.batterBox + '원'}
+                        stats={amountTotalPrice + '원'}
                         trend={{
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
