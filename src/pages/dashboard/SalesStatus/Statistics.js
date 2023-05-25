@@ -1,8 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = () => {
+const Statistics = ({ sortedByPeriodSalesData }) => {
+    const [amountBatterBoxSales, setAmountBetterboxSales] = useState('');
+
+    useEffect(() => {
+        const amountOfElements = {
+            batterBox: '',
+            lesson: '',
+            locker: '',
+            etc: '',
+        };
+        if (sortedByPeriodSalesData) {
+            amountOfElements.batterBox = sortedByPeriodSalesData.reduce((acc, curr) => {
+                return acc + curr.totalPaymentPrice;
+            }, 0);
+        }
+
+        setAmountBetterboxSales(amountOfElements);
+    }, [sortedByPeriodSalesData]);
+
     return (
         <>
             <Row>
@@ -11,7 +29,7 @@ const Statistics = () => {
                         icon="mdi mdi-account-multiple"
                         description="Number of Customers"
                         title="타석"
-                        stats="36,254원"
+                        stats={amountBatterBoxSales.batterBox}
                         trend={{
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',

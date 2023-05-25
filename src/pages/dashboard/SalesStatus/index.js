@@ -13,9 +13,15 @@ import { ButtonsGroup } from './ButtonsGroup.js';
 import { format, subMonths, subWeeks, subDays, addDays, parseISO } from 'date-fns';
 
 const SalesStatus = () => {
+    //
     const [selectedDate, setSelectedDate] = useState(new Date());
+    // 월간,주간,일간 선택
     const [selectedPeriod, setSelectedPeriod] = useState('month');
+    // 현재시간 기준 전 월,주,일 날짜
     const [periodDate, setPeroidDate] = useState(new Date());
+    // 현지시간 기준 전 월,주,일 기준 filtered data
+    const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
+
     const onDateChange = (date) => {
         if (date) {
             console.log(date);
@@ -75,22 +81,6 @@ const SalesStatus = () => {
         refundReason: '단순변심', //환불사유
     };
 
-    // const mockupDate = [...Array(60)].fill(firestoreSalesFieldSchema);
-    const mockupDate = Array.from({ length: 60 }, (_, index) => {
-        const paymentDate = new Date('2023-04-10');
-        paymentDate.setDate(paymentDate.getDate() + index);
-        return {
-            ...firestoreSalesFieldSchema,
-            paymentDate: paymentDate.toISOString().split('T')[0],
-            paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-        };
-    }).filter((ele) => {
-        const paymentDate = new Date(ele.paymentDate);
-        return paymentDate <= new Date() && paymentDate >= periodDate;
-    });
-
-    useEffect(() => {}, []);
-
     useEffect(() => {
         const currentDate = new Date();
 
@@ -105,7 +95,26 @@ const SalesStatus = () => {
             default:
         }
     }, [selectedPeriod]);
-    console.log(periodDate.toISOString(), mockupDate);
+
+    useEffect(() => {
+        const sortedPeriodData = Array.from({ length: 60 }, (_, index) => {
+            const paymentDate = new Date('2023-04-10');
+            paymentDate.setDate(paymentDate.getDate() + index);
+            return {
+                ...firestoreSalesFieldSchema,
+                paymentDate: paymentDate.toISOString().split('T')[0],
+                paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
+                totalPaymentPrice: index + 1,
+            };
+        }).filter((ele) => {
+            const paymentDate = new Date(ele.paymentDate);
+            return paymentDate <= new Date() && paymentDate >= periodDate;
+        });
+
+        setSortedByPeriodSalesData(sortedPeriodData);
+    }, [periodDate]);
+
+    console.log(selectedPeriod, periodDate.toISOString(), sortedByPeriodSalesData, '< 타석매출:');
 
     //매출 : 매출 DB created time 으로 정렬 후 월,주,일 로 출력
 
@@ -147,7 +156,7 @@ const SalesStatus = () => {
 
             <Row>
                 <Col xl={12}>
-                    <Statistics />
+                    <Statistics sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
             </Row>
 
