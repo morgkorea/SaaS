@@ -176,7 +176,7 @@ const SalesStatus = () => {
                     <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
                 <Col lg={8}>
-                    <RevenueChart />
+                    <RevenueChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
             </Row>
 
