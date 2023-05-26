@@ -28,6 +28,15 @@ const SalesStatus = () => {
             setDatePickDate(date);
         }
     };
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    var randomInt = getRandomInt(1, 10000000);
+    console.log(randomInt);
     const firestoreSalesFieldSchema = {
         paymentNumber: '111', //결제번호
         paymentDate: '2023-05-01', //결제일
@@ -39,17 +48,17 @@ const SalesStatus = () => {
         products: [
             {
                 product: '장갑', //상품
-                regularPrice: '10000', //상품 정상가
+                regularPrice: '12', //상품 정상가
                 discountRate: '10%', // 할인율
-                discountPrice: '9000', //할인가
+                discountPrice: getRandomInt(1, 10000000), //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
             },
             {
                 product: '레슨', //상품
-                regularPrice: '100000', //상품 정상가
+                regularPrice: '23', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: '80000', //할인가
+                discountPrice: getRandomInt(1, 10000000), //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -57,7 +66,7 @@ const SalesStatus = () => {
                 product: '타석', //상품
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: '80000', //할인가
+                discountPrice: getRandomInt(1, 10000000), //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -65,7 +74,7 @@ const SalesStatus = () => {
                 product: '락커', //상품
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: '80000', //할인가
+                discountPrice: getRandomInt(1, 10000000), //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -163,7 +172,7 @@ const SalesStatus = () => {
 
             <Row>
                 <Col lg={4}>
-                    <SalesChart />
+                    <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
                 <Col lg={8}>
                     <RevenueChart />

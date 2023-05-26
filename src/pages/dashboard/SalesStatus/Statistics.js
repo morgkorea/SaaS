@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ selectedPeriod, sortedByPeriodSalesData }) => {
-    const [isLoading, setIsLoading] = useState(false);
-
+const Statistics = ({ sortedByPeriodSalesData }) => {
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -23,7 +21,6 @@ const Statistics = ({ selectedPeriod, sortedByPeriodSalesData }) => {
     };
 
     const amountEachProductsSales = () => {
-        setIsLoading(true);
         setAmountProductsSales({
             batterBox: 0,
             lesson: 0,
@@ -50,7 +47,7 @@ const Statistics = ({ selectedPeriod, sortedByPeriodSalesData }) => {
                     setAmountProductsSales(productsSales);
                 });
         }
-        setIsLoading(false);
+
         console.log(amountProductsSales, productsSales);
     };
 
@@ -68,7 +65,7 @@ const Statistics = ({ selectedPeriod, sortedByPeriodSalesData }) => {
                         icon="mdi mdi-account-multiple"
                         description="Number of Customers"
                         title="타석"
-                        stats={isLoading ? ' ' : amountProductsSales.batterBox + '원'}
+                        stats={amountProductsSales.batterBox + '원'}
                         trend={{
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
