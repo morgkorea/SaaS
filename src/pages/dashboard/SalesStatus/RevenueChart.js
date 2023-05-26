@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import { Card, Row, Col } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
-const RevenueChart = () => {
+const RevenueChart = ({ sortedByPeriodSalesData }) => {
+    //현재 연,월,일 / 해당 월 구하기 -> 현재일부터 해당월 1일까지의 데이터 일별로 배열로 구분
+    // 총 매출 구하기-> 6개 기준점  첫요소의 배수로 배열에 할당 ex) [12,24,36,48,60]
+    // 할다배열
+
     const apexLineChartWithLables = {
         chart: {
             type: 'line',
@@ -35,9 +39,38 @@ const RevenueChart = () => {
         colors: ['#727cf5', '#0acf97', '#fa5c7c', '#ffbc00'],
         xaxis: {
             type: 'string',
-            categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-            '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-            '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',],
+            categories: [
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+                '10',
+                '11',
+                '12',
+                '13',
+                '14',
+                '15',
+                '16',
+                '17',
+                '18',
+                '19',
+                '20',
+                '21',
+                '22',
+                '23',
+                '24',
+                '25',
+                '26',
+                '27',
+                '28',
+                '29',
+                '30',
+            ],
             tooltip: {
                 enabled: false,
             },
@@ -50,21 +83,24 @@ const RevenueChart = () => {
     const apexLineChartWithLablesData = [
         {
             name: 'Current Week',
-            data: [10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20,],
+            data: [
+                10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20,
+                30, 20,
+            ],
         },
         {
             name: 'Previous Week',
-            data: [15, 10, 30, 15, 35, 25, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20],
+            data: [
+                15, 10, 30, 15, 35, 25, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30,
+                20,
+            ],
         },
     ];
 
     return (
         <Card>
             <Card.Body>
-                <CardTitle
-                    containerClass="d-flex align-items-center justify-content-between mb-2"
-                    title="추이"
-                />
+                <CardTitle containerClass="d-flex align-items-center justify-content-between mb-2" title="추이" />
 
                 <div className="chart-content-bg">
                     <Row className="text-center">
