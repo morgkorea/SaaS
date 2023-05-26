@@ -2,27 +2,62 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ sortedByPeriodSalesData }) => {
-    const [amountTotalPrice, setAmountTotalPrice] = useState(0);
-    const [amountBatterBoxSales, setAmountBetterboxSales] = useState('');
+const Statistics = ({ selectedPeriod, sortedByPeriodSalesData }) => {
+    const [isLoading, setIsLoading] = useState(false);
 
-    const sumTotalPaymentPrice = (sortedByPeriodSalesData) => {
+    const [amountProductsSales, setAmountProductsSales] = useState({
+        batterBox: 0,
+        lesson: 0,
+        locker: 0,
+        etc: 0,
+    });
+    const [amountTotalRefundPrice, setAmountTotalRefundPrice] = useState(0);
+
+    const sumTotalRefundPrice = () => {
         if (sortedByPeriodSalesData) {
-            const totalPayment = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return acc + curr.totalPaymentPrice;
+            const totalRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return acc + Number(curr.refundPrice);
             }, 0);
-            setAmountTotalPrice(totalPayment);
+            setAmountTotalRefundPrice(totalRefund);
         }
     };
 
-    // const totalSales = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-    //     return [...acc, ...curr.products];
-    // }, []);
+    const amountEachProductsSales = () => {
+        setIsLoading(true);
+        setAmountProductsSales({
+            batterBox: 0,
+            lesson: 0,
+            locker: 0,
+            etc: 0,
+        });
+        const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
+        if (sortedByPeriodSalesData) {
+            [...sortedByPeriodSalesData]
+                .reduce((acc, curr) => {
+                    return [...acc, ...curr.products];
+                }, [])
+                .forEach((ele, idx) => {
+                    if (ele.product === '타석') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
+                    } else if (ele.product === '레슨') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
+                    } else if (ele.product === '락커') {
+                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    } else {
+                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                    }
 
-    // console.log(totalSales);
+                    setAmountProductsSales(productsSales);
+                });
+        }
+        setIsLoading(false);
+        console.log(amountProductsSales, productsSales);
+    };
 
     useEffect(() => {
-        sumTotalPaymentPrice(sortedByPeriodSalesData);
+        setAmountTotalRefundPrice(0);
+        sumTotalRefundPrice();
+        amountEachProductsSales();
     }, [sortedByPeriodSalesData]);
 
     return (
@@ -33,7 +68,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         icon="mdi mdi-account-multiple"
                         description="Number of Customers"
                         title="타석"
-                        stats={amountTotalPrice + '원'}
+                        stats={isLoading ? ' ' : amountProductsSales.batterBox + '원'}
                         trend={{
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
@@ -47,7 +82,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         icon="mdi mdi-cart-plus"
                         description="Number of Orders"
                         title="레슨"
-                        stats="5,543원"
+                        stats={amountProductsSales.lesson + '원'}
                         trend={{
                             textClass: 'text-danger',
                             icon: 'mdi mdi-arrow-down-bold',
@@ -61,7 +96,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         icon="mdi mdi-currency-usd"
                         description="Revenue"
                         title="락커"
-                        stats="6,254원"
+                        stats={amountProductsSales.locker + '원'}
                         trend={{
                             textClass: 'text-danger',
                             icon: 'mdi mdi-arrow-down-bold',
@@ -75,7 +110,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         icon="mdi mdi-currency-usd"
                         description="Revenue"
                         title="기타"
-                        stats="2,034원"
+                        stats={amountProductsSales.etc + '원'}
                         trend={{
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
@@ -89,7 +124,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                         border="danger"
                         description="Refund"
                         title="환불"
-                        stats="3,056원"
+                        stats={amountTotalRefundPrice + '원'}
                         trend={{
                             textClass: 'text-danger',
                             icon: 'mdi mdi-arrow-down-bold',

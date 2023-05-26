@@ -14,18 +14,18 @@ import { format, subMonths, subWeeks, subDays, addDays, parseISO } from 'date-fn
 
 const SalesStatus = () => {
     //
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [datePickDate, setDatePickDate] = useState(new Date());
     // 월간,주간,일간 선택
     const [selectedPeriod, setSelectedPeriod] = useState('month');
     // 현재시간 기준 전 월,주,일 날짜
-    const [periodDate, setPeroidDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date());
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
 
     const onDateChange = (date) => {
         if (date) {
-            console.log(date);
-            setSelectedDate(date);
+            console.log(datePickDate);
+            setDatePickDate(date);
         }
     };
     const firestoreSalesFieldSchema = {
@@ -82,19 +82,17 @@ const SalesStatus = () => {
     };
 
     useEffect(() => {
-        const currentDate = new Date();
-
         switch (selectedPeriod) {
             case 'month':
-                return setPeroidDate(subMonths(currentDate, 1));
+                return setStartDate(subMonths(datePickDate, 1));
             case 'week':
-                return setPeroidDate(subWeeks(currentDate, 1));
+                return setStartDate(subWeeks(datePickDate, 1));
             case 'day':
-                return setPeroidDate(subDays(currentDate, 1));
+                return setStartDate(subDays(datePickDate, 1));
 
             default:
         }
-    }, [selectedPeriod]);
+    }, [datePickDate, selectedPeriod]);
 
     useEffect(() => {
         const sortedPeriodData = Array.from({ length: 60 }, (_, index) => {
@@ -108,13 +106,16 @@ const SalesStatus = () => {
             };
         }).filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
-            return paymentDate <= new Date() && paymentDate >= periodDate;
+
+            return paymentDate <= datePickDate && paymentDate >= startDate ? true : false;
         });
 
-        setSortedByPeriodSalesData(sortedPeriodData);
-    }, [periodDate]);
+        console.log('periodDtate', datePickDate, startDate);
 
-    console.log(selectedPeriod, periodDate.toISOString(), sortedByPeriodSalesData, '< 타석매출:');
+        setSortedByPeriodSalesData(sortedPeriodData);
+    }, [startDate, datePickDate]);
+
+    console.log(sortedByPeriodSalesData, '< 타석매출:');
 
     //매출 : 매출 DB created time 으로 정렬 후 월,주,일 로 출력
 
@@ -133,7 +134,7 @@ const SalesStatus = () => {
                                 </div>
                                 <div className="input-group">
                                     <HyperDatepicker
-                                        value={selectedDate}
+                                        value={datePickDate}
                                         maxDate={new Date()}
                                         inputClass="form-control-light"
                                         onChange={(date) => {
@@ -156,7 +157,7 @@ const SalesStatus = () => {
 
             <Row>
                 <Col xl={12}>
-                    <Statistics sortedByPeriodSalesData={sortedByPeriodSalesData} />
+                    <Statistics selectedPeriod={selectedPeriod} sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
             </Row>
 
