@@ -29,14 +29,13 @@ const SalesStatus = () => {
         }
     };
 
+    //mockup DATA ==============================================
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    var randomInt = getRandomInt(1, 10000000);
-    console.log(randomInt);
     const firestoreSalesFieldSchema = {
         paymentNumber: '111', //결제번호
         paymentDate: '2023-05-01', //결제일
@@ -50,7 +49,7 @@ const SalesStatus = () => {
                 product: '장갑', //상품
                 regularPrice: '12', //상품 정상가
                 discountRate: '10%', // 할인율
-                discountPrice: getRandomInt(1, 10000000), //할인가
+                discountPrice: getRandomInt(1, 1000000), //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
             },
@@ -58,7 +57,7 @@ const SalesStatus = () => {
                 product: '레슨', //상품
                 regularPrice: '23', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: getRandomInt(1, 10000000), //할인가
+                discountPrice: getRandomInt(1, 1000000), //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -66,7 +65,7 @@ const SalesStatus = () => {
                 product: '타석', //상품
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: getRandomInt(1, 10000000), //할인가
+                discountPrice: getRandomInt(1, 1000000), //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -74,7 +73,7 @@ const SalesStatus = () => {
                 product: '락커', //상품
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: getRandomInt(1, 10000000), //할인가
+                discountPrice: getRandomInt(1, 1000000), //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -89,6 +88,8 @@ const SalesStatus = () => {
         refundPrice: '89000', //환불액
         refundReason: '단순변심', //환불사유
     };
+
+    //=============================================================
 
     useEffect(() => {
         switch (selectedPeriod) {
