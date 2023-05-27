@@ -6,8 +6,29 @@ import CardTitle from '../../../components/CardTitle';
 const RevenueChart = ({ sortedByPeriodSalesData }) => {
     //현재 연,월,일 / 해당 월 구하기 -> 현재일부터 해당월 1일까지의 데이터 일별로 배열로 구분
     // 총 매출 구하기-> 6개 기준점  첫요소의 배수로 배열에 할당 ex) [12,24,36,48,60]
-    // 할다배열
+    // 할당배열
 
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+    const [beforeMonth, setBeforeMonth] = useState(new Date().getMonth());
+
+    const getCurrentMonthOfDays = () => {
+        const currentMonthDaysCount = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+        return Array.from({ length: currentMonthDaysCount }, (_, index) => index + 1);
+    };
+
+    const getSalesByDate = () => {
+        return sortedByPeriodSalesData
+            ? [...sortedByPeriodSalesData].map((Sales, idx) => {
+                  const salesDay = new Date(Sales.paymentDate).getDay();
+                  const currentMonthDaysCount = new Date(
+                      new Date().getFullYear(),
+                      new Date().getMonth() + 1,
+                      0
+                  ).getDate();
+              })
+            : [];
+    };
+    console.warn('유승훈 바보');
     const apexLineChartWithLables = {
         chart: {
             type: 'line',
@@ -70,6 +91,7 @@ const RevenueChart = ({ sortedByPeriodSalesData }) => {
                 '28',
                 '29',
                 '30',
+                '31',
             ],
             tooltip: {
                 enabled: false,
@@ -82,14 +104,14 @@ const RevenueChart = ({ sortedByPeriodSalesData }) => {
 
     const apexLineChartWithLablesData = [
         {
-            name: 'Current Week',
+            name: '이번 달',
             data: [
-                10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20,
+                0, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20,
                 30, 20,
             ],
         },
         {
-            name: 'Previous Week',
+            name: '지난 달',
             data: [
                 15, 10, 30, 15, 35, 25, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30, 20, 10, 20, 15, 25, 20, 30,
                 20,
