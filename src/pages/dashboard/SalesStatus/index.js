@@ -94,7 +94,7 @@ const SalesStatus = () => {
     useEffect(() => {
         switch (selectedPeriod) {
             case 'month':
-                return setStartDate(subMonths(datePickDate, 1));
+                return setStartDate(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
             case 'week':
                 return setStartDate(subWeeks(datePickDate, 1));
             case 'day':
@@ -106,7 +106,7 @@ const SalesStatus = () => {
 
     useEffect(() => {
         const sortedPeriodData = Array.from({ length: 60 }, (_, index) => {
-            const paymentDate = new Date('2023-04-10');
+            const paymentDate = new Date('2023-04-01');
             paymentDate.setDate(paymentDate.getDate() + index);
             return {
                 ...firestoreSalesFieldSchema,
@@ -167,7 +167,11 @@ const SalesStatus = () => {
 
             <Row>
                 <Col xl={12}>
-                    <Statistics selectedPeriod={selectedPeriod} sortedByPeriodSalesData={sortedByPeriodSalesData} />
+                    <Statistics
+                        selectedPeriod={selectedPeriod}
+                        sortedByPeriodSalesData={sortedByPeriodSalesData}
+                        selectedPeriod={selectedPeriod}
+                    />
                 </Col>
             </Row>
 

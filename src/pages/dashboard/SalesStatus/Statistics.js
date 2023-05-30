@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ sortedByPeriodSalesData }) => {
+const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -51,11 +51,24 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
         console.log(amountProductsSales, productsSales);
     };
 
+    const periodTextHandler = () => {
+        switch (selectedPeriod) {
+            case 'month':
+                return '전월 대비';
+            case 'week':
+                return '전주 대비';
+            case 'day':
+                return '전일 대비';
+            default:
+                return '전월 대비';
+        }
+    };
+
     useEffect(() => {
         setAmountTotalRefundPrice(0);
         sumTotalRefundPrice();
         amountEachProductsSales();
-    }, [sortedByPeriodSalesData]);
+    }, [sortedByPeriodSalesData, selectedPeriod]);
 
     return (
         <>
@@ -70,7 +83,7 @@ const Statistics = ({ sortedByPeriodSalesData }) => {
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
                             value: '5.27%',
-                            time: '전달 대비',
+                            time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
 
