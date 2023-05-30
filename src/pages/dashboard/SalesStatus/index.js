@@ -182,7 +182,7 @@ const SalesStatus = () => {
 
             <Row>
                 <Col lg={12}>
-                    <ProductSales />
+                    <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
             </Row>
         </>

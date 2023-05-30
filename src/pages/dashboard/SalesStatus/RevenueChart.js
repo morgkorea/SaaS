@@ -4,10 +4,6 @@ import { Card, Row, Col } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
 const RevenueChart = ({ sortedByPeriodSalesData }) => {
-    //현재 연,월,일 / 해당 월 구하기 -> 현재일부터 해당월 1일까지의 데이터 일별로 배열로 구분
-    // 총 매출 구하기-> 6개 기준점  첫요소의 배수로 배열에 할당 ex) [12,24,36,48,60]
-    // 할당배열
-
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
     const [beforeMonth, setBeforeMonth] = useState(new Date().getMonth());
 

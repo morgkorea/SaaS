@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Col, Form, Pagination, Row, Table, ProgressBar } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { productSalesData } from './data';
 
 const RoundedPagination = ({ total, limit, page, setPage }) => {
     const numPages = Math.ceil(total / limit);
@@ -25,10 +24,55 @@ const RoundedPagination = ({ total, limit, page, setPage }) => {
     );
 };
 
-const ProductSales = () => {
+const ProductSales = ({ sortedByPeriodSalesData }) => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const offset = (page - 1) * limit;
+    const [productSalesData, setProductSalesData] = useState([]);
+
+    // 상품 종류 관련 필드 추가 필요
+
+    const productSalesMerger = () => {
+        let mergedSalesData = [];
+        if (sortedByPeriodSalesData) {
+            [...sortedByPeriodSalesData].forEach((sale) => {
+                mergedSalesData = mergedSalesData.concat(sale.products);
+            });
+        }
+
+        let productsInfo = {};
+        mergedSalesData.forEach((sale) => {
+            if (!productsInfo.hasOwnProperty(sale.product)) {
+                productsInfo[`${sale.product}`] = {
+                    title: sale.product,
+                    type: sale.product,
+                    total: Number(sale.discountPrice),
+                    number: 1,
+                    refund: sale.refund ? sale.discountPrice : 0,
+                };
+            } else {
+                productsInfo[`${sale.product}`] = {
+                    ...productsInfo[`${sale.product}`],
+                    total: Number(productsInfo[`${sale.product}`].total) + Number(sale.discountPrice),
+                    number: productsInfo[`${sale.product}`].number + 1,
+                };
+                if (sale.refund) {
+                    productsInfo[`${sale.product}`].refund =
+                        Number(productsInfo[`${sale.product}`].refund) + Number(sale.discountPrice);
+                }
+            }
+        });
+
+        const productsSalesArray = [];
+        for (let key in productsInfo) {
+            productsSalesArray.push(productsInfo[key]);
+        }
+        setProductSalesData(productsSalesArray);
+        console.log(productsInfo);
+    };
+    useEffect(() => {
+        productSalesMerger();
+    }, [sortedByPeriodSalesData]);
 
     return (
         <Row>
@@ -90,13 +134,13 @@ const ProductSales = () => {
                                                     <Form.Check type="checkbox" id={data.orderId} />
                                                 </Form>
                                             </td>
-                                            <td className='table-border'>
+                                            <td className="table-border">
                                                 <Link to="#" className="text-body">
                                                     {data.title}
                                                 </Link>
                                             </td>
-                                            <td className='table-border'>{data.type}</td>
-                                            <td className='table-border'>
+                                            <td className="table-border">{data.type}</td>
+                                            <td className="table-border">
                                                 <Row>
                                                     <Col>
                                                         <ProgressBar
@@ -110,7 +154,7 @@ const ProductSales = () => {
                                                     </Col>
                                                 </Row>
                                             </td>
-                                            <td className='table-border'>{data.total.toLocaleString()}원</td>
+                                            <td className="table-border">{data.total.toLocaleString()}원</td>
                                             <td>{data.refund.toLocaleString()}원</td>
                                         </tr>
                                     );

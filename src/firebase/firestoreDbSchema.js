@@ -86,6 +86,7 @@ export const firestoreMemebersFieldSchema = [
                 startDate: '2023-02-19', //시작일
                 endDate: '2023-02-19', //종료일
                 dDays: 0, //남은일수
+                refund: false,
             },
         ],
     },
@@ -108,6 +109,7 @@ export const firestoreSalesFieldSchema = [
                 discountPrice: '9000', //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
+                refund: false,
             },
             {
                 product: '레슨', //상품
@@ -116,6 +118,7 @@ export const firestoreSalesFieldSchema = [
                 discountPrice: '80000', //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
+                refund: false,
             },
         ],
         totalPaymentPrice: '', //결제총액
