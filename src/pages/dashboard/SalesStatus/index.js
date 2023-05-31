@@ -10,7 +10,7 @@ import RevenueChart from './RevenueChart';
 
 import { ButtonsGroup } from './ButtonsGroup.js';
 
-import { format, subMonths, subWeeks, subDays, addDays, parseISO } from 'date-fns';
+import { subWeeks, subDays } from 'date-fns';
 
 const SalesStatus = () => {
     //
@@ -26,7 +26,7 @@ const SalesStatus = () => {
 
     const onDateChange = (date) => {
         if (date) {
-            console.log(datePickDate);
+            console.log(date);
             setDatePickDate(date);
         }
     };
@@ -97,7 +97,7 @@ const SalesStatus = () => {
     useEffect(() => {
         switch (selectedPeriod) {
             case 'month':
-                return setStartDate(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+                return setStartDate(new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 1));
             case 'week':
                 return setStartDate(subWeeks(datePickDate, 1));
             case 'day':
@@ -108,8 +108,8 @@ const SalesStatus = () => {
     }, [datePickDate, selectedPeriod]);
 
     useEffect(() => {
-        const sortedPeriodData = Array.from({ length: 120 }, (_, index) => {
-            const paymentDate = new Date('2023-04-01');
+        const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
+            const paymentDate = new Date('2023-01-01');
             paymentDate.setDate(paymentDate.getDate() + index);
             return {
                 ...firestoreSalesFieldSchema,
@@ -120,12 +120,11 @@ const SalesStatus = () => {
             };
         }).filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
-
-            return paymentDate <= datePickDate && paymentDate >= startDate ? true : false;
+            return paymentDate >= startDate && paymentDate <= datePickDate ? true : false;
         });
 
-        const beforeMonthData = Array.from({ length: 120 }, (_, index) => {
-            const paymentDate = new Date('2023-03-01');
+        const beforeMonthData = Array.from({ length: 360 }, (_, index) => {
+            const paymentDate = new Date('2023-01-01');
             paymentDate.setDate(paymentDate.getDate() + index);
             return {
                 ...firestoreSalesFieldSchema,
@@ -135,17 +134,49 @@ const SalesStatus = () => {
                 // refund: true,
             };
         }).filter((ele) => {
-            const paymentMonth = new Date(ele.paymentDate);
-            return paymentMonth.getMonth() === new Date().getMonth() - 1;
+            const paymentDate = new Date(ele.paymentDate);
+            const sevenDaysAgoDate = new Date(datePickDate.toISOString().split('T')[0]);
+
+            const getWeek = (date) => {
+                const currentDate = date ? date.getDate() : new Date();
+                const firstDay = new Date(date?.setDate(1)).getDay();
+
+                return Math.ceil((currentDate + firstDay) / 7);
+            };
+
+            switch (selectedPeriod) {
+                case 'month':
+                    return paymentDate.getMonth() === datePickDate.getMonth() - 1;
+                case 'week':
+                    return getWeek(paymentDate) === getWeek(sevenDaysAgoDate) - 1;
+                case 'day':
+                    return paymentDate.getDate() === new Date().setDate(datePickDate.getDate() - 1);
+                default:
+            }
         });
-        console.log(beforeMonthData);
 
         setSortedByPeriodSalesData(sortedPeriodData);
         setBeforeMonthSalesData(beforeMonthData);
     }, [startDate, datePickDate, selectedPeriod]);
 
-    console.log(sortedByPeriodSalesData, '< 타석매출:');
-    console.log('beforeMonthSalesData', beforeMonthSalesData);
+    console.log(beforeMonthSalesData);
+
+    // new Date(paymentDate.getFullYear(),paymentDate.getMonth(),paymentDate.getDate()) === datePickDate.getDate() - 7;
+
+    // const getWeek = (date) => {
+    //     const currentDate = date.getDate();
+    //     const firstDay = new Date(date.setDate(1)).getDay();
+
+    //     return Math.ceil((currentDate + firstDay) / 7);
+    // };
+
+    // const sevenDaysAgoDate = datePickDate.toISOString().split('T')[0];
+
+    // const week = getWeek(new Date(sevenDaysAgoDate));
+    // console.log(week + '주차');
+    // const week2 = getWeek(new Date(sevenDaysAgoDate));
+    // console.log(week2 + '주차');
+    // console.log(week2 === week);
 
     //매출 : 매출 DB created time 으로 정렬 후 월,주,일 로 출력
 

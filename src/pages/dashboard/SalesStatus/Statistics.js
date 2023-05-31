@@ -34,12 +34,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
     };
 
     const amountEachProductsSales = () => {
-        setAmountProductsSales({
-            batterBox: 0,
-            lesson: 0,
-            locker: 0,
-            etc: 0,
-        });
+        // setAmountProductsSales({
+        //     batterBox: 0,
+        //     lesson: 0,
+        //     locker: 0,
+        //     etc: 0,
+        // });
         const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
@@ -59,16 +59,15 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                 });
         }
         setAmountProductsSales(productsSales);
-        console.log(amountProductsSales, productsSales);
     };
 
-    const amountBeforeMonthProductsSales = () => {
-        setAmountBeforeProductsSales({
-            batterBox: 0,
-            lesson: 0,
-            locker: 0,
-            etc: 0,
-        });
+    const amountBeforePeriodProductsSales = () => {
+        // setAmountBeforeProductsSales({
+        //     batterBox: 0,
+        //     lesson: 0,
+        //     locker: 0,
+        //     etc: 0,
+        // });
         const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
         if (beforeMonthSalesData) {
             [...beforeMonthSalesData]
@@ -78,7 +77,6 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                 .forEach((ele, idx) => {
                     if (ele.product === '타석') {
                         productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
-                        console.log('falseflaseflaseflase');
                     } else if (ele.product === '레슨') {
                         productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
                     } else if (ele.product === '락커') {
@@ -92,7 +90,9 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
     };
 
     const compareWithPreviousSales = () => {
-        const before = selectedPeriod === 'month' ? amountBeforeProductsSales : amountProductsSales;
+        // const before = selectedPeriod === 'month' ? amountBeforeProductsSales : amountProductsSales;
+
+        const before = amountBeforeProductsSales;
 
         const comparedPercentages = {
             batterBox: percentCalculater(before.batterBox, amountProductsSales.batterBox),
@@ -125,14 +125,10 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
         setAmountTotalRefundPrice(0);
         sumTotalRefundPrice();
         amountEachProductsSales();
-        amountBeforeMonthProductsSales();
+        amountBeforePeriodProductsSales();
         compareWithPreviousSales();
     }, [sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesData]);
-    console.log('beforeMonthSalesData', beforeMonthSalesData);
-    console.log('amountBeforeProductsSales', amountBeforeProductsSales);
-    console.log('amountCompareWithPreviousSales', amountCompareWithPreviousSales);
 
-    console.log(amountProductsSales, amountBeforeProductsSales, amountCompareWithPreviousSales);
     return (
         <>
             <Row>
@@ -144,11 +140,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         stats={amountProductsSales.batterBox + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.batterBox > 0 ? 'text-success' : 'text-danger',
-                            icon:
-                                amountCompareWithPreviousSales.batterBox > 0
+                            icon: beforeMonthSalesData.length
+                                ? amountCompareWithPreviousSales.batterBox > 0
                                     ? 'mdi mdi-arrow-up-bold'
-                                    : 'mdi mdi-arrow-down-bold',
-                            value: `${amountCompareWithPreviousSales.batterBox}%`,
+                                    : 'mdi mdi-arrow-down-bold'
+                                : '',
+                            value: beforeMonthSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -161,11 +158,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         stats={amountProductsSales.lesson + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.lesson > 0 ? 'text-success' : 'text-danger',
-                            icon:
-                                amountCompareWithPreviousSales.lesson > 0
+                            icon: beforeMonthSalesData.length
+                                ? amountCompareWithPreviousSales.lesson > 0
                                     ? 'mdi mdi-arrow-up-bold'
-                                    : 'mdi mdi-arrow-down-bold',
-                            value: `${amountCompareWithPreviousSales.lesson}%`,
+                                    : 'mdi mdi-arrow-down-bold'
+                                : '',
+                            value: beforeMonthSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -178,11 +176,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         stats={amountProductsSales.locker + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.locker > 0 ? 'text-success' : 'text-danger',
-                            icon:
-                                amountCompareWithPreviousSales.locker > 0
+                            icon: beforeMonthSalesData.length
+                                ? amountCompareWithPreviousSales.locker > 0
                                     ? 'mdi mdi-arrow-up-bold'
-                                    : 'mdi mdi-arrow-down-bold',
-                            value: `${amountCompareWithPreviousSales.locker}%`,
+                                    : 'mdi mdi-arrow-down-bold'
+                                : '',
+                            value: beforeMonthSalesData.length ? amountCompareWithPreviousSales.locker + '%' : '',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -195,11 +194,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         stats={amountProductsSales.etc + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.etc > 0 ? 'text-success' : 'text-danger',
-                            icon:
-                                amountCompareWithPreviousSales.etc > 0
+                            icon: beforeMonthSalesData.length
+                                ? amountCompareWithPreviousSales.etc > 0
                                     ? 'mdi mdi-arrow-up-bold'
-                                    : 'mdi mdi-arrow-down-bold',
-                            value: `${amountCompareWithPreviousSales.etc}%`,
+                                    : 'mdi mdi-arrow-down-bold'
+                                : '',
+                            value: beforeMonthSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
