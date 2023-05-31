@@ -117,8 +117,6 @@ const SalesStatus = () => {
         }
     }, [datePickDate, selectedPeriod]);
 
-    console.log('firstDayOfWeek', sortedByPeriodSalesData);
-
     useEffect(() => {
         const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
             const paymentDate = new Date('2023-01-01');
@@ -174,7 +172,8 @@ const SalesStatus = () => {
         setBeforePeriodSalesData(beforePeriodData);
     }, [startDate, datePickDate, selectedPeriod]);
 
-    console.log(beforePeriodSaelsData);
+    // console.log('선택 기간 기준 전 월,주,일 데이터 : ', beforePeriodSaelsData);
+    // console.log('선택 기간 기준 현 월,주,일 데이터 : ', sortedByPeriodSalesData);
 
     // new Date(paymentDate.getFullYear(),paymentDate.getMonth(),paymentDate.getDate()) === datePickDate.getDate() - 7;
 

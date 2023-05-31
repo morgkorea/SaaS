@@ -24,6 +24,10 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
     });
     const [amountTotalRefundPrice, setAmountTotalRefundPrice] = useState(0);
 
+    console.log('날짜 기준 현 월,주,일 데이터 합계 : ', amountProductsSales);
+    console.log('날짜 기준 전 월,주,일 데이터 합계 : ', amountBeforeProductsSales);
+    console.log('비교 데이터 퍼센테이지: ', amountCompareWithPreviousSales);
+
     const sumTotalRefundPrice = () => {
         if (sortedByPeriodSalesData) {
             const totalRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
@@ -93,13 +97,11 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
         // const before = selectedPeriod === 'month' ? amountBeforeProductsSales : amountProductsSales;
         setAmountCompoareWithPreviousSales({ batterBox: 0, lesson: 0, locker: 0, etc: 0 });
 
-        const before = amountBeforeProductsSales;
-
         const comparedPercentages = {
-            batterBox: percentCalculater(before.batterBox, amountProductsSales.batterBox),
-            lesson: percentCalculater(before.lesson, amountProductsSales.lesson),
-            locker: percentCalculater(before.locker, amountProductsSales.locker),
-            etc: percentCalculater(before.etc, amountProductsSales.etc),
+            batterBox: percentCalculater(amountBeforeProductsSales.batterBox, amountProductsSales.batterBox),
+            lesson: percentCalculater(amountBeforeProductsSales.lesson, amountProductsSales.lesson),
+            locker: percentCalculater(amountBeforeProductsSales.locker, amountProductsSales.locker),
+            etc: percentCalculater(amountBeforeProductsSales.etc, amountProductsSales.etc),
         };
 
         function percentCalculater(before, current) {
