@@ -24,10 +24,6 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
     });
     const [amountTotalRefundPrice, setAmountTotalRefundPrice] = useState(0);
 
-    console.log('날짜 기준 현 월,주,일 데이터 합계 : ', amountProductsSales);
-    console.log('날짜 기준 전 월,주,일 데이터 합계 : ', amountBeforeProductsSales);
-    console.log('비교 데이터 퍼센테이지: ', amountCompareWithPreviousSales);
-
     const sumTotalRefundPrice = () => {
         if (sortedByPeriodSalesData) {
             const totalRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
@@ -44,7 +40,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
             locker: 0,
             etc: 0,
         });
-        const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
+        let productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
@@ -62,7 +58,9 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                     }
                 });
         }
+
         setAmountProductsSales(productsSales);
+        productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
     };
 
     const amountBeforePeriodProductsSales = () => {
@@ -72,7 +70,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
             locker: 0,
             etc: 0,
         });
-        const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
+        let productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
         if (beforePeriodSaelsData) {
             [...beforePeriodSaelsData]
                 .reduce((acc, curr) => {
@@ -91,20 +89,20 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                 });
         }
         setAmountBeforeProductsSales(productsSales);
+        productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
     };
 
     const compareWithPreviousSales = () => {
-        // const before = selectedPeriod === 'month' ? amountBeforeProductsSales : amountProductsSales;
         setAmountCompoareWithPreviousSales({ batterBox: 0, lesson: 0, locker: 0, etc: 0 });
 
         const comparedPercentages = {
-            batterBox: percentCalculater(amountBeforeProductsSales.batterBox, amountProductsSales.batterBox),
-            lesson: percentCalculater(amountBeforeProductsSales.lesson, amountProductsSales.lesson),
-            locker: percentCalculater(amountBeforeProductsSales.locker, amountProductsSales.locker),
-            etc: percentCalculater(amountBeforeProductsSales.etc, amountProductsSales.etc),
+            batterBox: percentCalculator(amountBeforeProductsSales.batterBox, amountProductsSales.batterBox),
+            lesson: percentCalculator(amountBeforeProductsSales.lesson, amountProductsSales.lesson),
+            locker: percentCalculator(amountBeforeProductsSales.locker, amountProductsSales.locker),
+            etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
         };
 
-        function percentCalculater(before, current) {
+        function percentCalculator(before, current) {
             return (((current - before) / before) * 100).toFixed(2);
         }
 
@@ -128,10 +126,18 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
         setAmountTotalRefundPrice(0);
         sumTotalRefundPrice();
         amountEachProductsSales();
+    }, [sortedByPeriodSalesData]);
+    useEffect(() => {
         amountBeforePeriodProductsSales();
-        compareWithPreviousSales();
-    }, [sortedByPeriodSalesData, selectedPeriod, beforePeriodSaelsData, startDate]);
+    }, [beforePeriodSaelsData]);
 
+    useEffect(() => {
+        compareWithPreviousSales();
+    }, [amountProductsSales, amountBeforeProductsSales]);
+
+    console.log('날짜 기준 현 월,주,일 데이터 합계 : ', amountProductsSales);
+    console.log('날짜 기준 전 월,주,일 데이터 합계 : ', amountBeforeProductsSales);
+    console.log('비교 데이터 퍼센테이지: ', amountCompareWithPreviousSales);
     return (
         <>
             <Row>
@@ -148,7 +154,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                                     ? 'mdi mdi-arrow-up-bold'
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.batterBox + '%' : '',
+                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -166,7 +172,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                                     ? 'mdi mdi-arrow-up-bold'
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.lesson + '%' : '',
+                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -184,7 +190,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                                     ? 'mdi mdi-arrow-up-bold'
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.locker + '%' : '',
+                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.locker + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -202,7 +208,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                                     ? 'mdi mdi-arrow-up-bold'
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.etc + '%' : '',
+                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.etc + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
