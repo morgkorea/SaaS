@@ -44,10 +44,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                 apexData.push(productsSales[`${key}`]);
             }
             setApexDonutData(apexData);
-            console.log(apexDonutData);
         }
-
-        console.log(amountProductsSales, productsSales);
     };
 
     useEffect(() => {

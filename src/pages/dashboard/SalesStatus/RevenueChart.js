@@ -130,7 +130,6 @@ const RevenueChart = ({ sortedByPeriodSalesData }) => {
         return result;
     };
 
-    console.log(getCurrentMonthSalesByDate(), getCurrentMonthOfDays());
     const apexLineChartWithLables = {
         chart: {
             type: 'line',

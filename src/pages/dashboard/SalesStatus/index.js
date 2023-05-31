@@ -22,7 +22,7 @@ const SalesStatus = () => {
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
     // 전월 매출데이터
-    const [beforeMonthSalesData, setBeforeMonthSalesData] = useState(false);
+    const [beforePeriodSaelsData, setBeforePeriodSalesData] = useState(false);
 
     const onDateChange = (date) => {
         if (date) {
@@ -94,18 +94,30 @@ const SalesStatus = () => {
 
     //=============================================================
 
+    const getFirstDayOfWeek = (date) => {
+        const dayOfWeek = date.getDay();
+        const firstDayOfWeek = new Date(date);
+        firstDayOfWeek.setDate(date.getDate() - dayOfWeek);
+
+        return firstDayOfWeek.toDateString();
+    };
+
     useEffect(() => {
+        const firstDayOfWeek = new Date(getFirstDayOfWeek(datePickDate));
         switch (selectedPeriod) {
             case 'month':
                 return setStartDate(new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 1));
             case 'week':
-                return setStartDate(subWeeks(datePickDate, 1));
+                // return setStartDate(subWeeks(datePickDate, 1));
+                return setStartDate(firstDayOfWeek);
             case 'day':
                 return setStartDate(subDays(datePickDate, 1));
 
             default:
         }
     }, [datePickDate, selectedPeriod]);
+
+    console.log('firstDayOfWeek', sortedByPeriodSalesData);
 
     useEffect(() => {
         const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
@@ -123,7 +135,7 @@ const SalesStatus = () => {
             return paymentDate >= startDate && paymentDate <= datePickDate ? true : false;
         });
 
-        const beforeMonthData = Array.from({ length: 360 }, (_, index) => {
+        const beforePeriodData = Array.from({ length: 360 }, (_, index) => {
             const paymentDate = new Date('2023-01-01');
             paymentDate.setDate(paymentDate.getDate() + index);
             return {
@@ -148,7 +160,10 @@ const SalesStatus = () => {
                 case 'month':
                     return paymentDate.getMonth() === datePickDate.getMonth() - 1;
                 case 'week':
-                    return getWeek(paymentDate) === getWeek(sevenDaysAgoDate) - 1;
+                    return (
+                        getWeek(paymentDate) === getWeek(sevenDaysAgoDate) - 1 &&
+                        paymentDate.getMonth() === datePickDate.getMonth()
+                    );
                 case 'day':
                     return paymentDate.getDate() === new Date().setDate(datePickDate.getDate() - 1);
                 default:
@@ -156,10 +171,10 @@ const SalesStatus = () => {
         });
 
         setSortedByPeriodSalesData(sortedPeriodData);
-        setBeforeMonthSalesData(beforeMonthData);
+        setBeforePeriodSalesData(beforePeriodData);
     }, [startDate, datePickDate, selectedPeriod]);
 
-    console.log(beforeMonthSalesData);
+    console.log(beforePeriodSaelsData);
 
     // new Date(paymentDate.getFullYear(),paymentDate.getMonth(),paymentDate.getDate()) === datePickDate.getDate() - 7;
 
@@ -221,7 +236,8 @@ const SalesStatus = () => {
                     <Statistics
                         selectedPeriod={selectedPeriod}
                         sortedByPeriodSalesData={sortedByPeriodSalesData}
-                        beforeMonthSalesData={beforeMonthSalesData}
+                        beforePeriodSaelsData={beforePeriodSaelsData}
+                        datePickDate={datePickDate}
                     />
                 </Col>
             </Row>
