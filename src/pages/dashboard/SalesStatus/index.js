@@ -21,6 +21,8 @@ const SalesStatus = () => {
     const [startDate, setStartDate] = useState(new Date());
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
+    // 전월 매출데이터
+    const [beforeMonthSalesData, setBeforeMonthSalesData] = useState(false);
 
     const onDateChange = (date) => {
         if (date) {
@@ -49,7 +51,7 @@ const SalesStatus = () => {
                 product: '장갑', //상품
                 regularPrice: '12', //상품 정상가
                 discountRate: '10%', // 할인율
-                discountPrice: getRandomInt(1, 1000000), //할인가
+                discountPrice: 1, //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
             },
@@ -57,7 +59,7 @@ const SalesStatus = () => {
                 product: '레슨', //상품
                 regularPrice: '23', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: getRandomInt(1, 1000000), //할인가
+                discountPrice: 1, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -65,7 +67,7 @@ const SalesStatus = () => {
                 product: '타석', //상품
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: getRandomInt(1, 1000000), //할인가
+                discountPrice: 1, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -73,7 +75,7 @@ const SalesStatus = () => {
                 product: '락커', //상품
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: getRandomInt(1, 1000000), //할인가
+                discountPrice: 1, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -85,7 +87,8 @@ const SalesStatus = () => {
         paymentMemo: '메모', //결제메모
         refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
         refundDate: '2023-05-17', //환불일 2023-10-22
-        refundPrice: '89000', //환불액
+        refund: false,
+        refundPrice: '4', //환불액
         refundReason: '단순변심', //환불사유
     };
 
@@ -105,7 +108,7 @@ const SalesStatus = () => {
     }, [datePickDate, selectedPeriod]);
 
     useEffect(() => {
-        const sortedPeriodData = Array.from({ length: 60 }, (_, index) => {
+        const sortedPeriodData = Array.from({ length: 120 }, (_, index) => {
             const paymentDate = new Date('2023-04-01');
             paymentDate.setDate(paymentDate.getDate() + index);
             return {
@@ -113,6 +116,7 @@ const SalesStatus = () => {
                 paymentDate: paymentDate.toISOString().split('T')[0],
                 paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
                 totalPaymentPrice: index + 1,
+                // refund: true,
             };
         }).filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
@@ -120,12 +124,28 @@ const SalesStatus = () => {
             return paymentDate <= datePickDate && paymentDate >= startDate ? true : false;
         });
 
-        console.log('periodDtate', datePickDate, startDate);
+        const beforeMonthData = Array.from({ length: 120 }, (_, index) => {
+            const paymentDate = new Date('2023-03-01');
+            paymentDate.setDate(paymentDate.getDate() + index);
+            return {
+                ...firestoreSalesFieldSchema,
+                paymentDate: paymentDate.toISOString().split('T')[0],
+                paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
+                totalPaymentPrice: index + 1,
+                // refund: true,
+            };
+        }).filter((ele) => {
+            const paymentMonth = new Date(ele.paymentDate);
+            return paymentMonth.getMonth() === new Date().getMonth() - 1;
+        });
+        console.log(beforeMonthData);
 
         setSortedByPeriodSalesData(sortedPeriodData);
-    }, [startDate, datePickDate]);
+        setBeforeMonthSalesData(beforeMonthData);
+    }, [startDate, datePickDate, selectedPeriod]);
 
     console.log(sortedByPeriodSalesData, '< 타석매출:');
+    console.log('beforeMonthSalesData', beforeMonthSalesData);
 
     //매출 : 매출 DB created time 으로 정렬 후 월,주,일 로 출력
 
@@ -170,7 +190,7 @@ const SalesStatus = () => {
                     <Statistics
                         selectedPeriod={selectedPeriod}
                         sortedByPeriodSalesData={sortedByPeriodSalesData}
-                        selectedPeriod={selectedPeriod}
+                        beforeMonthSalesData={beforeMonthSalesData}
                     />
                 </Col>
             </Row>

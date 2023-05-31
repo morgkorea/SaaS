@@ -2,8 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
+const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesData }) => {
     const [amountProductsSales, setAmountProductsSales] = useState({
+        batterBox: 0,
+        lesson: 0,
+        locker: 0,
+        etc: 0,
+    });
+    const [amountBeforeProductsSales, setAmountBeforeProductsSales] = useState({
+        batterBox: 0,
+        lesson: 0,
+        locker: 0,
+        etc: 0,
+    });
+
+    const [amountCompareWithPreviousSales, setAmountCompoareWithPreviousSales] = useState({
         batterBox: 0,
         lesson: 0,
         locker: 0,
@@ -14,7 +27,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
     const sumTotalRefundPrice = () => {
         if (sortedByPeriodSalesData) {
             const totalRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return acc + Number(curr.refundPrice);
+                return curr.refund === true ? acc + Number(curr.refundPrice) : acc;
             }, 0);
             setAmountTotalRefundPrice(totalRefund);
         }
@@ -31,7 +44,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return [...acc, ...curr.products];
+                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.product === '타석') {
@@ -43,12 +56,56 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
                     } else {
                         productsSales.etc = productsSales.etc + Number(ele.discountPrice);
                     }
-
-                    setAmountProductsSales(productsSales);
                 });
         }
-
+        setAmountProductsSales(productsSales);
         console.log(amountProductsSales, productsSales);
+    };
+
+    const amountBeforeMonthProductsSales = () => {
+        setAmountBeforeProductsSales({
+            batterBox: 0,
+            lesson: 0,
+            locker: 0,
+            etc: 0,
+        });
+        const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
+        if (beforeMonthSalesData) {
+            [...beforeMonthSalesData]
+                .reduce((acc, curr) => {
+                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                }, [])
+                .forEach((ele, idx) => {
+                    if (ele.product === '타석') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
+                        console.log('falseflaseflaseflase');
+                    } else if (ele.product === '레슨') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
+                    } else if (ele.product === '락커') {
+                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    } else {
+                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                    }
+                });
+        }
+        setAmountBeforeProductsSales(productsSales);
+    };
+
+    const compareWithPreviousSales = () => {
+        const before = selectedPeriod === 'month' ? amountBeforeProductsSales : amountProductsSales;
+
+        const comparedPercentages = {
+            batterBox: percentCalculater(before.batterBox, amountProductsSales.batterBox),
+            lesson: percentCalculater(before.lesson, amountProductsSales.lesson),
+            locker: percentCalculater(before.locker, amountProductsSales.locker),
+            etc: percentCalculater(before.etc, amountProductsSales.etc),
+        };
+
+        function percentCalculater(before, current) {
+            return (((current - before) / before) * 100).toFixed(2);
+        }
+
+        setAmountCompoareWithPreviousSales(comparedPercentages);
     };
 
     const periodTextHandler = () => {
@@ -68,8 +125,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
         setAmountTotalRefundPrice(0);
         sumTotalRefundPrice();
         amountEachProductsSales();
-    }, [sortedByPeriodSalesData, selectedPeriod]);
+        amountBeforeMonthProductsSales();
+        compareWithPreviousSales();
+    }, [sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesData]);
+    console.log('beforeMonthSalesData', beforeMonthSalesData);
+    console.log('amountBeforeProductsSales', amountBeforeProductsSales);
+    console.log('amountCompareWithPreviousSales', amountCompareWithPreviousSales);
 
+    console.log(amountProductsSales, amountBeforeProductsSales, amountCompareWithPreviousSales);
     return (
         <>
             <Row>
@@ -97,7 +160,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
                             textClass: 'text-danger',
                             icon: 'mdi mdi-arrow-down-bold',
                             value: '1.08%',
-                            time: '전달 대비',
+                            time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
 
@@ -111,7 +174,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
                             textClass: 'text-danger',
                             icon: 'mdi mdi-arrow-down-bold',
                             value: '7.00%',
-                            time: '전달 대비',
+                            time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
 
@@ -125,7 +188,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
                             textClass: 'text-success',
                             icon: 'mdi mdi-arrow-up-bold',
                             value: '1%',
-                            time: '전달 대비',
+                            time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
                 <Col>
@@ -139,7 +202,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod }) => {
                             textClass: 'text-danger',
                             icon: 'mdi mdi-arrow-down-bold',
                             value: '1.87%',
-                            time: '전달 대비',
+                            time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
             </Row>
