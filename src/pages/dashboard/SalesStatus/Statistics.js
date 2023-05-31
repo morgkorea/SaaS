@@ -103,7 +103,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
         };
 
         function percentCalculator(before, current) {
-            return (((current - before) / before) * 100).toFixed(2);
+            const percentage = (((current - before) / before) * 100).toFixed(2);
+            return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
         }
 
         setAmountCompoareWithPreviousSales(comparedPercentages);
@@ -127,6 +128,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
         sumTotalRefundPrice();
         amountEachProductsSales();
     }, [sortedByPeriodSalesData]);
+
     useEffect(() => {
         amountBeforePeriodProductsSales();
     }, [beforePeriodSaelsData]);
@@ -148,10 +150,13 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         title="타석"
                         stats={amountProductsSales.batterBox + '원'}
                         trend={{
-                            textClass: amountCompareWithPreviousSales.batterBox > 0 ? 'text-success' : 'text-danger',
+                            textClass: amountCompareWithPreviousSales.batterBox >= 0 ? 'text-success' : 'text-danger',
+
                             icon: beforePeriodSaelsData.length
                                 ? amountCompareWithPreviousSales.batterBox > 0
                                     ? 'mdi mdi-arrow-up-bold'
+                                    : amountCompareWithPreviousSales.batterBox === 0
+                                    ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
                             value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%',
@@ -166,10 +171,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         title="레슨"
                         stats={amountProductsSales.lesson + '원'}
                         trend={{
-                            textClass: amountCompareWithPreviousSales.lesson > 0 ? 'text-success' : 'text-danger',
+                            textClass: amountCompareWithPreviousSales.lesson >= 0 ? 'text-success' : 'text-danger',
                             icon: beforePeriodSaelsData.length
                                 ? amountCompareWithPreviousSales.lesson > 0
                                     ? 'mdi mdi-arrow-up-bold'
+                                    : amountCompareWithPreviousSales.lesson === 0
+                                    ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
                             value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%',
@@ -184,10 +191,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         title="락커"
                         stats={amountProductsSales.locker + '원'}
                         trend={{
-                            textClass: amountCompareWithPreviousSales.locker > 0 ? 'text-success' : 'text-danger',
+                            textClass: amountCompareWithPreviousSales.locker >= 0 ? 'text-success' : 'text-danger',
                             icon: beforePeriodSaelsData.length
                                 ? amountCompareWithPreviousSales.locker > 0
                                     ? 'mdi mdi-arrow-up-bold'
+                                    : amountCompareWithPreviousSales.locker === 0
+                                    ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
                             value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.locker + '%' : '0%',
@@ -202,10 +211,13 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         title="기타"
                         stats={amountProductsSales.etc + '원'}
                         trend={{
-                            textClass: amountCompareWithPreviousSales.etc > 0 ? 'text-success' : 'text-danger',
+                            textClass: amountCompareWithPreviousSales.etc >= 0 ? 'text-success' : 'text-danger',
+
                             icon: beforePeriodSaelsData.length
                                 ? amountCompareWithPreviousSales.etc > 0
                                     ? 'mdi mdi-arrow-up-bold'
+                                    : amountCompareWithPreviousSales.etc === 0
+                                    ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
                             value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.etc + '%' : '0%',

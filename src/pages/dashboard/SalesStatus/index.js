@@ -99,11 +99,24 @@ const SalesStatus = () => {
         const firstDayOfWeek = new Date(date);
         firstDayOfWeek.setDate(date.getDate() - dayOfWeek);
 
+        console.log('firstDayOfWeek', firstDayOfWeek);
+
         return firstDayOfWeek.toDateString();
+        // return firstDayOfWeek.getMonth() !== datePickDate.getMonth()
+        //     ? new Date(getLastWeekOfMonth(firstDayOfWeek.getFullYear, firstDayOfWeek.getMonth())).toDateString()
+        //     : firstDayOfWeek.toDateString();
     };
+    // const getLastWeekOfMonth = (year, month) => {
+    //     const firstDayOfMonth = new Date(year, month, 1);
+    //     const firstDay = firstDayOfMonth.getDay();
+    //     const totalDays = new Date(year, month + 1, 0).getDate();
+    //     const lastWeek = Math.ceil((firstDay + totalDays) / 7);
+    //     return lastWeek;
+    // };
 
     useEffect(() => {
-        const firstDayOfWeek = new Date(getFirstDayOfWeek(datePickDate));
+        let firstDayOfWeek = new Date(getFirstDayOfWeek(datePickDate));
+
         switch (selectedPeriod) {
             case 'month':
                 return setStartDate(new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 1));
@@ -171,28 +184,6 @@ const SalesStatus = () => {
         setSortedByPeriodSalesData(sortedPeriodData);
         setBeforePeriodSalesData(beforePeriodData);
     }, [startDate, datePickDate, selectedPeriod]);
-
-    // console.log('선택 기간 기준 전 월,주,일 데이터 : ', beforePeriodSaelsData);
-    // console.log('선택 기간 기준 현 월,주,일 데이터 : ', sortedByPeriodSalesData);
-
-    // new Date(paymentDate.getFullYear(),paymentDate.getMonth(),paymentDate.getDate()) === datePickDate.getDate() - 7;
-
-    // const getWeek = (date) => {
-    //     const currentDate = date.getDate();
-    //     const firstDay = new Date(date.setDate(1)).getDay();
-
-    //     return Math.ceil((currentDate + firstDay) / 7);
-    // };
-
-    // const sevenDaysAgoDate = datePickDate.toISOString().split('T')[0];
-
-    // const week = getWeek(new Date(sevenDaysAgoDate));
-    // console.log(week + '주차');
-    // const week2 = getWeek(new Date(sevenDaysAgoDate));
-    // console.log(week2 + '주차');
-    // console.log(week2 === week);
-
-    //매출 : 매출 DB created time 으로 정렬 후 월,주,일 로 출력
 
     return (
         <>
