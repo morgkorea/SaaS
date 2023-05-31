@@ -143,9 +143,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         title="타석"
                         stats={amountProductsSales.batterBox + '원'}
                         trend={{
-                            textClass: 'text-success',
-                            icon: 'mdi mdi-arrow-up-bold',
-                            value: '5.27%',
+                            textClass: amountCompareWithPreviousSales.batterBox > 0 ? 'text-success' : 'text-danger',
+                            icon:
+                                amountCompareWithPreviousSales.batterBox > 0
+                                    ? 'mdi mdi-arrow-up-bold'
+                                    : 'mdi mdi-arrow-down-bold',
+                            value: `${amountCompareWithPreviousSales.batterBox}%`,
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -157,9 +160,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         title="레슨"
                         stats={amountProductsSales.lesson + '원'}
                         trend={{
-                            textClass: 'text-danger',
-                            icon: 'mdi mdi-arrow-down-bold',
-                            value: '1.08%',
+                            textClass: amountCompareWithPreviousSales.lesson > 0 ? 'text-success' : 'text-danger',
+                            icon:
+                                amountCompareWithPreviousSales.lesson > 0
+                                    ? 'mdi mdi-arrow-up-bold'
+                                    : 'mdi mdi-arrow-down-bold',
+                            value: `${amountCompareWithPreviousSales.lesson}%`,
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -171,9 +177,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         title="락커"
                         stats={amountProductsSales.locker + '원'}
                         trend={{
-                            textClass: 'text-danger',
-                            icon: 'mdi mdi-arrow-down-bold',
-                            value: '7.00%',
+                            textClass: amountCompareWithPreviousSales.locker > 0 ? 'text-success' : 'text-danger',
+                            icon:
+                                amountCompareWithPreviousSales.locker > 0
+                                    ? 'mdi mdi-arrow-up-bold'
+                                    : 'mdi mdi-arrow-down-bold',
+                            value: `${amountCompareWithPreviousSales.locker}%`,
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -185,9 +194,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         title="기타"
                         stats={amountProductsSales.etc + '원'}
                         trend={{
-                            textClass: 'text-success',
-                            icon: 'mdi mdi-arrow-up-bold',
-                            value: '1%',
+                            textClass: amountCompareWithPreviousSales.etc > 0 ? 'text-success' : 'text-danger',
+                            icon:
+                                amountCompareWithPreviousSales.etc > 0
+                                    ? 'mdi mdi-arrow-up-bold'
+                                    : 'mdi mdi-arrow-down-bold',
+                            value: `${amountCompareWithPreviousSales.etc}%`,
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -199,9 +211,9 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforeMonthSalesD
                         title="환불"
                         stats={amountTotalRefundPrice + '원'}
                         trend={{
-                            textClass: 'text-danger',
-                            icon: 'mdi mdi-arrow-down-bold',
-                            value: '1.87%',
+                            textClass: amountTotalRefundPrice > 0 ? 'text-success' : 'text-danger',
+                            icon: amountTotalRefundPrice > 0 ? 'mdi mdi-arrow-up-bold' : 'mdi mdi-arrow-down-bold',
+                            value: `${amountTotalRefundPrice}%`,
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
