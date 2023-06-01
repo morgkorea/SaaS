@@ -85,8 +85,8 @@ const SalesStatus = () => {
         paymentMethod: '카드', //결제수단
         recieptNumber: '002', // 결제번호
         paymentMemo: '메모', //결제메모
-        refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
-        refundDate: '2023-05-17', //환불일 2023-10-22
+        refundRequest_date: '2023-05-17', //환불요청일 2023-09-23 type:string
+        refundDate: '2023-05-17', //환불일 2023-10-22  type:string
         refund: true,
         refundPrice: '4', //환불액
         refundReason: '단순변심', //환불사유
@@ -187,7 +187,6 @@ const SalesStatus = () => {
                         checkPreviousWeek(paymentDate, datePickDate)
                     );
                 case 'day':
-                    // return paymentDate.getDate() === new Date().setDate(datePickDate.getDate() - 1);
                     return checkPreviousDate(paymentDate, datePickDate);
                 default:
             }

@@ -22,15 +22,34 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
         locker: 0,
         etc: 0,
     });
-    const [amountTotalRefundPrice, setAmountTotalRefundPrice] = useState(0);
+    const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
+    const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
+    const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
-    const sumTotalRefundPrice = () => {
+    const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
-            const totalRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+            const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return curr.refund === true ? acc + Number(curr.refundPrice) : acc;
             }, 0);
-            setAmountTotalRefundPrice(totalRefund);
+            setCurrentRefundPrice(currentRefund);
         }
+    };
+    const getPreviousPeriodRefund = () => {
+        if (beforePeriodSaelsData) {
+            const previosRefund = [...beforePeriodSaelsData].reduce((acc, curr) => {
+                return curr.refund === true ? acc + Number(curr.refundPrice) : acc;
+            }, 0);
+            setPreviousRefundPrice(previosRefund);
+        }
+    };
+    const comparedWithPreviousRefund = (previous, current) => {
+        const percentage = (((current - previous) / previous) * 100).toFixed(2);
+        if (previous === 0 && current === 0) {
+            return 0;
+        } else if (previous === 0) {
+            return 100;
+        }
+        setComparedRefundPrice(percentage % 1 === 0 ? Math.floor(percentage) : percentage);
     };
 
     const amountEachProductsSales = () => {
@@ -129,8 +148,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
     };
 
     useEffect(() => {
-        setAmountTotalRefundPrice(0);
-        sumTotalRefundPrice();
+        getPreviousPeriodRefund();
+        getCurrentPeriodRefund();
         amountEachProductsSales();
     }, [sortedByPeriodSalesData]);
 
@@ -140,11 +159,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
 
     useEffect(() => {
         compareWithPreviousSales();
-    }, [amountProductsSales, amountBeforeProductsSales]);
+        comparedWithPreviousRefund(previousRefundPrice, currentRefundPrice);
+    }, [currentRefundPrice, amountBeforeProductsSales]);
 
     console.log('날짜 기준 현 월,주,일 데이터 합계 : ', amountProductsSales);
     console.log('날짜 기준 전 월,주,일 데이터 합계 : ', amountBeforeProductsSales);
     console.log('비교 데이터 퍼센테이지: ', amountCompareWithPreviousSales);
+    console.log('현재기간 환불 액 ', currentRefundPrice);
+    console.log('전 기간 환불 액 ', previousRefundPrice);
     return (
         <>
             <Row>
@@ -236,11 +258,17 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         border="danger"
                         description="Refund"
                         title="환불"
-                        stats={amountTotalRefundPrice + '원'}
+                        stats={currentRefundPrice + '원'}
                         trend={{
-                            textClass: amountTotalRefundPrice > 0 ? 'text-success' : 'text-danger',
-                            icon: amountTotalRefundPrice > 0 ? 'mdi mdi-arrow-up-bold' : 'mdi mdi-arrow-down-bold',
-                            value: `${amountTotalRefundPrice}%`,
+                            textClass: comparedRefundPrice <= 0 ? 'text-success' : 'text-danger',
+                            icon: beforePeriodSaelsData.length
+                                ? comparedRefundPrice > 0
+                                    ? 'mdi mdi-arrow-up-bold'
+                                    : comparedRefundPrice === 0
+                                    ? ''
+                                    : 'mdi mdi-arrow-down-bold'
+                                : '',
+                            value: comparedRefundPrice + '%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
