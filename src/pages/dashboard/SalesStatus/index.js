@@ -87,7 +87,7 @@ const SalesStatus = () => {
         paymentMemo: '메모', //결제메모
         refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
         refundDate: '2023-05-17', //환불일 2023-10-22
-        refund: false,
+        refund: true,
         refundPrice: '4', //환불액
         refundReason: '단순변심', //환불사유
     };
@@ -104,21 +104,14 @@ const SalesStatus = () => {
             : new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 1);
     };
 
-    const getWeek = (date) => {
-        const currentDate = date ? date.getDate() : new Date();
-        const firstDay = new Date(date?.setDate(1)).getDay();
+    const checkPreviousWeek = (paymentDate, datePickDate) => {
+        const oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초 수
 
-        return Math.ceil((currentDate + firstDay) / 7);
-    };
+        const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
+        const previousSunday = new Date(datePickDate.getTime() - datePickDay * oneDay); // datePickDate 이전의 가장 가까운 일요일을 계산
 
-    const getLastWeekOfMonth = (paymentDate, datePickDate) => {
-        var oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초 수
-
-        var datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
-        var previousSunday = new Date(datePickDate.getTime() - datePickDay * oneDay); // datePickDate 이전의 가장 가까운 일요일을 계산
-
-        var previousWeekStart = new Date(previousSunday.getTime() - 8 * oneDay); // 전 주의 시작일을 구함
-        var previousWeekEnd = new Date(previousSunday.getTime() - oneDay); // 전 주의 마지막일을 구함
+        const previousWeekStart = new Date(previousSunday.getTime() - 8 * oneDay); // 전 주의 시작일을 구함
+        const previousWeekEnd = new Date(previousSunday.getTime() - oneDay); // 전 주의 마지막일을 구함
 
         if (paymentDate >= previousWeekStart && paymentDate <= previousWeekEnd) {
             return true;
@@ -127,15 +120,27 @@ const SalesStatus = () => {
         }
     };
 
+    const checkPreviousDate = (paymentDate, datePickDate) => {
+        var previousDay = new Date(datePickDate.getTime() - 24 * 60 * 60 * 1000); // datePickDate의 전일을 계산
+
+        if (
+            paymentDate.getDate() === previousDay.getDate() &&
+            paymentDate.getMonth() === previousDay.getMonth() &&
+            paymentDate.getFullYear() === previousDay.getFullYear()
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     useEffect(() => {
         let firstDayOfWeek = new Date(getFirstDayOfWeek(datePickDate));
-        console.log(firstDayOfWeek);
 
         switch (selectedPeriod) {
             case 'month':
                 return setStartDate(new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 1));
             case 'week':
-                // return setStartDate(subWeeks(datePickDate, 1));
                 return setStartDate(firstDayOfWeek);
             case 'day':
                 return setStartDate(subDays(datePickDate, 1));
@@ -143,7 +148,7 @@ const SalesStatus = () => {
             default:
         }
     }, [datePickDate, selectedPeriod]);
-    console.log(startDate);
+
     useEffect(() => {
         const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
             const paymentDate = new Date('2023-01-01');
@@ -153,7 +158,7 @@ const SalesStatus = () => {
                 paymentDate: paymentDate.toISOString().split('T')[0],
                 paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
                 totalPaymentPrice: index + 1,
-                // refund: true,
+                refund: index % 2 === 0 ? true : false,
             };
         }).filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
@@ -168,13 +173,10 @@ const SalesStatus = () => {
                 paymentDate: paymentDate.toISOString().split('T')[0],
                 paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
                 totalPaymentPrice: index + 1,
-                // refund: true,
+                refund: index % 2 === 0 ? true : false,
             };
         }).filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
-            const currentDate = new Date(datePickDate.toISOString().split('T')[0]);
-
-            console.log(getLastWeekOfMonth(paymentDate, datePickDate));
 
             switch (selectedPeriod) {
                 case 'month':
@@ -182,10 +184,11 @@ const SalesStatus = () => {
                 case 'week':
                     return (
                         paymentDate.getFullYear() === datePickDate.getFullYear() &&
-                        getLastWeekOfMonth(paymentDate, datePickDate)
+                        checkPreviousWeek(paymentDate, datePickDate)
                     );
                 case 'day':
-                    return paymentDate.getDate() === new Date().setDate(datePickDate.getDate() - 1);
+                    // return paymentDate.getDate() === new Date().setDate(datePickDate.getDate() - 1);
+                    return checkPreviousDate(paymentDate, datePickDate);
                 default:
             }
         });
@@ -194,7 +197,6 @@ const SalesStatus = () => {
         setBeforePeriodSalesData(beforePeriodData);
     }, [startDate, datePickDate, selectedPeriod]);
 
-    console.log(beforePeriodSaelsData);
     return (
         <>
             <Row>

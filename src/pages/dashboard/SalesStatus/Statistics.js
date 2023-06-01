@@ -104,6 +104,11 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
 
         function percentCalculator(before, current) {
             const percentage = (((current - before) / before) * 100).toFixed(2);
+            if (before === 0 && current === 0) {
+                return 0;
+            } else if (before === 0) {
+                return 100;
+            }
             return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
         }
 
@@ -199,7 +204,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.locker + '%' : '0%',
+                            value: amountCompareWithPreviousSales.locker + '%',
+
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
