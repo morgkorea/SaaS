@@ -244,16 +244,21 @@ const SalesStatus = () => {
             </Row>
 
             <Row>
-                <Col lg={4}>
-                    <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
-                </Col>
-                <Col lg={8}>
-                    <RevenueChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
+                <Col lg={12}>
+                    <RevenueChart
+                        sortedByPeriodSalesData={sortedByPeriodSalesData}
+                        selectedPeriod={selectedPeriod}
+                        beforePeriodSaelsData={beforePeriodSaelsData}
+                        datePickDate={datePickDate}
+                    />
                 </Col>
             </Row>
 
             <Row>
-                <Col lg={12}>
+                <Col lg={4}>
+                    <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
+                </Col>
+                <Col lg={8}>
                     <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
                 </Col>
             </Row>
