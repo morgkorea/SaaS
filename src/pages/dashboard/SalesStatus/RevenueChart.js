@@ -5,6 +5,10 @@ import CardTitle from '../../../components/CardTitle';
 
 const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaelsData, datePickDate }) => {
     const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([]);
+
+    const [previousPeriodTotalSales, setPreviousPeriodTotalSales] = useState(0);
+    const [currentPeriodTotalSales, setCurrentPeriodTotalSales] = useState(0);
+
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState([]);
     const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState([]);
 
@@ -15,13 +19,58 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
 
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
+    console.log(sortedByPeriodSalesData, beforePeriodSaelsData);
 
-    const getCurrentPeriodSelesData = () => {};
+    const getPreviousPeriodTotalSales = (beforePeriodSaelsData) => {
+        if (beforePeriodSaelsData) {
+            const totalSales = [...beforePeriodSaelsData]
+                .reduce((acc, curr) => {
+                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                }, [])
+                .reduce((acc, curr) => {
+                    return acc + curr.discountPrice;
+                }, 0);
+            setPreviousPeriodTotalSales(totalSales);
+        }
+    };
+
+    const getCurrentPeriodTotalSales = (sortedByPeriodSalesData) => {
+        if (sortedByPeriodSalesData) {
+            const totalSales = [...sortedByPeriodSalesData]
+                .reduce((acc, curr) => {
+                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                }, [])
+                .reduce((acc, curr) => {
+                    return acc + curr.discountPrice;
+                }, 0);
+            setCurrentPeriodTotalSales(totalSales);
+        }
+    };
+
+    const getCurrentPeriodSelesData = (sortedByPeriodSalesData) => {
+        // if (sortedByPeriodSalesData) {
+        //     const salesData = [...sortedByPeriodSalesData]
+        //         .reduce((acc, curr) => {
+        //             return !curr.refund ? [...acc, ...curr.products] : [...acc];
+        //         }, [])
+        //         .reduce((acc, curr) => {
+        //             return acc + curr.discountPrice;
+        //         }, 0);
+        //     setCurrentPeriodSalesData(salesData);
+        // }
+    };
+
     const getPreviousPeriodSalesData = () => {};
 
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
     }, [datePickDate]);
+    useEffect(() => {
+        getPreviousPeriodTotalSales(beforePeriodSaelsData);
+    }, [beforePeriodSaelsData]);
+    useEffect(() => {
+        getCurrentPeriodTotalSales(sortedByPeriodSalesData);
+    }, [sortedByPeriodSalesData]);
 
     const apexLineChartWithLables = {
         chart: {
@@ -69,11 +118,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
     const apexLineChartWithLablesData = [
         {
             name: '이번 달',
-            data: [...currentPeriodOfDate],
+            data: [],
         },
         {
             name: '지난 달',
-            data: [...currentPeriodOfDate],
+            data: [],
         },
     ];
 
@@ -88,7 +137,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
                             <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'week' ? '주' : '달'}</p>
                             <h2 className="fw-normal mb-3">
                                 <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                <span>원</span>
+                                <span>{currentPeriodTotalSales}원</span>
                             </h2>
                         </Col>
 
@@ -96,7 +145,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
                             <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'week' ? '주' : '달'}</p>
                             <h2 className="fw-normal mb-3">
                                 <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                <span>원</span>
+                                <span>{previousPeriodTotalSales}원</span>
                             </h2>
                         </Col>
                     </Row>
@@ -107,7 +156,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
                     series={apexLineChartWithLablesData}
                     type="line"
                     className="apex-charts mt-3"
-                    height={330}
+                    height={300}
                 />
             </Card.Body>
         </Card>
