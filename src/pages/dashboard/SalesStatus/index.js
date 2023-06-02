@@ -80,7 +80,7 @@ const SalesStatus = () => {
                 endDate: '2022-06-16', // 종료일
             },
         ],
-        totalPaymentPrice: '', //결제총액
+        totalPaymentPrice: 4, //결제총액 type number
         outstandingPrice: '', //미결제금액
         paymentMethod: '카드', //결제수단
         recieptNumber: '002', // 결제번호
@@ -157,7 +157,7 @@ const SalesStatus = () => {
                 ...firestoreSalesFieldSchema,
                 paymentDate: paymentDate.toISOString().split('T')[0],
                 paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-                totalPaymentPrice: index + 1,
+                // totalPaymentPrice: index + 1,
                 refund: index % 2 === 0 ? true : false,
             };
         }).filter((ele) => {
@@ -172,7 +172,7 @@ const SalesStatus = () => {
                 ...firestoreSalesFieldSchema,
                 paymentDate: paymentDate.toISOString().split('T')[0],
                 paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-                totalPaymentPrice: index + 1,
+                // totalPaymentPrice: index + 1,
                 refund: index % 2 === 0 ? true : false,
             };
         }).filter((ele) => {

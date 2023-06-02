@@ -19,7 +19,6 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
 
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
-    console.log(sortedByPeriodSalesData, beforePeriodSaelsData);
 
     const getPreviousPeriodTotalSales = (beforePeriodSaelsData) => {
         if (beforePeriodSaelsData) {
@@ -33,7 +32,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
             setPreviousPeriodTotalSales(totalSales);
         }
     };
-
+    console.log(currentPeriodOfDate.length);
     const getCurrentPeriodTotalSales = (sortedByPeriodSalesData) => {
         if (sortedByPeriodSalesData) {
             const totalSales = [...sortedByPeriodSalesData]
@@ -47,29 +46,60 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
         }
     };
 
-    const getCurrentPeriodSelesData = (sortedByPeriodSalesData) => {
-        // if (sortedByPeriodSalesData) {
-        //     const salesData = [...sortedByPeriodSalesData]
-        //         .reduce((acc, curr) => {
-        //             return !curr.refund ? [...acc, ...curr.products] : [...acc];
-        //         }, [])
-        //         .reduce((acc, curr) => {
-        //             return acc + curr.discountPrice;
-        //         }, 0);
-        //     setCurrentPeriodSalesData(salesData);
-        // }
+    const getCurrentPeriodSalesData = (sortedByPeriodSalesData, datePickDate) => {
+        const currentDate = datePickDate?.getDate();
+        // const lastDate = new Date(year, month, 0).getDate();
+        const currentPeriodSalesArray = [];
+        if (sortedByPeriodSalesData) {
+            const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? [...acc, curr] : [...acc];
+            }, []);
+            for (let date = 1; date <= currentDate; date++) {
+                let totalSalesByDate = 0;
+                salesData.forEach((ele) => {
+                    if (new Date(ele.paymentDate).getDate() === date) {
+                        totalSalesByDate += ele.totalPaymentPrice;
+                    }
+                });
+
+                currentPeriodSalesArray.push(totalSalesByDate);
+            }
+            console.log(currentPeriodSalesArray, salesData);
+        }
+
+        setCurrentPeriodSalesData(currentPeriodSalesArray);
     };
 
-    const getPreviousPeriodSalesData = () => {};
+    console.log(sortedByPeriodSalesData, datePickDate);
+
+    const getPreviousPeriodSalesData = (beforePeriodSaelsData) => {
+        const previousMonthLastDate = new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 0).getDate();
+
+        const previousPeriodSalesData = [];
+        if (beforePeriodSaelsData) {
+            const salesData = [...beforePeriodSaelsData].reduce((acc, curr) => {
+                return !curr.refund ? [...acc, curr] : [...acc];
+            }, []);
+            for (let date = 1; date <= previousMonthLastDate; date++) {
+                let totalSalesByDate = 0;
+                salesData.forEach((ele) => {
+                    if (new Date(ele.paymentDate).getDate === date) {
+                    }
+                });
+            }
+        }
+    };
 
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
+        getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
     }, [datePickDate]);
     useEffect(() => {
         getPreviousPeriodTotalSales(beforePeriodSaelsData);
     }, [beforePeriodSaelsData]);
     useEffect(() => {
         getCurrentPeriodTotalSales(sortedByPeriodSalesData);
+        getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
     }, [sortedByPeriodSalesData]);
 
     const apexLineChartWithLables = {
@@ -118,7 +148,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
     const apexLineChartWithLablesData = [
         {
             name: '이번 달',
-            data: [],
+            data: currentPeriodSalesData,
         },
         {
             name: '지난 달',
