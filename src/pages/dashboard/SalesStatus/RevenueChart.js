@@ -36,11 +36,23 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
                 }, [])
             );
 
-            return [new Date(minDate), new Date(maxDate)];
+            const [startDate, endDate] = [new Date(minDate), new Date(maxDate)];
+
+            const dates = [];
+
+            const currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                dates.push(new Date(currentDate));
+
+                console.log(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            return dates;
         }
     };
 
-    console.log(getWeeksOfMinMaxDate(sortedByPeriodSalesData, beforePeriodSaelsData, selectedPeriod));
+    getWeeksOfMinMaxDate(sortedByPeriodSalesData, beforePeriodSaelsData, selectedPeriod);
 
     const getPreviousPeriodTotalSales = (beforePeriodSaelsData) => {
         if (beforePeriodSaelsData) {
