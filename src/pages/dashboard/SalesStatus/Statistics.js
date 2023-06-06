@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaelsData, startDate }) => {
+const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, startDate }) => {
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -35,8 +35,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
         }
     };
     const getPreviousPeriodRefund = () => {
-        if (beforePeriodSaelsData) {
-            const previosRefund = [...beforePeriodSaelsData].reduce((acc, curr) => {
+        if (beforePeriodSalesData) {
+            const previosRefund = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return curr.refund === true ? acc + Number(curr.refundPrice) : acc;
             }, 0);
             setPreviousRefundPrice(previosRefund);
@@ -90,8 +90,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
             etc: 0,
         });
         let productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
-        if (beforePeriodSaelsData) {
-            [...beforePeriodSaelsData]
+        if (beforePeriodSalesData) {
+            [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
                     return !curr.refund ? [...acc, ...curr.products] : [...acc];
                 }, [])
@@ -155,7 +155,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
 
     useEffect(() => {
         amountBeforePeriodProductsSales();
-    }, [beforePeriodSaelsData]);
+    }, [beforePeriodSalesData]);
 
     useEffect(() => {
         compareWithPreviousSales();
@@ -179,14 +179,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         trend={{
                             textClass: amountCompareWithPreviousSales.batterBox >= 0 ? 'text-success' : 'text-danger',
 
-                            icon: beforePeriodSaelsData.length
+                            icon: beforePeriodSalesData.length
                                 ? amountCompareWithPreviousSales.batterBox > 0
                                     ? 'mdi mdi-arrow-up-bold'
                                     : amountCompareWithPreviousSales.batterBox === 0
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%',
+                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -199,14 +199,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         stats={amountProductsSales.lesson + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.lesson >= 0 ? 'text-success' : 'text-danger',
-                            icon: beforePeriodSaelsData.length
+                            icon: beforePeriodSalesData.length
                                 ? amountCompareWithPreviousSales.lesson > 0
                                     ? 'mdi mdi-arrow-up-bold'
                                     : amountCompareWithPreviousSales.lesson === 0
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%',
+                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -219,7 +219,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         stats={amountProductsSales.locker + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.locker >= 0 ? 'text-success' : 'text-danger',
-                            icon: beforePeriodSaelsData.length
+                            icon: beforePeriodSalesData.length
                                 ? amountCompareWithPreviousSales.locker > 0
                                     ? 'mdi mdi-arrow-up-bold'
                                     : amountCompareWithPreviousSales.locker === 0
@@ -241,14 +241,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         trend={{
                             textClass: amountCompareWithPreviousSales.etc >= 0 ? 'text-success' : 'text-danger',
 
-                            icon: beforePeriodSaelsData.length
+                            icon: beforePeriodSalesData.length
                                 ? amountCompareWithPreviousSales.etc > 0
                                     ? 'mdi mdi-arrow-up-bold'
                                     : amountCompareWithPreviousSales.etc === 0
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSaelsData.length ? amountCompareWithPreviousSales.etc + '%' : '0%',
+                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -261,7 +261,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaels
                         stats={currentRefundPrice + '원'}
                         trend={{
                             textClass: comparedRefundPrice <= 0 ? 'text-success' : 'text-danger',
-                            icon: beforePeriodSaelsData.length
+                            icon: beforePeriodSalesData.length
                                 ? comparedRefundPrice > 0
                                     ? 'mdi mdi-arrow-up-bold'
                                     : comparedRefundPrice === 0
