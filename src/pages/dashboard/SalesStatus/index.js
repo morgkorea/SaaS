@@ -22,7 +22,7 @@ const SalesStatus = () => {
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
     // 전월 매출데이터
-    const [beforePeriodSaelsData, setBeforePeriodSalesData] = useState(false);
+    const [beforePeriodSalesData, setBeforePeriodSalesData] = useState(false);
 
     const onDateChange = (date) => {
         if (date) {
@@ -237,7 +237,7 @@ const SalesStatus = () => {
                     <Statistics
                         selectedPeriod={selectedPeriod}
                         sortedByPeriodSalesData={sortedByPeriodSalesData}
-                        beforePeriodSaelsData={beforePeriodSaelsData}
+                        beforePeriodSalesData={beforePeriodSalesData}
                         datePickDate={datePickDate}
                     />
                 </Col>
@@ -248,7 +248,7 @@ const SalesStatus = () => {
                     <RevenueChart
                         sortedByPeriodSalesData={sortedByPeriodSalesData}
                         selectedPeriod={selectedPeriod}
-                        beforePeriodSaelsData={beforePeriodSaelsData}
+                        beforePeriodSalesData={beforePeriodSalesData}
                         datePickDate={datePickDate}
                     />
                 </Col>

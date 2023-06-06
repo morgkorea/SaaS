@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts';
 import { Card, Row, Col } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
-const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSaelsData, datePickDate }) => {
+const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, datePickDate }) => {
     const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([]);
 
     const [previousPeriodTotalSales, setPreviousPeriodTotalSales] = useState(0);
@@ -22,10 +22,10 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
 
-    const getWeeksOfMinMaxDate = (sortedByPeriodSalesData, beforePeriodSaelsData, selectedPeriod) => {
+    const getWeeksOfMinMaxDate = (sortedByPeriodSalesData, beforePeriodSalesData, selectedPeriod) => {
         if (selectedPeriod === 'week') {
             const minDate = Math.min(
-                ...[...beforePeriodSaelsData].reduce((acc, curr) => {
+                ...[...beforePeriodSalesData].reduce((acc, curr) => {
                     return [...acc, new Date(curr.paymentDate)];
                 }, [])
             );
@@ -52,11 +52,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
         }
     };
 
-    getWeeksOfMinMaxDate(sortedByPeriodSalesData, beforePeriodSaelsData, selectedPeriod);
+    getWeeksOfMinMaxDate(sortedByPeriodSalesData, beforePeriodSalesData, selectedPeriod);
 
-    const getPreviousPeriodTotalSales = (beforePeriodSaelsData) => {
-        if (beforePeriodSaelsData) {
-            const totalSales = [...beforePeriodSaelsData]
+    const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
+        if (beforePeriodSalesData) {
+            const totalSales = [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
                     return !curr.refund ? [...acc, ...curr.products] : [...acc];
                 }, [])
@@ -106,12 +106,12 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
 
     console.log(sortedByPeriodSalesData, datePickDate);
 
-    const getPreviousPeriodSalesData = (beforePeriodSaelsData, datePickDate) => {
+    const getPreviousPeriodSalesData = (beforePeriodSalesData, datePickDate) => {
         const previousMonthLastDate = new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 0).getDate();
         console.log(previousMonthLastDate);
         const previousSalesData = [];
-        if (beforePeriodSaelsData) {
-            const salesData = [...beforePeriodSaelsData].reduce((acc, curr) => {
+        if (beforePeriodSalesData) {
+            const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
             console.log(salesData);
@@ -134,12 +134,12 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
-        getPreviousPeriodSalesData(beforePeriodSaelsData, datePickDate);
+        getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
     }, [datePickDate]);
     useEffect(() => {
-        getPreviousPeriodTotalSales(beforePeriodSaelsData);
-        getPreviousPeriodSalesData(beforePeriodSaelsData, datePickDate);
-    }, [beforePeriodSaelsData]);
+        getPreviousPeriodTotalSales(beforePeriodSalesData);
+        getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
+    }, [beforePeriodSalesData]);
     useEffect(() => {
         getCurrentPeriodTotalSales(sortedByPeriodSalesData);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
