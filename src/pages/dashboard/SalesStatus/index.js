@@ -94,26 +94,31 @@ const SalesStatus = () => {
 
     //=============================================================
 
-    const getFirstDayOfWeek = (date) => {
-        const dayOfWeek = date.getDay();
-        const firstDayOfWeek = new Date(date);
-        firstDayOfWeek.setDate(date.getDate() - dayOfWeek);
+    const getFirstDayOfWeek = (datePickDate) => {
+        const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
+        const currentWeekSunday = new Date(
+            datePickDate.getFullYear(),
+            datePickDate.getMonth(),
+            datePickDate.getDate() - datePickDay
+        );
 
-        return firstDayOfWeek.getMonth() === datePickDate.getMonth()
-            ? firstDayOfWeek.toDateString()
-            : new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 1);
+        return currentWeekSunday;
     };
 
     const checkPreviousWeek = (paymentDate, datePickDate) => {
-        const oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초 수
-
         const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
-        const previousSunday = new Date(datePickDate.getTime() - datePickDay * oneDay); // datePickDate 이전의 가장 가까운 일요일을 계산
+        const currentWeekSunday = new Date(
+            datePickDate.getFullYear(),
+            datePickDate.getMonth(),
+            datePickDate.getDate() - datePickDay
+        );
+        const previousSunday = new Date(
+            currentWeekSunday.getFullYear(),
+            currentWeekSunday.getMonth(),
+            currentWeekSunday.getDate() - 7
+        ); // datePickDate 이전의 가장 가까운 일요일을 계산
 
-        const previousWeekStart = new Date(previousSunday.getTime() - 8 * oneDay); // 전 주의 시작일을 구함
-        const previousWeekEnd = new Date(previousSunday.getTime() - oneDay); // 전 주의 마지막일을 구함
-
-        if (paymentDate >= previousWeekStart && paymentDate <= previousWeekEnd) {
+        if (paymentDate >= previousSunday && paymentDate <= currentWeekSunday) {
             return true;
         } else {
             return false;
@@ -195,6 +200,8 @@ const SalesStatus = () => {
         setSortedByPeriodSalesData(sortedPeriodData);
         setBeforePeriodSalesData(beforePeriodData);
     }, [startDate, datePickDate, selectedPeriod]);
+
+    console.log(beforePeriodSalesData);
 
     return (
         <>

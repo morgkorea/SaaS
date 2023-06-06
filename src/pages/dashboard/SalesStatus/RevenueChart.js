@@ -22,38 +22,25 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
 
-    const getWeeksOfMinMaxDate = (sortedByPeriodSalesData, beforePeriodSalesData, selectedPeriod) => {
-        if (selectedPeriod === 'week') {
-            const minDate = Math.min(
-                ...[...beforePeriodSalesData].reduce((acc, curr) => {
-                    return [...acc, new Date(curr.paymentDate)];
-                }, [])
-            );
+    // const getWeeksOfMinMaxDate = (datePickDate, selectedPeriod) => {
+    //     if (selectedPeriod === 'week') {
+    //         const oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초 수
 
-            const maxDate = Math.max(
-                ...[...sortedByPeriodSalesData].reduce((acc, curr) => {
-                    return [...acc, new Date(curr.paymentDate)];
-                }, [])
-            );
+    //         const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
+    //         const previousSunday = new Date(datePickDate.getTime() - datePickDay * oneDay); // datePickDate 이전의 가장 가까운 일요일을 계산
 
-            const [startDate, endDate] = [new Date(minDate), new Date(maxDate)];
+    //         const previousWeekStart = new Date(previousSunday.getTime() - 8 * oneDay); // 전 주의 시작일을 구함
 
-            const dates = [];
+    //         console.log('previousWeekStart', previousWeekStart);
+    //     }
+    // };
 
-            const currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
-                dates.push(new Date(currentDate));
+    // console.log(getWeeksOfMinMaxDate(datePickDate, selectedPeriod));
 
-                console.log(new Date(currentDate));
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-
-            return dates;
-        }
-    };
-
-    getWeeksOfMinMaxDate(sortedByPeriodSalesData, beforePeriodSalesData, selectedPeriod);
-
+    console.log('currentPeriodSalesData', currentPeriodSalesData);
+    console.log('previousPeriodSalesData', previousPeriodSalesData);
+    console.log('sortedByPeriodSalesData', sortedByPeriodSalesData);
+    console.log('beforePeriodSalesData', beforePeriodSalesData);
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
         if (beforePeriodSalesData) {
             const totalSales = [...beforePeriodSalesData]
@@ -66,7 +53,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
             setPreviousPeriodTotalSales(totalSales);
         }
     };
-    console.log(currentPeriodOfDate.length);
+
     const getCurrentPeriodTotalSales = (sortedByPeriodSalesData) => {
         if (sortedByPeriodSalesData) {
             const totalSales = [...sortedByPeriodSalesData]
@@ -84,10 +71,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         const currentDate = datePickDate?.getDate();
         // const lastDate = new Date(year, month, 0).getDate();
         const currentPeriodSalesArray = [];
-        if (sortedByPeriodSalesData) {
+        if (sortedByPeriodSalesData && selectedPeriod === 'month') {
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
+
             for (let date = 1; date <= currentDate; date++) {
                 let totalSalesByDate = 0;
                 salesData.forEach((ele) => {
@@ -98,38 +86,63 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
                 currentPeriodSalesArray.push(totalSalesByDate);
             }
-            console.log(currentPeriodSalesArray, salesData);
+            setCurrentPeriodSalesData(currentPeriodSalesArray);
+        } else if (sortedByPeriodSalesData && selectedPeriod === 'week') {
+            const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? [...acc, curr] : [...acc];
+            }, []);
+
+            for (let day = 0; day < 7; day++) {
+                let totalSalesByDay = 0;
+
+                salesData.forEach((ele) => {
+                    if (new Date(ele.paymentDate).getDay() === day) {
+                        totalSalesByDay += ele.totalPaymentPrice;
+                    }
+                });
+
+                currentPeriodSalesArray.push(totalSalesByDay);
+            }
+            const setDateArrayLength = currentPeriodSalesArray.slice(0, sortedByPeriodSalesData.length);
+            setCurrentPeriodSalesData(setDateArrayLength);
         }
-
-        setCurrentPeriodSalesData(currentPeriodSalesArray);
     };
-
-    console.log(sortedByPeriodSalesData, datePickDate);
 
     const getPreviousPeriodSalesData = (beforePeriodSalesData, datePickDate) => {
         const previousMonthLastDate = new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 0).getDate();
-        console.log(previousMonthLastDate);
+
         const previousSalesData = [];
-        if (beforePeriodSalesData) {
+        if (beforePeriodSalesData && selectedPeriod === 'month') {
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
-            console.log(salesData);
+
             for (let date = 1; date <= previousMonthLastDate; date++) {
                 let totalSalesByDate = 0;
                 salesData.forEach((ele) => {
                     if (new Date(ele.paymentDate).getDate() === date) {
-                        console.log('ok');
                         totalSalesByDate += ele.totalPaymentPrice;
                     }
                 });
                 previousSalesData.push(totalSalesByDate);
             }
+        } else if (beforePeriodSalesData && selectedPeriod === 'week') {
+            const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? [...acc, curr] : [...acc];
+            }, []);
+
+            for (let day = 0; day < 7; day++) {
+                let totalSalesByDay = 0;
+                salesData.forEach((ele) => {
+                    if (new Date(ele.paymentDate).getDay() === day) {
+                        totalSalesByDay += ele.totalPaymentPrice;
+                    }
+                });
+                previousSalesData.push(totalSalesByDay);
+            }
         }
         setPreviousPeriodSalesData(previousSalesData);
     };
-
-    console.log(previousPeriodSalesData, 'previousPeriodSalesData');
 
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
@@ -181,7 +194,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         colors: ['#727cf5', '#0acf97', '#fa5c7c', '#ffbc00'],
         xaxis: {
             type: 'string',
-            categories: selectedPeriod === 'month?' ? [] : [],
+            categories: selectedPeriod === 'week' ? ['일', '월', '화', '수', '목', '금', '토'] : [],
 
             axisBorder: {
                 show: false,
@@ -197,7 +210,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
     const apexLineChartWithLablesData = [
         { name: selectedPeriod === 'month' ? '이번 달' : '이번 주', data: currentPeriodSalesData },
-        { name: selectedPeriod === 'month' ? '이번 달' : '이번 주', data: previousPeriodSalesData },
+        { name: selectedPeriod === 'month' ? '지난 달' : '지난 주', data: previousPeriodSalesData },
     ];
 
     return (
