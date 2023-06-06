@@ -196,12 +196,8 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
     };
 
     const apexLineChartWithLablesData = [
-        {
-            data: currentPeriodSalesData,
-        },
-        {
-            data: previousPeriodSalesData,
-        },
+        { name: selectedPeriod === 'month' ? '이번 달' : '이번 주', data: currentPeriodSalesData },
+        { name: selectedPeriod === 'month' ? '이번 달' : '이번 주', data: previousPeriodSalesData },
     ];
 
     return (
@@ -212,7 +208,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
                 <div className="chart-content-bg">
                     <Row className="text-center">
                         <Col md={6}>
-                            <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'week' ? '주' : '달'}</p>
+                            <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'month' ? '달' : '주'}</p>
                             <h2 className="fw-normal mb-3">
                                 <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
                                 <span>{currentPeriodTotalSales}원</span>
@@ -220,7 +216,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSae
                         </Col>
 
                         <Col md={6}>
-                            <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'week' ? '주' : '달'}</p>
+                            <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'month' ? '달' : '주'}</p>
                             <h2 className="fw-normal mb-3">
                                 <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
                                 <span>{previousPeriodTotalSales}원</span>
