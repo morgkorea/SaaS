@@ -10,7 +10,7 @@ export const firestoreDbSchema = ({ username, email }) => {
         photoUrl: 'img.jpn',
         ownerPhone: '010-7178-1117', //ex) '010-xxxx-xxxx' || null,
         //회원DB
-        members: [...firestoreMemebersFieldSchema],
+        members: [{ ...firestoreMemebersFieldSchema }],
 
         //매출DB
         sales: {
@@ -36,61 +36,57 @@ export const firestoreDbSchema = ({ username, email }) => {
     return firestoreSchema;
 };
 
-export const firestoreMemebersFieldSchema = [
-    //회원DB
+export const firestoreMemebersFieldSchema = {
+    typeFormToken: '',
+    memberNumber: '', //회원번호
+    createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
+    createdTime: new Date().toISOString().split('T')[1].split('.')[0], //time 생성시간 04:10:42
+    name: '', //이름
+    phone: '', //전화번호
+    sex: '', //성별
+    birthDate: '', //date 생일
+    ageGroup: '', //연령대
+    location: '', //위치
+    golfPeriod: '', //골프경력
+    golfPurpose: '', //골프목적
+    hoursUse: '', //이용시간
+    injuries: '', //부상전적
+    injuriedPart: '', //부상부위
+    marketingRecieveAllow: false, //마케팅수신동의
+    privateInfoAllow: false, //개인정보수집동의
+    amountPayments: '', //누적결제수
+    lifetimeValue: '', //LTV - 누적결제금액
+    amountPaymentAverage: '', //평균결제금액
+    audience: '', //오디언스
+    activation: false, //활성여부 false || true
 
-    {
-        typeFormToken: '',
-        memberNumber: '', //회원번호
-        createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
-        createdTime: new Date().toISOString().split('T')[1].split('.')[0], //time 생성시간 04:10:42
-        name: '', //이름
-        phone: '', //전화번호
-        sex: '', //성별
-        birthDate: '', //date 생일
-        ageGroup: '', //연령대
-        location: '', //위치
-        golfPeriod: '', //골프경력
-        golfPurpose: '', //골프목적
-        hoursUse: '', //이용시간
-        injuries: '', //부상전적
-        injuriedPart: '', //부상부위
-        marketingRecieveAllow: false, //마케팅수신동의
-        privateInfoAllow: false, //개인정보수집동의
-        amountPayments: '', //누적결제수
-        lifetimeValue: '', //LTV - 누적결제금액
-        amountPaymentAverage: '', //평균결제금액
-        audience: '', //오디언스
-        activation: false, //활성여부 false || true
+    //이용가능상품
+    availableProducts: [
+        {
+            activateProduct: '레슨', //활성상품
+            startDate: '2023-05-24', //시작일
+            endDate: '2023-05-30', //종료일
+            dDays: '6', //남은일수 endDate - startDate
+        },
+        {
+            activateProduct: '락커', //활성상품
+            startDate: '2023-02-19', //시작일
+            endDate: '2023-07-19', //종료일
+            dDays: '120', //남은일수
+        },
+    ],
 
-        //이용가능상품
-        availableProducts: [
-            {
-                activateProduct: '레슨', //활성상품
-                startDate: '2023-05-24', //시작일
-                endDate: '2023-05-30', //종료일
-                dDays: '6', //남은일수 endDate - startDate
-            },
-            {
-                activateProduct: '락커', //활성상품
-                startDate: '2023-02-19', //시작일
-                endDate: '2023-07-19', //종료일
-                dDays: '120', //남은일수
-            },
-        ],
-
-        //이용불가상품
-        unavailableProducts: [
-            {
-                inactiveProduct: '락커', //종료상품
-                startDate: '2023-02-19', //시작일
-                endDate: '2023-02-19', //종료일
-                dDays: 0, //남은일수
-                refund: false,
-            },
-        ],
-    },
-];
+    //이용불가상품
+    unavailableProducts: [
+        {
+            inactiveProduct: '락커', //종료상품
+            startDate: '2023-02-19', //시작일
+            endDate: '2023-02-19', //종료일
+            dDays: 0, //남은일수
+            refund: false,
+        },
+    ],
+};
 
 export const firestoreSalesFieldSchema = [
     {

@@ -27,7 +27,7 @@
         "draft-js": "^0.11.7",
         "draftjs-to-html": "^0.9.1",
         "easymde": "^2.16.1",
-        "firebase": "^9.20.0",
+        "firebase": "^9.22.1",
         "firebase-admin": "^11.8.0",
         "frappe-gantt": "^0.6.0",
         "google-maps-react": "^2.0.6",

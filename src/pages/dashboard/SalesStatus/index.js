@@ -33,7 +33,7 @@ const SalesStatus = () => {
 
     const [currentMembers, setCurrentMembers] = useState([]);
     const email = useSelector((state) => {
-        return state.Auth?.user.email;
+        return state.Auth?.user?.email;
     });
 
     const getFirestoreSalesData = async () => {
