@@ -202,6 +202,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         },
         yaxis: {
             max: Math.max(...previousPeriodSalesData) + Math.max(...previousPeriodSalesData) * 0.1,
+            labels: {
+                formatter: function (value) {
+                    return (value / 10000).toFixed() + '만원';
+                },
+            },
         },
         tooltip: {
             enabled: true,

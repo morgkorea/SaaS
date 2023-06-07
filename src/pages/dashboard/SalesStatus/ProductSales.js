@@ -32,23 +32,24 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
 
     // 상품 종류 관련 필드 추가 필요
 
-    const productSalesMerger = () => {
+    const getProductSales = () => {
         let mergedSalesData = [];
         if (sortedByPeriodSalesData) {
-            [...sortedByPeriodSalesData].forEach((sale) => {
-                mergedSalesData = mergedSalesData.concat(sale.products);
-            });
+            mergedSalesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? [...acc, ...curr.products] : [...acc];
+            }, []);
         }
+
+        console.log(mergedSalesData);
 
         let productsInfo = {};
         mergedSalesData.forEach((sale) => {
             if (!productsInfo.hasOwnProperty(sale.product)) {
                 productsInfo[`${sale.product}`] = {
                     title: sale.product,
-                    type: sale.product,
+                    type: sale.productType,
                     total: Number(sale.discountPrice),
                     number: 1,
-                    refund: sale.refund ? sale.discountPrice : 0,
                 };
             } else {
                 productsInfo[`${sale.product}`] = {
@@ -56,11 +57,8 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                     total: Number(productsInfo[`${sale.product}`].total) + Number(sale.discountPrice),
                     number: productsInfo[`${sale.product}`].number + 1,
                 };
-                if (sale.refund) {
-                    productsInfo[`${sale.product}`].refund =
-                        Number(productsInfo[`${sale.product}`].refund) + Number(sale.discountPrice);
-                }
             }
+            console.log(productsInfo);
         });
 
         const productsSalesArray = [];
@@ -71,7 +69,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
         console.log(productsInfo);
     };
     useEffect(() => {
-        productSalesMerger();
+        getProductSales();
     }, [sortedByPeriodSalesData]);
 
     return (
@@ -122,7 +120,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                     <th>종류</th>
                                     <th>수량</th>
                                     <th>총계</th>
-                                    <th>환불</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -155,7 +152,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                                 </Row>
                                             </td>
                                             <td className="table-border">{data.total.toLocaleString()}원</td>
-                                            <td>{data.refund.toLocaleString()}원</td>
                                         </tr>
                                     );
                                 })}

@@ -49,45 +49,50 @@ const SalesStatus = () => {
         products: [
             {
                 product: '장갑', //상품
+                productType: '기타',
                 regularPrice: '12', //상품 정상가
                 discountRate: '10%', // 할인율
-                discountPrice: 1, //할인가
+                discountPrice: 10000, //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
             },
             {
                 product: '레슨', //상품
+                productType: '레슨',
                 regularPrice: '23', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: 1, //할인가
+                discountPrice: 200000, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
             {
                 product: '타석', //상품
+                productType: '타석',
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: 1, //할인가
+                discountPrice: 300000, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
             {
                 product: '락커', //상품
+                productType: '락커',
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
-                discountPrice: 1, //할인가
+                discountPrice: 100000, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
         ],
-        totalPaymentPrice: 4, //결제총액 type number
+        totalPaymentPrice: 610000, //결제총액 type number
         outstandingPrice: '', //미결제금액
         paymentMethod: '카드', //결제수단
         recieptNumber: '002', // 결제번호
         paymentMemo: '메모', //결제메모
+        refund: false,
         refundRequest_date: '2023-05-17', //환불요청일 2023-09-23 type:string
         refundDate: '2023-05-17', //환불일 2023-10-22  type:string
-        refund: true,
+
         refundPrice: '4', //환불액
         refundReason: '단순변심', //환불사유
     };

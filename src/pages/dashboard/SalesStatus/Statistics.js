@@ -29,7 +29,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr.refund === true ? acc + Number(curr.refundPrice) : acc;
+                return curr.refund === true ? acc + Number(curr.totalPaymentPrice) : acc;
             }, 0);
             setCurrentRefundPrice(currentRefund);
         }
@@ -37,7 +37,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const getPreviousPeriodRefund = () => {
         if (beforePeriodSalesData) {
             const previosRefund = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr.refund === true ? acc + Number(curr.refundPrice) : acc;
+                return curr.refund === true ? acc + Number(curr.totalPaymentPrice) : acc;
             }, 0);
             setPreviousRefundPrice(previosRefund);
         }

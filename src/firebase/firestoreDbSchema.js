@@ -104,21 +104,21 @@ export const firestoreSalesFieldSchema = [
         products: [
             {
                 product: '장갑', //상품
+                productType: '기타',
                 regularPrice: '10000', //상품 정상가
                 discountRate: '10%', // 할인율
                 discountPrice: '9000', //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
-                refund: false,
             },
             {
                 product: '레슨', //상품
+                productType: '레슨',
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: '80000', //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
-                refund: false,
             },
         ],
         totalPaymentPrice: '', //결제총액
@@ -126,6 +126,7 @@ export const firestoreSalesFieldSchema = [
         paymentMethod: '카드', //결제수단
         recieptNumber: '002', // 결제번호
         paymentMemo: '메모', //결제메모
+        refund: false,
         refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
         refundDate: '2023-05-17', //환불일 2023-10-22
         refundPrice: '89000', //환불액
