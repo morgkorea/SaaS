@@ -23,7 +23,7 @@ import { AuthActionTypes } from './constants';
 import { authApiResponseSuccess, authApiResponseError } from './actions';
 
 import { firestoreDB } from '../../firebase/firebase';
-import { firestoreDbSchema } from '../../firebase/firestoreDbSchema';
+import { firestoreDbSchema, firestoreMemebersFieldSchema } from '../../firebase/firestoreDbSchema';
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { doc, setDoc, collection } from 'firebase/firestore';
@@ -119,7 +119,7 @@ function* signup({ payload: { username, email, password } }) {
 
         // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
         const docRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
-        yield setDoc(docRef, {});
+        yield setDoc(docRef, { ...firestoreMemebersFieldSchema });
 
         //firestore users : { memebers: []} synchronized with realtime db
         yield call(firestoreMembersDataSyncWithRealtime, email);

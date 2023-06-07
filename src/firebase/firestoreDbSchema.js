@@ -42,8 +42,8 @@ export const firestoreMemebersFieldSchema = [
     {
         typeFormToken: '',
         memberNumber: '', //회원번호
-        createdDate: '', //date 생성날짜 2023-04-23
-        createdTime: '', //time 생성시간 04:10:42
+        createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
+        createdTime: new Date().toISOString().split('T')[1].split('.')[0], //time 생성시간 04:10:42
         name: '', //이름
         phone: '', //전화번호
         sex: '', //성별
