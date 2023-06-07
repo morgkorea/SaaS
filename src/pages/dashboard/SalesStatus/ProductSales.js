@@ -40,8 +40,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
             }, []);
         }
 
-        console.log(mergedSalesData);
-
         let productsInfo = {};
         mergedSalesData.forEach((sale) => {
             if (!productsInfo.hasOwnProperty(sale.product)) {
@@ -58,7 +56,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                     number: productsInfo[`${sale.product}`].number + 1,
                 };
             }
-            console.log(productsInfo);
         });
 
         const productsSalesArray = [];
@@ -66,7 +63,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
             productsSalesArray.push(productsInfo[key]);
         }
         setProductSalesData(productsSalesArray);
-        console.log(productsInfo);
     };
     useEffect(() => {
         getProductSales();

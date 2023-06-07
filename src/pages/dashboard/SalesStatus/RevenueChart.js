@@ -37,10 +37,6 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
     // console.log(getWeeksOfMinMaxDate(datePickDate, selectedPeriod));
 
-    console.log('currentPeriodSalesData', currentPeriodSalesData);
-    console.log('previousPeriodSalesData', previousPeriodSalesData);
-    console.log('sortedByPeriodSalesData', sortedByPeriodSalesData);
-    console.log('beforePeriodSalesData', beforePeriodSalesData);
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
         if (beforePeriodSalesData) {
             const totalSales = [...beforePeriodSalesData]

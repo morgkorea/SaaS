@@ -162,11 +162,6 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         comparedWithPreviousRefund(previousRefundPrice, currentRefundPrice);
     }, [currentRefundPrice, amountBeforeProductsSales]);
 
-    console.log('날짜 기준 현 월,주,일 데이터 합계 : ', amountProductsSales);
-    console.log('날짜 기준 전 월,주,일 데이터 합계 : ', amountBeforeProductsSales);
-    console.log('비교 데이터 퍼센테이지: ', amountCompareWithPreviousSales);
-    console.log('현재기간 환불 액 ', currentRefundPrice);
-    console.log('전 기간 환불 액 ', previousRefundPrice);
     return (
         <>
             <Row>

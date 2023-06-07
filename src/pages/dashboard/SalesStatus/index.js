@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
 import HyperDatepicker from '../../../components/Datepicker';
 
 import Statistics from './Statistics';
@@ -12,8 +14,13 @@ import { ButtonsGroup } from './ButtonsGroup.js';
 
 import { subWeeks, subDays } from 'date-fns';
 
+import { doc, collection, getDoc, updateDoc } from 'firebase/firestore';
+import { firestoreDB } from '../../../firebase/firebase';
+
 const SalesStatus = () => {
+    const [isDataLoading, setIsDataLoading] = useState(false);
     //
+
     const [datePickDate, setDatePickDate] = useState(new Date());
     // 월간,주간,일간 선택
     const [selectedPeriod, setSelectedPeriod] = useState('month');
@@ -23,6 +30,128 @@ const SalesStatus = () => {
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
     // 전월 매출데이터
     const [beforePeriodSalesData, setBeforePeriodSalesData] = useState(false);
+
+    const [currentMembers, setCurrentMembers] = useState([]);
+    const email = useSelector((state) => {
+        return state.Auth?.user.email;
+    });
+
+    const getFirestoreSalesData = async () => {
+        const docRef = doc(firestoreDB, 'Users', email);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            console.log('Document data:', docSnap.data());
+            const members = docSnap.data().members;
+            setCurrentMembers(members);
+            console.log('members', members);
+        } else {
+            // docSnap.data() will be undefined in this case
+            console.log('No such document!');
+        }
+    };
+    useEffect(() => {
+        getFirestoreSalesData();
+    }, []);
+
+    const updateFirestoreAddMember = async () => {
+        const washingtonRef = doc(firestoreDB, 'Users', email);
+        const newMember = {
+            typeFormToken: 'testtest',
+            memberNumber: 'testest', //회원번호
+            createdDate: 'test', //date 생성날짜 2023-04-23
+            createdTime: 'testtest', //time 생성시간 04:10:42
+            name: 'test', //이름
+            phone: 'test', //전화번호
+            sex: 'test', //성별
+            birthDate: 'test', //date 생일
+            ageGroup: 'test', //연령대
+            location: 'test', //위치
+            golfPeriod: 'test', //골프경력
+            golfPurpose: 'test', //골프목적
+            hoursUse: 'test', //이용시간
+            injuries: 'test', //부상전적
+            injuriedPart: 'test', //부상부위
+            marketingRecieveAllow: false, //마케팅수신동의
+            privateInfoAllow: false, //개인정보수집동의
+            amountPayments: 'test', //누적결제수
+            lifetimeValue: 'test', //LTV - 누적결제금액
+            amountPaymentAverage: 'test', //평균결제금액
+            audience: 'test', //오디언스
+            activation: false, //활성여부 false || true
+
+            //이용가능상품
+            availableProducts: [
+                {
+                    activateProduct: '레슨', //활성상품
+                    startDate: '2023-05-24', //시작일
+                    endDate: '2023-05-30', //종료일
+                    dDays: '6', //남은일수 endDate - startDate
+                },
+                {
+                    activateProduct: '락커', //활성상품
+                    startDate: '2023-02-19', //시작일
+                    endDate: '2023-07-19', //종료일
+                    dDays: '120', //남은일수
+                },
+            ],
+
+            //이용불가상품
+            unavailableProducts: [
+                {
+                    inactiveProduct: '락커', //종료상품
+                    startDate: '2023-02-19', //시작일
+                    endDate: '2023-02-19', //종료일
+                    dDays: 0, //남은일수
+                    refund: false,
+                },
+            ],
+        };
+        if (currentMembers.length) {
+            try {
+                await updateDoc(washingtonRef, {
+                    members: [...currentMembers, newMember],
+                });
+                console.log('update member succeed');
+            } catch (error) {
+                console.log('update member error', error);
+            }
+        }
+
+        // Set the "capital" field of the city 'DC'
+    };
+    const updateAddMembers = () => {
+        console.log('updating member');
+        updateFirestoreAddMember();
+    };
+
+    const modifyingFirestoreMember = async () => {
+        const washingtonRef = doc(firestoreDB, 'Users', email);
+        if (currentMembers.length) {
+            const modifyingMembers = [...currentMembers].map((member, idx) => {
+                if (idx === 0) {
+                    const memberData = { ...member, name: '심수정' };
+                    return memberData;
+                } else {
+                    return member;
+                }
+            });
+            console.log(modifyingMembers);
+            try {
+                await updateDoc(washingtonRef, {
+                    members: [...modifyingMembers],
+                });
+
+                console.log('modifying member suecced');
+            } catch (error) {
+                console.log('modifying member error', error);
+            }
+        }
+    };
+
+    const modifyMember = () => {
+        console.log('modifying member');
+        modifyingFirestoreMember();
+    };
 
     const onDateChange = (date) => {
         if (date) {
@@ -206,8 +335,6 @@ const SalesStatus = () => {
         setBeforePeriodSalesData(beforePeriodData);
     }, [startDate, datePickDate, selectedPeriod]);
 
-    console.log(beforePeriodSalesData);
-
     return (
         <>
             <Row>
@@ -231,6 +358,7 @@ const SalesStatus = () => {
                                         }}
                                     />
                                 </div>
+
                                 <Link to="#" className="btn btn-primary ms-2">
                                     <i className="mdi mdi-autorenew"></i>
                                 </Link>
@@ -243,7 +371,8 @@ const SalesStatus = () => {
                     </div>
                 </Col>
             </Row>
-
+            <button onClick={updateAddMembers}>Update Member</button>
+            <button onClick={modifyMember}>Modifying Member</button>
             <Row>
                 <Col xl={12}>
                     <Statistics
