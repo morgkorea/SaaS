@@ -26,6 +26,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
+    const testNumber = (123423423424).toLocaleString();
+
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
@@ -170,7 +172,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                         icon="mdi mdi-account-multiple"
                         description="Number of Customers"
                         title="타석"
-                        stats={amountProductsSales.batterBox + '원'}
+                        stats={amountProductsSales.batterBox.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.batterBox >= 0 ? 'text-success' : 'text-danger',
 
@@ -191,7 +193,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                         icon="mdi mdi-cart-plus"
                         description="Number of Orders"
                         title="레슨"
-                        stats={amountProductsSales.lesson + '원'}
+                        stats={amountProductsSales.lesson.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.lesson >= 0 ? 'text-success' : 'text-danger',
                             icon: beforePeriodSalesData.length
@@ -211,7 +213,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                         icon="mdi mdi-currency-usd"
                         description="Revenue"
                         title="락커"
-                        stats={amountProductsSales.locker + '원'}
+                        stats={amountProductsSales.locker.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.locker >= 0 ? 'text-success' : 'text-danger',
                             icon: beforePeriodSalesData.length
@@ -232,7 +234,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                         icon="mdi mdi-currency-usd"
                         description="Revenue"
                         title="기타"
-                        stats={amountProductsSales.etc + '원'}
+                        stats={amountProductsSales.etc.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.etc >= 0 ? 'text-success' : 'text-danger',
 
@@ -253,7 +255,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                         border="danger"
                         description="Refund"
                         title="환불"
-                        stats={currentRefundPrice + '원'}
+                        stats={currentRefundPrice.toLocaleString() + '원'}
                         trend={{
                             textClass: comparedRefundPrice <= 0 ? 'text-success' : 'text-danger',
                             icon: beforePeriodSalesData.length

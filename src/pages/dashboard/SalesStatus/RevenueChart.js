@@ -225,7 +225,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                             <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'month' ? '달' : '주'}</p>
                             <h2 className="fw-normal mb-3">
                                 <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                <span>{currentPeriodTotalSales}원</span>
+                                <span>{currentPeriodTotalSales.toLocaleString()}원</span>
                             </h2>
                         </Col>
 
@@ -233,7 +233,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                             <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'month' ? '달' : '주'}</p>
                             <h2 className="fw-normal mb-3">
                                 <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                <span>{previousPeriodTotalSales}원</span>
+                                <span>{previousPeriodTotalSales.toLocaleString()}원</span>
                             </h2>
                         </Col>
                     </Row>
