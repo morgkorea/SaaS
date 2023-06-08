@@ -1,4 +1,4 @@
-import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, collection, setDoc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { getDatabase, ref, child, get } from 'firebase/database';
 
 import { firestoreDB } from './firebase';
@@ -14,8 +14,9 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
         );
         let realtimeDbMembers;
         if (snapshot.exists()) {
+            console.log(snapshot.val());
             const pushData = snapshot.val().map((member) => {
-                let schema = { ...firestoreMemebersFieldSchema[0] };
+                let schema = { ...firestoreMemebersFieldSchema };
 
                 for (let key in member) {
                     if (schema.hasOwnProperty(key) && key === 'createdTime') {
@@ -42,12 +43,22 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
         }
 
         await updateDoc(doc(firestoreDB, 'Users', email), { members: arrayUnion(...realtimeDbMembers) });
+        // Member collection에 각 회원 문서 생성하는 로직 추가
+
+        realtimeDbMembers.forEach(async (member, idx) => {
+            const docName = member.name + ' ' + member.phone;
+            const docRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
+            console.log('realtimeDBMembers ele :', member);
+            return await setDoc(docRef, { ...member });
+        });
+        // const docRef = await doc(collection(firestoreDB, 'Users', email, 'Members'));
+        // await setDoc(docRef, { ...realtimeDbMembers });
 
         console.log(snapshot.val());
         console.log(realtimeDbMembers);
         console.log('Firestore DB synchronized with Realtime DB');
     } catch (error) {
-        console.error(error);
+        console.error('reatimeDB sync error', error);
     }
 };
 

@@ -63,6 +63,8 @@ function* login({ payload: { email, password } }) {
         console.log('firebaseUser', response);
 
         api.setLoggedInUser(firebaseAuthSession);
+
+        yield call(firestoreMembersDataSyncWithRealtime, email);
         // setAuthorization(firebaseAuthSession.data['token']); axios http header jwt token setup
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
     } catch (error) {

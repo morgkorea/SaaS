@@ -37,6 +37,7 @@ export const firestoreDbSchema = ({ username, email }) => {
 };
 
 export const firestoreMemebersFieldSchema = {
+    ownerId: '',
     typeFormToken: '',
     memberNumber: '', //회원번호
     createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
