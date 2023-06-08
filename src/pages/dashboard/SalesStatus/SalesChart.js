@@ -96,19 +96,19 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                 <div className="chart-widget-list">
                     <p>
                         <i className="mdi mdi-square text-primary"></i> 타석
-                        <span className="float-end">{amountProductsSales.batterBox}원</span>
+                        <span className="float-end">{amountProductsSales.batterBox.toLocaleString()}원</span>
                     </p>
                     <p>
                         <i className="mdi mdi-square text-danger"></i> 레슨
-                        <span className="float-end">{amountProductsSales.lesson}원</span>
+                        <span className="float-end">{amountProductsSales.lesson.toLocaleString()}원</span>
                     </p>
                     <p>
                         <i className="mdi mdi-square text-success"></i> 락커
-                        <span className="float-end">{amountProductsSales.locker}원</span>
+                        <span className="float-end">{amountProductsSales.locker.toLocaleString()}원</span>
                     </p>
                     <p className="mb-0">
                         <i className="mdi mdi-square text-warning"></i> 기타
-                        <span className="float-end">{amountProductsSales.etc}원</span>
+                        <span className="float-end">{amountProductsSales.etc.toLocaleString()}원</span>
                     </p>
                 </div>
             </Card.Body>
