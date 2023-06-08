@@ -47,7 +47,7 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
 
         realtimeDbMembers.forEach(async (member, idx) => {
             const docName = member.name + ' ' + member.phone;
-            const docRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
+            const docRef = doc((firestoreDB, 'Users', email, 'Members'));
             console.log('realtimeDBMembers ele :', member);
             return await setDoc(docRef, { ...member });
         });
