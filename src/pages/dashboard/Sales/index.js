@@ -7,8 +7,6 @@ import { Link } from 'react-router-dom';
 import HyperDatepicker from '../../../components/Datepicker';
 import PerformanceChart from './PerformanceChart';
 
-import { getFirestoreUserData } from '../../../firebase/firestore';
-
 import Products from './Products';
 import Statistics from './Statistics';
 import SalesChart from './SalesChart';
@@ -23,10 +21,6 @@ const SalesDashboard = () => {
             setSelectedDate(date);
         }
     };
-
-    useEffect(() => {
-        getFirestoreUserData();
-    }, []);
 
     return (
         <>

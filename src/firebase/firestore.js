@@ -1,4 +1,4 @@
-import { doc, collection, setDoc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, collection, setDoc, getDoc, getDocs, updateDoc, arrayUnion, query } from 'firebase/firestore';
 import { getDatabase, ref, child, get } from 'firebase/database';
 
 import { firestoreDB } from './firebase';
@@ -45,12 +45,27 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
         await updateDoc(doc(firestoreDB, 'Users', email), { members: arrayUnion(...realtimeDbMembers) });
         // Member collection에 각 회원 문서 생성하는 로직 추가
 
-        realtimeDbMembers.forEach(async (member, idx) => {
-            const docName = member.name + ' ' + member.phone;
-            const docRef = doc((firestoreDB, 'Users', email, 'Members'));
-            console.log('realtimeDBMembers ele :', member);
-            return await setDoc(docRef, { ...member });
+        const currentMembers = await getDocs(collection(firestoreDB, 'Users', email, 'Members'));
+        const phoneNumberOfMembers = [];
+        currentMembers.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            phoneNumberOfMembers.push(doc.data().phone);
         });
+
+        //현재 members 콜렉션 문서들 불러오기 (회원)
+        if (currentMembers) {
+            console.log('currentMembers data : ', phoneNumberOfMembers);
+        } else {
+            console.log('currentMembers call failed');
+        }
+
+        realtimeDbMembers.forEach(async (member, idx) => {
+            const docName = member.phone;
+            const docRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
+            console.log('realtimeDBMembers ele :', member);
+            return !phoneNumberOfMembers.includes(docName) ? await setDoc(docRef, { ...member }) : null;
+        });
+
         // const docRef = await doc(collection(firestoreDB, 'Users', email, 'Members'));
         // await setDoc(docRef, { ...realtimeDbMembers });
 
@@ -59,17 +74,5 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
         console.log('Firestore DB synchronized with Realtime DB');
     } catch (error) {
         console.error('reatimeDB sync error', error);
-    }
-};
-
-export const getFirestoreUserData = async (email) => {
-    const docRef = doc(firestoreDB, 'Users', email);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
-    } else {
-        // docSnap.data() will be undefined in this case
-        console.log('No such document!');
     }
 };
