@@ -83,7 +83,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                             </Form.Label>
                                         </Form.Group>
                                     </Col>
-                                    <Col xs="auto">
+                                    {/* <Col xs="auto">
                                         <Form.Group>
                                             <Form.Select
                                                 type="number"
@@ -100,7 +100,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                                 <option value="50">50</option>
                                             </Form.Select>
                                         </Form.Group>
-                                    </Col>
+                                    </Col> */}
                                 </Row>
                             </Col>
                         </Row>
@@ -153,7 +153,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                 })}
                             </tbody>
                         </Table>
-                        {productSalesData?.length > 5 && (
+                        {productSalesData?.length > 10 && (
                             <RoundedPagination
                                 total={productSalesData.length}
                                 limit={limit}
