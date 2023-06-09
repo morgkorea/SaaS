@@ -107,11 +107,11 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                         <Table responsive className="table-centered table-nowrap">
                             <thead className="table-light">
                                 <tr>
-                                    <th style={{ width: '20px' }}>
+                                    {/* <th style={{ width: '20px' }}>
                                         <Form>
                                             <Form.Check type="checkbox" id="all" />
                                         </Form>
-                                    </th>
+                                    </th> */}
                                     <th>상품</th>
                                     <th>종류</th>
                                     <th>수량</th>
@@ -122,11 +122,11 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                 {productSalesData.slice(offset, offset + limit).map((data, i) => {
                                     return (
                                         <tr key={i}>
-                                            <td>
+                                            {/* <td>
                                                 <Form>
                                                     <Form.Check type="checkbox" id={data.orderId} />
                                                 </Form>
-                                            </td>
+                                            </td> */}
                                             <td className="table-border">
                                                 <Link to="#" className="text-body">
                                                     {data.title}

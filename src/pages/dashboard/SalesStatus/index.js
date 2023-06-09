@@ -371,8 +371,7 @@ const SalesStatus = () => {
                     </div>
                 </Col>
             </Row>
-            <button onClick={updateAddMembers}>Update Member</button>
-            <button onClick={modifyMember}>Modifying Member</button>
+
             <Row>
                 <Col xl={12}>
                     <Statistics

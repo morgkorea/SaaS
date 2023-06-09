@@ -58,16 +58,17 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
         } else {
             console.log('currentMembers call failed');
         }
+        //회원 phoneNumber로 검색 -> 기존회원목록, 신규회원목록 비교 중복 필터 ->
+        //회원데이터 문서 생성
+        realtimeDbMembers.forEach(async (member) => {
+            if (member.phone) {
+                const memberPhone = member.phone;
+                const docRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
+                console.log('realtimeDBMembers ele :', !phoneNumberOfMembers.includes(memberPhone));
 
-        realtimeDbMembers.forEach(async (member, idx) => {
-            const docName = member.phone;
-            const docRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
-            console.log('realtimeDBMembers ele :', member);
-            return !phoneNumberOfMembers.includes(docName) ? await setDoc(docRef, { ...member }) : null;
+                return !phoneNumberOfMembers.includes(memberPhone) ? await setDoc(docRef, { ...member }) : null;
+            }
         });
-
-        // const docRef = await doc(collection(firestoreDB, 'Users', email, 'Members'));
-        // await setDoc(docRef, { ...realtimeDbMembers });
 
         console.log(snapshot.val());
         console.log(realtimeDbMembers);

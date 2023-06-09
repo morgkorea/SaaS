@@ -60,6 +60,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         legend: {
             show: false,
         },
+        labels: ['타석', '레슨', '락커', '기타'],
         responsive: [
             {
                 breakpoint: 376,
@@ -82,7 +83,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                 <CardTitle
                     containerClass="d-flex align-items-center justify-content-between"
                     title="비중"
-                    menuItems={[{ label: 'Sales Report' }]}
+                    // menuItems={[{ label: 'Sales Report' }]}
                 />
 
                 <Chart
