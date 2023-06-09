@@ -216,37 +216,66 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
     return (
         <Card>
-            <Card.Body>
-                <CardTitle containerClass="d-flex align-items-center justify-content-between mb-2" title="추이" />
+            {selectedPeriod !== 'day' ? (
+                <Card.Body>
+                    <CardTitle containerClass="d-flex align-items-center justify-content-between mb-2" title="추이" />
 
-                <div className="chart-content-bg">
-                    <Row className="text-center">
-                        <Col md={6}>
-                            <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'month' ? '달' : '주'}</p>
-                            <h2 className="fw-normal mb-3">
-                                <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                <span>{currentPeriodTotalSales.toLocaleString()}원</span>
-                            </h2>
-                        </Col>
+                    <div className="chart-content-bg">
+                        <Row className="text-center">
+                            <Col md={6}>
+                                <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'month' ? '달' : '주'}</p>
+                                <h2 className="fw-normal mb-3">
+                                    <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
+                                    <span>{currentPeriodTotalSales.toLocaleString()}원</span>
+                                </h2>
+                            </Col>
 
-                        <Col md={6}>
-                            <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'month' ? '달' : '주'}</p>
-                            <h2 className="fw-normal mb-3">
-                                <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                <span>{previousPeriodTotalSales.toLocaleString()}원</span>
-                            </h2>
-                        </Col>
-                    </Row>
-                </div>
+                            <Col md={6}>
+                                <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'month' ? '달' : '주'}</p>
+                                <h2 className="fw-normal mb-3">
+                                    <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
+                                    <span>{previousPeriodTotalSales.toLocaleString()}원</span>
+                                </h2>
+                            </Col>
+                        </Row>
+                    </div>
 
-                <Chart
-                    options={apexLineChartWithLables}
-                    series={apexLineChartWithLablesData}
-                    type="line"
-                    className="apex-charts mt-3"
-                    height={330}
-                />
-            </Card.Body>
+                    <Chart
+                        options={apexLineChartWithLables}
+                        series={apexLineChartWithLablesData}
+                        type="line"
+                        className="apex-charts mt-3"
+                        height={330}
+                    />
+                </Card.Body>
+            ) : (
+                <Card.Body>
+                    <CardTitle
+                        containerClass="d-flex align-items-center justify-content-between mb-2"
+                        title="일 매출 총계"
+                    />
+
+                    <div className="chart-content-bg">
+                        <Row className="text-center">
+                            <Col md={6}>
+                                <p className="text-muted mb-0 mt-3">오늘</p>
+                                <h2 className="fw-normal mb-3">
+                                    <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
+                                    <span>{currentPeriodTotalSales.toLocaleString()}원</span>
+                                </h2>
+                            </Col>
+
+                            <Col md={6}>
+                                <p className="text-muted mb-0 mt-3">어제</p>
+                                <h2 className="fw-normal mb-3">
+                                    <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
+                                    <span>{previousPeriodTotalSales.toLocaleString()}원</span>
+                                </h2>
+                            </Col>
+                        </Row>
+                    </div>
+                </Card.Body>
+            )}
         </Card>
     );
 };
