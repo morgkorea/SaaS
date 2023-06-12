@@ -131,63 +131,17 @@ export const firestoreSalesFieldSchema = [
     },
 ];
 export const firestoreProductsFieldSchema = {
-    batterBox: [
-        //타석
-        {
-            productsName: '30분권', //상품명
-            expirationPeriod: '30일', //유효기간
-            expirationCount: '2', //유효횟수
-            price: '40000', //가격
-        },
-        {
-            productsName: '20분권', //상품명
-            expirationPeriod: '31일', //유효기간
-            expirationCount: '5', //유효횟수
-            price: '70000', //가격
-        },
-    ],
-    lesson: [
-        {
-            productsName: '30분권', //상품명
-            expirationPeriod: '30일', //유효기간
-            expirationCount: '2', //유효횟수
-            price: '40000', //가격
-        },
-        {
-            productsName: '20분권', //상품명
-            expirationPeriod: '31일', //유효기간
-            expirationCount: '5', //유효횟수
-            price: '70000', //가격
-        },
-    ],
-    locker: [
-        {
-            productsName: '30분권', //상품명
-            expirationPeriod: '30일', //유효기간
-            expirationCount: '2', //유효횟수
-            price: '40000', //가격
-        },
-        {
-            productsName: '20분권', //상품명
-            expirationPeriod: '31일', //유효기간
-            expirationCount: '5', //유효횟수
-            price: '70000', //가격
-        },
-    ],
-    etc: [
-        {
-            productsName: '30분권', //상품명
-            expirationPeriod: '30일', //유효기간
-            expirationCount: '2', //유효횟수
-            price: '40000', //가격
-        },
-        {
-            productsName: '20분권', //상품명
-            expirationPeriod: '31일', //유효기간
-            expirationCount: '5', //유효횟수
-            price: '70000', //가격
-        },
-    ],
+    productsNumber: 'NBA23403-101',
+    product: '회원권 3개월권', //상품명, type:string
+    category: '멤버십', //카테고리 type:string
+    expirationPeriod: 120, //유효기간 (일) type:number
+    expirationCount: 2, //유효횟수 type:number
+    regularPrice: 40000, //가격 type:number
+    discountRate: 10, //할인율 type:number
+    discountPrice: 36000, //할인가격 type:number
+    actiavation: true, //활성화,
+    createdDate: new Date(), // type:object
+    modifiedDate: new Date(), // type:object
 };
 
 export const firestoreMarketingFieldSchema = {

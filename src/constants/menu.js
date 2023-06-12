@@ -57,6 +57,12 @@ const MENU_ITEMS = [
                 url: '/dashboard/sales-db',
                 parentKey: 'dashboards',
             },
+            {
+                key: 'product-db',
+                label: '상품DB',
+                url: '/dashboard/product-db',
+                parentKey: 'dashboards',
+            },
         ],
     },
     { key: 'apps', label: 'Apps', isTitle: true },
