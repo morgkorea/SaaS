@@ -22,11 +22,18 @@ const ProductDB = () => {
                 productsNumber: firestoreProductsFieldSchema.productsNumber + `${idx}`,
                 expirationPeriod: idx,
                 regularPrice: firestoreProductsFieldSchema.regularPrice + idx * 20,
-                actiavation: idx % 2 === 0 ? true : false,
+                activation: idx % 2 === 0 ? true : false,
             };
         });
         setProductsData(produtsArray);
+        console.log('intialized');
     }, []);
+
+    const productsActivationHandler = (event, idx) => {
+        const products = [...productsData];
+        products[idx].activation = event.target.checked;
+        setProductsData(products);
+    };
 
     const editBtn = () => toast('정보 수정 화면으로 전환됩니다.');
     const saveBtn = () => toast('저장되었습니다.');
@@ -41,7 +48,16 @@ const ProductDB = () => {
                 </Col>
             </Row>
             <Row>
-                <Col>{<ProductsTable products={productsData} limit={limit} offset={offset} />}</Col>
+                <Col>
+                    {
+                        <ProductsTable
+                            productsData={productsData}
+                            productsActivationHandler={productsActivationHandler}
+                            limit={limit}
+                            offset={offset}
+                        />
+                    }
+                </Col>
             </Row>
             <Row>
                 <Col>

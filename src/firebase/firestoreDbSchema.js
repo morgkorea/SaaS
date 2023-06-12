@@ -139,7 +139,7 @@ export const firestoreProductsFieldSchema = {
     regularPrice: 40000, //가격 type:number
     discountRate: 10, //할인율 type:number
     discountPrice: 36000, //할인가격 type:number
-    actiavation: true, //활성화,
+    activation: true, //활성화,
     createdDate: new Date(), // type:object
     modifiedDate: new Date(), // type:object
 };

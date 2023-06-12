@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Table } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 
-const ProductsTable = ({ products, offset, limit }) => {
+const ProductsTable = ({ productsData, productsActivationHandler, offset, limit }) => {
+    console.log('rerender');
+
     return (
         <Card>
             <Card.Body>
@@ -21,16 +25,30 @@ const ProductsTable = ({ products, offset, limit }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {products?.slice(offset, offset + limit).map((product, idx) => {
+                            {productsData?.slice(offset, offset + limit).map((product, idx) => {
                                 return (
                                     <tr key={'product_' + idx}>
-                                        <td className="text-center">{product.productsNumber}</td>
+                                        <td>{product.productsNumber}</td>
                                         <td>{product.product}</td>
                                         <td>{product.category}</td>
                                         <td>{product.expirationPeriod}</td>
                                         <td>{product.expirationCount}</td>
                                         <td>{product.regularPrice}</td>
-                                        <td>{product.actiavation}</td>
+                                        <td>
+                                            {product.activation}{' '}
+                                            <Container className="d-flex p-0">
+                                                <Form className="pe-auto">
+                                                    <Form.Check
+                                                        type="switch"
+                                                        id="custom-switch"
+                                                        label={product?.activation ? '활성' : '비활성'}
+                                                        onChange={(event) => productsActivationHandler(event, idx)}
+                                                        defaultChecked={product.activation}
+                                                    />
+                                                </Form>
+                                            </Container>
+                                        </td>
+
                                         <td>{product.createdDate.toISOString().split('T')[0]}</td>
                                         <td>{product.modifiedDate.toISOString().split('T')[0]}</td>
                                     </tr>
