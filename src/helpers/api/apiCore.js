@@ -196,7 +196,8 @@ class APICore {
 
     firebaseDeleteUser = () => {
         const auth = getAuth();
-        if (auth.currentUser) {
+        const user = auth?.currentUser;
+        if (user) {
             return deleteUser(user);
         }
     };

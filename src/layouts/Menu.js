@@ -155,6 +155,16 @@ const AppMenu = ({ menuItems }: AppMenuProps): React$Element<React$FragmentType>
         }
     }, [location.pathname, menuItems]);
 
+    const menuItemTitleHandler = (label) => {
+        switch (label) {
+            case 'dashboards':
+                return '대시보드';
+
+            default:
+                return label;
+        }
+    };
+
     useEffect(() => {
         activeMenu();
     }, [activeMenu]);

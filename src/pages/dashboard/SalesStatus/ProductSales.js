@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Col, Form, Pagination, Row, Table, ProgressBar } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { productSalesData } from './data';
 
 const RoundedPagination = ({ total, limit, page, setPage }) => {
     const numPages = Math.ceil(total / limit);
@@ -25,10 +24,49 @@ const RoundedPagination = ({ total, limit, page, setPage }) => {
     );
 };
 
-const ProductSales = () => {
+const ProductSales = ({ sortedByPeriodSalesData }) => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const offset = (page - 1) * limit;
+    const [productSalesData, setProductSalesData] = useState([]);
+
+    // 상품 종류 관련 필드 추가 필요
+
+    const getProductSales = () => {
+        let mergedSalesData = [];
+        if (sortedByPeriodSalesData) {
+            mergedSalesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? [...acc, ...curr.products] : [...acc];
+            }, []);
+        }
+
+        let productsInfo = {};
+        mergedSalesData.forEach((sale) => {
+            if (!productsInfo.hasOwnProperty(sale.product)) {
+                productsInfo[`${sale.product}`] = {
+                    title: sale.product,
+                    type: sale.productType,
+                    total: Number(sale.discountPrice),
+                    number: 1,
+                };
+            } else {
+                productsInfo[`${sale.product}`] = {
+                    ...productsInfo[`${sale.product}`],
+                    total: Number(productsInfo[`${sale.product}`].total) + Number(sale.discountPrice),
+                    number: productsInfo[`${sale.product}`].number + 1,
+                };
+            }
+        });
+
+        const productsSalesArray = [];
+        for (let key in productsInfo) {
+            productsSalesArray.push(productsInfo[key]);
+        }
+        setProductSalesData(productsSalesArray);
+    };
+    useEffect(() => {
+        getProductSales();
+    }, [sortedByPeriodSalesData]);
 
     return (
         <Row>
@@ -45,7 +83,7 @@ const ProductSales = () => {
                                             </Form.Label>
                                         </Form.Group>
                                     </Col>
-                                    <Col xs="auto">
+                                    {/* <Col xs="auto">
                                         <Form.Group>
                                             <Form.Select
                                                 type="number"
@@ -62,41 +100,40 @@ const ProductSales = () => {
                                                 <option value="50">50</option>
                                             </Form.Select>
                                         </Form.Group>
-                                    </Col>
+                                    </Col> */}
                                 </Row>
                             </Col>
                         </Row>
                         <Table responsive className="table-centered table-nowrap">
                             <thead className="table-light">
                                 <tr>
-                                    <th style={{ width: '20px' }}>
+                                    {/* <th style={{ width: '20px' }}>
                                         <Form>
                                             <Form.Check type="checkbox" id="all" />
                                         </Form>
-                                    </th>
+                                    </th> */}
                                     <th>상품</th>
                                     <th>종류</th>
                                     <th>수량</th>
                                     <th>총계</th>
-                                    <th>환불</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {productSalesData.slice(offset, offset + limit).map((data, i) => {
                                     return (
                                         <tr key={i}>
-                                            <td>
+                                            {/* <td>
                                                 <Form>
                                                     <Form.Check type="checkbox" id={data.orderId} />
                                                 </Form>
-                                            </td>
-                                            <td className='table-border'>
+                                            </td> */}
+                                            <td className="table-border">
                                                 <Link to="#" className="text-body">
                                                     {data.title}
                                                 </Link>
                                             </td>
-                                            <td className='table-border'>{data.type}</td>
-                                            <td className='table-border'>
+                                            <td className="table-border">{data.type}</td>
+                                            <td className="table-border">
                                                 <Row>
                                                     <Col>
                                                         <ProgressBar
@@ -110,14 +147,13 @@ const ProductSales = () => {
                                                     </Col>
                                                 </Row>
                                             </td>
-                                            <td className='table-border'>{data.total.toLocaleString()}원</td>
-                                            <td>{data.refund.toLocaleString()}원</td>
+                                            <td className="table-border">{data.total.toLocaleString()}원</td>
                                         </tr>
                                     );
                                 })}
                             </tbody>
                         </Table>
-                        {productSalesData?.length > 5 && (
+                        {productSalesData?.length > 10 && (
                             <RoundedPagination
                                 total={productSalesData.length}
                                 limit={limit}

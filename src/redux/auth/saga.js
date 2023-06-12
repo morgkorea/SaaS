@@ -23,10 +23,10 @@ import { AuthActionTypes } from './constants';
 import { authApiResponseSuccess, authApiResponseError } from './actions';
 
 import { firestoreDB } from '../../firebase/firebase';
-import { firestoreDbSchema } from '../../firebase/firestoreDbSchema';
+import { firestoreDbSchema, firestoreMemebersFieldSchema } from '../../firebase/firestoreDbSchema';
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection } from 'firebase/firestore';
 
 import { errorConverter } from '../../utils/errorConverter';
 
@@ -63,6 +63,8 @@ function* login({ payload: { email, password } }) {
         console.log('firebaseUser', response);
 
         api.setLoggedInUser(firebaseAuthSession);
+
+        yield call(firestoreMembersDataSyncWithRealtime, email);
         // setAuthorization(firebaseAuthSession.data['token']); axios http header jwt token setup
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
     } catch (error) {
@@ -116,6 +118,10 @@ function* signup({ payload: { username, email, password } }) {
 
         //Firestore DB init setup , signup과 함께 DB 구조 생성
         yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email }));
+
+        // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
+        const docRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
+        yield setDoc(docRef, { ...firestoreMemebersFieldSchema });
 
         //firestore users : { memebers: []} synchronized with realtime db
         yield call(firestoreMembersDataSyncWithRealtime, email);
