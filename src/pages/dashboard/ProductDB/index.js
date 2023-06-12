@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import ProductsTable from './ProductsTable.js';
+import ProductRegistrationModal from './ProductRegistrationModal.js';
 
 import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema.js';
 
@@ -66,6 +67,12 @@ const ProductDB = () => {
                     )}
                 </Col>
             </Row>
+            <div className="edit-btn-area avatar-md">
+                <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
+                    <i className="mdi mdi-plus" />
+                </span>
+            </div>
+            <ProductRegistrationModal />
         </>
     );
 };

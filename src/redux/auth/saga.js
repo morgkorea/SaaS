@@ -23,7 +23,11 @@ import { AuthActionTypes } from './constants';
 import { authApiResponseSuccess, authApiResponseError } from './actions';
 
 import { firestoreDB } from '../../firebase/firebase';
-import { firestoreDbSchema, firestoreMemebersFieldSchema } from '../../firebase/firestoreDbSchema';
+import {
+    firestoreDbSchema,
+    firestoreMemebersFieldSchema,
+    firestoreProductsFieldSchema,
+} from '../../firebase/firestoreDbSchema';
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { doc, setDoc, collection } from 'firebase/firestore';
@@ -120,8 +124,13 @@ function* signup({ payload: { username, email, password } }) {
         yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email }));
 
         // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
-        const docRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
-        yield setDoc(docRef, { ...firestoreMemebersFieldSchema });
+        const membersCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
+        const productsCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Products'));
+
+        //members collection 생성
+        yield setDoc(membersCollectionRef, { ...firestoreMemebersFieldSchema });
+        //products collection 생성
+        yield setDoc(productsCollectionRef, { ...firestoreProductsFieldSchema });
 
         //firestore users : { memebers: []} synchronized with realtime db
         yield call(firestoreMembersDataSyncWithRealtime, email);
