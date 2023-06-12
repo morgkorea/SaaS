@@ -119,10 +119,6 @@ const SalesStatus = () => {
 
         // Set the "capital" field of the city 'DC'
     };
-    const updateAddMembers = () => {
-        console.log('updating member');
-        updateFirestoreAddMember();
-    };
 
     const modifyingFirestoreMember = async () => {
         const washingtonRef = doc(firestoreDB, 'Users', email);
