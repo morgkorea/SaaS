@@ -138,8 +138,6 @@ export const firestoreProductsFieldSchema = {
     expirationPeriod: 120, //유효기간 (일) type:number
     expirationCount: 2, //유효횟수 type:number
     regularPrice: 40000, //가격 type:number
-    discountRate: 10, //할인율 type:number
-    discountPrice: 36000, //할인가격 type:number
     activation: true, //활성화,
     createdDate: new Date(), // type:object
     modifiedDate: new Date(), // type:object
