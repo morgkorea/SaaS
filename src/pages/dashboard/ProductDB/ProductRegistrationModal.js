@@ -495,9 +495,6 @@ const ModalWithFilled = () => {
         setModal(!modal);
     };
 
-    /**
-     * Opens modal with custom header
-     */
     const openModalWithHeaderClass = (className) => {
         setHeaderClassName(className);
         toggle();
@@ -540,16 +537,8 @@ const ModalWithFilled = () => {
                             className={classNames('modal-filled', 'bg-' + headerClassName)}>
                             <h4 className="modal-title text-light">{headerClassName} Filled Modal</h4>
                         </Modal.Header>
-                        <Modal.Body className={classNames('modal-filled', 'bg-' + headerClassName, 'text-light')}>
-                            <p>
-                                Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                                in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                            </p>
-                            <p>
-                                Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                                lacus vel augue laoreet rutrum faucibus dolor auctor.
-                            </p>
-                        </Modal.Body>
+                        <Modal.Body
+                            className={classNames('modal-filled', 'bg-' + headerClassName, 'text-light')}></Modal.Body>
                         <Modal.Footer className={classNames('modal-filled', 'bg-' + headerClassName)}>
                             <Button variant="light" onClick={toggle}>
                                 Close
