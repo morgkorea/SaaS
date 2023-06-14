@@ -10,8 +10,8 @@ import PageTitle from '../../../components/PageTitle';
 // images
 import logodark from '../../../assets/images/logo-dark.png';
 
-const ProductRegistrationModal = () => {
-    const [modal, setModal] = useState(false);
+const ProductRegistrationModal = ({ modal, setModal }) => {
+    // const [modal, setModal] = useState(false);
     const [size, setSize] = useState(null);
     const [className, setClassName] = useState(null);
     const [scroll, setScroll] = useState(null);

@@ -12,9 +12,14 @@ import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchem
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
+    const [modal, setModal] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 20;
     const offset = (page - 1) * limit;
+
+    const toggle = () => {
+        setModal(!modal);
+    };
 
     useEffect(() => {
         const produtsArray = Array.from({ length: 180 }, (_, idx) => {
@@ -67,12 +72,12 @@ const ProductDB = () => {
                     )}
                 </Col>
             </Row>
-            <div className="edit-btn-area avatar-md">
+            <div className="edit-btn-area avatar-md" onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />
                 </span>
             </div>
-            <ProductRegistrationModal />
+            <ProductRegistrationModal modal={modal} setModal={setModal} />
         </>
     );
 };
