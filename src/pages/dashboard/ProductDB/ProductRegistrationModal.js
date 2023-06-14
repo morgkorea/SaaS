@@ -100,27 +100,25 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                         cursor: 'pointer',
                                     }}>
                                     <option>1개월</option>
-                                    <option value="lesson">2개월</option>
-                                    <option value="locker">3개월</option>
-                                    <option value="etc">4개월</option>
+                                    <option>2개월</option>
+                                    <option>3개월</option>
+                                    <option>4개월</option>
                                     <option>5개월</option>
                                     <option>6개월</option>
                                     <option>7개월</option>
                                     <option>8개월</option>
                                     <option>9개월</option>
                                     <option>10개월</option>
-                                    <option>11개월</option>
-                                    <option>12개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
-                                    <option>11개월</option>
+                                    <option>30일</option>
+                                    <option>60일</option>
+                                    <option>90일</option>
+                                    <option>120일</option>
+                                    <option>150일</option>
+                                    <option>180일</option>
+                                    <option>1일</option>
+                                    <option>7일</option>
+                                    <option>14일</option>
+                                    <option>15일</option>
                                 </select>
                             </Col>
                             <Col>
@@ -129,6 +127,7 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                     <span>유효횟수</span>
                                 </div>
                                 <input
+                                    type="number"
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
