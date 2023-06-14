@@ -7,6 +7,7 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import ProductsTable from './ProductsTable.js';
 import ProductRegistrationModal from './ProductRegistrationModal.js';
+import { Modals } from './ProductRegistrationModal.js';
 
 import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema.js';
 
@@ -32,7 +33,6 @@ const ProductDB = () => {
             };
         });
         setProductsData(produtsArray);
-        console.log('intialized');
     }, []);
 
     const productsActivationHandler = (event, idx) => {
