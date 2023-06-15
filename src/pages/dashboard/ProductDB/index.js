@@ -23,16 +23,16 @@ const ProductDB = () => {
     };
 
     useEffect(() => {
-        const produtsArray = Array.from({ length: 180 }, (_, idx) => {
-            return {
-                ...firestoreProductsFieldSchema,
-                productsNumber: firestoreProductsFieldSchema.productsNumber + `${idx}`,
-                expirationPeriod: idx,
-                regularPrice: firestoreProductsFieldSchema.regularPrice + idx * 20,
-                activation: idx % 2 === 0 ? true : false,
-            };
-        });
-        setProductsData(produtsArray);
+        // const produtsArray = Array.from({ length: 180 }, (_, idx) => {
+        //     return {
+        //         ...firestoreProductsFieldSchema,
+        //         productsNumber: firestoreProductsFieldSchema.productsNumber + `${idx}`,
+        //         expirationPeriod: idx,
+        //         regularPrice: firestoreProductsFieldSchema.regularPrice + idx * 20,
+        //         activation: idx % 2 === 0 ? true : false,
+        //     };
+        // });
+        // setProductsData(produtsArray);
     }, []);
 
     const productsActivationHandler = (event, idx) => {

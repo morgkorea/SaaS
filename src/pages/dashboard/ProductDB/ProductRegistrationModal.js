@@ -2,33 +2,82 @@
 import React, { useState } from 'react';
 import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
 
-// components
-import PageTitle from '../../../components/PageTitle';
+import { useSelector } from 'react-redux';
 
-// images
-import logodark from '../../../assets/images/logo-dark.png';
+import { doc, setDoc, collection } from 'firebase/firestore';
+
+import { firestoreDB } from '../../../firebase/firebase';
+import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
+
+//loading spinner
+import Spinner from '../../../components/Spinner';
 
 const ProductRegistrationModal = ({ modal, setModal }) => {
     // const [modal, setModal] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
+
+    const [productName, setProductName] = useState('');
     const [productType, setProductType] = useState(null);
     const [expirationPeriod, setExpirationPeriod] = useState(0);
+    const [expirationCount, setExpirationCount] = useState(0);
     const [regularPrice, setRegularPrice] = useState(0);
     const [activation, setActivation] = useState(true);
     /**
      * Show/hide the modal
      */
 
+    // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
+    const email = useSelector((state) => {
+        return state.Auth?.user?.email;
+    });
+
+    const productRegistration = async () => {
+        setIsRegistering(true);
+        const productsDocRef = doc(collection(firestoreDB, 'Users', email, 'Products'));
+
+        const productData = {
+            ...firestoreProductsFieldSchema,
+            product: productName,
+            type: productType,
+            expirationPeriod: expirationPeriod,
+            expirationCount: expirationCount,
+            regularPrice: regularPrice,
+            activation: activation,
+            createdDate: new Date(),
+        };
+
+        console.log(productData);
+
+        try {
+            await setDoc(productsDocRef, productData).then((response) => {
+                console.log(response);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
+        setIsRegistering(false);
+    };
+    const productsDocRef = doc(collection(firestoreDB, 'Users', email, 'Products'));
+    //products collection 생성
+
+    setDoc(productsDocRef, { ...firestoreProductsFieldSchema });
+
     const toggle = () => {
         setModal(!modal);
     };
+    const getProductName = (event) => {
+        setProductName(event.target.value);
+    };
     const getProductType = (event) => {
         setProductType(event.target.value);
-        console.log(event.target.value);
     };
     const getExpirationPeriod = (event) => {
         setExpirationPeriod(event.target.value);
+    };
+    const getExpirationCount = (event) => {
+        setExpirationCount(event.target.value);
     };
 
     const getRegularPrice = (event) => {
@@ -55,6 +104,9 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                 </div>
 
                                 <input
+                                    onChange={(e) => {
+                                        getProductName(e);
+                                    }}
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
@@ -132,6 +184,9 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                     <span>유효횟수</span>
                                 </div>
                                 <input
+                                    onChange={(e) => {
+                                        getExpirationCount(e);
+                                    }}
                                     type="number"
                                     className="w-100 p-1"
                                     style={{
@@ -149,7 +204,6 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                 </div>
                                 <input
                                     className="w-100 p-1"
-                                    value="0"
                                     onChange={(e) => {
                                         getRegularPrice(e);
                                     }}
@@ -201,7 +255,18 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-center border-top-0">
-                    <Button variant="primary">등록</Button>
+                    <Button onClick={productRegistration} variant="primary">
+                        {isRegistering ? (
+                            <Spinner
+                                className="me-1"
+                                size="sm"
+                                color="white"
+                                style={{ width: '15px', height: '15px' }}
+                            />
+                        ) : (
+                            '등록'
+                        )}
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </>
