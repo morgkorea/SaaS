@@ -130,7 +130,7 @@ function* signup({ payload: { username, email, password } }) {
         //members collection 생성
         yield setDoc(membersCollectionRef, { ...firestoreMemebersFieldSchema });
         //products collection 생성
-        yield setDoc(productsCollectionRef, { ...firestoreProductsFieldSchema });
+        // yield setDoc(productsCollectionRef, { ...firestoreProductsFieldSchema });
 
         //firestore users : { memebers: []} synchronized with realtime db
         yield call(firestoreMembersDataSyncWithRealtime, email);

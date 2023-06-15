@@ -49,8 +49,8 @@ const ProductsTable = ({ productsData, productsActivationHandler, offset, limit 
                                             </Container>
                                         </td>
 
-                                        <td>{product.createdDate.toISOString().split('T')[0]}</td>
-                                        <td>{product.modifiedDate.toISOString().split('T')[0]}</td>
+                                        <td>{product.createdDate}</td>
+                                        <td>{product.modifiedDate}</td>
                                     </tr>
                                 );
                             })}

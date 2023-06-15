@@ -3,43 +3,70 @@ import { Row, Col } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useSelector } from 'react-redux';
+
+import { doc, getDocs, collection, query, where } from 'firebase/firestore';
+
+import { firestoreDB } from '../../../firebase/firebase';
+import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
+
 import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import ProductsTable from './ProductsTable.js';
 import ProductRegistrationModal from './ProductRegistrationModal.js';
 import { Modals } from './ProductRegistrationModal.js';
 
-import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema.js';
-
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
+    const [modifiedActivation, setModifiedActivation] = useState(false);
     const [modal, setModal] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 20;
     const offset = (page - 1) * limit;
+
+    const email = useSelector((state) => {
+        return state.Auth?.user?.email;
+    });
 
     const toggle = () => {
         setModal(!modal);
     };
 
     useEffect(() => {
-        // const produtsArray = Array.from({ length: 180 }, (_, idx) => {
-        //     return {
-        //         ...firestoreProductsFieldSchema,
-        //         productsNumber: firestoreProductsFieldSchema.productsNumber + `${idx}`,
-        //         expirationPeriod: idx,
-        //         regularPrice: firestoreProductsFieldSchema.regularPrice + idx * 20,
-        //         activation: idx % 2 === 0 ? true : false,
-        //     };
-        // });
-        // setProductsData(produtsArray);
+        getFirestoreProductsColletionData();
     }, []);
+
+    useEffect(() => {
+        if (!modal) {
+            getFirestoreProductsColletionData();
+            console.log('test,', modal);
+        }
+    }, [modal]);
+
+    const getFirestoreProductsColletionData = async () => {
+        try {
+            const productsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
+            const productsQuerySnapshot = await getDocs(productsCollectionRef);
+            let productsArray = [];
+            productsQuerySnapshot.forEach((product) => {
+                productsArray.push({ ...product.data(), uniqueId: product.id });
+            });
+
+            console.log('getdocs success', typeof productsQuerySnapshot);
+            setProductsData(productsArray);
+        } catch (error) {
+            console.log(error);
+            console.log('products collections getdocs error');
+        }
+    };
 
     const productsActivationHandler = (event, idx) => {
         const products = [...productsData];
         products[idx].activation = event.target.checked;
         setProductsData(products);
     };
+
+    console.log(productsData);
 
     const editBtn = () => toast('정보 수정 화면으로 전환됩니다.');
     const saveBtn = () => toast('저장되었습니다.');

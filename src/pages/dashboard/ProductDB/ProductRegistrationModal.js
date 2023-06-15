@@ -18,8 +18,8 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
     const [size, setSize] = useState('lg');
 
     const [productName, setProductName] = useState('');
-    const [productType, setProductType] = useState(null);
-    const [expirationPeriod, setExpirationPeriod] = useState(0);
+    const [productType, setProductType] = useState('batterBox');
+    const [expirationPeriod, setExpirationPeriod] = useState('1개월');
     const [expirationCount, setExpirationCount] = useState(0);
     const [regularPrice, setRegularPrice] = useState(0);
     const [activation, setActivation] = useState(true);
@@ -44,25 +44,21 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
             expirationCount: expirationCount,
             regularPrice: regularPrice,
             activation: activation,
-            createdDate: new Date(),
+            createdDate: new Date().toISOString().split('T')[0],
+            modifiedDate: new Date().toISOString().split('T')[0],
         };
 
         console.log(productData);
 
         try {
-            await setDoc(productsDocRef, productData).then((response) => {
-                console.log(response);
-            });
+            await setDoc(productsDocRef, productData);
+            setModal(!modal);
         } catch (error) {
             console.log(error);
         }
 
         setIsRegistering(false);
     };
-    const productsDocRef = doc(collection(firestoreDB, 'Users', email, 'Products'));
-    //products collection 생성
-
-    setDoc(productsDocRef, { ...firestoreProductsFieldSchema });
 
     const toggle = () => {
         setModal(!modal);
