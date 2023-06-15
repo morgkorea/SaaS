@@ -14,7 +14,6 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import ProductsTable from './ProductsTable.js';
 import ProductRegistrationModal from './ProductRegistrationModal.js';
-import { Modals } from './ProductRegistrationModal.js';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
@@ -49,14 +48,11 @@ const ProductDB = () => {
             const productsQuerySnapshot = await getDocs(productsCollectionRef);
             let productsArray = [];
             productsQuerySnapshot.forEach((product) => {
-                productsArray.push({ ...product.data(), uniqueId: product.id });
+                productsArray.push({ ...product.data(), uid: product.id });
             });
-
-            console.log('getdocs success', typeof productsQuerySnapshot);
             setProductsData(productsArray);
         } catch (error) {
             console.log(error);
-            console.log('products collections getdocs error');
         }
     };
 
@@ -67,9 +63,6 @@ const ProductDB = () => {
     };
 
     console.log(productsData);
-
-    const editBtn = () => toast('정보 수정 화면으로 전환됩니다.');
-    const saveBtn = () => toast('저장되었습니다.');
 
     return (
         <>

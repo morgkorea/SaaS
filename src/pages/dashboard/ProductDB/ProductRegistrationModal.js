@@ -73,13 +73,14 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
         setExpirationPeriod(event.target.value);
     };
     const getExpirationCount = (event) => {
-        setExpirationCount(event.target.value);
+        setExpirationCount(Number(event.target.value));
+        console.log(typeof expirationCount);
     };
 
     const getRegularPrice = (event) => {
-        setRegularPrice(event.target.value);
+        setRegularPrice(Number(event.target.value));
+        console.log(typeof regularPrice);
     };
-
     return (
         <>
             <Modal show={modal} onHide={toggle} size={size} centered={true}>
@@ -184,6 +185,7 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                         getExpirationCount(e);
                                     }}
                                     type="number"
+                                    defaultValue="0"
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
@@ -199,6 +201,8 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                     <span>상품 가격</span>
                                 </div>
                                 <input
+                                    type="number"
+                                    defaultValue={0}
                                     className="w-100 p-1"
                                     onChange={(e) => {
                                         getRegularPrice(e);

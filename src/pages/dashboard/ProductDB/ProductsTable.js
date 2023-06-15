@@ -6,6 +6,21 @@ import Form from 'react-bootstrap/Form';
 const ProductsTable = ({ productsData, productsActivationHandler, offset, limit }) => {
     console.log('rerender');
 
+    const productTypeTextHandler = (type) => {
+        switch (type) {
+            case 'batterBox':
+                return '타석';
+            case 'lesson':
+                return '레슨';
+            case 'locker':
+                return '락커';
+            case 'etc':
+                return '기타';
+            default:
+                return '';
+        }
+    };
+
     return (
         <Card>
             <Card.Body>
@@ -30,10 +45,10 @@ const ProductsTable = ({ productsData, productsActivationHandler, offset, limit 
                                     <tr key={'product_' + idx}>
                                         <td>{product.productsNumber}</td>
                                         <td>{product.product}</td>
-                                        <td>{product.category}</td>
+                                        <td>{productTypeTextHandler(product.type)}</td>
                                         <td>{product.expirationPeriod}</td>
-                                        <td>{product.expirationCount}</td>
-                                        <td>{product.regularPrice}</td>
+                                        <td>{product.expirationCount?.toLocaleString()}</td>
+                                        <td>{product.regularPrice?.toLocaleString()}</td>
                                         <td>
                                             {product.activation}{' '}
                                             <Container className="d-flex p-0">
@@ -49,8 +64,8 @@ const ProductsTable = ({ productsData, productsActivationHandler, offset, limit 
                                             </Container>
                                         </td>
 
-                                        <td>{product.createdDate}</td>
-                                        <td>{product.modifiedDate}</td>
+                                        <td>{product.createdDate?.replace(/-/g, '.')}</td>
+                                        <td>{product.modifiedDate?.replace(/-/g, '.')}</td>
                                     </tr>
                                 );
                             })}

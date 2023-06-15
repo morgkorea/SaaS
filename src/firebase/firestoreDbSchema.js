@@ -138,8 +138,8 @@ export const firestoreProductsFieldSchema = {
     expirationCount: 2, //유효횟수 type:number
     regularPrice: 40000, //가격 type:number
     activation: true, //활성화,
-    createdDate: new Date(), // type:object
-    modifiedDate: new Date(), // type:object
+    createdDate: '2023-06-15', // type:string yyyy-mm-dd
+    modifiedDate: '2023-06-15', // type:string yyyy-mm-dd
 };
 
 export const firestoreMarketingFieldSchema = {
