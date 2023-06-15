@@ -86,7 +86,7 @@ const ProductDB = () => {
                 </Col>
             </Row>
             <Row>
-                <Col>
+                <Col className="d-flex justify-content-center">
                     {productsData?.length > limit && (
                         <DefaultPagination total={productsData.length} limit={limit} page={page} setPage={setPage} />
                     )}

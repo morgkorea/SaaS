@@ -22,7 +22,7 @@ const ProductsTable = ({ productsData, productsActivationHandler, offset, limit 
     };
 
     return (
-        <Card>
+        <Card style={{ minHeight: '600px' }}>
             <Card.Body>
                 <div className="fixed-table-body">
                     <Table className="mb-0">
@@ -40,6 +40,11 @@ const ProductsTable = ({ productsData, productsActivationHandler, offset, limit 
                             </tr>
                         </thead>
                         <tbody>
+                            {!productsData.length && (
+                                <td>
+                                    <div>등록된 상품이 없습니다. 상품을 등록해 주세요.</div>
+                                </td>
+                            )}
                             {productsData?.slice(offset, offset + limit).map((product, idx) => {
                                 return (
                                     <tr key={'product_' + idx}>
