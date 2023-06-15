@@ -1,6 +1,6 @@
 // @flow
 import React, { useState } from 'react';
-import { Row, Col, Card, Button, Modal, Alert, ListGroup } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
 
 // components
 import PageTitle from '../../../components/PageTitle';
@@ -10,13 +10,16 @@ import logodark from '../../../assets/images/logo-dark.png';
 
 const ProductRegistrationModal = ({ modal, setModal }) => {
     // const [modal, setModal] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
     const [productType, setProductType] = useState(null);
     const [expirationPeriod, setExpirationPeriod] = useState(0);
     const [regularPrice, setRegularPrice] = useState(0);
+    const [activation, setActivation] = useState(true);
     /**
      * Show/hide the modal
      */
+
     const toggle = () => {
         setModal(!modal);
     };
@@ -109,6 +112,8 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                                     <option>8개월</option>
                                     <option>9개월</option>
                                     <option>10개월</option>
+                                    <option>11개월</option>
+                                    <option>12개월</option>
                                     <option>30일</option>
                                     <option>60일</option>
                                     <option>90일</option>
@@ -157,16 +162,40 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
                             </Col>
                             <Col>
                                 <div className="mb-1">
-                                    {' '}
                                     <span>판매등록</span>
                                 </div>
-                                <input
-                                    className="w-100 p-1"
-                                    style={{
-                                        height: '40px',
-                                        border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
-                                    }}></input>
+
+                                <div className="d-flex justify-content-between">
+                                    <button
+                                        onClick={() => {
+                                            setActivation(true);
+                                        }}
+                                        style={{
+                                            width: '150px',
+                                            height: '40px',
+                                            border: `1px solid ${activation ? '#727CF5' : '#DEE2E6'}`,
+                                            color: activation ? '#727CF5' : '#DEE2E6',
+
+                                            borderRadius: ' 2px',
+                                            backgroundColor: '#FFFFFF',
+                                        }}>
+                                        판매등록
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setActivation(false);
+                                        }}
+                                        style={{
+                                            width: '150px',
+                                            height: '40px',
+                                            border: `1px solid ${!activation ? '#727CF5' : '#DEE2E6'}`,
+                                            color: !activation ? '#727CF5' : '#DEE2E6',
+                                            borderRadius: ' 2px',
+                                            backgroundColor: '#FFFFFF',
+                                        }}>
+                                        보류하기
+                                    </button>
+                                </div>
                             </Col>
                         </Row>
                     </div>
