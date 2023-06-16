@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table } from 'react-bootstrap';
-import { Container } from 'react-bootstrap';
+import { Container, Card, Table } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 const ProductsTable = ({ productsData, productsActivationHandler, offset, limit }) => {

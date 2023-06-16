@@ -28,14 +28,14 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
     return (
         <>
             <PageTitle
-                breadCrumbItems={[
-                    { label: 'Tables', path: '/features/tables/advanced' },
-                    {
-                        label: 'Advanced Tables',
-                        path: '/features/tables/advanced',
-                        active: true,
-                    },
-                ]}
+                // breadCrumbItems={[
+                //     { label: 'Tables', path: '/features/tables/advanced' },
+                //     {
+                //         label: 'Advanced Tables',
+                //         path: '/features/tables/advanced',
+                //         active: true,
+                //     },
+                // ]}
                 title={'상품리스트'}
             />
 

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col } from 'react-bootstrap';
+
+import { Container } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -69,6 +72,19 @@ const ProductDB = () => {
             accessor: 'activation',
             Header: '상태',
             sort: true,
+            Cell: ({ value, row }) => (
+                <Container className="d-flex p-0">
+                    <Form className="pe-auto">
+                        <Form.Check
+                            type="switch"
+                            id={`custom-switch-${row.index}`}
+                            label={value ? '활성' : '비활성'}
+                            onChange={(event) => productsActivationHandler(event, row.index)}
+                            defaultChecked={value}
+                        />
+                    </Form>
+                </Container>
+            ),
         },
         {
             id: '8',
@@ -83,21 +99,6 @@ const ProductDB = () => {
             sort: true,
         },
     ];
-
-    const tableSettings = {
-        isSearchable: true,
-        isSortable: true,
-        pagination: true,
-        isSelectable: false,
-        isExpandable: false,
-        pageSize: 10,
-        columns: tableColumns,
-        data: [...productsData],
-        searchBoxClass: 'search-box',
-        tableClass: 'custom-table',
-        theadClass: 'custom-thead',
-        sizePerPageList: [1],
-    };
 
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
@@ -139,42 +140,15 @@ const ProductDB = () => {
     };
 
     console.log(productsData);
-
     return (
         <>
-            {/* <Row>
-                <Col xs={12}>
-                    <div className="page-title-box">
-                        <h4 className="page-title">상품 리스트</h4>
-                    </div>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {
-                        <ProductsTable
-                            productsData={productsData}
-                            productsActivationHandler={productsActivationHandler}
-                            limit={limit}
-                            offset={offset}
-                        />
-                    }
-                </Col>
-            </Row>
-            <Row>
-                <Col className="d-flex justify-content-center">
-                    {productsData?.length > limit && (
-                        <DefaultPagination total={productsData.length} limit={limit} page={page} setPage={setPage} />
-                    )}
-                </Col>
-            </Row> */}
-            <div className="edit-btn-area avatar-md" onClick={toggle}>
+            <ProductRegistrationModal modal={modal} setModal={setModal} />
+            <ProductsTable data={productsData} columns={tableColumns} />
+            <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />
                 </span>
             </div>
-            <ProductRegistrationModal modal={modal} setModal={setModal} />
-            <ProductsTable data={productsData} columns={tableColumns} />
         </>
     );
 };
