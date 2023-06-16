@@ -49,7 +49,12 @@ const ProductDB = () => {
     };
 
     useEffect(() => {
-        getFirestoreProductsColletionData();
+        const fetchData = async () => {
+            const products = await getFirestoreProductsColletionData();
+            setProductsData(products);
+        };
+
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -79,19 +84,24 @@ const ProductDB = () => {
             });
             console.log('recieve new data');
 
-            setProductsData(productsArray);
+            return productsArray;
         } catch (error) {
             console.log(error);
         }
     };
 
-    const productsActivationHandler = (event, idx) => {
-        console.log(idx);
-        const products = [...productsData];
-        products[idx].activation = event.target.checked;
+    // todo: 기존 소팅된 배열과 새로 받은 배열이 순서가 다른 문제 해결,
+
+    const productsActivationHandler = async (event, idx) => {
+        // console.log(idx);
+        // const products = [...productsData];
+        // products[idx].activation = event.target.checked;
         putFirestoreProductFieldData(event.target.checked, idx);
-        getFirestoreProductsColletionData();
+        console.log('activation  start');
+        const products = await getFirestoreProductsColletionData();
+
         setProductsData(products);
+        console.log('activation setState');
     };
 
     const putFirestoreProductFieldData = async (isActivation, idx) => {
