@@ -8,15 +8,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector } from 'react-redux';
 
-import { doc, getDocs, collection, query, where } from 'firebase/firestore';
+import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
 import { firestoreDB } from '../../../firebase/firebase';
-import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
-
-import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import ProductRegistrationModal from './ProductRegistrationModal.js';
 import ProductsTable from './ProductsTable.js';
+
+import * as yup from 'yup';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
@@ -25,6 +24,87 @@ const ProductDB = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
     const offset = (page - 1) * limit;
+
+    const productTypeTextHandler = (type) => {
+        switch (type) {
+            case 'batterBox':
+                return '타석';
+            case 'lesson':
+                return '레슨';
+            case 'locker':
+                return '락커';
+            case 'etc':
+                return '기타';
+            default:
+                return '';
+        }
+    };
+
+    const email = useSelector((state) => {
+        return state.Auth?.user?.email;
+    });
+
+    const toggle = () => {
+        setModal(!modal);
+    };
+
+    useEffect(() => {
+        getFirestoreProductsColletionData();
+    }, []);
+
+    useEffect(() => {
+        if (!modal) {
+            getFirestoreProductsColletionData();
+            console.log('test,', modal);
+        }
+    }, [modal]);
+
+    const getFirestoreProductsColletionData = async () => {
+        try {
+            const productsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
+            const productsQuerySnapshot = await getDocs(productsCollectionRef);
+            // let productsArray = [];
+            // onSnapshot(productsQuerySnapshot, (querySnapshot) => {
+            //     querySnapshot.forEach((product) => {
+            //         productsArray.push({ ...product.data(), uid: product.id });
+            //         console.log(product.modifiedDate);
+            //     });
+            //     console.log('updated data resieved');
+            // });
+
+            let productsArray = [];
+            productsQuerySnapshot.forEach((product) => {
+                productsArray.push({ ...product.data(), uid: product.id });
+                console.log(product.data().modifiedDate);
+            });
+            console.log('recieve new data');
+
+            setProductsData(productsArray);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const productsActivationHandler = (event, idx) => {
+        console.log(idx);
+        const products = [...productsData];
+        products[idx].activation = event.target.checked;
+        putFirestoreProductFieldData(event.target.checked, idx);
+        getFirestoreProductsColletionData();
+        setProductsData(products);
+    };
+
+    const putFirestoreProductFieldData = async (isActivation, idx) => {
+        const pudateDocRef = doc(firestoreDB, 'Users', email, 'Products', productsData[idx].uid);
+        try {
+            return await updateDoc(pudateDocRef, {
+                activation: isActivation,
+                modifiedDate: new Date().toISOString().split('T')[1].toString(),
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const tableColumns = [
         {
@@ -46,6 +126,9 @@ const ProductDB = () => {
             accessor: 'type', // 해당 열에 표시할 데이터 필드
             Header: '상품종류', // 열 헤더 텍스트
             sort: true,
+            Cell: ({ value }) => {
+                return productTypeTextHandler(value);
+            },
             // ... 추가적인 열 설정
         },
         {
@@ -71,7 +154,6 @@ const ProductDB = () => {
             id: '7',
             accessor: 'activation',
             Header: '상태',
-            sort: true,
             Cell: ({ value, row }) => (
                 <Container className="d-flex p-0">
                     <Form className="pe-auto">
@@ -99,45 +181,6 @@ const ProductDB = () => {
             sort: true,
         },
     ];
-
-    const email = useSelector((state) => {
-        return state.Auth?.user?.email;
-    });
-
-    const toggle = () => {
-        setModal(!modal);
-    };
-
-    useEffect(() => {
-        getFirestoreProductsColletionData();
-    }, []);
-
-    useEffect(() => {
-        if (!modal) {
-            getFirestoreProductsColletionData();
-            console.log('test,', modal);
-        }
-    }, [modal]);
-
-    const getFirestoreProductsColletionData = async () => {
-        try {
-            const productsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
-            const productsQuerySnapshot = await getDocs(productsCollectionRef);
-            let productsArray = [];
-            productsQuerySnapshot.forEach((product) => {
-                productsArray.push({ ...product.data(), uid: product.id });
-            });
-            setProductsData(productsArray);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const productsActivationHandler = (event, idx) => {
-        const products = [...productsData];
-        products[idx].activation = event.target.checked;
-        setProductsData(products);
-    };
 
     console.log(productsData);
     return (

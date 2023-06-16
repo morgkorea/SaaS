@@ -20,24 +20,14 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
             text: '30',
             value: 30,
         },
-        {
-            text: 'All',
-            value: data.length,
-        },
+        // {
+        //     text: 'All',
+        //     value: data.length,
+        // },
     ];
     return (
         <>
-            <PageTitle
-                // breadCrumbItems={[
-                //     { label: 'Tables', path: '/features/tables/advanced' },
-                //     {
-                //         label: 'Advanced Tables',
-                //         path: '/features/tables/advanced',
-                //         active: true,
-                //     },
-                // ]}
-                title={'상품리스트'}
-            />
+            <PageTitle title={'상품리스트'} />
 
             <Row>
                 <Col>
@@ -46,7 +36,7 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
                             <Table
                                 columns={columns}
                                 data={data}
-                                pageSize={5}
+                                pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}

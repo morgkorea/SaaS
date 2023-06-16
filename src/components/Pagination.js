@@ -123,7 +123,8 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
                 />
             </span>
 
-            <ul className="pagination pagination-rounded d-inline-flex ms-auto align-item-center mb-0">
+            {/* if you want rounded pagination => add className  "pagination-rounded" */}
+            <ul className="pagination d-inline-flex ms-auto align-item-center mb-0">
                 <li
                     key="prevpage"
                     className={classNames('page-item', 'paginate_button', 'previous', {
