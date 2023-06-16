@@ -1,84 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Table } from 'react-bootstrap';
-import { Container } from 'react-bootstrap';
-import Form from 'react-bootstrap/Form';
+// @flow
+import React from 'react';
+import { Row, Col, Card } from 'react-bootstrap';
 
-const ProductsTable = ({ productsData, productsActivationHandler, offset, limit }) => {
-    console.log('rerender');
+// components
+import PageTitle from '../../../components/PageTitle';
+import Table from '../../../components/Table';
 
-    const productTypeTextHandler = (type) => {
-        switch (type) {
-            case 'batterBox':
-                return '타석';
-            case 'lesson':
-                return '레슨';
-            case 'locker':
-                return '락커';
-            case 'etc':
-                return '기타';
-            default:
-                return '';
-        }
-    };
-
+const ProductsTable = ({ data, columns }): React$Element<any> => {
+    const sizePerPageList = [
+        {
+            text: '10',
+            value: 10,
+        },
+        {
+            text: '20',
+            value: 20,
+        },
+        {
+            text: '30',
+            value: 30,
+        },
+        {
+            text: 'All',
+            value: data.length,
+        },
+    ];
     return (
-        <Card style={{ minHeight: '600px' }}>
-            <Card.Body>
-                <div className="fixed-table-body">
-                    <Table className="mb-0">
-                        <thead>
-                            <tr>
-                                <th>상품번호</th>
-                                <th>상품명</th>
-                                <th>카테고리</th>
-                                <th>유효기간</th>
-                                <th>유효횟수</th>
-                                <th>정상가(원)</th>
-                                <th>상태</th>
-                                <th>등록일</th>
-                                <th>수정일</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {!productsData.length && (
-                                <td>
-                                    <div>등록된 상품이 없습니다. 상품을 등록해 주세요.</div>
-                                </td>
-                            )}
-                            {productsData?.slice(offset, offset + limit).map((product, idx) => {
-                                return (
-                                    <tr key={'product_' + idx}>
-                                        <td>{product.productsNumber}</td>
-                                        <td>{product.product}</td>
-                                        <td>{productTypeTextHandler(product.type)}</td>
-                                        <td>{product.expirationPeriod}</td>
-                                        <td>{product.expirationCount?.toLocaleString()}</td>
-                                        <td>{product.regularPrice?.toLocaleString()}</td>
-                                        <td>
-                                            {product.activation}{' '}
-                                            <Container className="d-flex p-0">
-                                                <Form className="pe-auto">
-                                                    <Form.Check
-                                                        type="switch"
-                                                        id="custom-switch"
-                                                        label={product?.activation ? '활성' : '비활성'}
-                                                        onChange={(event) => productsActivationHandler(event, idx)}
-                                                        defaultChecked={product.activation}
-                                                    />
-                                                </Form>
-                                            </Container>
-                                        </td>
+        <>
+            <PageTitle
+                breadCrumbItems={[
+                    { label: 'Tables', path: '/features/tables/advanced' },
+                    {
+                        label: 'Advanced Tables',
+                        path: '/features/tables/advanced',
+                        active: true,
+                    },
+                ]}
+                title={'상품리스트'}
+            />
 
-                                        <td>{product.createdDate?.replace(/-/g, '.')}</td>
-                                        <td>{product.modifiedDate?.replace(/-/g, '.')}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </Table>
-                </div>
-            </Card.Body>
-        </Card>
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Body>
+                            <Table
+                                columns={columns}
+                                data={data}
+                                pageSize={5}
+                                sizePerPageList={sizePerPageList}
+                                isSortable={true}
+                                pagination={true}
+                                isSearchable={true}
+                            />
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </>
     );
 };
 

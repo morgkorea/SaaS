@@ -25,14 +25,13 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
     return (
         <div className={classNames(searchBoxClass)}>
             <span className="d-flex align-items-center">
-                Search :{' '}
                 <input
                     value={value || ''}
                     onChange={(e) => {
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder={`${count} records...`}
+                    placeholder={`검색`}
                     className="form-control w-auto ms-1"
                 />
             </span>

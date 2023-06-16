@@ -131,7 +131,7 @@ export const firestoreSalesFieldSchema = [
     },
 ];
 export const firestoreProductsFieldSchema = {
-    productsNumber: 'NBA23403-101',
+    productNumber: 'NBA23403-101',
     product: '회원권 3개월권', //상품명, type:string
     type: 'batterBox', // 상품종류, type:string
     expirationPeriod: '1개월', //유효기간 (일) type:string
