@@ -14,6 +14,7 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import ProductsTable from './ProductsTable.js';
 import ProductRegistrationModal from './ProductRegistrationModal.js';
+import Table from './Table.js';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
@@ -22,6 +23,73 @@ const ProductDB = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
     const offset = (page - 1) * limit;
+
+    const tableColumns = [
+        {
+            id: '1', // 열 ID
+            accessor: 'productNumber', // 해당 열에 표시할 데이터 필드
+            Header: '상품번호', // 열 헤더 텍스트
+            // ... 추가적인 열 설정
+        },
+        {
+            id: '2', // 열 ID
+            accessor: 'product', // 해당 열에 표시할 데이터 필드
+            Header: '상품명', // 열 헤더 텍스트
+            // ... 추가적인 열 설정
+        },
+        {
+            id: '3', // 열 ID
+            accessor: 'type', // 해당 열에 표시할 데이터 필드
+            Header: '상품종류', // 열 헤더 텍스트
+            // ... 추가적인 열 설정
+        },
+        {
+            id: '4', // 열 ID
+            accessor: 'expirationPeriod', // 해당 열에 표시할 데이터 필드
+            Header: '유효기간', // 열 헤더 텍스트
+            // ... 추가적인 열 설정
+        },
+        {
+            id: '5',
+            accessor: 'expirationCount',
+            Header: '유효횟수',
+        },
+        {
+            id: '6',
+            accessor: 'regularPrice',
+            Header: '정상가',
+        },
+        {
+            id: '7',
+            accessor: 'activation',
+            Header: '상태',
+        },
+        {
+            id: '8',
+            accessor: 'createdDate',
+            Header: '등록일',
+        },
+        {
+            id: '9',
+            accessor: 'createdTime',
+            Header: '수정일',
+        },
+    ];
+
+    const tableSettings = {
+        isSearchable: true,
+        isSortable: true,
+        pagination: true,
+        isSelectable: false,
+        isExpandable: false,
+        pageSize: 10,
+        columns: tableColumns,
+        data: [...productsData],
+        searchBoxClass: 'search-box',
+        tableClass: 'custom-table',
+        theadClass: 'custom-thead',
+        sizePerPageList: [1],
+    };
 
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
@@ -98,6 +166,7 @@ const ProductDB = () => {
                 </span>
             </div>
             <ProductRegistrationModal modal={modal} setModal={setModal} />
+            <Table tableSettings={tableSettings} />
         </>
     );
 };
