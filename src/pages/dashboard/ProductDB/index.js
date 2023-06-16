@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector } from 'react-redux';
 
-import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, doc, getDocs, updateDoc, onSnapshot, orderBy } from 'firebase/firestore';
 
 import { firestoreDB } from '../../../firebase/firebase';
 
@@ -19,7 +19,7 @@ import * as yup from 'yup';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
-    const [modifiedActivation, setModifiedActivation] = useState(false);
+    const [isSortedBy, setIsSortedBy] = useState(false);
     const [modal, setModal] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 20;
@@ -59,14 +59,20 @@ const ProductDB = () => {
 
     useEffect(() => {
         if (!modal) {
-            getFirestoreProductsColletionData();
-            console.log('test,', modal);
+            const fetchData = async () => {
+                const products = await getFirestoreProductsColletionData();
+                setProductsData(products);
+            };
+            fetchData();
         }
     }, [modal]);
 
     const getFirestoreProductsColletionData = async () => {
         try {
-            const productsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
+            const productsCollectionRef = query(
+                collection(firestoreDB, 'Users', email, 'Products'),
+                orderBy('modifiedDate')
+            );
             const productsQuerySnapshot = await getDocs(productsCollectionRef);
             // let productsArray = [];
             // onSnapshot(productsQuerySnapshot, (querySnapshot) => {
