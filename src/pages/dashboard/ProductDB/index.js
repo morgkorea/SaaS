@@ -148,19 +148,10 @@ const ProductDB = () => {
         try {
             return await updateDoc(pudateDocRef, {
                 activation: isActivation,
-                modifiedDate: new Date().toISOString().split('T')[1].toString(),
+                modifiedDate: new Date().toISOString().split('T')[0].toString(),
             });
         } catch (error) {
             console.log(error);
-        }
-    };
-
-    const getSortedTableRows = (tableRows) => {
-        if (tableRows && tableRows.length) {
-            const sortedData = tableRows?.map((product) => {
-                return product.original;
-            });
-            console.log(sortedData);
         }
     };
 
@@ -194,6 +185,26 @@ const ProductDB = () => {
             accessor: 'expirationPeriod', // 해당 열에 표시할 데이터 필드
             Header: '유효기간', // 열 헤더 텍스트
             sort: true,
+            Cell: ({ value }) => {
+                const period = parseInt(value);
+                const isMonth = value.includes('월');
+                return <span>{isMonth ? `${period}월` : `${period}일`}</span>;
+            },
+            sortType: (rowA, rowB, columnId) => {
+                const valueA = parseInt(rowA.values[columnId]);
+                const valueB = parseInt(rowB.values[columnId]);
+                const isMonthA = rowA.values[columnId].includes('월');
+                const isMonthB = rowB.values[columnId].includes('월');
+
+                if (isMonthA && !isMonthB) {
+                    return 1;
+                } else if (!isMonthA && isMonthB) {
+                    return -1;
+                } else {
+                    return valueA - valueB;
+                }
+            },
+
             // ... 추가적인 열 설정
         },
         {
@@ -258,7 +269,7 @@ const ProductDB = () => {
     return (
         <>
             <ProductRegistrationModal modal={modal} setModal={setModal} />
-            <ProductsTable data={productsData} columns={tableColumns} getSortedTableRows={getSortedTableRows} />
+            <ProductsTable data={productsData} columns={tableColumns} />
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />

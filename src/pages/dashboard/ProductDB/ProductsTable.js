@@ -6,7 +6,7 @@ import { Row, Col, Card } from 'react-bootstrap';
 import PageTitle from '../../../components/PageTitle';
 import Table from '../../../components/Table';
 
-const ProductsTable = ({ data, columns, getSortedTableRows }): React$Element<any> => {
+const ProductsTable = ({ data, columns }): React$Element<any> => {
     const sizePerPageList = [
         {
             text: '10',
