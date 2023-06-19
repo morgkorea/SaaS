@@ -50,8 +50,9 @@ const ProductDB = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const products = await getFirestoreProductsColletionData();
-            setProductsData(products);
+            const fetchedProductsData = await getFirestoreProductsColletionData();
+            const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+            setProductsData(mergedProductsData);
         };
 
         fetchData();
@@ -60,8 +61,9 @@ const ProductDB = () => {
     useEffect(() => {
         if (!modal) {
             const fetchData = async () => {
-                const products = await getFirestoreProductsColletionData();
-                setProductsData(products);
+                const fetchedProductsData = await getFirestoreProductsColletionData();
+                const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+                setProductsData(mergedProductsData);
             };
             fetchData();
         }
@@ -98,18 +100,22 @@ const ProductDB = () => {
 
     // todo: 기존 소팅된 배열과 새로 받은 배열이 순서가 다른 문제 해결,
     const mergeProductsDataWithFirestore = (previous, current) => {
-        if (previous && current) {
+        if (previous.length && current.legnth) {
             let upToDateProductData = [...previous];
             for (let i = 0; i < upToDateProductData.length; i++) {
                 for (let j = 0; j < current.length; j++) {
                     if (upToDateProductData[i].memberNumber === current[j].memberNumber) {
-                        upToDateProductData[i] = current[j].memberNumber;
+                        upToDateProductData[i] = current[j];
+                        console.log('matched');
                     }
+                    console.log('not matched');
                 }
             }
-        }
 
-        console.log(productsData);
+            return upToDateProductData;
+        } else {
+            return current;
+        }
     };
 
     const productsActivationHandler = async (event, idx) => {
