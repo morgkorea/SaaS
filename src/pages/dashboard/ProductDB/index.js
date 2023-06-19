@@ -257,7 +257,6 @@ const ProductDB = () => {
 
     return (
         <>
-            <Spinner className="me-1" size="sm" color="primary" style={{ width: '15px', height: '15px' }} />
             <ProductRegistrationModal modal={modal} setModal={setModal} />
             <ProductsTable data={productsData} columns={tableColumns} getSortedTableRows={getSortedTableRows} />
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
