@@ -1,5 +1,5 @@
 // @flow
-import React, { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useEffect, forwardRef } from 'react';
 import {
     useTable,
     useSortBy,
@@ -76,6 +76,7 @@ type TableProps = {
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
+    const [currentSortBy, setCurrentSortBy] = useState([]);
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
@@ -86,7 +87,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { pageSize: props['pageSize'] || 10 },
+            initialState: { sortBy: currentSortBy, pageSize: props['pageSize'] || 10 },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,
@@ -150,6 +151,11 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
 
     let rows = pagination ? dataTable.page : dataTable.rows;
 
+    useEffect(() => {
+        // Update the current sorting condition when the sort state of the table changes
+        setCurrentSortBy(dataTable.state.sortBy);
+    }, [dataTable.state.sortBy]);
+
     return (
         <>
             {isSearchable && (
@@ -170,12 +176,18 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => (
                                     <th
+                                        // onClick={props.getSortedTableRows(dataTable.rows)}
                                         {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
                                         className={classNames({
                                             sorting_desc: column.isSortedDesc === true,
                                             sorting_asc: column.isSortedDesc === false,
                                             sortable: column.sort === true,
-                                        })}>
+                                        })}
+                                        // onClick={() => {
+                                        //     // Update the current sorting condition
+                                        //     setCurrentSortBy([{ id: column.id, desc: column.isSortedDesc }]);
+                                        // }}
+                                    >
                                         {column.render('Header')}
                                     </th>
                                 ))}

@@ -15,11 +15,15 @@ import { firestoreDB } from '../../../firebase/firebase';
 import ProductRegistrationModal from './ProductRegistrationModal.js';
 import ProductsTable from './ProductsTable.js';
 
+import Spinner from '../../../components/Spinner.js';
+
 import * as yup from 'yup';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
-    const [isSortedBy, setIsSortedBy] = useState(false);
+    const [sortedProductsData, setSortedProductsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isActivationFetching, setIsActivationFetching] = useState(false);
     const [modal, setModal] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 20;
@@ -50,30 +54,35 @@ const ProductDB = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             const fetchedProductsData = await getFirestoreProductsColletionData();
-            const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+            const mergedProductsData = mergeProductsDataWithFirestore(sortedProductsData, fetchedProductsData);
             setProductsData(mergedProductsData);
         };
 
         fetchData();
+        setIsLoading(false);
     }, []);
 
     useEffect(() => {
         if (!modal) {
             const fetchData = async () => {
+                setIsLoading(true);
                 const fetchedProductsData = await getFirestoreProductsColletionData();
-                const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+                const mergedProductsData = mergeProductsDataWithFirestore(sortedProductsData, fetchedProductsData);
+
                 setProductsData(mergedProductsData);
             };
             fetchData();
+            setIsLoading(false);
         }
     }, [modal]);
 
     const getFirestoreProductsColletionData = async () => {
         try {
             const productsCollectionRef = query(
-                collection(firestoreDB, 'Users', email, 'Products'),
-                orderBy('modifiedDate')
+                collection(firestoreDB, 'Users', email, 'Products')
+                // orderBy('modifiedDate')
             );
             const productsQuerySnapshot = await getDocs(productsCollectionRef);
             // let productsArray = [];
@@ -88,9 +97,7 @@ const ProductDB = () => {
             let productsArray = [];
             productsQuerySnapshot.forEach((product) => {
                 productsArray.push({ ...product.data(), uid: product.id });
-                console.log(product.data().modifiedDate);
             });
-            console.log('recieve new data');
 
             return productsArray;
         } catch (error) {
@@ -100,15 +107,14 @@ const ProductDB = () => {
 
     // todo: 기존 소팅된 배열과 새로 받은 배열이 순서가 다른 문제 해결,
     const mergeProductsDataWithFirestore = (previous, current) => {
-        if (previous.length && current.legnth) {
+        if (previous.length || current.legnth) {
             let upToDateProductData = [...previous];
             for (let i = 0; i < upToDateProductData.length; i++) {
                 for (let j = 0; j < current.length; j++) {
-                    if (upToDateProductData[i].memberNumber === current[j].memberNumber) {
-                        upToDateProductData[i] = current[j];
-                        console.log('matched');
+                    if (upToDateProductData[i].uid === current[j].uid) {
+                        upToDateProductData[i].activation = current[j].activation;
+                        upToDateProductData[i].modifiedDate = current[j].modifiedDate;
                     }
-                    console.log('not matched');
                 }
             }
 
@@ -122,12 +128,19 @@ const ProductDB = () => {
         // console.log(idx);
         // const products = [...productsData];
         // products[idx].activation = event.target.checked;
-        putFirestoreProductFieldData(event.target.checked, idx);
-        console.log('activation  start');
-        const products = await getFirestoreProductsColletionData();
+        setIsActivationFetching(idx);
 
-        setProductsData(products);
-        console.log('activation setState');
+        try {
+            await putFirestoreProductFieldData(event.target.checked, idx);
+            const fetchedProductsData = await getFirestoreProductsColletionData();
+            const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+            console.log(mergedProductsData, 'updated');
+            setProductsData(mergedProductsData);
+        } catch (error) {
+            console.log(error);
+        }
+
+        setIsActivationFetching(false);
     };
 
     const putFirestoreProductFieldData = async (isActivation, idx) => {
@@ -139,6 +152,15 @@ const ProductDB = () => {
             });
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const getSortedTableRows = (tableRows) => {
+        if (tableRows && tableRows.length) {
+            const sortedData = tableRows?.map((product) => {
+                return product.original;
+            });
+            console.log(sortedData);
         }
     };
 
@@ -192,15 +214,30 @@ const ProductDB = () => {
             Header: '상태',
             Cell: ({ value, row }) => (
                 <Container className="d-flex p-0">
-                    <Form className="pe-auto">
-                        <Form.Check
-                            type="switch"
-                            id={`custom-switch-${row.index}`}
-                            label={value ? '활성' : '비활성'}
-                            onChange={(event) => productsActivationHandler(event, row.index)}
-                            defaultChecked={value}
-                        />
-                    </Form>
+                    {
+                        <Form className="pe-auto">
+                            <Form.Check
+                                type="switch"
+                                id={`custom-switch-${row.index}`}
+                                label={
+                                    isActivationFetching === row.index ? (
+                                        <Spinner
+                                            className="me-1"
+                                            size="sm"
+                                            color="primary"
+                                            style={{ width: '15px', height: '15px' }}
+                                        />
+                                    ) : value ? (
+                                        '활성'
+                                    ) : (
+                                        '비활성'
+                                    )
+                                }
+                                onChange={(event) => productsActivationHandler(event, row.index)}
+                                defaultChecked={value}
+                            />
+                        </Form>
+                    }
                 </Container>
             ),
         },
@@ -218,11 +255,11 @@ const ProductDB = () => {
         },
     ];
 
-    console.log(productsData);
     return (
         <>
+            <Spinner className="me-1" size="sm" color="primary" style={{ width: '15px', height: '15px' }} />
             <ProductRegistrationModal modal={modal} setModal={setModal} />
-            <ProductsTable data={productsData} columns={tableColumns} />
+            <ProductsTable data={productsData} columns={tableColumns} getSortedTableRows={getSortedTableRows} />
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />

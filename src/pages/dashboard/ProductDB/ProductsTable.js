@@ -1,12 +1,12 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 
 // components
 import PageTitle from '../../../components/PageTitle';
 import Table from '../../../components/Table';
 
-const ProductsTable = ({ data, columns }): React$Element<any> => {
+const ProductsTable = ({ data, columns, getSortedTableRows }): React$Element<any> => {
     const sizePerPageList = [
         {
             text: '10',
@@ -41,6 +41,7 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
                                 isSortable={true}
                                 pagination={true}
                                 isSearchable={true}
+                                getSortedTableRows={getSortedTableRows}
                             />
                         </Card.Body>
                     </Card>
