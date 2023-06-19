@@ -41,7 +41,7 @@ const ProductsTable = ({ data, columns, getSortedTableRows }): React$Element<any
                                 isSortable={true}
                                 pagination={true}
                                 isSearchable={true}
-                                getSortedTableRows={getSortedTableRows}
+                                tablePurpose={'productsDB'}
                             />
                         </Card.Body>
                     </Card>

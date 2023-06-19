@@ -76,7 +76,12 @@ type TableProps = {
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
-    const [currentSortBy, setCurrentSortBy] = useState([]);
+    const [currentSortBy, setCurrentSortBy] = useState([
+        {
+            id: '6',
+            desc: true,
+        },
+    ]);
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
@@ -87,7 +92,10 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { sortBy: currentSortBy, pageSize: props['pageSize'] || 10 },
+            initialState: {
+                sortBy: props.tablePurpose ? currentSortBy : [],
+                pageSize: props['pageSize'] || 10,
+            },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,
@@ -156,6 +164,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
         setCurrentSortBy(dataTable.state.sortBy);
     }, [dataTable.state.sortBy]);
 
+    console.log('dataTable.state.sortBy', dataTable.state.sortBy);
     return (
         <>
             {isSearchable && (
@@ -182,12 +191,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                                             sorting_desc: column.isSortedDesc === true,
                                             sorting_asc: column.isSortedDesc === false,
                                             sortable: column.sort === true,
-                                        })}
-                                        // onClick={() => {
-                                        //     // Update the current sorting condition
-                                        //     setCurrentSortBy([{ id: column.id, desc: column.isSortedDesc }]);
-                                        // }}
-                                    >
+                                        })}>
                                         {column.render('Header')}
                                     </th>
                                 ))}
