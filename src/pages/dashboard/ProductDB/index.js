@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector } from 'react-redux';
 
-import { collection, query, where, doc, getDocs, updateDoc, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, doc, getDocs, updateDoc } from 'firebase/firestore';
 
 import { firestoreDB } from '../../../firebase/firebase';
 
