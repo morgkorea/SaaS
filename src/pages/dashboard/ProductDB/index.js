@@ -97,6 +97,20 @@ const ProductDB = () => {
     };
 
     // todo: 기존 소팅된 배열과 새로 받은 배열이 순서가 다른 문제 해결,
+    const mergeProductsDataWithFirestore = (previous, current) => {
+        if (previous && current) {
+            let upToDateProductData = [...previous];
+            for (let i = 0; i < upToDateProductData.length; i++) {
+                for (let j = 0; j < current.length; j++) {
+                    if (upToDateProductData[i].memberNumber === current[j].memberNumber) {
+                        upToDateProductData[i] = current[j].memberNumber;
+                    }
+                }
+            }
+        }
+
+        console.log(productsData);
+    };
 
     const productsActivationHandler = async (event, idx) => {
         // console.log(idx);
