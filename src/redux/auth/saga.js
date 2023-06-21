@@ -30,7 +30,7 @@ import {
 } from '../../firebase/firestoreDbSchema';
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { doc, setDoc, collection } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 import { errorConverter } from '../../utils/errorConverter';
 
@@ -103,6 +103,25 @@ function* signup({ payload: { username, email, password } }) {
         // username update
         yield call(firebaseUpdateProfileApi, { username });
 
+        // usersCodes pool에서 추출후 회원정보에 할당
+
+        const koCodesRef = yield doc(firestoreDB, 'UsersCodes', 'koCodes');
+        const koCodes = yield getDoc(koCodesRef);
+        const userCode = koCodes.data().codePool[0];
+
+        yield updateDoc(koCodesRef, {
+            codePool: arrayRemove(userCode),
+        });
+        yield updateDoc(koCodesRef, {
+            codeInUse: arrayUnion(userCode),
+        });
+
+        // console.log(codePoolArray, userCode);
+        // yield setDoc(doc(firestoreDB, 'UsersCodes', 'koCodes'), {
+        //     codePool: [...codePoolArray],
+        //     codeInUse: [...codeInUseArray,...userCode],
+        // });
+
         // 회원 Firebase RealtimeDB Init 스키마 생성 & 연동
 
         const firebaseAuthSession = {
@@ -121,11 +140,11 @@ function* signup({ payload: { username, email, password } }) {
         console.log('firebaseDBSchema', firestoreDbSchema({ username, email }));
 
         //Firestore DB init setup , signup과 함께 DB 구조 생성
-        yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email }));
+        yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email, userCode }));
 
         // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
         const membersCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
-        const productsCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Products'));
+        // const productsCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Products'));
 
         //members collection 생성
         yield setDoc(membersCollectionRef, { ...firestoreMemebersFieldSchema });

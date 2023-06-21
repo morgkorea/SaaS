@@ -4,7 +4,7 @@ import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, setDoc, collection } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection } from 'firebase/firestore';
 
 import { firestoreDB } from '../../../firebase/firebase';
 import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
@@ -12,7 +12,7 @@ import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchem
 //loading spinner
 import Spinner from '../../../components/Spinner';
 
-const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
+const ProductRegistrationModal = ({ modal, setModal }) => {
     // const [modal, setModal] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
@@ -32,7 +32,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         return state.Auth?.user?.email;
     });
 
-    const generateMemberNumber = (productType, expirationPeriod, expirationCount, productsData) => {
+    const generateMemberNumber = (productType, expirationPeriod, productsData) => {
         const getProductTypeCode = (productType) => {
             switch (productType) {
                 case 'batterBox':
@@ -49,19 +49,21 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         };
 
         const getExpirtaionPeriod = (expirationPeriod) => {
-            let expirationCode = expirationPeriod;
+            let expirationCode = expirationPeriod ? expirationPeriod : null;
 
             if (expirationCode.includes('개월')) {
-                expirationCode = expirationCode.replace(/개월/g, '00');
+                expirationCode = expirationCode.replace(/개월/g, '000');
             } else if (expirationCode.includes('일')) {
                 expirationCode = expirationCode.replace(/일/g, '일');
-                while (expirationCode.length === 4) {
+                while (expirationCode.length === 5) {
                     expirationCode = '0' + expirationCode;
                 }
             }
 
             return expirationCode;
         };
+
+        const getCreateNumber = () => {};
     };
 
     const productRegistration = async () => {

@@ -1,8 +1,9 @@
-export const firestoreDbSchema = ({ username, email }) => {
+export const firestoreDbSchema = ({ username, email, userCode }) => {
     // Users > email ID > firestoreSchema
     const firestoreSchema = {
         email: email,
         username: username,
+        userCode: userCode,
         role: 'Admin',
         // owner, coworker
         store: '엘파르케_양재',

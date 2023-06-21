@@ -267,7 +267,7 @@ const ProductDB = () => {
 
     return (
         <>
-            <ProductRegistrationModal modal={modal} setModal={setModal} productsData={productsData} />
+            <ProductRegistrationModal modal={modal} setModal={setModal} />
             {isLoading ? (
                 <Spinner className="me-1" size="sm" color="primary" style={{ width: '15px', height: '15px' }} />
             ) : (
