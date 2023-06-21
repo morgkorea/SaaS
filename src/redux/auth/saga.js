@@ -107,20 +107,15 @@ function* signup({ payload: { username, email, password } }) {
 
         const koCodesRef = yield doc(firestoreDB, 'UsersCodes', 'koCodes');
         const koCodes = yield getDoc(koCodesRef);
-        const userCode = koCodes.data().codePool[0];
+        const userCode = koCodes.data()?.codePool?.length ? koCodes.data()?.codePool[0] : 'KO';
 
+        //codePool에서 userCode 추출 및 제거, codeInUse 병합
         yield updateDoc(koCodesRef, {
             codePool: arrayRemove(userCode),
         });
         yield updateDoc(koCodesRef, {
             codeInUse: arrayUnion(userCode),
         });
-
-        // console.log(codePoolArray, userCode);
-        // yield setDoc(doc(firestoreDB, 'UsersCodes', 'koCodes'), {
-        //     codePool: [...codePoolArray],
-        //     codeInUse: [...codeInUseArray,...userCode],
-        // });
 
         // 회원 Firebase RealtimeDB Init 스키마 생성 & 연동
 
