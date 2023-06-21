@@ -12,7 +12,7 @@ import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchem
 //loading spinner
 import Spinner from '../../../components/Spinner';
 
-const ProductRegistrationModal = ({ modal, setModal }) => {
+const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     // const [modal, setModal] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
@@ -31,6 +31,38 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
+
+    const generateMemberNumber = (productType, expirationPeriod, expirationCount, productsData) => {
+        const getProductTypeCode = (productType) => {
+            switch (productType) {
+                case 'batterBox':
+                    return 'ME';
+                case 'lesson':
+                    return 'LE';
+                case 'locker':
+                    return 'LO';
+                case 'etc':
+                    return 'ET';
+                default:
+                    return null;
+            }
+        };
+
+        const getExpirtaionPeriod = (expirationPeriod) => {
+            let expirationCode = expirationPeriod;
+
+            if (expirationCode.includes('개월')) {
+                expirationCode = expirationCode.replace(/개월/g, '00');
+            } else if (expirationCode.includes('일')) {
+                expirationCode = expirationCode.replace(/일/g, '일');
+                while (expirationCode.length === 4) {
+                    expirationCode = '0' + expirationCode;
+                }
+            }
+
+            return expirationCode;
+        };
+    };
 
     const productRegistration = async () => {
         setIsRegistering(true);
@@ -81,6 +113,7 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
         setRegularPrice(Number(event.target.value));
         console.log(typeof regularPrice);
     };
+
     return (
         <>
             <Modal show={modal} onHide={toggle} size={size} centered={true}>

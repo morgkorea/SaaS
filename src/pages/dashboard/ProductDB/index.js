@@ -21,7 +21,6 @@ import * as yup from 'yup';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
-    const [sortedProductsData, setSortedProductsData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isActivationFetching, setIsActivationFetching] = useState(false);
     const [modal, setModal] = useState(false);
@@ -56,7 +55,7 @@ const ProductDB = () => {
         const fetchData = async () => {
             setIsLoading(true);
             const fetchedProductsData = await getFirestoreProductsColletionData();
-            const mergedProductsData = mergeProductsDataWithFirestore(sortedProductsData, fetchedProductsData);
+            const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
             setProductsData(mergedProductsData);
         };
 
@@ -69,7 +68,7 @@ const ProductDB = () => {
             const fetchData = async () => {
                 setIsLoading(true);
                 const fetchedProductsData = await getFirestoreProductsColletionData();
-                const mergedProductsData = mergeProductsDataWithFirestore(sortedProductsData, fetchedProductsData);
+                const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
 
                 setProductsData(mergedProductsData);
             };
@@ -268,8 +267,13 @@ const ProductDB = () => {
 
     return (
         <>
-            <ProductRegistrationModal modal={modal} setModal={setModal} />
-            <ProductsTable data={productsData} columns={tableColumns} />
+            <ProductRegistrationModal modal={modal} setModal={setModal} productsData={productsData} />
+            {isLoading ? (
+                <Spinner className="me-1" size="sm" color="primary" style={{ width: '15px', height: '15px' }} />
+            ) : (
+                <ProductsTable data={productsData} columns={tableColumns} />
+            )}
+
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />
