@@ -37,7 +37,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             const userCodesRef = doc(firestoreDB, 'Users', email);
             const userCodeSnapshot = await getDoc(userCodesRef);
             const userCode = userCodeSnapshot.data().userCode;
-            console.log(userCode);
 
             setUserCode(userCode);
         } catch (error) {
@@ -45,7 +44,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         }
     };
 
-    const generateMemberNumber = (productType, expirationPeriod, productsData) => {
+    const generateProductNumber = (productType, expirationPeriod, productsData) => {
         const getProductTypeCode = (productType) => {
             switch (productType) {
                 case 'batterBox':
@@ -57,18 +56,22 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                 case 'etc':
                     return 'ET';
                 default:
-                    return null;
+                    return '';
             }
         };
 
         const getExpirtaionPeriod = (expirationPeriod) => {
-            let expirationCode = expirationPeriod ? expirationPeriod : null;
+            let expirationCode = expirationPeriod ? expirationPeriod : '';
 
             if (expirationCode.includes('개월')) {
-                expirationCode = expirationCode.replace(/개월/g, '000');
+                expirationCode = expirationCode.replace(/개월/g, '');
+                while (expirationCode.length < 2) {
+                    expirationCode = '0' + expirationCode;
+                }
+                expirationCode = expirationCode + '000';
             } else if (expirationCode.includes('일')) {
-                expirationCode = expirationCode.replace(/일/g, '일');
-                while (expirationCode.length === 5) {
+                expirationCode = expirationCode.replace(/일/g, '');
+                while (expirationCode.length <= 4) {
                     expirationCode = '0' + expirationCode;
                 }
             }
@@ -76,16 +79,38 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             return expirationCode;
         };
 
-        return;
+        const getProductOrder = (productsData) => {
+            let productOrder = productsData ? productsData.length + 1 + '' : '';
+
+            while (productOrder.length < 3) {
+                productOrder = '0' + productOrder;
+            }
+
+            return productOrder;
+        };
+
+        const productCode =
+            userCode +
+            '_' +
+            getProductTypeCode(productType) +
+            '_' +
+            getExpirtaionPeriod(expirationPeriod) +
+            '_' +
+            getProductOrder(productsData);
+
+        return productCode;
     };
 
     const productRegistration = async () => {
         setIsRegistering(true);
         const productsDocRef = doc(collection(firestoreDB, 'Users', email, 'Products'));
+        const productCode = generateProductNumber(productType, expirationPeriod, productsData);
 
         const productData = {
             ...firestoreProductsFieldSchema,
+            productCode: productCode,
             product: productName,
+
             type: productType,
             expirationPeriod: expirationPeriod,
             expirationCount: expirationCount,
@@ -94,8 +119,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             createdDate: new Date().toISOString().split('T')[1],
             modifiedDate: new Date().toISOString().split('T')[0],
         };
-
-        console.log(productData);
 
         try {
             await setDoc(productsDocRef, productData);
@@ -118,6 +141,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     };
     const getExpirationPeriod = (event) => {
         setExpirationPeriod(event.target.value);
+        console.log(event.target.value);
     };
     const getExpirationCount = (event) => {
         setExpirationCount(Number(event.target.value));
@@ -126,6 +150,15 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     const getRegularPrice = (event) => {
         setRegularPrice(Number(event.target.value));
     };
+
+    useEffect(() => {
+        setProductName('');
+        setProductType('batterBox');
+        setExpirationPeriod('1개월');
+        setExpirationCount(0);
+        setRegularPrice(0);
+        setActivation(true);
+    }, [modal]);
 
     useEffect(() => {
         fectchFirestoreUserCode(email);

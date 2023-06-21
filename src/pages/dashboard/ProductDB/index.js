@@ -22,7 +22,6 @@ import * as yup from 'yup';
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [isActivationFetching, setIsActivationFetching] = useState(false);
     const [modal, setModal] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 20;
@@ -80,8 +79,8 @@ const ProductDB = () => {
         const porductsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
         onSnapshot(porductsCollectionRef, (querySnapshot) => {
             const productsArray = [];
-            querySnapshot.forEach((products) => {
-                productsArray.push(products.data());
+            querySnapshot.forEach((product) => {
+                productsArray.push({ ...product.data(), uid: product.id });
             });
 
             console.log(productsArray);
@@ -96,14 +95,6 @@ const ProductDB = () => {
                 // orderBy('modifiedDate')
             );
             const productsQuerySnapshot = await getDocs(productsCollectionRef);
-            // let productsArray = [];
-            // onSnapshot(productsQuerySnapshot, (querySnapshot) => {
-            //     querySnapshot.forEach((product) => {
-            //         productsArray.push({ ...product.data(), uid: product.id });
-            //         console.log(product.modifiedDate);
-            //     });
-            //     console.log('updated data resieved');
-            // });
 
             let productsArray = [];
             productsQuerySnapshot.forEach((product) => {
@@ -139,7 +130,6 @@ const ProductDB = () => {
         // console.log(idx);
         // const products = [...productsData];
         // products[idx].activation = event.target.checked;
-        setIsActivationFetching(idx);
 
         try {
             await putFirestoreProductFieldData(event.target.checked, idx);
@@ -150,8 +140,6 @@ const ProductDB = () => {
         } catch (error) {
             console.log(error);
         }
-
-        setIsActivationFetching(false);
     };
 
     const putFirestoreProductFieldData = async (isActivation, idx) => {
@@ -169,7 +157,7 @@ const ProductDB = () => {
     const tableColumns = [
         {
             id: '1', // 열 ID
-            accessor: 'productNumber', // 해당 열에 표시할 데이터 필드
+            accessor: 'productCode', // 해당 열에 표시할 데이터 필드
             Header: '상품번호', // 열 헤더 텍스트
             sort: true,
             // ... 추가적인 열 설정
@@ -198,14 +186,14 @@ const ProductDB = () => {
             sort: true,
             Cell: ({ value }) => {
                 const period = parseInt(value);
-                const isMonth = value.includes('월');
-                return <span>{isMonth ? `${period}월` : `${period}일`}</span>;
+                const isMonth = value.includes('개월');
+                return <span>{isMonth ? `${period}개월` : `${period}일`}</span>;
             },
             sortType: (rowA, rowB, columnId) => {
                 const valueA = parseInt(rowA.values[columnId]);
                 const valueB = parseInt(rowB.values[columnId]);
-                const isMonthA = rowA.values[columnId].includes('월');
-                const isMonthB = rowB.values[columnId].includes('월');
+                const isMonthA = rowA.values[columnId].includes('개월');
+                const isMonthB = rowB.values[columnId].includes('개월');
 
                 if (isMonthA && !isMonthB) {
                     return 1;
@@ -241,20 +229,7 @@ const ProductDB = () => {
                             <Form.Check
                                 type="switch"
                                 id={`custom-switch-${row.index}`}
-                                label={
-                                    isActivationFetching === row.index ? (
-                                        <Spinner
-                                            className="me-1"
-                                            size="sm"
-                                            color="primary"
-                                            style={{ width: '15px', height: '15px' }}
-                                        />
-                                    ) : value ? (
-                                        '활성'
-                                    ) : (
-                                        '비활성'
-                                    )
-                                }
+                                label={value ? '활성' : '비활성'}
                                 onChange={(event) => productsActivationHandler(event, row.index)}
                                 defaultChecked={value}
                             />
