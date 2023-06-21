@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector } from 'react-redux';
 
-import { collection, query, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
 import { firestoreDB } from '../../../firebase/firebase';
 
@@ -64,17 +64,29 @@ const ProductDB = () => {
     }, []);
 
     useEffect(() => {
-        if (!modal) {
-            const fetchData = async () => {
-                setIsLoading(true);
-                const fetchedProductsData = await getFirestoreProductsColletionData();
-                const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+        // if (!modal) {
+        //     console.log('modal closed and fetching start');
+        //     const fetchData = async () => {
+        //         setIsLoading(true);
+        //         const fetchedProductsData = await getFirestoreProductsColletionData();
+        //         const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
+        //         console.log(mergedProductsData);
+        //         setProductsData(mergedProductsData);
+        //     };
+        //     fetchData();
+        //     setIsLoading(false);
+        // }
 
-                setProductsData(mergedProductsData);
-            };
-            fetchData();
-            setIsLoading(false);
-        }
+        const porductsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
+        onSnapshot(porductsCollectionRef, (querySnapshot) => {
+            const productsArray = [];
+            querySnapshot.forEach((products) => {
+                productsArray.push(products.data());
+            });
+
+            console.log(productsArray);
+            setProductsData(productsArray);
+        });
     }, [modal]);
 
     const getFirestoreProductsColletionData = async () => {
@@ -267,7 +279,7 @@ const ProductDB = () => {
 
     return (
         <>
-            <ProductRegistrationModal modal={modal} setModal={setModal} />
+            <ProductRegistrationModal modal={modal} setModal={setModal} productsData={productsData} />
             {isLoading ? (
                 <Spinner className="me-1" size="sm" color="primary" style={{ width: '15px', height: '15px' }} />
             ) : (

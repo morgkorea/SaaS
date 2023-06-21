@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchem
 //loading spinner
 import Spinner from '../../../components/Spinner';
 
-const ProductRegistrationModal = ({ modal, setModal }) => {
+const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     // const [modal, setModal] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
@@ -23,6 +23,7 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
     const [expirationCount, setExpirationCount] = useState(0);
     const [regularPrice, setRegularPrice] = useState(0);
     const [activation, setActivation] = useState(true);
+    const [userCode, setUserCode] = useState('');
     /**
      * Show/hide the modal
      */
@@ -31,6 +32,18 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
+    const fectchFirestoreUserCode = async (email) => {
+        try {
+            const userCodesRef = doc(firestoreDB, 'Users', email);
+            const userCodeSnapshot = await getDoc(userCodesRef);
+            const userCode = userCodeSnapshot.data().userCode;
+            console.log(userCode);
+
+            setUserCode(userCode);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const generateMemberNumber = (productType, expirationPeriod, productsData) => {
         const getProductTypeCode = (productType) => {
@@ -63,7 +76,7 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
             return expirationCode;
         };
 
-        const getCreateNumber = () => {};
+        return;
     };
 
     const productRegistration = async () => {
@@ -78,7 +91,7 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
             expirationCount: expirationCount,
             regularPrice: regularPrice,
             activation: activation,
-            createdDate: new Date().toISOString().split('T')[0],
+            createdDate: new Date().toISOString().split('T')[1],
             modifiedDate: new Date().toISOString().split('T')[0],
         };
 
@@ -108,13 +121,15 @@ const ProductRegistrationModal = ({ modal, setModal }) => {
     };
     const getExpirationCount = (event) => {
         setExpirationCount(Number(event.target.value));
-        console.log(typeof expirationCount);
     };
 
     const getRegularPrice = (event) => {
         setRegularPrice(Number(event.target.value));
-        console.log(typeof regularPrice);
     };
+
+    useEffect(() => {
+        fectchFirestoreUserCode(email);
+    }, []);
 
     return (
         <>

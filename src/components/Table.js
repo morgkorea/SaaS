@@ -164,7 +164,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
         setCurrentSortBy(dataTable.state.sortBy);
     }, [dataTable.state.sortBy]);
 
-    console.log('dataTable.state.sortBy', dataTable.state.sortBy);
     return (
         <>
             {isSearchable && (
