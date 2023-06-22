@@ -21,36 +21,63 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setModal(!modal);
     };
 
+    useEffect(() => {}, [modal]);
+
     return (
         <>
             <Modal show={modal} onHide={toggle} size={size} centered={true}>
-                <Modal.Header className="border-bottom-0" onHide={toggle} closeButton></Modal.Header>
-                <Modal.Body style={{ width: '800px', height: '731px', padding: '0px 60px' }}>
-                    <h4 className="modal-title mb-3 ">상품 등록</h4>
+                <Modal.Header
+                    className="border-bottom-0"
+                    onHide={toggle}
+                    style={{ margin: '12px 0px' }}
+                    closeButton></Modal.Header>
+                <Modal.Body style={{ width: '100%', height: '615px', padding: '0px 60px' }}>
+                    <div style={{ width: '100%', paddingBottom: '32px' }}>
+                        <img src={salesRegistrationStep1} style={{ width: '100%' }} />
+                    </div>
+                    <h4 className="modal-title mb-3 ">회원 검색</h4>
+
+                    <div>
+                        <div className="mb-4">
+                            <div style={{ marginBottom: '8px' }}>회원성함</div>
+                            <div style={{ display: 'flex', border: '1px solid #DEE2E6' }}>
+                                <div className="font-24" style={{ marginLeft: '3px' }}>
+                                    <i className="mdi mdi-magnify" />
+                                </div>
+                                <input type="text" className="form-control" style={{ border: 'none', padding: 0 }} />
+                            </div>
+                        </div>
+                        <div className="mb-4">
+                            <div style={{ marginBottom: '8px' }}>전화번호</div>
+                            <div style={{ display: 'flex', border: '1px solid #DEE2E6' }}>
+                                <div className="font-24" style={{ marginLeft: '3px' }}>
+                                    <i className="mdi mdi-magnify" />
+                                </div>
+                                <input type="text" className="form-control" style={{ border: 'none', padding: 0 }} />
+                            </div>
+                        </div>
+                        <div className="mb-4">
+                            <div style={{ marginBottom: '8px' }}>오디언스</div>
+                            <div style={{ display: 'flex', border: '1px solid #DEE2E6' }}>
+                                <div className="font-24" style={{ marginLeft: '3px' }}>
+                                    <i className="mdi mdi-magnify" />
+                                </div>
+                                <select type="text" className="form-control" style={{ border: 'none', padding: 0 }}>
+                                    <option value={true}>활성</option>
+                                    <option value={false}>비활성</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="container">
-                        <div>
-                            <img src={salesRegistrationStep1} />
-                            <div></div>
-                        </div>
                         <Row className="mb-4">
                             <Col></Col>
                         </Row>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className="d-flex justify-content-center border-top-0">
-                    {/* <Button onClick={productRegistration} variant="primary">
-                        {isRegistering ? (
-                            <Spinner
-                                className="me-1"
-                                size="sm"
-                                color="white"
-                                style={{ width: '15px', height: '15px' }}
-                            />
-                        ) : (
-                            '등록'
-                        )}
-                    </Button> */}
+                <Modal.Footer className="d-flex justify-content-center border-top-0 ">
+                    <Button variant="primary">다음</Button>
                 </Modal.Footer>
             </Modal>
         </>
