@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { salesData } from './data.js';
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,7 +9,6 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 import EditBtn from './EditBtn.js';
 import EditTable from './EditTable.js';
 import ReadOnlyTable from './ReadOnlyTable.js';
-
 
 const SalesDB = () => {
     const [contacts, setContacts] = useState(salesData);
@@ -26,8 +25,8 @@ const SalesDB = () => {
     const [editContactId, setEditContactId] = useState(null);
     const handleEditClick = (event, data) => {
         event.preventDefault();
-        setEditContactId(data.id)
-    }
+        setEditContactId(data.id);
+    };
     return (
         <>
             <Row>
@@ -44,7 +43,6 @@ const SalesDB = () => {
                     ) : (
                         <ReadOnlyTable limit={limit} offset={offset} />
                     )}
-
                 </Col>
             </Row>
             <Row>

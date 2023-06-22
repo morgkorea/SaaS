@@ -1,5 +1,5 @@
 // @flow
-import React, { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useEffect, forwardRef } from 'react';
 import {
     useTable,
     useSortBy,
@@ -15,24 +15,25 @@ import classNames from 'classnames';
 import Pagination from './Pagination';
 
 // Define a default UI for filtering
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
+const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
     const count = preGlobalFilteredRows.length;
     const [value, setValue] = React.useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
 
+    console.log(productTablePlaceholder)
+
     return (
         <div className={classNames(searchBoxClass)}>
             <span className="d-flex align-items-center">
-                Search :{' '}
                 <input
                     value={value || ''}
                     onChange={(e) => {
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder={`${count} records...`}
+                    placeholder={productTablePlaceholder}
                     className="form-control w-auto ms-1"
                 />
             </span>
@@ -77,6 +78,12 @@ type TableProps = {
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
+    const [currentSortBy, setCurrentSortBy] = useState([
+        {
+            id: '6',
+            desc: true,
+        },
+    ]);
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
@@ -87,7 +94,10 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { pageSize: props['pageSize'] || 10 },
+            initialState: {
+                sortBy: props.tablePurpose ? currentSortBy : [],
+                pageSize: props['pageSize'] || 10,
+            },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,
@@ -151,6 +161,11 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
 
     let rows = pagination ? dataTable.page : dataTable.rows;
 
+    useEffect(() => {
+        // Update the current sorting condition when the sort state of the table changes
+        setCurrentSortBy(dataTable.state.sortBy);
+    }, [dataTable.state.sortBy]);
+
     return (
         <>
             {isSearchable && (
@@ -159,6 +174,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                     globalFilter={dataTable.state.globalFilter}
                     setGlobalFilter={dataTable.setGlobalFilter}
                     searchBoxClass={props['searchBoxClass']}
+                    productTablePlaceholder={props.productTablePlaceholder}
                 />
             )}
 
@@ -171,6 +187,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => (
                                     <th
+                                        // onClick={props.getSortedTableRows(dataTable.rows)}
                                         {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
                                         className={classNames({
                                             sorting_desc: column.isSortedDesc === true,
