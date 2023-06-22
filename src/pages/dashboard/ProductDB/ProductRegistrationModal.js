@@ -116,7 +116,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             expirationCount: expirationCount,
             regularPrice: regularPrice,
             activation: activation,
-            createdDate: new Date().toISOString().split('T')[1],
+            createdDate: new Date().toISOString().split('T')[0],
             modifiedDate: new Date().toISOString().split('T')[0],
         };
 

@@ -15,12 +15,14 @@ import classNames from 'classnames';
 import Pagination from './Pagination';
 
 // Define a default UI for filtering
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
+const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
     const count = preGlobalFilteredRows.length;
     const [value, setValue] = React.useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
+
+    console.log(productTablePlaceholder)
 
     return (
         <div className={classNames(searchBoxClass)}>
@@ -31,7 +33,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder={`검색`}
+                    placeholder={productTablePlaceholder}
                     className="form-control w-auto ms-1"
                 />
             </span>
@@ -172,6 +174,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                     globalFilter={dataTable.state.globalFilter}
                     setGlobalFilter={dataTable.setGlobalFilter}
                     searchBoxClass={props['searchBoxClass']}
+                    productTablePlaceholder={props.productTablePlaceholder}
                 />
             )}
 

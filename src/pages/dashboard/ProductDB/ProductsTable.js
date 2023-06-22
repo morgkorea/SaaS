@@ -9,16 +9,16 @@ import Table from '../../../components/Table';
 const ProductsTable = ({ data, columns }): React$Element<any> => {
     const sizePerPageList = [
         {
-            text: '10',
-            value: 10,
-        },
-        {
-            text: '20',
-            value: 20,
-        },
-        {
             text: '30',
             value: 30,
+        },
+        {
+            text: '60',
+            value: 60,
+        },
+        {
+            text: '90',
+            value: 90,
         },
         // {
         //     text: 'All',
@@ -36,12 +36,13 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
                             <Table
                                 columns={columns}
                                 data={data}
-                                pageSize={10}
+                                pageSize={30}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}
                                 isSearchable={true}
                                 tablePurpose={'productsDB'}
+                                productTablePlaceholder={"상품명 / 코드 검색"}
                             />
                         </Card.Body>
                     </Card>
