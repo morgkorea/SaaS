@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
-import { toast, ToastContainer } from 'react-toastify';
+// import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector } from 'react-redux';
@@ -17,7 +17,7 @@ import ProductsTable from './ProductsTable.js';
 
 import Spinner from '../../../components/Spinner.js';
 
-import * as yup from 'yup';
+// import * as yup from 'yup';
 
 const ProductDB = () => {
     const [productsData, setProductsData] = useState([]);

@@ -5,7 +5,6 @@ import { all, fork, put, takeEvery, call } from 'redux-saga/effects';
 import CryptoJS from 'crypto-js';
 
 import {
-    forgotPassword as forgotPasswordApi,
     forgotPasswordConfirm,
     firebaseLogin as firebaseLoginApi,
     firebaseSignup as firebasefirebaseSignupApi,
@@ -26,10 +25,10 @@ import { firestoreDB } from '../../firebase/firebase';
 import {
     firestoreDbSchema,
     firestoreMemebersFieldSchema,
-    firestoreProductsFieldSchema,
+   
 } from '../../firebase/firestoreDbSchema';
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
-import { getAuth } from 'firebase/auth';
+
 import { doc, getDoc, setDoc, collection, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 import { errorConverter } from '../../utils/errorConverter';
