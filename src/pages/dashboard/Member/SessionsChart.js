@@ -97,17 +97,7 @@ const SessionsChart = () => {
             <Card.Body>
                 <ul className="nav float-end d-none d-lg-flex">
                     <li className="nav-item">
-                        <Link to="#" className="nav-link text-muted">
-                            주간
-                        </Link>
-                    </li>
-                    <li className="nav-item">
                         <Link to="#" className="nav-link active">
-                            15일간
-                        </Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to="#" className="nav-link text-muted">
                             월간
                         </Link>
                     </li>

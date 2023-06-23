@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Table } from 'react-bootstrap';
-import { records } from './data.js';
 
-const StripedRowsTable = ({ offset, limit }) => {
+const StripedRowsTable = ({ offset, limit, currentMembers }) => {
+    
     return (
         <Card>
             <Card.Body>
@@ -15,22 +15,20 @@ const StripedRowsTable = ({ offset, limit }) => {
                             <th>이메일</th>
                             <th>업체</th>
                             <th>멤버쉽</th>
-                            <th></th>
                             <th>횟수</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {records.slice(offset, offset + limit).map((record, index) => {
+                        {currentMembers?.slice(offset, offset + limit).map((member, index) => {
                             return (
                                 <tr key={index}>
-                                    <th scope="row">{record.name}</th>
-                                    <td>{record.gender}</td>
-                                    <td>{record.phone}</td>
-                                    <td>{record.email}</td>
-                                    <td>{record.업체}</td>
-                                    <td>{record.멤버쉽}</td>
-                                    <td>{record.day}</td>
-                                    <td>{record.email}</td>
+                                    <th scope="row">{member.name}</th>
+                                    <td>{member.sex}</td>
+                                    <td>{member.phone}</td>
+                                    <td>{member.email}</td>
+                                    <td>{member.업체}</td>
+                                    <td>{member.availableProducts[0].activateProduct}</td>
+                                    <td>{member.availableProducts[0].dDays}</td>
                                 </tr>
                             );
                         })}

@@ -11,22 +11,18 @@ export const firestoreDbSchema = ({ username, email }) => {
         ownerPhone: '010-7178-1117', //ex) '010-xxxx-xxxx' || null,
         //회원DB
         members: [...firestoreMemebersFieldSchema],
-
         //매출DB
         sales: {
             ...firestoreSalesFieldSchema,
         },
-
         //상품DB
         products: {
             ...firestoreProductsFieldSchema,
         },
-
         //마케팅DB
         marketing: {
             ...firestoreMarketingFieldSchema,
         },
-
         //컨설팅DB
         consulting: {
             ...firestoreConsultingFieldSchema,
@@ -38,7 +34,6 @@ export const firestoreDbSchema = ({ username, email }) => {
 
 export const firestoreMemebersFieldSchema = [
     //회원DB
-
     {
         typeFormToken: '',
         memberNumber: '', //회원번호
@@ -120,6 +115,7 @@ export const firestoreSalesFieldSchema = [
         refundReason: '',
     },
 ];
+
 export const firestoreProductsFieldSchema = {
     batterBox: [
         //타석
@@ -213,6 +209,7 @@ export const firestoreCouponFieldSchema = [
         discountPrice: '30000', //할인금액
     },
 ];
+
 export const firestoreConsultingFieldSchema = [
     {
         consultingDate: '', //상담날짜 2023-4-14
@@ -234,6 +231,7 @@ export const firestoreConsultingFieldSchema = [
         etcConsulting: '', //기타상담내용
     },
 ];
+
 export const createMembersAvailableProduct = (activateProduct, startDate, endDate, dDays) => {
     return {
         activateProduct: activateProduct, //활성상품

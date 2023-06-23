@@ -1,73 +1,56 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
-import { salesData } from './data.js';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import DefaultPagination from '../../../components/DefaultPagination.js';
-
-import EditBtn from './EditBtn.js';
-import EditTable from './EditTable.js';
-import ReadOnlyTable from './ReadOnlyTable.js';
-
+import BtnWrap from './BtnWrap.js';
+import Customers from './Customers.js';
+import { firestoreDB } from '../../../firebase/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const SalesDB = () => {
-    const [contacts, setContacts] = useState(salesData);
-    // 페이지네이션
-    const [page, setPage] = useState(1);
-    const limit = 20;
-    const offset = (page - 1) * limit;
-
-    // 수정하기
+    const [currentMembers, setCurrentMembers] = useState([]);
+    const [addMode, setAddMode] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const editBtn = () => toast('정보 수정 화면으로 전환됩니다.');
-    const saveBtn = () => toast('저장되었습니다.');
+    const email = useSelector((state) => {
+        return state.Auth?.user.email;
+    });
+    const memberRef = collection(firestoreDB, "Users", email, "Members")
 
-    const [editContactId, setEditContactId] = useState(null);
-    const handleEditClick = (event, data) => {
-        event.preventDefault();
-        setEditContactId(data.id)
-    }
+
+    const getMembers = async () => {
+        const data = await getDocs(memberRef);
+        
+        setCurrentMembers(data.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        })))
+    };
+
+    useEffect(() => {
+        getMembers();
+    }, []);
+
     return (
         <>
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
-                        <h4 className="page-title">매출DB</h4>
+                        <h4 className="page-title">회원현황</h4>
                     </div>
                 </Col>
             </Row>
             <Row>
-                <Col>
-                    {editMode ? (
-                        <EditTable limit={limit} offset={offset} />
-                    ) : (
-                        <ReadOnlyTable limit={limit} offset={offset} />
-                    )}
-
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {salesData?.length > limit && (
-                        <DefaultPagination total={salesData.length} limit={limit} page={page} setPage={setPage} />
-                    )}
+                <Col xs={12}>
+                    <Customers
+                        currentMembers={currentMembers}
+                        email={email}
+                        addMode={addMode}
+                        editMode={editMode}
+                        setAddMode={setAddMode}
+                    />
                 </Col>
             </Row>
 
-            <EditBtn setEditMode={setEditMode} editMode={editMode} saveBtn={saveBtn} editBtn={editBtn} />
-
-            <ToastContainer
-                position="top-center"
-                autoClose={1000}
-                hideProgressBar={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
+            {/* <BtnWrap setEditMode={setEditMode} setAddMode={setAddMode} addMode={addMode} editMode={editMode} /> */}
         </>
     );
 };

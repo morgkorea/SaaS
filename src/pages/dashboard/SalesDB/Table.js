@@ -10,7 +10,9 @@ import {
 } from 'react-table';
 import classNames from 'classnames';
 import Pagination from './Pagination';
-import AddCell from '../pages/dashboard/SalesDB/AddCell';
+import AddCell from './AddCell';
+import EditCell from './EditCell';
+import { Button, Col, Row } from 'react-bootstrap';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
@@ -71,7 +73,6 @@ type TableProps = {
         text: string,
         value: number,
     }[],
-
 };
 
 const Table = (props: TableProps) => {
@@ -80,6 +81,15 @@ const Table = (props: TableProps) => {
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
+    const addMode = props['addMode'] || false;
+    const setAddMode = props['setAddMode'] || false;
+    const editMode = props['editMode'] || false;
+
+    const onClickAdd = () => {
+        if (!addMode) {
+            setAddMode((prev) => !prev) // add 모드로 변경
+        }
+    }
 
     const dataTable = useTable(
         {
@@ -136,11 +146,11 @@ const Table = (props: TableProps) => {
     );
 
     let rows = pagination ? dataTable.page : dataTable.rows;
-    
-    const addMode = true;
-    
+
     return (
         <>
+        <div className='d-flex'>
+            <div>
             {isSearchable && (
                 <GlobalFilter
                     preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
@@ -149,8 +159,14 @@ const Table = (props: TableProps) => {
                     searchBoxClass={props['searchBoxClass']}
                 />
             )}
-
-            <div className="table-responsive">
+            </div>
+            <div className='ms-2'>
+                <Button onClick={onClickAdd}>회원등록</Button>
+            </div>
+        </div>
+            
+           
+            <div className="table-responsive member-table">
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
@@ -172,13 +188,14 @@ const Table = (props: TableProps) => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {addMode ? <AddCell/> : null}
+                        {addMode ? <AddCell /> : null}
+                        {editMode ? <EditCell /> : null}
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
-                                <tr {...row.getRowProps()}>
+                                <tr {...row.getRowProps()} key={row.original.id}>
                                     {row.cells.map((cell) => {
-                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                                        return <td key={cell.id} {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                                     })}
                                 </tr>
                             );

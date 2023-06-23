@@ -2,11 +2,40 @@
 // avatar.scss (avatar thumbnail sizes)
 //
 
-.edit-btn-area {
+
+.circle-btn {
+  width: 72px;
+  height: 72px;
   position: fixed;
   bottom: 40px;
   right: 20px;
+  border-radius: 72px;
   cursor: pointer;
+  z-index: 10;
+  > span {
+    font-size: 24px;
+  }
+}
+
+.rectangle-btn {
+  background: white;
+  width: 72px;
+  height: 144px;
+  position: fixed;
+  bottom: 140px;
+  right: 20px;
+  border-radius: 72px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  padding: 15px 0;
+  > span {
+    font-size: 24px;
+  }
 }
 
 .avatar-xs {
