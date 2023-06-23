@@ -8,6 +8,8 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 
 import SalesRegistrationModal from './SalesRegistrationModal.js';
 
+import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+
 import EditBtn from './EditBtn.js';
 import EditTable from './EditTable.js';
 import ReadOnlyTable from './ReadOnlyTable.js';
@@ -34,6 +36,7 @@ const SalesDB = () => {
     const toggle = () => {
         setModal(!modal);
     };
+
     return (
         <>
             <Row>

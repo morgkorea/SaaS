@@ -4,10 +4,15 @@ import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, getDoc, setDoc, collection } from 'firebase/firestore';
+import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
 import { firestoreDB } from '../../../firebase/firebase';
-import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
+import { firestoreSalesFieldSchema } from '../../../firebase/firestoreDbSchema';
+
+import { debounce } from 'lodash';
+
+import * as Hangul from 'hangul-js';
+import { getInitials } from 'hangul-js';
 
 import salesRegistrationStep1 from '../../../assets/images/icons/png/salesRegistrationStep1.png';
 import salesRegistrationStep2 from '../../../assets/images/icons/png/salesRegistrationStep2.png';
@@ -19,11 +24,73 @@ import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(4);
+    const [searchingName, setSearchingName] = useState('');
+    const [membersList, setMembersList] = useState([]);
     const [size, setSize] = useState('lg');
 
     const toggle = () => {
         setModal(!modal);
     };
+
+    const email = useSelector((state) => {
+        return state.Auth?.user?.email;
+    });
+
+    const getSearchingName = (event) => {
+        // event.persist(); // event pooling , event 객체 null 값 방지
+        console.log(event.target.value);
+        setSearchingName(event.target.value);
+    };
+
+    const searchMembers = (membersList) => {
+        const members = [...membersList].filter((member) => {
+            const memberCho = Hangul.disassemble(member.name, true)
+                .map((ele) => {
+                    return ele[0];
+                })
+                .join('');
+            return [...searchingName].every((element, idx) => {
+                return element === memberCho[idx];
+            }) || member.name.includes(searchingName)
+                ? true
+                : false;
+        });
+    };
+    useEffect(() => {
+        searchMembers(membersList);
+    }, [searchingName]);
+
+    // console.log(Hangul.disassembleToString('유승훈').includes(Hangul.disassembleToString(searchingName)));
+    // console.log(
+    //     Hangul.disassemble('유승훈', true)
+    //         .map((ele) => {
+    //             return ele[0];
+    //         })
+    //         .join('')
+    //         .includes(searchingName)
+    // );
+
+    // console.log('유승훈'.includes('유승'));
+
+    const getFirestoreMembersList = async () => {
+        try {
+            const memebersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
+            onSnapshot(memebersCollectionRef, (querySnampshot) => {
+                const membersArray = [];
+                querySnampshot.forEach((member) => {
+                    membersArray.push(member.data());
+                });
+                console.log(membersArray);
+                setMembersList(membersArray);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getFirestoreMembersList();
+    }, []);
 
     const switchRegistrationStepImg = (registrationStep) => {
         switch (registrationStep) {
@@ -80,7 +147,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 <div className="font-24" style={{ marginLeft: '3px' }}>
                                     <i className="mdi mdi-magnify" />
                                 </div>
-                                <input type="text" className="form-control" style={{ border: 'none', padding: 0 }} />
+                                <input
+                                    onChange={(event) => {
+                                        getSearchingName(event);
+                                    }}
+                                    type="text"
+                                    className="form-control"
+                                    style={{ border: 'none', padding: 0 }}
+                                />
                             </div>
                         </div>
                         <div className="mb-4">
