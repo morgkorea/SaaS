@@ -5,8 +5,24 @@ import Chart from 'react-apexcharts';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const AgeChart = () => {
+const AgeChart = ({ members }) => {
+    let man = 0;
+    let woman = 0;
+    let junior = 0;
 
+    function gender() {
+        members.map((user) => {
+            if (user.sex === '남성') {
+                return man++;
+            } else if (user.sex === '여성') {
+                return woman++;
+            } else {
+                return junior++;
+            }
+        });
+    }
+    gender();
+    
     const apexBarChartOpts = {
         chart: {
             height: 100,
@@ -66,7 +82,7 @@ const AgeChart = () => {
     return (
         <Card>
             <Card.Body>
-                <div className='d-flex'>
+                <div className="d-flex">
                     <h4 className="header-title mb-3">성별/연령별 추이</h4>
                     {/* span - 가변 데이터 */}
                     <h5 className="text-muted fw-normal mt-0 m-2 text-truncate">
@@ -74,7 +90,13 @@ const AgeChart = () => {
                     </h5>
                 </div>
 
-                <Chart options={apexBarChartOpts} series={apexBarChartData} type="bar" className="apex-charts" height={360} />
+                <Chart
+                    options={apexBarChartOpts}
+                    series={apexBarChartData}
+                    type="bar"
+                    className="apex-charts"
+                    height={360}
+                />
             </Card.Body>
         </Card>
     );

@@ -10,28 +10,28 @@ import {
 } from 'react-table';
 import classNames from 'classnames';
 import Pagination from './Pagination';
-import AddCell from '../pages/dashboard/MembersDB/AddCell';
+import AddCell from './AddCell';
+import EditCell from './EditCell';
+import { Button, Col, Row } from 'react-bootstrap';
 
-// Define a default UI for filtering
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
+const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
     const [value, setValue] = React.useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
 
-    console.log(productTablePlaceholder)
-
     return (
         <div className={classNames(searchBoxClass)}>
             <span className="d-flex align-items-center">
+                Search{' '}
                 <input
                     value={value || ''}
                     onChange={(e) => {
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder={productTablePlaceholder}
+                    placeholder="검색어를 입력하세요."
                     className="form-control w-auto ms-1"
                 />
             </span>
@@ -73,30 +73,29 @@ type TableProps = {
         text: string,
         value: number,
     }[],
-
 };
 
-const Table = (props: TableProps): React$Element<React$FragmentType> => {
-    const [currentSortBy, setCurrentSortBy] = useState([
-        {
-            id: '6',
-            desc: true,
-        },
-    ]);
+const Table = (props: TableProps) => {
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
+    const addMode = props['addMode'] || false;
+    const setAddMode = props['setAddMode'] || false;
+    const editMode = props['editMode'] || false;
+
+    const onClickAdd = () => {
+        if (!addMode) {
+            setAddMode((prev) => !prev) // add 모드로 변경
+        }
+    }
 
     const dataTable = useTable(
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: {
-                sortBy: props.tablePurpose ? currentSortBy : [],
-                pageSize: props['pageSize'] || 10,
-            },
+            initialState: { pageSize: props['pageSize'] || 10 },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,
@@ -148,24 +147,26 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
 
     let rows = pagination ? dataTable.page : dataTable.rows;
 
-    useEffect(() => {
-        // Update the current sorting condition when the sort state of the table changes
-        setCurrentSortBy(dataTable.state.sortBy);
-    }, [dataTable.state.sortBy]);
-
     return (
         <>
+        <div className='d-flex'>
+            <div>
             {isSearchable && (
                 <GlobalFilter
                     preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
                     globalFilter={dataTable.state.globalFilter}
                     setGlobalFilter={dataTable.setGlobalFilter}
                     searchBoxClass={props['searchBoxClass']}
-                    productTablePlaceholder={props.productTablePlaceholder}
                 />
             )}
-
-            <div className="table-responsive">
+            </div>
+            <div className='ms-2'>
+                <Button onClick={onClickAdd}>회원등록</Button>
+            </div>
+        </div>
+            
+           
+            <div className="table-responsive member-table">
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
@@ -174,7 +175,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => (
                                     <th
-                                        // onClick={props.getSortedTableRows(dataTable.rows)}
                                         {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
                                         className={classNames({
                                             sorting_desc: column.isSortedDesc === true,
@@ -188,13 +188,14 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {/* {addMode ? <AddCell/> : null} */}
+                        {addMode ? <AddCell /> : null}
+                        {editMode ? <EditCell /> : null}
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
-                                <tr {...row.getRowProps()}>
+                                <tr {...row.getRowProps()} key={row.original.id}>
                                     {row.cells.map((cell) => {
-                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                                        return <td key={cell.id} {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                                     })}
                                 </tr>
                             );

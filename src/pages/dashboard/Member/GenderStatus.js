@@ -1,19 +1,32 @@
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import CardTitle from '../../../components/CardTitle';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+const GenderStatus = ({ members }) => {
+    let man = 0;
+    let woman = 0;
+    let junior = 0;
 
-const GenderStatus = () => {
-    const colors = ['#727cf5', '#fa5c7c','#0acf97'];
+    function gender() {
+        members.map((user) => {
+            if (user.sex === '남성') {
+                return man++;
+            } else if (user.sex === '여성') {
+                return woman++;
+            } else {
+                return junior++;
+            }
+        });
+    }
+    gender();
 
+    const colors = ['#727cf5', '#fa5c7c', '#0acf97'];
     const donutChartData = {
-        labels: ['남성', '여성', '기타'],
+        labels: ['남성', '여성', '주니어'],
         datasets: [
             {
-                data: [90, 70, 20],
+                data: [man, woman, junior],
                 backgroundColor: colors,
                 borderColor: 'transparent',
                 borderWidth: '2',
@@ -52,29 +65,29 @@ const GenderStatus = () => {
                 <Row className="text-center mt-2 py-2">
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-trending-up text-primary mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank text-primary mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>90명</span>
+                                <span>{man}명</span>
                             </h3>
                             <p className="text-muted mb-0">남성</p>
                         </div>
                     </Col>
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-trending-down text-danger mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank text-danger mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>70명</span>
+                                <span>{woman}명</span>
                             </h3>
                             <p className="text-muted mb-0">여성</p>
                         </div>
                     </Col>
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-trending-down text-success mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank text-success mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>20명</span>
+                                <span>{junior}명</span>
                             </h3>
-                            <p className="text-muted mb-0">기타</p>
+                            <p className="text-muted mb-0">주니어</p>
                         </div>
                     </Col>
                 </Row>

@@ -17,12 +17,10 @@ export const firestoreDbSchema = ({ username, email, userCode }) => {
         sales: {
             ...firestoreSalesFieldSchema,
         },
-
         //마케팅DB
         marketing: {
             ...firestoreMarketingFieldSchema,
         },
-
         //컨설팅DB
         consulting: {
             ...firestoreConsultingFieldSchema,
@@ -126,6 +124,7 @@ export const firestoreSalesFieldSchema = [
         refundReason: '단순변심', //환불사유
     },
 ];
+
 export const firestoreProductsFieldSchema = {
     productCode: '', // 상품코드 , type:string , (고객사코드_종류_기간_번호)    KO0001_ME_091_001
     product: '회원권 3개월권', //상품명, type:string
@@ -171,6 +170,7 @@ export const firestoreCouponFieldSchema = [
         discountPrice: '30000', //할인금액
     },
 ];
+
 export const firestoreConsultingFieldSchema = [
     {
         consultingDate: '', //상담날짜 2023-4-14
@@ -192,6 +192,7 @@ export const firestoreConsultingFieldSchema = [
         etcConsulting: '', //기타상담내용
     },
 ];
+
 export const createMembersAvailableProduct = (activateProduct, startDate, endDate, dDays) => {
     return {
         activateProduct: activateProduct, //활성상품
