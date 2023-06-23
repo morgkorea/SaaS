@@ -25,6 +25,7 @@ import Spinner from '../../../components/Spinner';
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(4);
     const [searchingName, setSearchingName] = useState('');
+    const [searchingPhone, setSearchingPhone] = useState('');
     const [membersList, setMembersList] = useState([]);
     const [size, setSize] = useState('lg');
 
@@ -41,6 +42,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         console.log(event.target.value);
         setSearchingName(event.target.value);
     };
+    const getSearchingPhone = (event) => {
+        setSearchingPhone(event.target.value);
+    };
 
     const searchMembers = (membersList) => {
         const members = [...membersList].filter((member) => {
@@ -49,16 +53,20 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     return ele[0];
                 })
                 .join('');
-            return [...searchingName].every((element, idx) => {
-                return element === memberCho[idx];
-            }) || member.name.includes(searchingName)
-                ? true
-                : false;
+            return (
+                ([...searchingName].every((element, idx) => {
+                    return element === memberCho[idx];
+                }) || member.name?.includes(searchingName)
+                    ? true
+                    : false) && member.phone?.includes(searchingPhone)
+            );
         });
+
+        console.log(members);
     };
     useEffect(() => {
         searchMembers(membersList);
-    }, [searchingName]);
+    }, [searchingName, searchingPhone]);
 
     // console.log(Hangul.disassembleToString('유승훈').includes(Hangul.disassembleToString(searchingName)));
     // console.log(
@@ -163,7 +171,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 <div className="font-24" style={{ marginLeft: '3px' }}>
                                     <i className="mdi mdi-magnify" />
                                 </div>
-                                <input type="text" className="form-control" style={{ border: 'none', padding: 0 }} />
+                                <input
+                                    onChange={(event) => {
+                                        getSearchingPhone(event);
+                                    }}
+                                    type="text"
+                                    className="form-control"
+                                    style={{ border: 'none', padding: 0 }}
+                                />
                             </div>
                         </div>
                         <div className="mb-4">
