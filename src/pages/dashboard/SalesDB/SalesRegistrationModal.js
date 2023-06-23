@@ -133,6 +133,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     //test
+    useEffect(() => {}, []);
 
     useEffect(() => {}, [modal]);
 
