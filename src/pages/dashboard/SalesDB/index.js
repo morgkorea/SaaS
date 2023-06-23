@@ -6,11 +6,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import DefaultPagination from '../../../components/DefaultPagination.js';
 
+import SalesRegistrationModal from './SalesRegistrationModal.js';
+
+import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+
 import EditBtn from './EditBtn.js';
 import EditTable from './EditTable.js';
 import ReadOnlyTable from './ReadOnlyTable.js';
 
 const SalesDB = () => {
+    const [modal, setModal] = useState(false);
     const [contacts, setContacts] = useState(salesData);
     // 페이지네이션
     const [page, setPage] = useState(1);
@@ -27,6 +32,11 @@ const SalesDB = () => {
         event.preventDefault();
         setEditContactId(data.id);
     };
+
+    const toggle = () => {
+        setModal(!modal);
+    };
+
     return (
         <>
             <Row>
@@ -53,9 +63,7 @@ const SalesDB = () => {
                 </Col>
             </Row>
 
-            <EditBtn setEditMode={setEditMode} editMode={editMode} saveBtn={saveBtn} editBtn={editBtn} />
-
-            <ToastContainer
+            {/* <ToastContainer
                 position="top-center"
                 autoClose={1000}
                 hideProgressBar={false}
@@ -65,7 +73,13 @@ const SalesDB = () => {
                 draggable
                 pauseOnHover
                 theme="light"
-            />
+            /> */}
+            <SalesRegistrationModal modal={modal} setModal={setModal} />
+            <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
+                <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
+                    <i className="mdi mdi-plus" />
+                </span>
+            </div>
         </>
     );
 };
