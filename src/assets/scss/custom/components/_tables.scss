@@ -41,17 +41,65 @@
         }
     }
     > :not(caption) > * > * {
-        // 하은 - 수정하기
-        padding: $table-cell-padding-y $table-cell-padding-x;
+        // min-height: 69.38px;
+        padding: $table-cell-padding-y 20px;
     }
 }
 
+// Table 수정
+.table.sales {
+    .action-icon {
+        color: #{map-get($grays, "600")};
+        font-size: 1.2rem;
+        display: inline-block;
+        padding: 0 3px;
+        &:hover {
+            color: #{map-get($grays, "700")};
+        }
+    }
+    > :not(caption) > * > * {
+        background-color: var(--#{$variable-prefix}table-bg) !important;
+    }
+    &.table-bordered {
+        tbody {
+            border-top: $border-width solid;
+            border-top-color: inherit;
+        }
+    }
+    > :not(caption) > * > * {
+        padding: $table-cell-padding-y 35px;
+    }
+}
+
+.editTable td:hover {
+    cursor: pointer;
+}
 // Tables fluid
 .table-nowrap {
     th, td {
       white-space: nowrap;
     }
 }
+
+// 하은
+div.member-table thead > tr th:nth-child(1),
+div.member-table tbody > tr td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    min-width: 150px;
+    border-right: 2px solid #f7f7f7;
+    z-index: 10;
+    background: #fff !important;
+}
+body[data-layout-color="dark"] div.member-table thead > tr th:nth-child(1),
+body[data-layout-color="dark"] div.member-table tbody > tr td:nth-child(1) {
+    background: var(--ct-card-bg) !important;
+    border-right: 2px solid var(--ct-body-color);
+}
+div.member-table tbody > tr td:nth-child(1):hover {
+    cursor: pointer;
+}
+
 
 
 table {

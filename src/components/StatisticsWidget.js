@@ -11,7 +11,9 @@ const StatisticsWidget = (props) => {
                 'widget-flat': props.border === '',
                 'widget-flat border border-primary': props.border === 'primary',
                 'border border-danger': props.border === 'danger',
-            })}>
+            })}
+            style={{ height: props.height }}
+        >
             <Card.Body>
                 {props.icon && (
                     <div className="float-end">

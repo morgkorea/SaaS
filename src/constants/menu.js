@@ -53,7 +53,7 @@ const MENU_ITEMS = [
             },
             {
                 key: 'sales-db',
-                label: '매출DB',
+                label: '회원현황',
                 url: '/dashboard/sales-db',
                 parentKey: 'dashboards',
             },
