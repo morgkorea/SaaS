@@ -23,7 +23,7 @@ import salesRegistrationStep4 from '../../../assets/images/icons/png/salesRegist
 import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
-    const [registrationStep, setRegistrationStep] = useState(4);
+    const [registrationStep, setRegistrationStep] = useState(1);
     const [searchingName, setSearchingName] = useState('');
     const [searchingPhone, setSearchingPhone] = useState('');
     const [membersList, setMembersList] = useState([]);
