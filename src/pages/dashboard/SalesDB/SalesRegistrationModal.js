@@ -1,16 +1,16 @@
 // @flow
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
-
 import { useSelector } from 'react-redux';
 
-import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { Row, Col, Button, Modal, Alert, Card } from 'react-bootstrap';
+import classNames from 'classnames';
 
 import { firestoreDB } from '../../../firebase/firebase';
 import { firestoreSalesFieldSchema } from '../../../firebase/firestoreDbSchema';
 
-import { debounce } from 'lodash';
+import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
+import { debounce } from 'lodash';
 import * as Hangul from 'hangul-js';
 import { getInitials } from 'hangul-js';
 
@@ -24,9 +24,10 @@ import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(1);
-    const [searchingName, setSearchingName] = useState('');
+    const [searchingName, setSearchingName] = useState(null);
     const [searchingPhone, setSearchingPhone] = useState('');
     const [membersList, setMembersList] = useState([]);
+    const [searchedMembersList, setSearchedMembersList] = useState([]);
     const [size, setSize] = useState('lg');
 
     const toggle = () => {
@@ -62,23 +63,11 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             );
         });
 
-        console.log(members);
+        setSearchedMembersList(members);
     };
     useEffect(() => {
         searchMembers(membersList);
     }, [searchingName, searchingPhone]);
-
-    // console.log(Hangul.disassembleToString('유승훈').includes(Hangul.disassembleToString(searchingName)));
-    // console.log(
-    //     Hangul.disassemble('유승훈', true)
-    //         .map((ele) => {
-    //             return ele[0];
-    //         })
-    //         .join('')
-    //         .includes(searchingName)
-    // );
-
-    // console.log('유승훈'.includes('유승'));
 
     const getFirestoreMembersList = async () => {
         try {
@@ -93,6 +82,37 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             });
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const createSearchedMembersCard = (searchedMembersList) => {
+        if (searchedMembersList.length) {
+            return searchedMembersList.map((member, idx) => {
+                return (
+                    <div
+                        key={member.memeberNumber + member.idx}
+                        className="mb-2 "
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            border: '1px solid #EEF2F7',
+                            borderRadius: '6px',
+                            padding: '10px 16px',
+                            cursor: 'pointer',
+                        }}>
+                        <div>
+                            {' '}
+                            <div style={{ color: '#313A46', fontSize: '15px', fontWeight: '700' }}>{member.name}</div>
+                            <div style={{ color: '#6C757D', fontSize: '14px' }}>{member.phone}</div>
+                        </div>
+
+                        <div>
+                            <i className="mdi mdi-radiobox-blank" style={{ fontSize: '24px' }}></i>
+                            <i className="mdi mdi-radiobox-marked" style={{ fontSize: '24px' }}></i>
+                        </div>
+                    </div>
+                );
+            });
         }
     };
 
@@ -149,64 +169,67 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     <div style={{ width: '100%', paddingBottom: '32px' }}>
                         <img src={switchRegistrationStepImg(registrationStep)} style={{ width: '100%' }} />
                     </div>
-                    <h4 className="modal-title mb-3 ">회원 검색</h4>
-
-                    <div>
-                        <div className="mb-4">
-                            <div style={{ marginBottom: '8px' }}>회원성함</div>
-                            <div style={{ display: 'flex', border: '1px solid #DEE2E6' }}>
-                                <div className="font-24" style={{ marginLeft: '3px' }}>
-                                    <i className="mdi mdi-magnify" />
-                                </div>
-                                <input
-                                    onChange={(event) => {
-                                        getSearchingName(event);
-                                    }}
-                                    type="text"
-                                    className="form-control"
-                                    style={{ border: 'none', padding: 0 }}
-                                />
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <div style={{ marginBottom: '8px' }}>전화번호</div>
-                            <div style={{ display: 'flex', border: '1px solid #DEE2E6' }}>
-                                <div className="font-24" style={{ marginLeft: '3px' }}>
-                                    <i className="mdi mdi-magnify" />
-                                </div>
-                                <input
-                                    onChange={(event) => {
-                                        getSearchingPhone(event);
-                                    }}
-                                    type="text"
-                                    className="form-control"
-                                    style={{ border: 'none', padding: 0 }}
-                                />
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <div style={{ marginBottom: '8px' }}>오디언스</div>
-                            <div style={{ display: 'flex', border: '1px solid #DEE2E6' }}>
-                                {/* <select className="form-control" style={{ border: 'none', padding: 0 }}> */}
-                                <select
-                                    className="w-100 p-1"
-                                    style={{
-                                        height: '40px',
-                                        border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
-                                        cursor: 'pointer',
-                                    }}>
-                                    <option value={true}>활성</option>
-                                    <option value={false}>비활성</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
 
                     <div className="container">
-                        <Row className="mb-4">
-                            <Col></Col>
-                        </Row>
+                        <h4 className="modal-title mb-2">회원 검색</h4>
+
+                        <div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                                {' '}
+                                <div className="mb-2">
+                                    <div>회원성함</div>
+                                    <div style={{ display: 'flex', border: '1px solid #EEF2F7', borderRadius: '6px' }}>
+                                        <div className="font-24" style={{ marginLeft: '3px' }}>
+                                            <i className="mdi mdi-magnify" />
+                                        </div>
+                                        <input
+                                            onChange={(event) => {
+                                                getSearchingName(event);
+                                            }}
+                                            type="text"
+                                            className="form-control"
+                                            style={{ border: 'none', padding: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mb-2">
+                                    <div>전화번호</div>
+                                    <div style={{ display: 'flex', border: '1px solid #EEF2F7', borderRadius: '6px' }}>
+                                        <div className="font-24" style={{ marginLeft: '3px' }}>
+                                            <i className="mdi mdi-magnify" />
+                                        </div>
+                                        <input
+                                            onChange={(event) => {
+                                                getSearchingPhone(event);
+                                            }}
+                                            type="text"
+                                            className="form-control"
+                                            style={{ border: 'none', padding: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mb-2">
+                                <div>오디언스</div>
+                                <div style={{ display: 'flex', border: '1px solid #EEF2F7', borderRadius: '6px' }}>
+                                    {/* <select className="form-control" style={{ border: 'none', padding: 0 }}> */}
+                                    <select
+                                        className="w-100 p-1"
+                                        style={{
+                                            height: '40px',
+                                            border: '1px solid #DEE2E6',
+                                            borderRadius: ' 2px',
+                                            cursor: 'pointer',
+                                        }}>
+                                        <option value={true}>활성</option>
+                                        <option value={false}>비활성</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {createSearchedMembersCard(searchedMembersList)}
+                        </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-center border-top-0" style={{ paddingBottom: '48px' }}>
