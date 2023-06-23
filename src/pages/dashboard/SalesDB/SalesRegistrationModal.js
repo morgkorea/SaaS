@@ -28,6 +28,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [searchingPhone, setSearchingPhone] = useState('');
     const [membersList, setMembersList] = useState([]);
     const [searchedMembersList, setSearchedMembersList] = useState([]);
+    const [isHoveredCard, setIsHoveredCard] = useState(false);
     const [size, setSize] = useState('lg');
 
     const toggle = () => {
@@ -86,20 +87,33 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const createSearchedMembersCard = (searchedMembersList) => {
+        const handleMouseEnter = (e) => {
+            console.log(e.target);
+            setIsHoveredCard(true);
+        };
+
+        const handleMouseLeave = () => {
+            setIsHoveredCard(false);
+        };
+
         if (searchedMembersList.length) {
             return searchedMembersList.map((member, idx) => {
                 return (
                     <div
-                        key={member.memeberNumber + member.idx}
+                        key={member.memberNumber + idx}
                         className="mb-2 "
                         style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            border: '1px solid #EEF2F7',
+                            border: isHoveredCard ? '2px solid #03C780' : '1px solid #EEF2F7',
                             borderRadius: '6px',
-                            padding: '10px 16px',
+                            padding: isHoveredCard ? '9px 15px' : '10px 16px',
                             cursor: 'pointer',
-                        }}>
+                        }}
+                        onMouseEnter={(e) => {
+                            handleMouseEnter(e);
+                        }}
+                        onMouseLeave={handleMouseLeave}>
                         <div>
                             {' '}
                             <div style={{ color: '#313A46', fontSize: '15px', fontWeight: '700' }}>{member.name}</div>
