@@ -2,7 +2,7 @@ const MENU_ITEMS = [
     { key: 'navigation', label: 'Navigation', isTitle: true },
     {
         key: 'dashboards',
-        label: 'Dashboards',
+        label: '대시보드',
         isTitle: false,
         icon: 'uil-home-alt',
         badge: { variant: 'success', text: '4' },
@@ -55,6 +55,12 @@ const MENU_ITEMS = [
                 key: 'sales-db',
                 label: '회원현황',
                 url: '/dashboard/sales-db',
+                parentKey: 'dashboards',
+            },
+            {
+                key: 'product-db',
+                label: '상품DB',
+                url: '/dashboard/product-db',
                 parentKey: 'dashboards',
             },
         ],

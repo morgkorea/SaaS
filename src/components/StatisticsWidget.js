@@ -24,7 +24,9 @@ const StatisticsWidget = (props) => {
                     {props.title}
                 </h5>
                 <h3 className={classNames('mt-3', 'mb-3', props.textClass ? props.textClass : null)}>{props.stats}</h3>
-
+                {props.amountBeforeProductsSales && (
+                    <span className={classNames('mb-0')}>{props.amountBeforeProductsSales}</span>
+                )}
                 {props.trend && (
                     <p className={classNames('mb-0', textClass)}>
                         <span className={classNames(props.trend.textClass, 'me-2')}>
