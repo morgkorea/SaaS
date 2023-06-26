@@ -27,6 +27,8 @@ import Spinner from '../../../components/Spinner';
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(1);
 
+    const [registartionProducts, setRegistrationProducts] = useState([]);
+
     //step 1 =================================================================
     //선택 회원
     const [isSelectedMember, setIsSelectedMember] = useState(false);
@@ -101,6 +103,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             default:
                 return salesRegistrationStep1;
         }
+    };
+
+    const applyRegistartionProducts = (e) => {
+        const registartionProducts = [...registartionProducts];
     };
     const handleRegistrationStep = (event) => {
         console.log(event.target.textContent);
@@ -408,7 +414,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         containerClass={''}
                                         key="productsNumber"
                                     />
-                                    <div style={{ position: 'absolute', right: '8px', bottom: '8px' }}>%</div>
+                                    <div style={{ position: 'absolute', right: '16px', bottom: '8px' }}>%</div>
                                 </div>
                             </div>
 
@@ -420,12 +426,17 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="date"
                                         name="productStartDate"
                                         containerClass={''}
-                                        key="date"
+                                        key="productStartDate"
                                         onChange={getProductStartDate}
                                         disabled={selectedProduct ? false : true}
-                                        min={new Date().toISOString().split('T')[0]}
+                                        defaultValue={new Date().toISOString().split('T')[0]}
                                     />
                                 </div>
+                            </div>
+                            <div className="mb-2">
+                                <Button variant="primary" onClick={applyAvailableProduct} style={{ width: '200px' }}>
+                                    적용하기
+                                </Button>
                             </div>
                         </div>
                     </div>

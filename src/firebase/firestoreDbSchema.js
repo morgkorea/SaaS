@@ -102,15 +102,6 @@ export const firestoreSalesFieldSchema = [
                 startDate: '', // 시작일
                 endDate: '', // 종료일
             },
-            {
-                product: '레슨', //상품
-                productType: '레슨',
-                regularPrice: '100000', //상품 정상가
-                discountRate: '20%', // 할인율
-                discountPrice: '80000', //할인가
-                startDate: '2022-05-16', // 시작일
-                endDate: '2022-06-16', // 종료일
-            },
         ],
         totalPaymentPrice: '', //결제총액
         outstandingPrice: '', //미결제금액
