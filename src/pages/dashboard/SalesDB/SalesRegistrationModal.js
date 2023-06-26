@@ -24,7 +24,7 @@ import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(1);
-    const [searchingName, setSearchingName] = useState(null);
+    const [searchingName, setSearchingName] = useState('');
     const [searchingPhone, setSearchingPhone] = useState('');
     const [membersList, setMembersList] = useState([]);
     const [searchedMembersList, setSearchedMembersList] = useState([]);
@@ -49,22 +49,26 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const searchMembers = (membersList) => {
-        const members = [...membersList].filter((member) => {
-            const memberCho = Hangul.disassemble(member.name, true)
-                .map((ele) => {
-                    return ele[0];
-                })
-                .join('');
-            return (
-                ([...searchingName].every((element, idx) => {
-                    return element === memberCho[idx];
-                }) || member.name?.includes(searchingName)
-                    ? true
-                    : false) && member.phone?.includes(searchingPhone)
-            );
-        });
-
-        setSearchedMembersList(members);
+        if (searchingName.length || searchingPhone.length) {
+            const members = [...membersList].filter((member) => {
+                const memberCho = Hangul.disassemble(member.name, true)
+                    .map((ele) => {
+                        return ele[0];
+                    })
+                    .join('');
+                return (
+                    ([...searchingName].every((element, idx) => {
+                        return element === memberCho[idx];
+                    }) || member.name?.includes(searchingName)
+                        ? true
+                        : false) && member.phone?.includes(searchingPhone)
+                );
+            });
+            console.log(members);
+            setSearchedMembersList(members);
+        } else if (searchingName.length < 1 && searchingPhone.length < 1) {
+            setSearchedMembersList([]);
+        }
     };
     useEffect(() => {
         searchMembers(membersList);
@@ -105,6 +109,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         style={{
                             display: 'flex',
                             justifyContent: 'space-between',
+                            width: '49%',
+                            minWidth: '162px',
+                            height: '80px',
                             border: isHoveredCard ? '2px solid #03C780' : '1px solid #EEF2F7',
                             borderRadius: '6px',
                             padding: isHoveredCard ? '9px 15px' : '10px 16px',
@@ -236,13 +243,23 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                             borderRadius: ' 2px',
                                             cursor: 'pointer',
                                         }}>
-                                        <option value={true}>활성</option>
-                                        <option value={false}>비활성</option>
+                                        <option value={true}>신규</option>
+                                        <option value={false}>재등록</option>
                                     </select>
                                 </div>
                             </div>
-
-                            {createSearchedMembersCard(searchedMembersList)}
+                            <div
+                                className="p-2"
+                                style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    justifyContent: 'space-between',
+                                    overflowY: 'auto',
+                                    height: '300px',
+                                }}>
+                                {' '}
+                                {createSearchedMembersCard(searchedMembersList)}
+                            </div>
                         </div>
                     </div>
                 </Modal.Body>
