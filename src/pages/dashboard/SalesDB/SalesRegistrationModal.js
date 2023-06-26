@@ -10,9 +10,8 @@ import { firestoreSalesFieldSchema } from '../../../firebase/firestoreDbSchema';
 
 import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
-import { debounce } from 'lodash';
 import * as Hangul from 'hangul-js';
-import { getInitials } from 'hangul-js';
+import { disassemble } from 'hangul-js';
 
 import salesRegistrationStep1 from '../../../assets/images/icons/png/salesRegistrationStep1.png';
 import salesRegistrationStep2 from '../../../assets/images/icons/png/salesRegistrationStep2.png';
@@ -24,12 +23,25 @@ import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(1);
+
+    //step 1 =================================================================
+    //선택 회원
     const [isSelectedMember, setIsSelectedMember] = useState(false);
+
+    // 회원 이름 , 전화번호 검색
     const [searchingName, setSearchingName] = useState('');
     const [searchingPhone, setSearchingPhone] = useState('');
-    const [membersList, setMembersList] = useState([]);
     const [searchedMembersList, setSearchedMembersList] = useState([]);
+
+    // fetching data
+    const [membersList, setMembersList] = useState([]);
+
     const [isHoveredCard, setIsHoveredCard] = useState(false);
+
+    //step 2 ==================================================================
+    // fetching data
+    const [productsList, setProductsList] = useState([]);
+
     const [size, setSize] = useState('lg');
 
     const toggle = () => {
@@ -39,7 +51,52 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
+    const switchRegistrationStepImg = (registrationStep) => {
+        switch (registrationStep) {
+            case 1:
+                return salesRegistrationStep1;
+                break;
+            case 2:
+                return salesRegistrationStep2;
+                break;
+            case 3:
+                return salesRegistrationStep3;
+                break;
+            case 4:
+                return salesRegistrationStep4;
+                break;
 
+            default:
+                return salesRegistrationStep1;
+        }
+    };
+
+    const swithRegistrationStepForm = (registrationStep) => {
+        switch (registrationStep) {
+            case 1:
+                return salesRegistrationStep1;
+                break;
+            case 2:
+                return salesRegistrationStep2;
+                break;
+            case 3:
+                return salesRegistrationStep3;
+                break;
+            case 4:
+                return salesRegistrationStep4;
+                break;
+
+            default:
+                return salesRegistrationStep1;
+        }
+    };
+    const handleRegistrationStep = (event) => {
+        console.log(event.target.textContent);
+        return event.target.textContent === '다음'
+            ? setRegistrationStep(registrationStep + 1)
+            : setRegistrationStep(registrationStep - 1);
+    };
+    console.log('registrationStep', registrationStep);
     const getSelectedMember = (searchedMembersList, idx) => {
         if (!isSelectedMember) {
             setIsSelectedMember(searchedMembersList[idx]);
@@ -61,20 +118,23 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const searchMembers = (membersList) => {
         if (searchingName.length || searchingPhone.length) {
-            const members = [...membersList].filter((member) => {
-                const memberCho = Hangul.disassemble(member.name, true)
-                    .map((ele) => {
-                        return ele[0];
-                    })
-                    .join('');
-                return (
-                    ([...searchingName].every((element, idx) => {
-                        return element === memberCho[idx];
-                    }) || member.name?.includes(searchingName)
-                        ? true
-                        : false) && member.phone?.includes(searchingPhone)
-                );
-            });
+            let members =
+                membersList.length > 0
+                    ? [...membersList].filter((member) => {
+                          if (member && typeof member.name === 'string') {
+                              let memberCho = disassemble(member.name, true)
+                                  .map((ele) => ele[0])
+                                  .join('');
+                              return (
+                                  ([...searchingName].every((element, idx) => {
+                                      return element === memberCho[idx];
+                                  }) || member.name?.includes(searchingName)
+                                      ? true
+                                      : false) && member.phone?.includes(searchingPhone)
+                              );
+                          }
+                      })
+                    : [];
             console.log(members);
             setSearchedMembersList(members);
         } else if (searchingName.length < 1 && searchingPhone.length < 1) {
@@ -88,9 +148,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const getFirestoreMembersList = async () => {
         try {
             const memebersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
-            onSnapshot(memebersCollectionRef, (querySnampshot) => {
+            onSnapshot(memebersCollectionRef, (querySnapshot) => {
                 const membersArray = [];
-                querySnampshot.forEach((member) => {
+                querySnapshot.forEach((member) => {
                     membersArray.push(member.data());
                 });
                 console.log(membersArray);
@@ -149,9 +209,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     </div>
                 </div>
             );
-        }
-
-        if (searchedMembersList.length) {
+        } else if (searchedMembersList.length) {
             return searchedMembersList.map((member, idx) => {
                 return (
                     <div
@@ -199,60 +257,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         }
     };
 
-    useEffect(() => {
-        getFirestoreMembersList();
-    }, []);
-
-    const switchRegistrationStepImg = (registrationStep) => {
+    const handleRederingBodyContent = (registrationStep) => {
         switch (registrationStep) {
             case 1:
-                return salesRegistrationStep1;
-            case 2:
-                return salesRegistrationStep2;
-            case 3:
-                return salesRegistrationStep3;
-            case 4:
-                return salesRegistrationStep4;
-
-            default:
-                return salesRegistrationStep1;
-        }
-    };
-
-    const swithRegistrationStepForm = (registrationStep) => {
-        switch (registrationStep) {
-            case 1:
-                return salesRegistrationStep1;
-            case 2:
-                return salesRegistrationStep2;
-            case 3:
-                return salesRegistrationStep3;
-            case 4:
-                return salesRegistrationStep4;
-
-            default:
-                return salesRegistrationStep1;
-        }
-    };
-
-    //test
-    useEffect(() => {}, []);
-
-    useEffect(() => {}, [modal]);
-
-    return (
-        <>
-            <Modal show={modal} onHide={toggle} size={size} centered={true}>
-                <Modal.Header
-                    className="border-bottom-0"
-                    onHide={toggle}
-                    style={{ margin: '12px 0px' }}
-                    closeButton></Modal.Header>
-                <Modal.Body style={{ width: '100%', height: '570px', padding: '0px 60px' }}>
-                    <div style={{ width: '100%', paddingBottom: '32px' }}>
-                        <img src={switchRegistrationStepImg(registrationStep)} style={{ width: '100%' }} />
-                    </div>
-
+                return (
                     <div className="container">
                         <h4 className="modal-title mb-2">회원 검색</h4>
 
@@ -293,23 +301,22 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 </div>
                             </div>
 
-                            <div className="mb-2">
-                                <div>오디언스</div>
-                                <div style={{ display: 'flex', border: '1px solid #EEF2F7', borderRadius: '6px' }}>
-                                    {/* <select className="form-control" style={{ border: 'none', padding: 0 }}> */}
-                                    <select
-                                        className="w-100 p-1"
-                                        style={{
-                                            height: '40px',
-                                            border: '1px solid #DEE2E6',
-                                            borderRadius: ' 2px',
-                                            cursor: 'pointer',
-                                        }}>
-                                        <option value={true}>신규</option>
-                                        <option value={false}>재등록</option>
-                                    </select>
-                                </div>
-                            </div>
+                            {/* <div className="mb-2">
+                        <div>오디언스</div>
+                        <div style={{ display: 'flex', border: '1px solid #EEF2F7', borderRadius: '6px' }}>
+                            <select
+                                className="w-100 p-1"
+                                style={{
+                                    height: '40px',
+                                    border: '1px solid #DEE2E6',
+                                    borderRadius: ' 2px',
+                                    cursor: 'pointer',
+                                }}>
+                                <option value={true}>신규</option>
+                                <option value={false}>재등록</option>
+                            </select>
+                        </div>
+                    </div> */}
                             <div
                                 className="p-2"
                                 style={{
@@ -317,16 +324,129 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     flexWrap: 'wrap',
                                     justifyContent: 'space-between',
                                     overflowY: 'auto',
-                                    height: '300px',
+                                    maxHeight: '300px',
                                 }}>
                                 {' '}
                                 {createSearchedMembersCard(searchedMembersList, isSelectedMember)}
                             </div>
                         </div>
                     </div>
+                );
+
+            case 2:
+                return (
+                    <div className="container" style={{ display: 'flex', width: '100%' }}>
+                        <div style={{ width: '50%' }}>
+                            <h4 className="modal-title mb-2">
+                                {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 상품 적용
+                            </h4>
+                            <div className="mb-2">
+                                <div>상품</div>
+                                <select
+                                    className="w-100 p-1"
+                                    style={{
+                                        height: '40px',
+                                        border: '1px solid #DEE2E6',
+                                        borderRadius: ' 2px',
+                                        cursor: 'pointer',
+                                    }}
+                                    name="product"
+                                    required
+                                    placeholder="상품을 선택해주세요.">
+                                    <option value="" selected disabled>
+                                        상품을 선택해 주세요
+                                    </option>
+                                    {productsList.map((product, idx) => {
+                                        if (product.activation && product.product.length) {
+                                            return (
+                                                <option key={product.product + '_' + idx} value={product.product}>
+                                                    {product.product}
+                                                </option>
+                                            );
+                                        }
+                                    })}
+                                </select>
+                            </div>
+                            <div className="mb-2">
+                                <div>할인율</div>
+                                {/* <select
+                                    className="w-100 p-1"
+                                    style={{
+                                        height: '40px',
+                                        border: '1px solid #DEE2E6',
+                                        borderRadius: ' 2px',
+                                        cursor: 'pointer',
+                                    }}
+                                    name="product"
+                                    required
+                                    placeholder="-">
+                                    <option value={0} selected>
+                                        -
+                                    </option>
+                                </select> */}
+                                <input
+                                    type="number"
+                                    className="w-100 p-1"
+                                    min={0}
+                                    max={100}
+                                    placeholder="-"
+                                    style={{
+                                        height: '40px',
+                                        border: '1px solid #DEE2E6',
+                                        borderRadius: ' 2px',
+                                        cursor: 'pointer',
+                                    }}></input>
+                            </div>
+                        </div>
+                    </div>
+                );
+        }
+    };
+
+    const getFiresotreProductsList = async () => {
+        try {
+            const productsCollectionRef = collection(firestoreDB, 'Users', email, 'Products');
+            onSnapshot(productsCollectionRef, (querySnapshot) => {
+                const productArray = [];
+                querySnapshot.forEach((product) => {
+                    productArray.push(product.data());
+                });
+                console.log(productArray);
+                setProductsList(productArray);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    //test
+    useEffect(() => {
+        getFirestoreMembersList();
+        getFiresotreProductsList();
+    }, []);
+
+    return (
+        <>
+            <Modal show={modal} onHide={toggle} size={size} centered={true}>
+                <Modal.Header
+                    className="border-bottom-0"
+                    onHide={toggle}
+                    style={{ margin: '12px 0px' }}
+                    closeButton></Modal.Header>
+                <Modal.Body style={{ width: '100%', height: '570px', padding: '0px 60px' }}>
+                    <div style={{ width: '100%', paddingBottom: '32px' }}>
+                        <img src={switchRegistrationStepImg(registrationStep)} style={{ width: '100%' }} />
+                    </div>
+                    {handleRederingBodyContent(registrationStep)}
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-center border-top-0" style={{ paddingBottom: '48px' }}>
-                    <Button variant="primary" disabled={true} style={{ width: '200px' }}>
+                    <Button
+                        variant="primary"
+                        onClick={(event) => {
+                            handleRegistrationStep(event);
+                        }}
+                        disabled={!isSelectedMember}
+                        style={{ width: '200px' }}>
                         다음
                     </Button>
                 </Modal.Footer>

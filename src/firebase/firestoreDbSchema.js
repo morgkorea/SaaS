@@ -37,7 +37,7 @@ export const firestoreMemebersFieldSchema = {
     createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
     createdTime: new Date().toISOString().split('T')[1].split('.')[0], //time 생성시간 04:10:42
     name: '', //이름
-    phone: '', //전화번호
+    phone: '', //전화번호 type:string 형식: 010XXXXYYYY
     sex: '', //성별
     birthDate: '', //date 생일
     ageGroup: '', //연령대
