@@ -24,6 +24,7 @@ import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(1);
+    const [isSelectedMember, setIsSelectedMember] = useState(false);
     const [searchingName, setSearchingName] = useState('');
     const [searchingPhone, setSearchingPhone] = useState('');
     const [membersList, setMembersList] = useState([]);
@@ -38,6 +39,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
+
+    const getSelectedMember = (searchedMembersList, idx) => {
+        if (!isSelectedMember) {
+            setIsSelectedMember(searchedMembersList[idx]);
+        } else {
+            setIsSelectedMember(false);
+        }
+
+        console.log(isSelectedMember);
+    };
 
     const getSearchingName = (event) => {
         // event.persist(); // event pooling , event 객체 null 값 방지
@@ -90,15 +101,55 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         }
     };
 
-    const createSearchedMembersCard = (searchedMembersList) => {
-        const handleMouseEnter = (e) => {
-            console.log(e.target);
-            setIsHoveredCard(true);
+    const createSearchedMembersCard = (searchedMembersList, isSelectedMember) => {
+        const handleMouseEnter = (e, idx) => {
+            e.preventDefault();
+
+            setIsHoveredCard(idx);
+            console.log(isHoveredCard);
         };
 
         const handleMouseLeave = () => {
             setIsHoveredCard(false);
         };
+
+        if (isSelectedMember) {
+            return (
+                <div
+                    className="mb-2 "
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '49%',
+                        minWidth: '162px',
+                        height: '80px',
+                        border: '2px solid #03C780',
+                        borderRadius: '6px',
+                        padding: '9px 15px',
+                        cursor: 'pointer',
+                    }}
+                    onClick={(event) => {
+                        getSelectedMember();
+                    }}>
+                    <div>
+                        {' '}
+                        <div
+                            style={{
+                                color: '#313A46',
+                                fontSize: '15px',
+                                fontWeight: '700',
+                            }}>
+                            {isSelectedMember.name}
+                        </div>
+                        <div style={{ color: '#6C757D', fontSize: '14px' }}>{isSelectedMember.phone}</div>
+                    </div>
+
+                    <div>
+                        <i className="mdi mdi-radiobox-marked" style={{ color: '#03C780', fontSize: '24px' }}></i>
+                    </div>
+                </div>
+            );
+        }
 
         if (searchedMembersList.length) {
             return searchedMembersList.map((member, idx) => {
@@ -112,24 +163,35 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             width: '49%',
                             minWidth: '162px',
                             height: '80px',
-                            border: isHoveredCard ? '2px solid #03C780' : '1px solid #EEF2F7',
+                            border: isHoveredCard === idx ? '2px solid #03C780' : '1px solid #EEF2F7',
                             borderRadius: '6px',
-                            padding: isHoveredCard ? '9px 15px' : '10px 16px',
+                            padding: isHoveredCard === idx ? '9px 15px' : '10px 16px',
                             cursor: 'pointer',
                         }}
-                        onMouseEnter={(e) => {
-                            handleMouseEnter(e);
+                        onClick={(event) => {
+                            getSelectedMember(searchedMembersList, idx);
+                        }}
+                        onMouseEnter={(event) => {
+                            handleMouseEnter(event, idx);
                         }}
                         onMouseLeave={handleMouseLeave}>
                         <div>
                             {' '}
-                            <div style={{ color: '#313A46', fontSize: '15px', fontWeight: '700' }}>{member.name}</div>
+                            <div
+                                style={{
+                                    color: '#313A46',
+                                    fontSize: '15px',
+                                    fontWeight: '700',
+                                }}>
+                                {member.name}
+                            </div>
                             <div style={{ color: '#6C757D', fontSize: '14px' }}>{member.phone}</div>
                         </div>
 
                         <div>
-                            <i className="mdi mdi-radiobox-blank" style={{ fontSize: '24px' }}></i>
-                            <i className="mdi mdi-radiobox-marked" style={{ fontSize: '24px' }}></i>
+                            <i
+                                className="mdi mdi-radiobox-blank"
+                                style={{ color: isHoveredCard === idx ? '#03C780' : '#EEF2F7', fontSize: '24px' }}></i>
                         </div>
                     </div>
                 );
@@ -258,7 +320,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     height: '300px',
                                 }}>
                                 {' '}
-                                {createSearchedMembersCard(searchedMembersList)}
+                                {createSearchedMembersCard(searchedMembersList, isSelectedMember)}
                             </div>
                         </div>
                     </div>
