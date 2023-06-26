@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Row, Col, Button, Modal, Alert, Card } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
+
+import { FormInput } from '../../../components/';
 import classNames from 'classnames';
 
 import { firestoreDB } from '../../../firebase/firebase';
@@ -41,6 +43,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     //step 2 ==================================================================
     // fetching data
     const [productsList, setProductsList] = useState([]);
+
+    // discount rate
+    const [productDiscountRate, setProductDiscountRate] = useState('-');
 
     const [size, setSize] = useState('lg');
 
@@ -97,6 +102,15 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             : setRegistrationStep(registrationStep - 1);
     };
     console.log('registrationStep', registrationStep);
+
+    const getProductDiscountRate = (event) => {
+        if (!event.target.value) {
+            setProductDiscountRate('');
+        } else {
+            setProductDiscountRate(event.target.value);
+        }
+        console.log('productsDiscountRate', productDiscountRate);
+    };
     const getSelectedMember = (searchedMembersList, idx) => {
         if (!isSelectedMember) {
             setIsSelectedMember(searchedMembersList[idx]);
@@ -341,20 +355,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 상품 적용
                             </h4>
                             <div className="mb-2">
-                                <div>상품</div>
-                                <select
-                                    className="w-100 p-1"
-                                    style={{
-                                        height: '40px',
-                                        border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
-                                        cursor: 'pointer',
-                                    }}
-                                    name="product"
-                                    required
-                                    placeholder="상품을 선택해주세요.">
-                                    <option value="" selected disabled>
-                                        상품을 선택해 주세요
+                                <Form.Label>상품</Form.Label>
+                                <Form.Select>
+                                    <option value="" disabled>
+                                        상품을 선택해주세요
                                     </option>
                                     {productsList.map((product, idx) => {
                                         if (product.activation && product.product.length) {
@@ -365,37 +369,38 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                             );
                                         }
                                     })}
-                                </select>
+                                </Form.Select>
+                            </div>
+
+                            <div className="mb-2">
+                                <div style={{ position: 'relative' }}>
+                                    <FormInput
+                                        type="number"
+                                        label="할인율"
+                                        name="productDiscountRate"
+                                        placeholder="-"
+                                        containerClass={'mb-3'}
+                                        key="productsNumber"
+                                    />
+                                    <div style={{ position: 'absolute', right: '8px', bottom: '8px' }}>%</div>
+                                </div>
                             </div>
                             <div className="mb-2">
-                                <div>할인율</div>
-                                {/* <select
-                                    className="w-100 p-1"
-                                    style={{
-                                        height: '40px',
-                                        border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
-                                        cursor: 'pointer',
-                                    }}
-                                    name="product"
-                                    required
-                                    placeholder="-">
-                                    <option value={0} selected>
-                                        -
+                                <Form.Label>상품</Form.Label>
+                                <Form.Select>
+                                    <option value="" disabled>
+                                        상품을 선택해주세요
                                     </option>
-                                </select> */}
-                                <input
-                                    type="number"
-                                    className="w-100 p-1"
-                                    min={0}
-                                    max={100}
-                                    placeholder="-"
-                                    style={{
-                                        height: '40px',
-                                        border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
-                                        cursor: 'pointer',
-                                    }}></input>
+                                    {productsList.map((product, idx) => {
+                                        if (product.activation && product.product.length) {
+                                            return (
+                                                <option key={product.product + '_' + idx} value={product.product}>
+                                                    {product.product}
+                                                </option>
+                                            );
+                                        }
+                                    })}
+                                </Form.Select>
                             </div>
                         </div>
                     </div>
