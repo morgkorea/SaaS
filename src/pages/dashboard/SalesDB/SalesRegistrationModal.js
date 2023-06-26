@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
 
 import { FormInput } from '../../../components/';
+import HyperDatepicker from '../../../components/Datepicker';
 import classNames from 'classnames';
 
 import { firestoreDB } from '../../../firebase/firebase';
@@ -44,8 +45,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     // fetching data
     const [productsList, setProductsList] = useState([]);
 
+    //selected product
+    const [selectedProduct, setSelectedProduct] = useState(false);
+
     // discount rate
     const [productDiscountRate, setProductDiscountRate] = useState('-');
+
+    // picked date
+    const [productStartDate, setProductStartDate] = useState(false);
 
     const [size, setSize] = useState('lg');
 
@@ -101,7 +108,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             ? setRegistrationStep(registrationStep + 1)
             : setRegistrationStep(registrationStep - 1);
     };
-    console.log('registrationStep', registrationStep);
 
     const getProductDiscountRate = (event) => {
         if (!event.target.value) {
@@ -155,6 +161,15 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             setSearchedMembersList([]);
         }
     };
+
+    const getSelectedProduct = (event) => {
+        console.log(event.target.value);
+        setSelectedProduct(event.target.value);
+    };
+    const getProductStartDate = (event) => {
+        console.log(event.target.value);
+        setProductStartDate(event.target.value);
+    };
     useEffect(() => {
         searchMembers(membersList);
     }, [searchingName, searchingPhone]);
@@ -169,6 +184,21 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 });
                 console.log(membersArray);
                 setMembersList(membersArray);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const getFiresotreProductsList = async () => {
+        try {
+            const productsCollectionRef = collection(firestoreDB, 'Users', email, 'Products');
+            onSnapshot(productsCollectionRef, (querySnapshot) => {
+                const productArray = [];
+                querySnapshot.forEach((product) => {
+                    productArray.push(product.data());
+                });
+                console.log(productArray);
+                setProductsList(productArray);
             });
         } catch (error) {
             console.log(error);
@@ -288,9 +318,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                             <i className="mdi mdi-magnify" />
                                         </div>
                                         <input
-                                            onChange={(event) => {
-                                                getSearchingName(event);
-                                            }}
+                                            onChange={getSearchingName}
                                             type="text"
                                             className="form-control"
                                             style={{ border: 'none', padding: 0 }}
@@ -304,9 +332,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                             <i className="mdi mdi-magnify" />
                                         </div>
                                         <input
-                                            onChange={(event) => {
-                                                getSearchingPhone(event);
-                                            }}
+                                            onChange={getSearchingPhone}
                                             type="text"
                                             className="form-control"
                                             style={{ border: 'none', padding: 0 }}
@@ -356,14 +382,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             </h4>
                             <div className="mb-2">
                                 <Form.Label>상품</Form.Label>
-                                <Form.Select>
-                                    <option value="" disabled>
+                                <Form.Select onChange={getSelectedProduct}>
+                                    <option value={false} selected>
                                         상품을 선택해주세요
                                     </option>
                                     {productsList.map((product, idx) => {
                                         if (product.activation && product.product.length) {
                                             return (
-                                                <option key={product.product + '_' + idx} value={product.product}>
+                                                <option key={product.product + '_' + idx} value={product}>
                                                     {product.product}
                                                 </option>
                                             );
@@ -379,48 +405,31 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         label="할인율"
                                         name="productDiscountRate"
                                         placeholder="-"
-                                        containerClass={'mb-3'}
+                                        containerClass={''}
                                         key="productsNumber"
                                     />
                                     <div style={{ position: 'absolute', right: '8px', bottom: '8px' }}>%</div>
                                 </div>
                             </div>
+
                             <div className="mb-2">
-                                <Form.Label>상품</Form.Label>
-                                <Form.Select>
-                                    <option value="" disabled>
-                                        상품을 선택해주세요
-                                    </option>
-                                    {productsList.map((product, idx) => {
-                                        if (product.activation && product.product.length) {
-                                            return (
-                                                <option key={product.product + '_' + idx} value={product.product}>
-                                                    {product.product}
-                                                </option>
-                                            );
-                                        }
-                                    })}
-                                </Form.Select>
+                                <div>
+                                    {' '}
+                                    <FormInput
+                                        label="시작일"
+                                        type="date"
+                                        name="productStartDate"
+                                        containerClass={''}
+                                        key="date"
+                                        onChange={getProductStartDate}
+                                        disabled={selectedProduct ? false : true}
+                                        min={new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
                 );
-        }
-    };
-
-    const getFiresotreProductsList = async () => {
-        try {
-            const productsCollectionRef = collection(firestoreDB, 'Users', email, 'Products');
-            onSnapshot(productsCollectionRef, (querySnapshot) => {
-                const productArray = [];
-                querySnapshot.forEach((product) => {
-                    productArray.push(product.data());
-                });
-                console.log(productArray);
-                setProductsList(productArray);
-            });
-        } catch (error) {
-            console.log(error);
         }
     };
 
