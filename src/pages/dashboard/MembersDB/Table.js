@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, memo, useState } from 'react';
+import React, { useRef, useEffect, forwardRef, memo} from 'react';
 import {
     useTable,
     useSortBy,
@@ -11,8 +11,7 @@ import {
 import classNames from 'classnames';
 import Pagination from './Pagination';
 import AddCell from './AddCell';
-import EditCell from './EditCell';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
@@ -189,7 +188,6 @@ const Table = (props: TableProps) => {
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
                         {addMode ? <AddCell /> : null}
-                        {editMode ? <EditCell /> : null}
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (

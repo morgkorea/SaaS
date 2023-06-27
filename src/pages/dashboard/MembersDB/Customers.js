@@ -4,9 +4,6 @@ import { Card, Button } from 'react-bootstrap';
 import Table from './Table';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
-import EditCell from './EditCell';
-
-
 
 const onClickMemberInfo = ({ row }) => {
     return (

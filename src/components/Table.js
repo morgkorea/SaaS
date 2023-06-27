@@ -9,8 +9,6 @@ import {
     useExpanded,
 } from 'react-table';
 import classNames from 'classnames';
-import Pagination from './Pagination';
-import AddCell from '../pages/dashboard/MembersDB/AddCell';
 
 // Define a default UI for filtering
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
@@ -174,7 +172,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => (
                                     <th
-                                        // onClick={props.getSortedTableRows(dataTable.rows)}
                                         {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
                                         className={classNames({
                                             sorting_desc: column.isSortedDesc === true,
@@ -188,7 +185,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {/* {addMode ? <AddCell/> : null} */}
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
@@ -203,7 +199,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 </table>
             </div>
 
-            {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
         </>
     );
 };
