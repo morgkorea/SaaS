@@ -120,14 +120,14 @@ export const firestoreSalesFieldSchema = {
 
 export const firestoreProductsFieldSchema = {
     productCode: '', // 상품코드 , type:string , (고객사코드_종류_기간_번호)    KO0001_ME_091_001
-    product: '회원권 3개월권', //상품명, type:string
-    type: 'batterBox', // 상품종류, type:string
-    expirationPeriod: '1개월', //유효기간 (일) type:string
-    expirationCount: 2, //유효횟수 type:number
-    regularPrice: 40000, //가격 type:number
+    product: '', //상품명, type:string
+    type: '', // 상품종류, type:string
+    expirationPeriod: '', //유효기간 (일) type:string
+    expirationCount: 0, //유효횟수 type:number
+    regularPrice: 0, //가격 type:number
     activation: true, //활성화,
-    createdDate: '2023-06-15', // type:string yyyy-mm-dd
-    modifiedDate: '2023-06-15', // type:string yyyy-mm-dd
+    createdDate: '', // type:string yyyy-mm-dd
+    modifiedDate: '', // type:string yyyy-mm-dd
 };
 
 export const firestoreMarketingFieldSchema = {

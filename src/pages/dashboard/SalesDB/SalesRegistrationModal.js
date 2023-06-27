@@ -9,7 +9,11 @@ import HyperDatepicker from '../../../components/Datepicker';
 import classNames from 'classnames';
 
 import { firestoreDB } from '../../../firebase/firebase';
-import { firestoreSalesFieldSchema, firestoreSalesProductSchema } from '../../../firebase/firestoreDbSchema';
+import {
+    firestoreSalesFieldSchema,
+    firestoreSalesProductSchema,
+    firestoreProductsFieldSchema,
+} from '../../../firebase/firestoreDbSchema';
 
 import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
@@ -59,14 +63,27 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [size, setSize] = useState('lg');
 
-    const createFirestoreSalesData = () => {
+    const createFirestoreRegistrationSalesProducts = () => {
+        const registrationSalesProductsArray = [...registrationSalesProducts];
+        const calculateProductDuration = (startDate, period) => {
+            switch (period) {
+            }
+        };
         const salesProductData = {
             ...firestoreSalesProductSchema,
-            product: selectedProduct,
-            discountRate: productDiscountRate,
+            product: selectedProduct?.product,
             productStartDate: productStartDate,
+            regularPrice: selectedProduct?.regularPrice,
+            discountRate: productDiscountRate,
+            discountPrice: selectedProduct?.regularPrice - (selectedProduct?.regularPrice + productDiscountRate / 100),
+            startDate: productStartDate,
+            endDate: new Date().toISOString().split('T')[0],
         };
-        console.log(salesProductData);
+
+        registrationSalesProductsArray.unshift(salesProductData);
+        registrationSalesProductsArray.pop();
+
+        setRegistrationSalesProducts(registrationSalesProductsArray);
     };
     console.log('productsList', productsList);
     console.log('selectedProduct', selectedProduct);
@@ -183,8 +200,11 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const getSelectedProduct = (event) => {
+        const index = event.target.value;
+        const product = productsList.length > 0 ? productsList[index] : { ...firestoreProductsFieldSchema };
+
         console.log(event.target.value);
-        setSelectedProduct(event.target.value);
+        setSelectedProduct(product);
     };
     const getProductStartDate = (event) => {
         console.log(event.target.value);
@@ -324,21 +344,28 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const handleRenderingBodyContent = (registrationStep) => {
         const handleReneringRegistrationProducts = () => {
             return [...registrationSalesProducts].map((product, idx) => {
-                const productName = registrationSalesProducts[product]?.product;
-                const regularPrice = registrationSalesProducts[product]?.regularPrice;
-                const discountRate = registrationSalesProducts[product]?.discountRate;
-                const startDate = registrationSalesProducts[product]?.startDate;
-                const endDate = registrationSalesProducts[product]?.endDate;
+                const productName = product.product;
+                const regularPrice = product.regularPrice;
+                const discountRate = product.discountRate;
+                const startDate = product.startDate;
+                const endDate = product.endDate;
 
+                console.log(productName, regularPrice, discountRate, startDate, endDate);
                 return (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: '12px',
+                            fontSize: '12px',
+                        }}>
                         <div>
-                            {idx + 1} .{productName && productName + ' /'}
-                            {discountRate && discountRate + '%' + ' /'}
+                            {idx + 1} .{productName && productName + ' / '}
+                            {discountRate && discountRate + '%' + ' / '}
                             {startDate && endDate && startDate + ' ~ ' + endDate}
                         </div>
                         <div>
-                            {regularPrice && discountRate ? regularPrice - regularPrice * (discountRate * 100) : '-'}
+                            {regularPrice && discountRate ? regularPrice - regularPrice * (discountRate / 100) : '-'}
                         </div>
                     </div>
                 );
@@ -426,13 +453,13 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div className="mb-2">
                                 <Form.Label>상품</Form.Label>
                                 <Form.Select onChange={getSelectedProduct}>
-                                    <option value={false} selected>
+                                    <option value={false} selected disabled>
                                         상품을 선택해주세요
                                     </option>
                                     {productsList.map((product, idx) => {
                                         if (product.activation && product.product.length) {
                                             return (
-                                                <option key={product.product + '_' + idx} value={product}>
+                                                <option key={product.product + '_' + idx} value={idx}>
                                                     {product.product}
                                                 </option>
                                             );
@@ -472,7 +499,11 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 </div>
                             </div>
                             <div className="mb-2">
-                                <Button variant="primary" style={{ width: '100%' }}>
+                                <Button
+                                    variant="primary"
+                                    style={{ width: '100%' }}
+                                    disabled={!selectedProduct}
+                                    onClick={createFirestoreRegistrationSalesProducts}>
                                     적용하기
                                 </Button>
                             </div>
@@ -481,19 +512,40 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div style={{ borderBottom: '1px solid #EEF2F7', marginBottom: '16px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
                                     <span>정상가</span>
-                                    <span>200,000원</span>
+                                    <span>
+                                        {selectedProduct.regularPrice
+                                            ? selectedProduct.regularPrice.toLocaleString() + '원'
+                                            : '-'}
+                                    </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                    <span>정상가</span>
-                                    <span>200,000원</span>
+                                    <span>할인율</span>
+                                    <span>
+                                        {' '}
+                                        {productDiscountRate > 0 ? productDiscountRate.toLocaleString() + '%' : '-'}
+                                    </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                    <span>정상가</span>
-                                    <span>200,000원</span>
+                                    <span>할인액</span>
+                                    <span>
+                                        {selectedProduct.regularPrice && productDiscountRate > 0
+                                            ? (
+                                                  selectedProduct.regularPrice *
+                                                  (productDiscountRate / 100)
+                                              ).toLocaleString() + '원'
+                                            : '-'}
+                                    </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                    <span>정상가</span>
-                                    <span>200,000원</span>
+                                    <span>할인가</span>
+                                    <span>
+                                        {selectedProduct.regularPrice && productDiscountRate > 0
+                                            ? (
+                                                  selectedProduct.regularPrice -
+                                                  selectedProduct.regularPrice * (productDiscountRate / 100)
+                                              ).toLocaleString() + '원'
+                                            : '-'}
+                                    </span>
                                 </div>
                             </div>
                             <div
@@ -503,6 +555,15 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 }}>
                                 <div style={{ marginBottom: '16px' }}>적용상품</div>
                                 <div style={{ padding: '4px' }}>{handleReneringRegistrationProducts()}</div>
+                            </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <div>최종금액</div>
+                                <div>
+                                    {registrationSalesProducts.reduce((acc, curr) => {
+                                        return curr.discountPrice ? acc + curr.discountPrice : acc;
+                                    }, 0)}
+                                </div>
                             </div>
                         </div>
                     </div>
