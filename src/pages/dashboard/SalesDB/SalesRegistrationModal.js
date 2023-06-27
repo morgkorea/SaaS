@@ -9,7 +9,7 @@ import HyperDatepicker from '../../../components/Datepicker';
 import classNames from 'classnames';
 
 import { firestoreDB } from '../../../firebase/firebase';
-import { firestoreSalesFieldSchema } from '../../../firebase/firestoreDbSchema';
+import { firestoreSalesFieldSchema, firestoreSalesProductSchema } from '../../../firebase/firestoreDbSchema';
 
 import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
@@ -58,6 +58,19 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [size, setSize] = useState('lg');
 
+    const createFirestoreSalesData = () => {
+        const salesProductData = {
+            ...firestoreSalesProductSchema,
+            product: selectedProduct,
+            discountRate: productDiscountRate,
+            productStartDate: productStartDate,
+        };
+        console.log(salesProductData);
+    };
+    console.log('productsList', productsList);
+    console.log('selectedProduct', selectedProduct);
+    console.log('productDiscountRate', productDiscountRate);
+    console.log('productStartDate', productStartDate);
     const toggle = () => {
         setModal(!modal);
     };
@@ -413,12 +426,13 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         placeholder="-"
                                         containerClass={''}
                                         key="productsNumber"
+                                        onChange={getProductDiscountRate}
                                     />
                                     <div style={{ position: 'absolute', right: '16px', bottom: '8px' }}>%</div>
                                 </div>
                             </div>
 
-                            <div className="mb-2">
+                            <div className="mb-4">
                                 <div>
                                     {' '}
                                     <FormInput
@@ -434,7 +448,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 </div>
                             </div>
                             <div className="mb-2">
-                                <Button variant="primary" onClick={applyAvailableProduct} style={{ width: '200px' }}>
+                                <Button variant="primary" style={{ width: '100%' }}>
                                     적용하기
                                 </Button>
                             </div>

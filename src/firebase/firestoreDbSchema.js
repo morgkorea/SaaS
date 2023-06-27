@@ -83,38 +83,40 @@ export const firestoreMemebersFieldSchema = {
     ],
 };
 
-export const firestoreSalesFieldSchema = [
-    {
-        paymentNumber: '111', //결제번호
-        paymentDate: '2023-05-01', //결제일
-        paymentTime: '09:12:30', //결제시간
-        registrationType: '', //등록구분
-        memeberNumber: '', //회원번호
-        name: '유승훈', //이름
-        phone: '010-7178-1117', //전화번호
-        products: [
-            {
-                product: '장갑', //상품
-                productType: '기타',
-                regularPrice: '10000', //상품 정상가
-                discountRate: '10%', // 할인율
-                discountPrice: '9000', //할인가
-                startDate: '', // 시작일
-                endDate: '', // 종료일
-            },
-        ],
-        totalPaymentPrice: '', //결제총액
-        outstandingPrice: '', //미결제금액
-        paymentMethod: '카드', //결제수단
-        recieptNumber: '002', // 결제번호
-        paymentMemo: '메모', //결제메모
-        refund: false,
-        refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
-        refundDate: '2023-05-17', //환불일 2023-10-22
-        refundPrice: '89000', //환불액
-        refundReason: '단순변심', //환불사유
-    },
-];
+export const firestoreSalesProductSchema = {
+    product: '', //type: string 상품
+    productType: '', // type: string (batterBox,lesson,locker,etc)
+    regularPrice: 0, // type: number 상품 정상가
+    discountRate: 0, // type: number 할인율
+    discountPrice: 0, // type: number 할인가
+    startDate: '', //type: string (yyyy-MM-dd) 시작일
+    endDate: '', // type: string (yyyy-MM-dd) 종료일
+};
+
+export const firestoreSalesFieldSchema = {
+    paymentNumber: '', //type: string 결제번호
+    paymentDate: '', //type: string (yyyy-MM-dd) 결제일
+    paymentTime: '', //type: string (hh:mm:ss) //결제시간
+    registrationType: '', //등록구분
+    memeberNumber: '', //type: string 회원번호
+    name: '', //type: string 이름
+    phone: '', //type string 전화번호 010xxxxyyyy
+    salesProducts: [
+        {
+            ...firestoreSalesProductSchema,
+        },
+    ],
+    totalPaymentPrice: 0, //type: number 결제총액
+    outstandingPrice: 0, //type: number 미결제금액
+    paymentMethod: '', //type: string 결제수단
+    recieptNumber: '', //type: string 결제번호
+    paymentMemo: '', //type: string결제메모
+    refund: false, // type: boolean 환불여부
+    refundRequest_date: '', //type: string yyyy-MM-dd 환불요청일
+    refundDate: '', //type: string yyyy-MM-dd 환불일
+    refundPrice: 0, //type: number 환불액
+    refundReason: '', //type: string 환불사유
+};
 
 export const firestoreProductsFieldSchema = {
     productCode: '', // 상품코드 , type:string , (고객사코드_종류_기간_번호)    KO0001_ME_091_001
