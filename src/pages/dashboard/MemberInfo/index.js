@@ -21,6 +21,7 @@ const MemberInfo = () => {
         toggle()
     };
 
+    console.log(member)
     /**
      *  modal
      */

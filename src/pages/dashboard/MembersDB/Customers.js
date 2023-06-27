@@ -70,10 +70,10 @@ const columns = [
     },
     {
         Header: '회원번호',
-        accessor: '',
+        accessor: 'memberNumber',
         sort: true,
         // Cell: ActionColumn,
-        classes: 'table-action',
+        // classes: 'table-action',
     },
     {
         Header: '생성날짜',
@@ -118,7 +118,7 @@ const columns = [
     },
     {
         Header: '지역',
-        accessor: '',
+        accessor: 'region',
         sort: true,
     },
     {
