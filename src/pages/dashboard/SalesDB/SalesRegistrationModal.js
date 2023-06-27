@@ -27,8 +27,9 @@ import Spinner from '../../../components/Spinner';
 const SalesRegistrationModal = ({ modal, setModal }) => {
     const [registrationStep, setRegistrationStep] = useState(1);
 
-    const [registartionProducts, setRegistrationProducts] = useState([]);
+    const [registrationSalesProducts, setRegistrationSalesProducts] = useState(Array.from({ length: 5 }, () => ({})));
 
+    console.log(registrationSalesProducts);
     //step 1 =================================================================
     //선택 회원
     const [isSelectedMember, setIsSelectedMember] = useState(false);
@@ -119,7 +120,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const applyRegistartionProducts = (e) => {
-        const registartionProducts = [...registartionProducts];
+        const registrationSalesProducts = [...registrationSalesProducts];
     };
     const handleRegistrationStep = (event) => {
         console.log(event.target.textContent);
@@ -320,7 +321,30 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         }
     };
 
-    const handleRederingBodyContent = (registrationStep) => {
+    const handleRenderingBodyContent = (registrationStep) => {
+        const handleReneringRegistrationProducts = () => {
+            return [...registrationSalesProducts].map((product, idx) => {
+                const productName = registrationSalesProducts[product]?.product;
+                const regularPrice = registrationSalesProducts[product]?.regularPrice;
+                const discountRate = registrationSalesProducts[product]?.discountRate;
+                const startDate = registrationSalesProducts[product]?.startDate;
+                const endDate = registrationSalesProducts[product]?.endDate;
+
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div>
+                            {idx + 1} .{productName && productName + ' /'}
+                            {discountRate && discountRate + '%' + ' /'}
+                            {startDate && endDate && startDate + ' ~ ' + endDate}
+                        </div>
+                        <div>
+                            {regularPrice && discountRate ? regularPrice - regularPrice * (discountRate * 100) : '-'}
+                        </div>
+                    </div>
+                );
+            });
+        };
+
         switch (registrationStep) {
             case 1:
                 return (
@@ -453,6 +477,34 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 </Button>
                             </div>
                         </div>
+                        <div style={{ width: '50%', paddingLeft: '24px' }}>
+                            <div style={{ borderBottom: '1px solid #EEF2F7', marginBottom: '16px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                    <span>정상가</span>
+                                    <span>200,000원</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                    <span>정상가</span>
+                                    <span>200,000원</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                    <span>정상가</span>
+                                    <span>200,000원</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                    <span>정상가</span>
+                                    <span>200,000원</span>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    borderBottom: '1px solid #EEF2F7',
+                                    marginBottom: '16px',
+                                }}>
+                                <div style={{ marginBottom: '16px' }}>적용상품</div>
+                                <div style={{ padding: '4px' }}>{handleReneringRegistrationProducts()}</div>
+                            </div>
+                        </div>
                     </div>
                 );
         }
@@ -476,7 +528,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     <div style={{ width: '100%', paddingBottom: '32px' }}>
                         <img src={switchRegistrationStepImg(registrationStep)} style={{ width: '100%' }} />
                     </div>
-                    {handleRederingBodyContent(registrationStep)}
+                    {handleRenderingBodyContent(registrationStep)}
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-center border-top-0" style={{ paddingBottom: '48px' }}>
                     <Button
