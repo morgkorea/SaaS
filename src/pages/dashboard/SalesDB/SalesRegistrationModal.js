@@ -66,6 +66,11 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [isHoverDeleteIcon, setIsHoverDeleteIcon] = useState(false);
 
+    //step 3 =================================================================
+    const [isHoverModifiyButton, setIsHoverModifiyButton] = useState(false);
+
+    const [priceEditMode, setPriceEditMode] = useState(false);
+
     const [size, setSize] = useState('lg');
 
     const createFirestoreRegistrationSalesProducts = () => {
@@ -386,7 +391,19 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setIsHoverDeleteIcon(index);
     };
 
+    const handleHoverModifyButton = (boolean) => {
+        setIsHoverModifiyButton(boolean);
+    };
+
+    const togglePriceEditMode = () => {
+        setPriceEditMode(!priceEditMode);
+    };
+
     const handleRenderingBodyContent = (registrationStep) => {
+        const resitrationProductsTotalPrice = registrationSalesProducts.reduce((acc, curr) => {
+            return curr.discountPrice ? acc + curr.discountPrice : acc;
+        }, 0);
+
         const handleReneringRegistrationProducts = () => {
             return [...registrationSalesProducts].map((product, idx) => {
                 const productName = product.product;
@@ -402,9 +419,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             justifyContent: 'space-between',
                             marginBottom: '12px',
                             fontSize: '12px',
+                            placeItems: 'center',
                         }}>
-                        <div style={{ width: '60%' }}>
-                            {idx + 1} .{productName && productName + ' / '}
+                        <div style={{ display: 'flex', width: '60%', placeItems: 'center' }}>
+                            {idx + 1}. {productName && productName + ' / '}
                             {discountRate > 0 ? discountRate + '%' + ' / ' : ' '}
                             {startDate
                                 ? endDate &&
@@ -412,38 +430,83 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                       ' ~ ' +
                                       endDate.substring(2).replace(/-/g, '.')
                                 : ' '}
-                        </div>
-                        <div style={{ display: 'flex', width: '40%', justifyContent: 'end', placeItems: 'center' }}>
-                            <span>
-                                {regularPrice && discountRate
-                                    ? regularPrice - regularPrice * (discountRate / 100)
-                                    : discountRate === 0
-                                    ? regularPrice
-                                    : '-'}
-                            </span>
-                            {productName ? (
-                                <div
-                                    onClick={() => {
-                                        removeRegistrationSalesProductsElement(idx);
-                                    }}
-                                    onMouseEnter={() => {
-                                        handleHoverDeleteIcon(idx);
-                                    }}
-                                    onMouseLeave={() => {
-                                        handleHoverDeleteIcon(false);
-                                    }}>
-                                    <i
-                                        className="mdi mdi-delete-outline xl"
-                                        style={{
-                                            fontSize: '20px',
-                                            cursor: 'pointer',
-                                            color: isHoverDeleteIcon === idx ? '#03C780' : '#98A6AD',
-                                        }}
-                                    />
+                            {registrationStep === 3 && productName ? (
+                                <div style={{ color: '#03C780', marginLeft: '4px' }}>
+                                    {discountRate > 0 ? discountRate + '% 할인 적용' : ''}
                                 </div>
-                            ) : (
-                                <div style={{ width: '10px' }}></div>
-                            )}
+                            ) : null}
+                        </div>
+
+                        <div style={{ display: 'flex', width: '40%', justifyContent: 'end', placeItems: 'center' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    justifyContent: priceEditMode && registrationStep === 3 ? 'space-between' : 'end',
+                                    placeItems: 'center',
+                                }}>
+                                {productName && priceEditMode && registrationStep === 3 ? (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            borderRadius: '2px',
+                                            border: '1px solid #EEF2F7',
+                                            justifyContent: 'end',
+                                            placeItems: 'center',
+                                            padding: '0px 4px',
+                                        }}>
+                                        <FormInput
+                                            type="Number"
+                                            name="productDiscountRate"
+                                            placeholder="-"
+                                            containerClass={''}
+                                            key="productDiscountRate"
+                                            min={0}
+                                            max={100}
+                                            style={{
+                                                minWidth: '80px',
+                                                border: '0px',
+                                                textAlign: 'right',
+                                                fontSize: '12px',
+                                                padding: '2px 2px',
+                                            }}
+                                            // value={}
+                                            // onChange={}
+                                        />
+                                        <div>원</div>
+                                    </div>
+                                ) : null}
+                                <span>
+                                    {regularPrice && discountRate
+                                        ? (regularPrice - regularPrice * (discountRate / 100)).toLocaleString() + '원'
+                                        : discountRate === 0
+                                        ? regularPrice.toLocaleString() + '원'
+                                        : '-'}
+                                </span>
+                                {productName && registrationStep < 3 ? (
+                                    <div
+                                        onClick={() => {
+                                            removeRegistrationSalesProductsElement(idx);
+                                        }}
+                                        onMouseEnter={() => {
+                                            handleHoverDeleteIcon(idx);
+                                        }}
+                                        onMouseLeave={() => {
+                                            handleHoverDeleteIcon(false);
+                                        }}>
+                                        <i
+                                            className="mdi mdi-delete-outline xl"
+                                            style={{
+                                                fontSize: '20px',
+                                                cursor: 'pointer',
+                                                color: isHoverDeleteIcon === idx ? '#03C780' : '#98A6AD',
+                                            }}
+                                        />
+                                    </div>
+                                ) : registrationStep > 2 ? null : (
+                                    <div style={{ width: '10px' }}></div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 );
@@ -453,9 +516,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         switch (registrationStep) {
             case 1:
                 return (
-                    <div className="container">
-                        <h4 className="modal-title mb-2">회원 검색</h4>
-
+                    <div className="container" style={{ padding: '0' }}>
+                        <h3 className="modal-title mb-2">회원 검색</h3>
                         <div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
                                 {' '}
@@ -525,9 +587,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 return (
                     <div className="container" style={{ display: 'flex', width: '100%', padding: '0' }}>
                         <div style={{ width: '50%' }}>
-                            <h4 className="modal-title mb-2">
+                            <h3 className="modal-title mb-2">
                                 {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 상품 적용
-                            </h4>
+                            </h3>
                             <div className="mb-2">
                                 <Form.Label>상품</Form.Label>
                                 <Form.Select value={productSelectIndexValue} onChange={getSelectedProduct}>
@@ -638,20 +700,15 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     marginBottom: '16px',
                                 }}>
                                 <div style={{ marginBottom: '8px' }}>적용상품</div>
-                                <div style={{ padding: '4px' }}>{handleReneringRegistrationProducts()}</div>
+                                <div style={{ padding: '0px' }}>{handleReneringRegistrationProducts()}</div>
                             </div>
 
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <div>최종금액</div>
 
-                                {registrationSalesProducts.reduce((acc, curr) => {
-                                    return curr.discountPrice ? acc + curr.discountPrice : acc;
-                                }, 0) > 0 ? (
+                                {resitrationProductsTotalPrice > 0 ? (
                                     <span style={{ color: '#03C780' }}>
-                                        {' '}
-                                        {registrationSalesProducts.reduce((acc, curr) => {
-                                            return curr.discountPrice ? acc + curr.discountPrice : acc;
-                                        }, 0)}
+                                        {resitrationProductsTotalPrice.toLocaleString() + '원'}
                                     </span>
                                 ) : (
                                     <span>-</span>
@@ -659,6 +716,132 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             </div>
                         </div>
                     </div>
+                );
+            case 3:
+                return (
+                    <div className="container" style={{ padding: '0' }}>
+                        <h3 className="modal-title mb-2">
+                            {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 최종금액조정
+                        </h3>
+                        <div className="mb-3">
+                            {' '}
+                            <div style={{ marginBottom: '16px' }}>적용상품</div>
+                            <div style={{ padding: '4px', borderBottom: '1px solid #EEF2F7' }}>
+                                {handleReneringRegistrationProducts()}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+                            <div>최종 금액</div>
+                            {resitrationProductsTotalPrice > 0 ? (
+                                <span style={{ color: '#03C780' }}>
+                                    {resitrationProductsTotalPrice.toLocaleString() + '원'}
+                                </span>
+                            ) : (
+                                <span>-</span>
+                            )}
+                        </div>
+                        <div style={{ display: 'flex', width: '100%', justifyContent: 'end', marginTop: '16px' }}>
+                            <Button
+                                style={{
+                                    padding: '10px 13px',
+                                    border: '1px solid #6C757D',
+                                    borderRadius: '8px',
+                                    backgroundColor: isHoverModifiyButton ? '#DFDFDF' : '#FFFFFF',
+                                    boxShadow: 'none',
+                                    color: '#6C757D',
+                                }}
+                                onClick={togglePriceEditMode}
+                                onMouseEnter={() => {
+                                    handleHoverModifyButton(true);
+                                }}
+                                onMouseLeave={() => {
+                                    handleHoverModifyButton(false);
+                                }}>
+                                최종금액 조정하기
+                            </Button>
+                        </div>
+                    </div>
+                );
+        }
+    };
+
+    const handleRenderingFooterContent = (registrationStep) => {
+        switch (registrationStep) {
+            case 1:
+                return (
+                    <Button
+                        variant="primary"
+                        onClick={(event) => {
+                            handleRegistrationStep(event);
+                        }}
+                        disabled={!isSelectedMember}
+                        style={{ width: '200px' }}>
+                        다음
+                    </Button>
+                );
+            case 2:
+                return (
+                    <>
+                        <Button
+                            variant="secondary"
+                            onClick={(event) => {
+                                handleRegistrationStep(event);
+                            }}
+                            style={{ width: '200px' }}>
+                            이전
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={(event) => {
+                                handleRegistrationStep(event);
+                            }}
+                            disabled={!registrationSalesProducts[0].hasOwnProperty('product')}
+                            style={{ width: '200px' }}>
+                            다음
+                        </Button>
+                    </>
+                );
+            case 3:
+                return (
+                    <>
+                        <Button
+                            variant="secondary"
+                            onClick={(event) => {
+                                handleRegistrationStep(event);
+                            }}
+                            style={{ width: '200px' }}>
+                            이전
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={(event) => {
+                                handleRegistrationStep(event);
+                            }}
+                            style={{ width: '200px' }}>
+                            다음
+                        </Button>
+                    </>
+                );
+            case 4:
+                return (
+                    <>
+                        <Button
+                            variant="secondary"
+                            onClick={(event) => {
+                                handleRegistrationStep(event);
+                            }}
+                            style={{ width: '200px' }}>
+                            이전
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={(event) => {
+                                handleRegistrationStep(event);
+                            }}
+                            style={{ width: '200px' }}>
+                            다음
+                        </Button>
+                    </>
                 );
         }
     };
@@ -684,15 +867,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     {handleRenderingBodyContent(registrationStep)}
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-center border-top-0" style={{ paddingBottom: '48px' }}>
-                    <Button
-                        variant="primary"
-                        onClick={(event) => {
-                            handleRegistrationStep(event);
-                        }}
-                        disabled={!isSelectedMember}
-                        style={{ width: '200px' }}>
-                        다음
-                    </Button>
+                    {handleRenderingFooterContent(registrationStep)}
                 </Modal.Footer>
             </Modal>
         </>
