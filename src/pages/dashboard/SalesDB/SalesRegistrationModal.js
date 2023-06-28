@@ -69,13 +69,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         const registrationSalesProductsArray = [...registrationSalesProducts];
         const calculateProductDuration = (startDate, periodString) => {
             let period = new Date().getMonth() + 1;
-
+            let calculatedDate = new Date(startDate);
             if (periodString.includes('개월')) {
-                console.log(~~periodString.replace('개월', ''));
+                calculatedDate.setDate(calculatedDate.getMonth() + ~~periodString.replace('개월', ''));
             } else if (periodString.includes('일')) {
-                console.log(~~periodString.replace('개월', ''));
+                calculatedDate.setDate(calculatedDate.getDate() + ~~periodString.replace('일', ''));
             }
+
+            console.log(calculatedDate.toISOString().split('T')[0]);
         };
+
         const salesProductData = {
             ...firestoreSalesProductSchema,
             product: selectedProduct?.product,
