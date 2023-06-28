@@ -60,6 +60,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     // picked date
     const [productStartDate, setProductStartDate] = useState(new Date().toISOString().split('T')[0]);
+    const [productEndDate, setProductEndDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [productSelectIndexValue, setProductSelectIndexValue] = useState(false);
 
@@ -68,15 +69,18 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const createFirestoreRegistrationSalesProducts = () => {
         const registrationSalesProductsArray = [...registrationSalesProducts];
         const calculateProductDuration = (startDate, periodString) => {
-            let period = new Date().getMonth() + 1;
             let calculatedDate = new Date(startDate);
             if (periodString.includes('개월')) {
-                calculatedDate.setDate(calculatedDate.getMonth() + ~~periodString.replace('개월', ''));
+                calculatedDate.setMonth(calculatedDate.getMonth() + ~~periodString.replace('개월', ''));
+                calculatedDate.setDate(calculatedDate.getDate() - 1);
+                console.log(~~periodString.replace('개월', ''));
             } else if (periodString.includes('일')) {
-                calculatedDate.setDate(calculatedDate.getDate() + ~~periodString.replace('일', ''));
+                calculatedDate.setDate(calculatedDate.getDate() + ~~periodString.replace('일', '') - 1);
+
+                console.log(calculatedDate);
             }
 
-            console.log(calculatedDate.toISOString().split('T')[0]);
+            return calculatedDate.toISOString().split('T')[0];
         };
 
         const salesProductData = {
@@ -87,10 +91,11 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             discountRate: productDiscountRate,
             discountPrice: selectedProduct?.regularPrice - selectedProduct?.regularPrice * (productDiscountRate / 100),
             startDate: productStartDate,
-            endDate: new Date().toISOString().split('T')[0],
+            endDate: calculateProductDuration(productStartDate, selectedProduct.expirationPeriod),
         };
 
-        calculateProductDuration(productStartDate, selectedProduct.expirationPeriod);
+        console.log(salesProductData);
+
         registrationSalesProductsArray.unshift(salesProductData);
         registrationSalesProductsArray.pop();
 
@@ -99,12 +104,12 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setSelectedProduct(false);
         setProductDiscountRate(0);
         setProductStartDate(new Date().toISOString().split('T')[0]);
+        setProductEndDate(new Date().toISOString().split('T')[0]);
         setProductSelectIndexValue(false);
     };
     console.log('productsList', productsList);
     console.log('selectedProduct', selectedProduct);
-    console.log('productDiscountRate', productDiscountRate);
-    console.log('productStartDate', productStartDate);
+
     const toggle = () => {
         setModal(!modal);
     };
@@ -363,7 +368,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 const startDate = product.startDate;
                 const endDate = product.endDate;
 
-                console.log(productName, regularPrice, discountRate, startDate, endDate);
                 return (
                     <div
                         style={{
@@ -372,13 +376,17 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             marginBottom: '12px',
                             fontSize: '12px',
                         }}>
-                        <div>
+                        <div style={{ width: '70%' }}>
                             {idx + 1} .{productName && productName + ' / '}
                             {discountRate > 0 ? discountRate + '%' + ' / ' : ' '}
                             {startDate ? endDate && startDate + ' ~ ' + endDate : ' '}
                         </div>
                         <div>
-                            {regularPrice && discountRate ? regularPrice - regularPrice * (discountRate / 100) : '-'}
+                            {regularPrice && discountRate
+                                ? regularPrice - regularPrice * (discountRate / 100)
+                                : discountRate === 0
+                                ? regularPrice
+                                : '-'}
                         </div>
                     </div>
                 );
