@@ -71,6 +71,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [priceEditMode, setPriceEditMode] = useState(false);
 
+    const [modifyPriceList, setModifyPriceList] = useState([0, 0, 0, 0, 0]);
+
     const [size, setSize] = useState('lg');
 
     const createFirestoreRegistrationSalesProducts = () => {
@@ -399,10 +401,27 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setPriceEditMode(!priceEditMode);
     };
 
+    const calculateModifiyPrice = (event, idx, maxPrice) => {
+        const modifyPriceArray = [...modifyPriceList];
+        if (event.target.value > maxPrice) {
+            modifyPriceArray[idx] = maxPrice;
+        } else if (event.target.value === '') {
+            modifyPriceArray[idx] = 0;
+        } else {
+            modifyPriceArray[idx] = Number(event.target.value);
+        }
+
+        setModifyPriceList(modifyPriceArray);
+    };
+    console.log(modifyPriceList);
     const handleRenderingBodyContent = (registrationStep) => {
         const resitrationProductsTotalPrice = registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
         }, 0);
+        let isModifiedPrice =  [...modifyPriceList].reduce((acc,curr)=>
+        acc + curr
+    ,0) > 0 && !priceEditMode? true : false            
+        
 
         const handleReneringRegistrationProducts = () => {
             return [...registrationSalesProducts].map((product, idx) => {
@@ -411,6 +430,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 const discountRate = product.discountRate;
                 const startDate = product.startDate;
                 const endDate = product.endDate;
+                const discountPrice = product.discountPrice;
 
                 return (
                     <div
@@ -461,7 +481,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                             padding: '0px 4px',
                                         }}>
                                         <FormInput
-                                            type="Number"
+                                            type="number"
                                             name="productDiscountRate"
                                             placeholder="-"
                                             containerClass={''}
@@ -475,15 +495,17 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                                 fontSize: '12px',
                                                 padding: '2px 2px',
                                             }}
-                                            // value={}
-                                            // onChange={}
+                                            value={modifyPriceList[idx]}
+                                            onChange={(e) => {
+                                                calculateModifiyPrice(e, idx, discountPrice);
+                                            }}
                                         />
                                         <div>원</div>
                                     </div>
                                 ) : null}
                                 <span>
                                     {regularPrice && discountRate
-                                        ? (regularPrice - regularPrice * (discountRate / 100)).toLocaleString() + '원'
+                                        ? discountPrice.toLocaleString() + '원'
                                         : discountRate === 0
                                         ? regularPrice.toLocaleString() + '원'
                                         : '-'}
@@ -616,7 +638,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div className="mb-2">
                                 <div style={{ position: 'relative' }}>
                                     <FormInput
-                                        type="Number"
+                                        type="number"
                                         label="할인율"
                                         name="productDiscountRate"
                                         placeholder="-"
@@ -738,7 +760,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     </div>
                                 </div>
                             ) : (
-                                <div style={{ marginBottom: '8px' }}>적용상품</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                    <div>적용상품</div>
+                                    <div>상품금액</div>
+                                </div>
                             )}
 
                             <div style={{ padding: '4px', borderBottom: '1px solid #EEF2F7' }}>
@@ -755,7 +780,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 <span>-</span>
                             )}
                         </div>
-                        <div style={{ display: 'flex', width: '100%', justifyContent: 'end', marginTop: '16px' }}>
+                        <div style={{ display: 'flex', width: '100%', justifyContent: 'end', padding: '16px 0px' ,borderBottom: isModifiedPrice ?  '1px solid #EEF2F7':"0px",           }}>
                             <Button
                                 style={{
                                     padding: '10px 13px',
