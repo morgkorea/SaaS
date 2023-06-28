@@ -415,13 +415,18 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 return (
                     <div
                         style={{
-                            display: 'flex',
+                            display: registrationStep === 3 && !productName ? 'none' : 'flex',
                             justifyContent: 'space-between',
                             marginBottom: '12px',
                             fontSize: '12px',
                             placeItems: 'center',
                         }}>
-                        <div style={{ display: 'flex', width: '60%', placeItems: 'center' }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '60%',
+                                placeItems: 'center',
+                            }}>
                             {idx + 1}. {productName && productName + ' / '}
                             {discountRate > 0 ? discountRate + '%' + ' / ' : ' '}
                             {startDate
@@ -724,8 +729,18 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 최종금액조정
                         </h3>
                         <div className="mb-3">
-                            {' '}
-                            <div style={{ marginBottom: '16px' }}>적용상품</div>
+                            {priceEditMode ? (
+                                <div style={{ display: 'flex' }}>
+                                    <div style={{ width: '60%', marginBottom: '16px' }}>적용상품</div>
+                                    <div style={{ width: '40%', display: 'flex', justifyContent: 'space-between' }}>
+                                        <div style={{ minWidth: '100px', textAlign: 'right' }}>조정금액</div>
+                                        <div>상품금액</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div style={{ marginBottom: '8px' }}>적용상품</div>
+                            )}
+
                             <div style={{ padding: '4px', borderBottom: '1px solid #EEF2F7' }}>
                                 {handleReneringRegistrationProducts()}
                             </div>
@@ -757,7 +772,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 onMouseLeave={() => {
                                     handleHoverModifyButton(false);
                                 }}>
-                                최종금액 조정하기
+                                {priceEditMode ? '조정 완료' : '최종금액 조정하기'}
                             </Button>
                         </div>
                     </div>
@@ -817,7 +832,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             onClick={(event) => {
                                 handleRegistrationStep(event);
                             }}
-                            style={{ width: '200px' }}>
+                            style={{ width: '200px' }}
+                            disabled={priceEditMode}>
                             다음
                         </Button>
                     </>
