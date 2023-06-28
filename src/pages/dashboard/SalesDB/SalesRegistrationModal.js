@@ -418,10 +418,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         const resitrationProductsTotalPrice = registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
         }, 0);
-        let isModifiedPrice =  [...modifyPriceList].reduce((acc,curr)=>
-        acc + curr
-    ,0) > 0 && !priceEditMode? true : false            
-        
+        let isModifiedPrice =
+            [...modifyPriceList].reduce((acc, curr) => acc + curr, 0) > 0 && !priceEditMode ? true : false;
 
         const handleReneringRegistrationProducts = () => {
             return [...registrationSalesProducts].map((product, idx) => {
@@ -481,7 +479,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                             padding: '0px 4px',
                                         }}>
                                         <FormInput
-                                            type="number"
+                                            type="text"
                                             name="productDiscountRate"
                                             placeholder="-"
                                             containerClass={''}
@@ -502,12 +500,17 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         />
                                         <div>원</div>
                                     </div>
+                                ) : null}{' '}
+                                {registrationStep === 3 && modifyPriceList[idx] > 0 && !priceEditMode ? (
+                                    <div style={{ marginRight: '70px', color: '#FA5C7C' }}>
+                                        -{modifyPriceList[idx]}원
+                                    </div>
                                 ) : null}
                                 <span>
                                     {regularPrice && discountRate
-                                        ? discountPrice.toLocaleString() + '원'
+                                        ? (discountPrice - modifyPriceList[idx]).toLocaleString() + '원'
                                         : discountRate === 0
-                                        ? regularPrice.toLocaleString() + '원'
+                                        ? (regularPrice - modifyPriceList[idx]).toLocaleString() + '원'
                                         : '-'}
                                 </span>
                                 {productName && registrationStep < 3 ? (
@@ -638,7 +641,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div className="mb-2">
                                 <div style={{ position: 'relative' }}>
                                     <FormInput
-                                        type="number"
+                                        type="text"
                                         label="할인율"
                                         name="productDiscountRate"
                                         placeholder="-"
@@ -780,7 +783,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 <span>-</span>
                             )}
                         </div>
-                        <div style={{ display: 'flex', width: '100%', justifyContent: 'end', padding: '16px 0px' ,borderBottom: isModifiedPrice ?  '1px solid #EEF2F7':"0px",           }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'end',
+                                padding: '16px 0px',
+                                borderBottom: isModifiedPrice ? '1px solid #EEF2F7' : '0px',
+                            }}>
                             <Button
                                 style={{
                                     padding: '10px 13px',
@@ -800,6 +810,24 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 {priceEditMode ? '조정 완료' : '최종금액 조정하기'}
                             </Button>
                         </div>
+
+                        {isModifiedPrice && (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    placeItems: 'center',
+                                    paddingTop: '28px',
+                                }}>
+                                <div>최종 조정금액</div>
+                                <div style={{ color: '#03C780', fontSize: '24px', fontWeight: '700' }}>
+                                    {(
+                                        resitrationProductsTotalPrice -
+                                        modifyPriceList.reduce((acc, curr) => acc + curr, 0)
+                                    ).toLocaleString() + '원'}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 );
         }
