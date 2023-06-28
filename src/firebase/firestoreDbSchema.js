@@ -98,7 +98,7 @@ export const firestoreSalesFieldSchema = {
     paymentDate: '', //type: string (yyyy-MM-dd) 결제일
     paymentTime: '', //type: string (hh:mm:ss) //결제시간
     registrationType: '', //등록구분
-    memeberNumber: '', //type: string 회원번호
+    memberNumber: '', //type: string 회원번호
     name: '', //type: string 이름
     phone: '', //type string 전화번호 010xxxxyyyy
     salesProducts: [
