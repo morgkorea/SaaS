@@ -102,6 +102,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         registrationSalesProductsArray.pop();
 
         setRegistrationSalesProducts(registrationSalesProductsArray);
+
         // registrationSalesProducts 리스트 업 후 항목별 값 초기화
         setSelectedProduct(false);
         setProductDiscountRate(0);
@@ -180,10 +181,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const getProductDiscountRate = (event) => {
-        setProductDiscountRate(event.target.value);
+        let rate = Number(event.target.value);
+        if (rate < 0) {
+            rate = 0;
+        } else if (rate > 100) {
+            rate = 100;
+        }
 
-        console.log('productsDiscountRate', productDiscountRate);
+        setProductDiscountRate(rate);
     };
+
     const getSelectedMember = (searchedMembersList, idx) => {
         if (!isSelectedMember) {
             setIsSelectedMember(searchedMembersList[idx]);
@@ -199,6 +206,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         console.log(event.target.value);
         setSearchingName(event.target.value);
     };
+
     const getSearchingPhone = (event) => {
         setSearchingPhone(event.target.value);
     };
@@ -236,10 +244,12 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setSelectedProduct(product);
         setProductSelectIndexValue(index);
     };
+
     const getProductStartDate = (event) => {
         console.log(event.target.value);
         setProductStartDate(event.target.value);
     };
+
     useEffect(() => {
         searchMembers(membersList);
     }, [searchingName, searchingPhone]);
@@ -259,6 +269,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             console.log(error);
         }
     };
+
     const getFiresotreProductsList = async () => {
         try {
             const productsCollectionRef = collection(firestoreDB, 'Users', email, 'Products');
@@ -395,7 +406,12 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         <div style={{ width: '60%' }}>
                             {idx + 1} .{productName && productName + ' / '}
                             {discountRate > 0 ? discountRate + '%' + ' / ' : ' '}
-                            {startDate ? endDate && startDate + ' ~ ' + endDate : ' '}
+                            {startDate
+                                ? endDate &&
+                                  startDate.substring(2).replace(/-/g, '.') +
+                                      ' ~ ' +
+                                      endDate.substring(2).replace(/-/g, '.')
+                                : ' '}
                         </div>
                         <div style={{ display: 'flex', width: '40%', justifyContent: 'end', placeItems: 'center' }}>
                             <span>
@@ -419,15 +435,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     <i
                                         className="mdi mdi-delete-outline xl"
                                         style={{
-                                            fontSize: '22px',
-                                            paddingLeft: '2px',
+                                            fontSize: '20px',
                                             cursor: 'pointer',
                                             color: isHoverDeleteIcon === idx ? '#03C780' : '#98A6AD',
                                         }}
                                     />
                                 </div>
                             ) : (
-                                <div style={{ width: '16px', height: '14px' }}></div>
+                                <div style={{ width: '10px' }}></div>
                             )}
                         </div>
                     </div>
@@ -534,12 +549,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div className="mb-2">
                                 <div style={{ position: 'relative' }}>
                                     <FormInput
-                                        type="number"
+                                        type="Number"
                                         label="할인율"
                                         name="productDiscountRate"
                                         placeholder="-"
                                         containerClass={''}
                                         key="productsNumber"
+                                        min={0}
+                                        max={100}
                                         onChange={getProductDiscountRate}
                                         value={productDiscountRate}
                                     />
