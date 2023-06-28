@@ -64,6 +64,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [productSelectIndexValue, setProductSelectIndexValue] = useState(false);
 
+    const [isHoverDeleteIcon, setIsHoverDeleteIcon] = useState(false);
+
     const [size, setSize] = useState('lg');
 
     const createFirestoreRegistrationSalesProducts = () => {
@@ -99,8 +101,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         registrationSalesProductsArray.unshift(salesProductData);
         registrationSalesProductsArray.pop();
 
-        // registrationSalesProducts 리스트 업 후 항목별 값 초기화
         setRegistrationSalesProducts(registrationSalesProductsArray);
+        // registrationSalesProducts 리스트 업 후 항목별 값 초기화
         setSelectedProduct(false);
         setProductDiscountRate(0);
         setProductStartDate(new Date().toISOString().split('T')[0]);
@@ -165,6 +167,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         return event.target.textContent === '다음'
             ? setRegistrationStep(registrationStep + 1)
             : setRegistrationStep(registrationStep - 1);
+    };
+
+    const removeRegistrationSalesProductsElement = (index) => {
+        const registrationSalesProductsArray = [...registrationSalesProducts];
+
+        registrationSalesProductsArray.splice(index, 1);
+        console.log(registrationSalesProductsArray);
+        registrationSalesProductsArray.push({});
+
+        setRegistrationSalesProducts(registrationSalesProductsArray);
     };
 
     const getProductDiscountRate = (event) => {
@@ -359,6 +371,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         }
     };
 
+    const handleHoverDeleteIcon = (index) => {
+        setIsHoverDeleteIcon(index);
+    };
+
     const handleRenderingBodyContent = (registrationStep) => {
         const handleReneringRegistrationProducts = () => {
             return [...registrationSalesProducts].map((product, idx) => {
@@ -376,17 +392,43 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             marginBottom: '12px',
                             fontSize: '12px',
                         }}>
-                        <div style={{ width: '70%' }}>
+                        <div style={{ width: '60%' }}>
                             {idx + 1} .{productName && productName + ' / '}
                             {discountRate > 0 ? discountRate + '%' + ' / ' : ' '}
                             {startDate ? endDate && startDate + ' ~ ' + endDate : ' '}
                         </div>
-                        <div>
-                            {regularPrice && discountRate
-                                ? regularPrice - regularPrice * (discountRate / 100)
-                                : discountRate === 0
-                                ? regularPrice
-                                : '-'}
+                        <div style={{ display: 'flex', width: '40%', justifyContent: 'end', placeItems: 'center' }}>
+                            <span>
+                                {regularPrice && discountRate
+                                    ? regularPrice - regularPrice * (discountRate / 100)
+                                    : discountRate === 0
+                                    ? regularPrice
+                                    : '-'}
+                            </span>
+                            {productName ? (
+                                <div
+                                    onClick={() => {
+                                        removeRegistrationSalesProductsElement(idx);
+                                    }}
+                                    onMouseEnter={() => {
+                                        handleHoverDeleteIcon(idx);
+                                    }}
+                                    onMouseLeave={() => {
+                                        handleHoverDeleteIcon(false);
+                                    }}>
+                                    <i
+                                        className="mdi mdi-delete-outline xl"
+                                        style={{
+                                            fontSize: '22px',
+                                            paddingLeft: '2px',
+                                            cursor: 'pointer',
+                                            color: isHoverDeleteIcon === idx ? '#03C780' : '#98A6AD',
+                                        }}
+                                    />
+                                </div>
+                            ) : (
+                                <div style={{ width: '16px', height: '14px' }}></div>
+                            )}
                         </div>
                     </div>
                 );
@@ -466,7 +508,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
             case 2:
                 return (
-                    <div className="container" style={{ display: 'flex', width: '100%' }}>
+                    <div className="container" style={{ display: 'flex', width: '100%', padding: '0' }}>
                         <div style={{ width: '50%' }}>
                             <h4 className="modal-title mb-2">
                                 {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 상품 적용
