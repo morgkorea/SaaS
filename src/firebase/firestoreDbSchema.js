@@ -95,6 +95,12 @@ export const firestoreSalesProductSchema = {
     endDate: '', // type: string (yyyy-MM-dd) 종료일
 };
 
+export const firestorePaymentInfoFieldSchema = {
+    paymentMethod: '',
+    paymentPrice: 0,
+    paymentReceiptNumber: '',
+};
+
 export const firestoreSalesFieldSchema = {
     paymentNumber: '', //type: string 결제번호
     paymentDate: '', //type: string (yyyy-MM-dd) 결제일
@@ -112,6 +118,7 @@ export const firestoreSalesFieldSchema = {
     outstandingPrice: 0, //type: number 미결제금액
     paymentMethod: [''], //type: array , element type : string 결제수단
     recieptNumber: '', //type: string 결제번호
+    paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
     paymentMemo: '', //type: string결제메모
     refund: false, // type: boolean 환불여부
     refundRequest_date: '', //type: string yyyy-MM-dd 환불요청일

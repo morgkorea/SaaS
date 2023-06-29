@@ -13,6 +13,7 @@ import {
     firestoreSalesFieldSchema,
     firestoreSalesProductSchema,
     firestoreProductsFieldSchema,
+    firestorePaymentInfoFieldSchema,
 } from '../../../firebase/firestoreDbSchema';
 
 import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
@@ -73,7 +74,66 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [modifyPriceList, setModifyPriceList] = useState([0, 0, 0, 0, 0]);
 
+    //step 4 =================================================================
+    const [paymentInfoList, setPaymentInfoList] = useState(Array.from({ length: 3 }, () => ({})));
+
+    const [paymentInfo1, setPaymentInfo1] = useState({ ...firestorePaymentInfoFieldSchema });
+    const [paymentInfo2, setPaymentInfo2] = useState({ ...firestorePaymentInfoFieldSchema });
+    const [paymentInfo3, setPaymentInfo3] = useState({ ...firestorePaymentInfoFieldSchema });
+
     const [size, setSize] = useState('lg');
+
+    const getPaymentType = (event, index) => {
+        const method = event.target.value;
+
+        switch (index) {
+            case 1:
+                return setPaymentInfo1({ ...paymentInfo1, paymentMethod: method });
+            case 2:
+                return setPaymentInfo2({ ...paymentInfo2, paymentMethod: method });
+            case 3:
+                return setPaymentInfo3({ ...paymentInfo3, paymentMethod: method });
+        }
+    };
+
+    const getPaymentPrice = (event, index) => {
+        let price = Number(event.target.value);
+
+        const totalPrice =
+            registrationSalesProducts.reduce((acc, curr) => {
+                return curr.discountPrice ? acc + curr.discountPrice : acc;
+            }, 0) - modifyPriceList.reduce((acc, curr) => acc + curr, 0);
+
+        let adjustedPrice =
+            index === 1
+                ? totalPrice
+                : index === 2
+                ? totalPrice - paymentInfo1
+                : index === 3
+                ? adjustedPrice - paymentInfo1 - paymentInfo2
+                : totalPrice;
+
+        if (isNaN(price)) {
+            price = 0;
+        } else if (price > adjustedPrice) {
+            price = adjustedPrice;
+        }
+
+        switch (index) {
+            case 1:
+                return setPaymentInfo1({ ...paymentInfo1, paymentPrice: price });
+            case 2:
+                return setPaymentInfo2({ ...paymentInfo2, paymentPrice: price });
+            case 3:
+                return setPaymentInfo3({ ...paymentInfo3, paymentPrice: price });
+        }
+    };
+
+    console.log(paymentInfo1);
+    const createFirestorePaymentInfoList = () => {
+        const paymentInfoArray = [...paymentInfoList];
+        const paymentInfo = { ...firestorePaymentInfoFieldSchema };
+    };
 
     const createFirestoreRegistrationSalesProducts = () => {
         const registrationSalesProductsArray = [...registrationSalesProducts];
@@ -189,7 +249,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const getProductDiscountRate = (event) => {
         let rate = Number(event.target.value);
-        if (rate < 0) {
+        if (rate < 0 || isNaN(rate)) {
             rate = 0;
         } else if (rate > 100) {
             rate = 100;
@@ -847,19 +907,29 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <Row>
                                 <div style={{ marginBottom: '16px', fontSize: '12px' }}>결제정보 1</div>
                                 <Col>
-                                    <Form.Select name="paymentType">
-                                        <option value="" selected disabled>
+                                    <Form.Select
+                                        name="paymentType"
+                                        onChange={(e) => {
+                                            getPaymentType(e, 1);
+                                        }}
+                                        value={paymentInfo1.paymentMethod}>
+                                        <option value="" disabled>
                                             결제수단을 선택해주세요
                                         </option>
-                                        <option>카드</option>
-                                        <option>현금</option>
+                                        <option value="creditCard">카드</option>
+                                        <option value="cash">현금</option>
                                     </Form.Select>
                                 </Col>
                                 <Col style={{ position: 'relative' }}>
                                     <FormInput
                                         type="text"
                                         name="paymentPrice"
-                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                        placeholder="결제 금액을 입력해주세요."
+                                        onChange={(e) => {
+                                            getPaymentPrice(e, 1);
+                                        }}
+                                        value={paymentInfo1.paymentPrice}
+                                        disabled={paymentInfo1.paymentMethod.length === 0}></FormInput>
                                     <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>원</div>
                                 </Col>
                                 <Col>
@@ -867,25 +937,36 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="text"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        disabled={!paymentInfo1.paymentMethod.length}
                                     />
                                 </Col>
                             </Row>
                             <Row>
                                 <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제정보 2</div>
                                 <Col>
-                                    <Form.Select name="paymentType">
-                                        <option value="" selected disabled>
+                                    <Form.Select
+                                        name="paymentType"
+                                        onChange={(e) => {
+                                            getPaymentType(e, 2);
+                                        }}
+                                        value={paymentInfo2.paymentMethod}>
+                                        <option value="" disabled>
                                             결제수단을 선택해주세요
                                         </option>
-                                        <option>카드</option>
-                                        <option>현금</option>
+                                        <option value="creditCard">카드</option>
+                                        <option value="cash">현금</option>
                                     </Form.Select>
                                 </Col>
                                 <Col style={{ position: 'relative' }}>
                                     <FormInput
                                         type="text"
                                         name="paymentPrice"
-                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                        placeholder="결제 금액을 입력해주세요."
+                                        onChange={(e) => {
+                                            getPaymentPrice(e, 2);
+                                        }}
+                                        value={paymentInfo2.paymentPrice}
+                                        disabled={!paymentInfo2.paymentMethod.length}></FormInput>
                                     <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>원</div>
                                 </Col>
                                 <Col>
@@ -893,25 +974,36 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="text"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        disabled={!paymentInfo2.paymentMethod.length}
                                     />
                                 </Col>
                             </Row>
                             <Row>
                                 <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제정보 3</div>
                                 <Col>
-                                    <Form.Select name="paymentType">
-                                        <option value="" selected disabled>
+                                    <Form.Select
+                                        name="paymentType"
+                                        onChange={(e) => {
+                                            getPaymentType(e, 3);
+                                        }}
+                                        value={paymentInfo3.paymentMethod}>
+                                        <option value="" disabled>
                                             결제수단을 선택해주세요
                                         </option>
-                                        <option>카드</option>
-                                        <option>현금</option>
+                                        <option value="creditCard">카드</option>
+                                        <option value="cash">현금</option>
                                     </Form.Select>
                                 </Col>
                                 <Col style={{ position: 'relative' }}>
                                     <FormInput
                                         type="text"
                                         name="paymentPrice"
-                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                        placeholder="결제 금액을 입력해주세요."
+                                        onChange={(e) => {
+                                            getPaymentPrice(e, 3);
+                                        }}
+                                        value={paymentInfo3.paymentPrice}
+                                        disabled={!paymentInfo3.paymentMethod.length}></FormInput>
                                     <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>원</div>
                                 </Col>
                                 <Col>
@@ -919,6 +1011,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="text"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        disabled={!paymentInfo3.paymentMethod.length}
                                     />
                                 </Col>
                             </Row>
@@ -1019,7 +1112,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             onClick={(event) => {
                                 handleRegistrationStep(event);
                             }}
-                            style={{ width: '200px' }}>
+                            style={{ width: '200px' }}
+                            disabled={!paymentInfo1.paymentMethod.length || paymentInfo1.paymentPrice === 0}>
                             다음
                         </Button>
                     </>
