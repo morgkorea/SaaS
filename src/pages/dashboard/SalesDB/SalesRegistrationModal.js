@@ -82,7 +82,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentInfo3, setPaymentInfo3] = useState({ ...firestorePaymentInfoFieldSchema });
 
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
-    const [paymentTime, setPaymentTime] = useState(new Date().toISOString().split('T')[1]);
+    const [paymentTime, setPaymentTime] = useState('00:00');
 
     // 미결제 금액, 잔여 금액
     const remainingPrice =
@@ -1058,7 +1058,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
                                         onChange={(e) => {
-                                            setPaymentTime(e.target.value + ':00');
+                                            setPaymentTime(e.target.value);
                                         }}
                                         value={paymentTime}
                                         disabled={!paymentInfo1.paymentMethod.length}
