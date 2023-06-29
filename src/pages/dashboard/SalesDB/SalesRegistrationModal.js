@@ -25,6 +25,7 @@ import salesRegistrationStep1 from '../../../assets/images/icons/png/salesRegist
 import salesRegistrationStep2 from '../../../assets/images/icons/png/salesRegistrationStep2.png';
 import salesRegistrationStep3 from '../../../assets/images/icons/png/salesRegistrationStep3.png';
 import salesRegistrationStep4 from '../../../assets/images/icons/png/salesRegistrationStep4.png';
+import checkImg from '../../../assets/images/icons/png/check-img.png';
 
 //loading spinner
 import Spinner from '../../../components/Spinner';
@@ -1085,6 +1086,24 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         </div>
                     </div>
                 );
+            case 5:
+                return (
+                    <div
+                        className="container"
+                        style={{
+                            display: 'grid',
+                            justifyContent: 'center',
+
+                            placeItems: 'center',
+                        }}>
+                        <div>
+                            <h3 className="modal-title mb-2" style={{ textAlign: 'center', padding: '50px 0px' }}>
+                                등록이 완료 됐어요!
+                            </h3>
+                            <img src={checkImg} style={{ width: '200px' }} />
+                        </div>
+                    </div>
+                );
         }
     };
 
@@ -1165,6 +1184,19 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             style={{ width: '200px' }}
                             disabled={!paymentInfo1.paymentMethod.length || paymentInfo1.paymentPrice === 0}>
                             다음
+                        </Button>
+                    </>
+                );
+            case 5:
+                return (
+                    <>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                setModal(!modal);
+                            }}
+                            style={{ width: '200px' }}>
+                            완료
                         </Button>
                     </>
                 );
