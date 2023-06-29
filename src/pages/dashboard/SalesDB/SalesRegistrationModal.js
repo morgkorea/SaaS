@@ -77,6 +77,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const createFirestoreRegistrationSalesProducts = () => {
         const registrationSalesProductsArray = [...registrationSalesProducts];
+
         const calculateProductDuration = (startDate, periodString) => {
             let calculatedDate = new Date(startDate);
             if (periodString.includes('개월')) {
@@ -85,8 +86,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 console.log(~~periodString.replace('개월', ''));
             } else if (periodString.includes('일')) {
                 calculatedDate.setDate(calculatedDate.getDate() + ~~periodString.replace('일', '') - 1);
-
-                console.log(calculatedDate);
             }
 
             return calculatedDate.toISOString().split('T')[0];
@@ -94,8 +93,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
         const salesProductData = {
             ...firestoreSalesProductSchema,
+            productCode: selectedProduct?.productCode,
             product: selectedProduct?.product,
-            productStartDate: productStartDate,
+            productType: selectedProduct?.type,
             regularPrice: selectedProduct?.regularPrice,
             discountRate: productDiscountRate,
             discountPrice: selectedProduct?.regularPrice - selectedProduct?.regularPrice * (productDiscountRate / 100),
@@ -257,10 +257,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setProductStartDate(event.target.value);
     };
 
-    useEffect(() => {
-        searchMembers(membersList);
-    }, [searchingName, searchingPhone]);
-
     const getFirestoreMembersList = async () => {
         try {
             const memebersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
@@ -413,6 +409,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
         setModifyPriceList(modifyPriceArray);
     };
+
+    const handleResitrationProductsAdujestPrice = () => {
+        const registerArray = [...registrationSalesProducts];
+        modifyPriceList.forEach((subtract, idx) => {
+            if (subtract > 0) {
+                registerArray[idx].adjustedPrice = registerArray[idx].discountPrice - subtract;
+            }
+        });
+        setRegistrationSalesProducts(registerArray);
+    };
     console.log(modifyPriceList);
     const handleRenderingBodyContent = (registrationStep) => {
         const resitrationProductsTotalPrice = registrationSalesProducts.reduce((acc, curr) => {
@@ -429,6 +435,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 const startDate = product.startDate;
                 const endDate = product.endDate;
                 const discountPrice = product.discountPrice;
+                const adjustedPrice = product.discountPrice - modifyPriceList[idx];
 
                 return (
                     <div
@@ -503,14 +510,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                 ) : null}{' '}
                                 {registrationStep === 3 && modifyPriceList[idx] > 0 && !priceEditMode ? (
                                     <div style={{ marginRight: '70px', color: '#FA5C7C' }}>
-                                        -{modifyPriceList[idx]}원
+                                        -{modifyPriceList[idx].toLocaleString()}원
                                     </div>
                                 ) : null}
                                 <span>
                                     {regularPrice && discountRate
-                                        ? (discountPrice - modifyPriceList[idx]).toLocaleString() + '원'
+                                        ? adjustedPrice.toLocaleString() + '원'
                                         : discountRate === 0
-                                        ? (regularPrice - modifyPriceList[idx]).toLocaleString() + '원'
+                                        ? adjustedPrice.toLocaleString() + '원'
                                         : '-'}
                                 </span>
                                 {productName && registrationStep < 3 ? (
@@ -830,6 +837,111 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         )}
                     </div>
                 );
+            case 4:
+                return (
+                    <div className="container" style={{ padding: '0' }}>
+                        <h3 className="modal-title mb-2">
+                            {isSelectedMember.name ? isSelectedMember.name + ' ' : ''}회원 결제정보 입력
+                        </h3>
+                        <div className="mb-3">
+                            <Row>
+                                <div style={{ marginBottom: '16px', fontSize: '12px' }}>결제정보 1</div>
+                                <Col>
+                                    <Form.Select name="paymentType">
+                                        <option value="" selected disabled>
+                                            결제수단을 선택해주세요
+                                        </option>
+                                        <option>카드</option>
+                                        <option>현금</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col style={{ position: 'relative' }}>
+                                    <FormInput
+                                        type="text"
+                                        name="paymentPrice"
+                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                    <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>원</div>
+                                </Col>
+                                <Col>
+                                    <FormInput
+                                        type="text"
+                                        name="recieptNumber"
+                                        placeholder="영수증 번호를 입력해주세요."
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제정보 2</div>
+                                <Col>
+                                    <Form.Select name="paymentType">
+                                        <option value="" selected disabled>
+                                            결제수단을 선택해주세요
+                                        </option>
+                                        <option>카드</option>
+                                        <option>현금</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col style={{ position: 'relative' }}>
+                                    <FormInput
+                                        type="text"
+                                        name="paymentPrice"
+                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                    <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>원</div>
+                                </Col>
+                                <Col>
+                                    <FormInput
+                                        type="text"
+                                        name="recieptNumber"
+                                        placeholder="영수증 번호를 입력해주세요."
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제정보 3</div>
+                                <Col>
+                                    <Form.Select name="paymentType">
+                                        <option value="" selected disabled>
+                                            결제수단을 선택해주세요
+                                        </option>
+                                        <option>카드</option>
+                                        <option>현금</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col style={{ position: 'relative' }}>
+                                    <FormInput
+                                        type="text"
+                                        name="paymentPrice"
+                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                    <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>원</div>
+                                </Col>
+                                <Col>
+                                    <FormInput
+                                        type="text"
+                                        name="recieptNumber"
+                                        placeholder="영수증 번호를 입력해주세요."
+                                    />
+                                </Col>
+                            </Row>
+                            <Row style={{ fontSize: '12px' }}>
+                                <Col>
+                                    <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제일</div>
+                                    <FormInput
+                                        type="date"
+                                        name="paymentPrice"
+                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                </Col>
+                                <Col>
+                                    <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제시간</div>
+                                    <FormInput
+                                        type="time"
+                                        name="recieptNumber"
+                                        placeholder="영수증 번호를 입력해주세요."
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
+                    </div>
+                );
         }
     };
 
@@ -915,11 +1027,18 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         }
     };
 
-    //test
+    useEffect(() => {
+        searchMembers(membersList);
+    }, [searchingName, searchingPhone]);
+
     useEffect(() => {
         getFirestoreMembersList();
         getFiresotreProductsList();
     }, []);
+
+    useEffect(() => {
+        handleResitrationProductsAdujestPrice();
+    }, [modifyPriceList]);
 
     return (
         <>

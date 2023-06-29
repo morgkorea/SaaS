@@ -84,11 +84,13 @@ export const firestoreMemebersFieldSchema = {
 };
 
 export const firestoreSalesProductSchema = {
+    productCode: '', // 상품코드 , type:string ,
     product: '', //type: string 상품
     productType: '', // type: string (batterBox,lesson,locker,etc)
     regularPrice: 0, // type: number 상품 정상가
     discountRate: 0, // type: number 할인율
     discountPrice: 0, // type: number 할인가
+    adjustedPrice: 0, // type: number 조정금액
     startDate: '', //type: string (yyyy-MM-dd) 시작일
     endDate: '', // type: string (yyyy-MM-dd) 종료일
 };
@@ -105,10 +107,10 @@ export const firestoreSalesFieldSchema = {
         {
             ...firestoreSalesProductSchema,
         },
-    ],
+    ], //type : array, elements : object 결제상품
     totalPaymentPrice: 0, //type: number 결제총액
     outstandingPrice: 0, //type: number 미결제금액
-    paymentMethod: '', //type: string 결제수단
+    paymentMethod: [''], //type: array , element type : string 결제수단
     recieptNumber: '', //type: string 결제번호
     paymentMemo: '', //type: string결제메모
     refund: false, // type: boolean 환불여부
