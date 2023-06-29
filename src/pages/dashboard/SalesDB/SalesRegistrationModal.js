@@ -81,6 +81,19 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentInfo2, setPaymentInfo2] = useState({ ...firestorePaymentInfoFieldSchema });
     const [paymentInfo3, setPaymentInfo3] = useState({ ...firestorePaymentInfoFieldSchema });
 
+    const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
+    const [paymentTime, setPaymentTime] = useState(new Date().toISOString().split('T')[1]);
+
+    // 미결제 금액, 잔여 금액
+    const remainingPrice =
+        registrationSalesProducts.reduce((acc, curr) => {
+            return curr.discountPrice ? acc + curr.discountPrice : acc;
+        }, 0) -
+        modifyPriceList.reduce((acc, curr) => acc + curr, 0) -
+        paymentInfo1.paymentPrice -
+        paymentInfo2.paymentPrice -
+        paymentInfo3.paymentPrice;
+
     const [size, setSize] = useState('lg');
 
     const getPaymentType = (event, index) => {
@@ -108,9 +121,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             index === 1
                 ? totalPrice
                 : index === 2
-                ? totalPrice - paymentInfo1
+                ? totalPrice - paymentInfo1.paymentPrice
                 : index === 3
-                ? adjustedPrice - paymentInfo1 - paymentInfo2
+                ? totalPrice - paymentInfo1.paymentPrice - paymentInfo2.paymentPrice
                 : totalPrice;
 
         if (isNaN(price)) {
@@ -458,13 +471,20 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const calculateModifiyPrice = (event, idx, maxPrice) => {
+        let price = Number(event.target.value);
+
+        if (isNaN(price)) {
+            price = 0;
+        }
+
         const modifyPriceArray = [...modifyPriceList];
-        if (event.target.value > maxPrice) {
+
+        if (price > maxPrice) {
             modifyPriceArray[idx] = maxPrice;
-        } else if (event.target.value === '') {
+        } else if (price === '') {
             modifyPriceArray[idx] = 0;
         } else {
-            modifyPriceArray[idx] = Number(event.target.value);
+            modifyPriceArray[idx] = price;
         }
 
         setModifyPriceList(modifyPriceArray);
@@ -479,11 +499,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         });
         setRegistrationSalesProducts(registerArray);
     };
+
     console.log(modifyPriceList);
+
     const handleRenderingBodyContent = (registrationStep) => {
         const resitrationProductsTotalPrice = registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
         }, 0);
+
         let isModifiedPrice =
             [...modifyPriceList].reduce((acc, curr) => acc + curr, 0) > 0 && !priceEditMode ? true : false;
 
@@ -1015,23 +1038,50 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     />
                                 </Col>
                             </Row>
-                            <Row style={{ fontSize: '12px' }}>
+                            <Row style={{ marginTop: '8px', fontSize: '12px' }}>
                                 <Col>
-                                    <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제일</div>
+                                    <div style={{ margin: '8px 0px', fontSize: '12px' }}>결제일</div>
                                     <FormInput
                                         type="date"
                                         name="paymentPrice"
-                                        placeholder="결제 금액을 입력해주세요."></FormInput>
+                                        placeholder="결제 금액을 입력해주세요."
+                                        onChange={(e) => {
+                                            setPaymentDate(e.target.value);
+                                        }}
+                                        value={paymentDate}
+                                        disabled={!paymentInfo1.paymentMethod.length}></FormInput>
                                 </Col>
                                 <Col>
-                                    <div style={{ margin: '16px 0px', fontSize: '12px' }}>결제시간</div>
+                                    <div style={{ margin: '8px 0px', fontSize: '12px' }}>결제시간</div>
                                     <FormInput
                                         type="time"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        onChange={(e) => {
+                                            setPaymentTime(e.target.value + ':00');
+                                        }}
+                                        value={paymentTime}
+                                        disabled={!paymentInfo1.paymentMethod.length}
                                     />
                                 </Col>
                             </Row>
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                placeItems: 'center',
+                                paddingTop: '10px',
+                            }}>
+                            <div>결제 잔여금액</div>
+                            <div
+                                style={{
+                                    color: remainingPrice === 0 ? '#03C780' : '#FA5C7C',
+                                    fontSize: '24px',
+                                    fontWeight: '700',
+                                }}>
+                                {remainingPrice.toLocaleString() + '원'}
+                            </div>
                         </div>
                     </div>
                 );

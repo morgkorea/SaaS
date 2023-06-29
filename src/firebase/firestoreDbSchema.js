@@ -104,7 +104,7 @@ export const firestorePaymentInfoFieldSchema = {
 export const firestoreSalesFieldSchema = {
     paymentNumber: '', //type: string 결제번호
     paymentDate: '', //type: string (yyyy-MM-dd) 결제일
-    paymentTime: '', //type: string (hh:mm:ss) //결제시간
+    paymentTime: '', //type: string (hh:mm) //결제시간
     registrationType: '', //등록구분
     memberNumber: '', //type: string 회원번호
     name: '', //type: string 이름
@@ -115,7 +115,7 @@ export const firestoreSalesFieldSchema = {
         },
     ], //type : array, elements : object 결제상품
     totalPaymentPrice: 0, //type: number 결제총액
-    outstandingPrice: 0, //type: number 미결제금액
+    remainingPaymentPrice: 0, //type: number 미결제금액
     paymentMethod: [''], //type: array , element type : string 결제수단
     recieptNumber: '', //type: string 결제번호
     paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
