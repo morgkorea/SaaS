@@ -94,22 +94,15 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         paymentInfo2.paymentPrice -
         paymentInfo3.paymentPrice;
 
+    console.log('selectedProduct', selectedProduct);
     const putFirestoreRegistrationSalesData = () => {
-        const salesProducts = [...productsList].map((product) => {
-            if (product.product) {
-                return product;
-            }
-        });
-
+        const salesProducts = [...registrationSalesProducts];
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
-
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
             .join(',');
-
         const salesData = {
             ...firestoreSalesFieldSchema,
-
             paymentDate: paymentDate,
             paymentTime: paymentTime,
             name: isSelectedMember.name,
