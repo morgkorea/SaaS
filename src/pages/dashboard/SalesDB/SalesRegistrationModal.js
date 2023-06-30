@@ -85,7 +85,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [paymentTime, setPaymentTime] = useState('00:00');
 
-    // 미결제 금액, 잔여 금액
     const remainingPrice =
         registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
@@ -94,6 +93,36 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         paymentInfo1.paymentPrice -
         paymentInfo2.paymentPrice -
         paymentInfo3.paymentPrice;
+
+    const putFirestoreRegistrationSalesData = () => {
+        const salesProducts = [...productsList].map((product) => {
+            if (product.product) {
+                return product;
+            }
+        });
+
+        const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
+
+        const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
+            .map((paymentInfo) => paymentInfo.paymentMethod)
+            .join(',');
+
+        const salesData = {
+            ...firestoreSalesFieldSchema,
+
+            paymentDate: paymentDate,
+            paymentTime: paymentTime,
+            name: isSelectedMember.name,
+            phone: isSelectedMember.phone,
+            salesProducts: salesProducts,
+            totalPaymentPrice: totalPaymentPrice,
+            remainingPaymentPrice: remainingPrice,
+            paymentMethod: paymentMethod,
+        };
+        console.log(salesData);
+    };
+    console.log(isSelectedMember);
+    // 미결제 금액, 잔여 금액
 
     const [size, setSize] = useState('lg');
 
@@ -1179,6 +1208,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         <Button
                             variant="primary"
                             onClick={(event) => {
+                                putFirestoreRegistrationSalesData();
                                 handleRegistrationStep(event);
                             }}
                             style={{ width: '200px' }}
@@ -1190,12 +1220,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             case 5:
                 return (
                     <>
-                        <Button
-                            variant="primary"
-                            onClick={() => {
-                                setModal(!modal);
-                            }}
-                            style={{ width: '200px' }}>
+                        <Button variant="primary" onClick={toggle} style={{ width: '200px' }}>
                             완료
                         </Button>
                     </>
