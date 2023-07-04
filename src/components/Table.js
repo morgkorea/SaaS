@@ -9,8 +9,7 @@ import {
     useExpanded,
 } from 'react-table';
 import classNames from 'classnames';
-import Pagination from './Pagination';
-import AddCell from '../pages/dashboard/MembersDB/AddCell';
+import Pagination from './Pagination'
 
 // Define a default UI for filtering
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
@@ -188,7 +187,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {/* {addMode ? <AddCell/> : null} */}
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
