@@ -101,16 +101,15 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         return productCode;
     };
 
-    const productRegistration = async () => {
+    const putFirestoreProductRegistration = async () => {
         setIsRegistering(true);
-        const productsDocRef = doc(collection(firestoreDB, 'Users', email, 'Products'));
+        const productsCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Products'));
         const productCode = generateProductNumber(productType, expirationPeriod, productsData);
 
         const productData = {
             ...firestoreProductsFieldSchema,
             productCode: productCode,
             product: productName,
-
             type: productType,
             expirationPeriod: expirationPeriod,
             expirationCount: expirationCount,
@@ -121,7 +120,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         };
 
         try {
-            await setDoc(productsDocRef, productData);
+            await setDoc(productsCollectionRef, productData);
             setModal(!modal);
         } catch (error) {
             console.log(error);
@@ -338,7 +337,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-center border-top-0">
-                    <Button onClick={productRegistration} variant="primary">
+                    <Button onClick={putFirestoreProductRegistration} variant="primary">
                         {isRegistering ? (
                             <Spinner
                                 className="me-1"

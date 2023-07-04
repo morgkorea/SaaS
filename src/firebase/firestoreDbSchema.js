@@ -116,8 +116,6 @@ export const firestoreSalesFieldSchema = {
     ], //type : array, elements : object 결제상품
     totalPaymentPrice: 0, //type: number 결제총액
     remainingPaymentPrice: 0, //type: number 미결제금액
-    paymentMethod: [''], //type: array , element type : string 결제수단
-    recieptNumber: '', //type: string 결제번호
     paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
     paymentMemo: '', //type: string결제메모
     refund: false, // type: boolean 환불여부

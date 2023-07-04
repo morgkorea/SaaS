@@ -16,7 +16,7 @@ import {
     firestorePaymentInfoFieldSchema,
 } from '../../../firebase/firestoreDbSchema';
 
-import { collection, query, where, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, setDoc, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
 import * as Hangul from 'hangul-js';
 import { disassemble } from 'hangul-js';
@@ -95,7 +95,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         paymentInfo3.paymentPrice;
 
     console.log('selectedProduct', selectedProduct);
-    const putFirestoreRegistrationSalesData = () => {
+    const putFirestoreRegistrationSalesData = async () => {
         const salesProducts = [...registrationSalesProducts].filter((product) => product.hasOwnProperty('productCode'));
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
@@ -117,6 +117,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             paymentInfo: paymentInfo,
         };
         console.log(salesData);
+
+        const salesCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Sales'));
+
+        try {
+            await setDoc(salesCollectionRef, salesData);
+        } catch (error) {
+            console.log(error);
+        }
     };
     console.log(isSelectedMember);
     // 미결제 금액, 잔여 금액
@@ -166,6 +174,19 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 return setPaymentInfo2({ ...paymentInfo2, paymentPrice: price });
             case 3:
                 return setPaymentInfo3({ ...paymentInfo3, paymentPrice: price });
+        }
+    };
+
+    const getPaymentReceiptNumber = (event, index) => {
+        const receiptNumber = event.target.value;
+
+        switch (index) {
+            case 1:
+                return setPaymentInfo1({ ...paymentInfo1, paymentReceiptNumber: receiptNumber });
+            case 2:
+                return setPaymentInfo2({ ...paymentInfo2, paymentReceiptNumber: receiptNumber });
+            case 3:
+                return setPaymentInfo3({ ...paymentInfo3, paymentReceiptNumber: receiptNumber });
         }
     };
 
@@ -987,6 +1008,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="text"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        onChange={(e) => {
+                                            getPaymentReceiptNumber(e, 1);
+                                        }}
                                         disabled={!paymentInfo1.paymentMethod.length}
                                     />
                                 </Col>
@@ -1024,6 +1048,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="text"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        onChange={(e) => {
+                                            getPaymentReceiptNumber(e, 2);
+                                        }}
                                         disabled={!paymentInfo2.paymentMethod.length}
                                     />
                                 </Col>
@@ -1061,6 +1088,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         type="text"
                                         name="recieptNumber"
                                         placeholder="영수증 번호를 입력해주세요."
+                                        onChange={(e) => {
+                                            getPaymentReceiptNumber(e, 3);
+                                        }}
                                         disabled={!paymentInfo3.paymentMethod.length}
                                     />
                                 </Col>
@@ -1082,8 +1112,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                     <div style={{ margin: '8px 0px', fontSize: '12px' }}>결제시간</div>
                                     <FormInput
                                         type="time"
-                                        name="recieptNumber"
-                                        placeholder="영수증 번호를 입력해주세요."
+                                        name="paymentTime"
                                         onChange={(e) => {
                                             setPaymentTime(e.target.value);
                                         }}
