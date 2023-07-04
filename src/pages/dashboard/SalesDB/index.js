@@ -32,17 +32,18 @@ const SalesDB = () => {
     const email = useSelector((state) => {
         return state.Auth?.user.email;
     });
-    const firestoreSalesCollectionRef = collection(firestoreDB, 'Users', email, 'Sales');
 
     const getSalesData = async () => {
-        const firestoreSalesData = await getDocs(firestoreSalesCollectionRef);
-        const firestoreSalesArray = [];
-        firestoreSalesData.forEach((sale) => {
-            const saleData = sale.data();
-            firestoreSalesArray.push(saleData);
+        const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
+
+        onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
+            const salesArray = [];
+            querySnapshot.forEach((sale) => {
+                salesArray.push({ ...sale.data(), uid: sale.id });
+            });
+
+            setSalesData(salesArray);
         });
-        setSalesData(firestoreSalesArray);
-        console.log(firestoreSalesArray);
     };
 
     useEffect(() => {
@@ -129,12 +130,9 @@ const SalesDB = () => {
 
     return (
         <>
-
-            
             {modal && <SalesRegistrationModal modal={modal} setModal={setModal} />}
             <SalesTable data={salesData} columns={tableColumns} />
 
-     
             <SalesRegistrationModal modal={modal} setModal={setModal} />
 
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
