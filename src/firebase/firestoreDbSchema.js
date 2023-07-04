@@ -37,7 +37,7 @@ export const firestoreMemebersFieldSchema = {
     createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
     createdTime: new Date().toISOString().split('T')[1].split('.')[0], //time 생성시간 04:10:42
     name: '', //이름
-    phone: '', //전화번호
+    phone: '', //전화번호 type:string 형식: 010XXXXYYYY
     sex: '', //성별
     birthDate: '', //date 생일
     ageGroup: '', //연령대
@@ -83,58 +83,58 @@ export const firestoreMemebersFieldSchema = {
     ],
 };
 
-export const firestoreSalesFieldSchema = [
-    {
-        paymentNumber: '111', //결제번호
-        paymentDate: '2023-05-01', //결제일
-        paymentTime: '09:12:30', //결제시간
-        registrationType: '', //등록구분
-        memeberNumber: '', //회원번호
-        name: '유승훈', //이름
-        phone: '010-7178-1117', //전화번호
-        products: [
-            {
-                product: '장갑', //상품
-                productType: '기타',
-                regularPrice: '10000', //상품 정상가
-                discountRate: '10%', // 할인율
-                discountPrice: '9000', //할인가
-                startDate: '', // 시작일
-                endDate: '', // 종료일
-            },
-            {
-                product: '레슨', //상품
-                productType: '레슨',
-                regularPrice: '100000', //상품 정상가
-                discountRate: '20%', // 할인율
-                discountPrice: '80000', //할인가
-                startDate: '2022-05-16', // 시작일
-                endDate: '2022-06-16', // 종료일
-            },
-        ],
-        totalPaymentPrice: '', //결제총액
-        outstandingPrice: '', //미결제금액
-        paymentMethod: '카드', //결제수단
-        recieptNumber: '002', // 결제번호
-        paymentMemo: '메모', //결제메모
-        refund: false,
-        refundRequest_date: '2023-05-17', //환불요청일 2023-09-23
-        refundDate: '2023-05-17', //환불일 2023-10-22
-        refundPrice: '89000', //환불액
-        refundReason: '단순변심', //환불사유
-    },
-];
+export const firestoreSalesProductSchema = {
+    productCode: '', // 상품코드 , type:string ,
+    product: '', //type: string 상품
+    productType: '', // type: string (batterBox,lesson,locker,etc)
+    regularPrice: 0, // type: number 상품 정상가
+    discountRate: 0, // type: number 할인율
+    discountPrice: 0, // type: number 할인가
+    adjustedPrice: 0, // type: number 조정금액 (최종가)
+    startDate: '', //type: string (yyyy-MM-dd) 시작일
+    endDate: '', // type: string (yyyy-MM-dd) 종료일
+};
+
+export const firestorePaymentInfoFieldSchema = {
+    paymentMethod: '',
+    paymentPrice: 0,
+    paymentReceiptNumber: '',
+};
+
+export const firestoreSalesFieldSchema = {
+    paymentNumber: '', //type: string 결제번호
+    paymentDate: '', //type: string (yyyy-MM-dd) 결제일
+    paymentTime: '', //type: string (hh:mm:ss) //결제시간
+    registrationType: '', //등록구분
+    memberNumber: '', //type: string 회원번호
+    name: '', //type: string 이름
+    phone: '', //type string 전화번호 010xxxxyyyy
+    salesProducts: [
+        {
+            ...firestoreSalesProductSchema,
+        },
+    ], //type : array, elements : object 결제상품
+    totalPaymentPrice: 0, //type: number 결제총액
+    remainingPaymentPrice: 0, //type: number 미결제금액
+    paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
+    paymentMemo: '', //type: string결제메모
+    refund: false, // type: boolean 환불여부
+    refundRequest_date: '', //type: string yyyy-MM-dd 환불요청일
+    refundDate: '', //type: string yyyy-MM-dd 환불일
+    refundPrice: 0, //type: number 환불액
+    refundReason: '', //type: string 환불사유
+};
 
 export const firestoreProductsFieldSchema = {
     productCode: '', // 상품코드 , type:string , (고객사코드_종류_기간_번호)    KO0001_ME_091_001
-    product: '회원권 3개월권', //상품명, type:string
-    type: 'batterBox', // 상품종류, type:string
-    expirationPeriod: '1개월', //유효기간 (일) type:string
-    expirationCount: 2, //유효횟수 type:number
-    regularPrice: 40000, //가격 type:number
+    product: '', //상품명, type:string
+    type: '', // 상품종류, type:string
+    expirationPeriod: '', //유효기간 (일) type:string
+    expirationCount: 0, //유효횟수 type:number
+    regularPrice: 0, //가격 type:number
     activation: true, //활성화,
-    createdDate: '2023-06-15', // type:string yyyy-mm-dd
-    modifiedDate: '2023-06-15', // type:string yyyy-mm-dd
+    createdDate: '', // type:string yyyy-mm-dd
+    modifiedDate: '', // type:string yyyy-mm-dd
 };
 
 export const firestoreMarketingFieldSchema = {

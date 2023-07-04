@@ -5,16 +5,21 @@ import { firestoreDB } from './firebase';
 import { firestoreMemebersFieldSchema } from './firestoreDbSchema';
 
 export const firestoreMembersDataSyncWithRealtime = async (email) => {
-    console.log('state', email);
-
     try {
         const dbRef = ref(getDatabase());
         const snapshot = await get(
-            child(dbRef, `members/${email.toLowerCase().replace('@', 'ATSIGN').replace('.', 'DOT')}`)
+            child(dbRef, `members/${email?.toLowerCase().replace('@', 'ATSIGN').replace('.', 'DOT')}`)
         );
+        // const firestoreMembersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
+        // const firestoreMembersSnapshot = await getDocs(firestoreMembersCollectionRef);
+
+        // const firestoreMembersArray = [];
+        // firestoreMembersSnapshot.forEach((member) => {
+        //     firestoreMembersArray.push(member.data());
+        // });
+
         let realtimeDbMembers;
         if (snapshot.exists()) {
-            console.log(snapshot.val());
             const pushData = snapshot.val().map((member) => {
                 let schema = { ...firestoreMemebersFieldSchema };
 
@@ -37,42 +42,42 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
             });
 
             realtimeDbMembers = pushData;
-            console.log('realtime DB updated successfully', { members: arrayUnion(...realtimeDbMembers) });
         } else {
             console.log('No data available');
         }
 
-        await updateDoc(doc(firestoreDB, 'Users', email), { members: arrayUnion(...realtimeDbMembers) });
-        // Member collection에 각 회원 문서 생성하는 로직 추가
+        // await updateDoc(doc(firestoreDB, 'Users', email), { members: arrayUnion(...realtimeDbMembers) });
 
-        const currentMembers = await getDocs(collection(firestoreDB, 'Users', email, 'Members'));
-        const phoneNumberOfMembers = [];
-        currentMembers.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            phoneNumberOfMembers.push(doc.data().phone);
+        // Member collection에 각 회원 문서 생성하는 로직 추가
+        const firestoreMembersData = await getDocs(collection(firestoreDB, 'Users', email, 'Members'));
+        const firestoreMembers = {};
+        firestoreMembersData.forEach((doc) => {
+            const member = doc.data();
+            firestoreMembers[member.name] = member;
         });
 
-        //현재 members 콜렉션 문서들 불러오기 (회원)
-        if (currentMembers) {
-            console.log('currentMembers data : ', phoneNumberOfMembers);
-        } else {
-            console.log('currentMembers call failed');
-        }
-        //회원 phoneNumber로 검색 -> 기존회원목록, 신규회원목록 비교 중복 필터 ->
-        //회원데이터 문서 생성
-        realtimeDbMembers.forEach(async (member) => {
-            if (member.phone) {
-                const memberPhone = member.phone;
-                const docRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
-                console.log('realtimeDBMembers ele :', !phoneNumberOfMembers.includes(memberPhone));
+        // firestore회원 realtimeDB회원 중복 필터 : 조건 이름, 전화번호
+        const newMembers = realtimeDbMembers.filter((member) => {
+            return firestoreMembers.hasOwnProperty(member.name) && firestoreMembers[member.name].phone === member.phone
+                ? false
+                : true;
+        });
 
-                return !phoneNumberOfMembers.includes(memberPhone) ? await setDoc(docRef, { ...member }) : null;
+        // firestore Members collection에 신규회원 등록
+        newMembers.forEach(async (newMember) => {
+            try {
+                const membersCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
+                await setDoc(membersCollectionRef, newMember);
+                console.log('update newMember docs successfully');
+            } catch (error) {
+                console.log('update newMember docs : failed', error);
             }
         });
 
-        console.log(snapshot.val());
         console.log(realtimeDbMembers);
+
         console.log('Firestore DB synchronized with Realtime DB');
+        console.log(newMembers);
     } catch (error) {
         console.error('reatimeDB sync error', error);
     }
