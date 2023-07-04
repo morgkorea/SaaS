@@ -33,7 +33,7 @@ const SalesDB = () => {
         return state.Auth?.user.email;
     });
 
-    const getSalesData = async () => {
+    const getFirestoreSalesData = async () => {
         const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
 
         onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
@@ -47,7 +47,7 @@ const SalesDB = () => {
     };
 
     useEffect(() => {
-        getSalesData();
+        getFirestoreSalesData();
     }, []);
 
     const toggle = () => {

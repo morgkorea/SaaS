@@ -65,7 +65,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.product === '타석') {
@@ -95,7 +95,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (beforePeriodSalesData) {
             [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.product === '타석') {

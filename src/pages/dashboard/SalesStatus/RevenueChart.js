@@ -39,26 +39,19 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
         if (beforePeriodSalesData) {
-            const totalSales = [...beforePeriodSalesData]
-                .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
-                }, [])
-                .reduce((acc, curr) => {
-                    return acc + curr.discountPrice;
-                }, 0);
+            const totalSales = [...beforePeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? acc + curr.totalPaymentPrice : acc;
+            }, 0);
+
             setPreviousPeriodTotalSales(totalSales);
         }
     };
 
     const getCurrentPeriodTotalSales = (sortedByPeriodSalesData) => {
         if (sortedByPeriodSalesData) {
-            const totalSales = [...sortedByPeriodSalesData]
-                .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
-                }, [])
-                .reduce((acc, curr) => {
-                    return acc + curr.discountPrice;
-                }, 0);
+            const totalSales = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? acc + curr.totalPaymentPrice : acc;
+            }, 0);
             setCurrentPeriodTotalSales(totalSales);
         }
     };
@@ -210,10 +203,17 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
     };
 
     const apexLineChartWithLablesData = [
-        { name: selectedPeriod === 'month' ? '이번 달' : '이번 주', data: currentPeriodSalesData },
-        { name: selectedPeriod === 'month' ? '지난 달' : '지난 주', data: previousPeriodSalesData },
+        {
+            name: selectedPeriod === 'month' ? '이번 달' : '이번 주',
+            data: currentPeriodSalesData.length > 0 ? currentPeriodSalesData : [0],
+        },
+        {
+            name: selectedPeriod === 'month' ? '지난 달' : '지난 주',
+            data: previousPeriodSalesData.length > 0 ? previousPeriodSalesData : [0],
+        },
     ];
 
+    console.log('previousPeriodSalesData', previousPeriodSalesData);
     return (
         <Card>
             {selectedPeriod !== 'day' ? (

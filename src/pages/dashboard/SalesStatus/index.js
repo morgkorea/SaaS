@@ -14,11 +14,12 @@ import { ButtonsGroup } from './ButtonsGroup.js';
 
 import { subWeeks, subDays } from 'date-fns';
 
-import { doc, collection, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const SalesStatus = () => {
-    const [isDataLoading, setIsDataLoading] = useState(false);
+    const [salesData, setSalesData] = useState([]);
+    const [isFetchingData, setisFethcingData] = useState(true);
     //
 
     const [datePickDate, setDatePickDate] = useState(new Date());
@@ -27,9 +28,9 @@ const SalesStatus = () => {
     // 현재시간 기준 전 월,주,일 날짜
     const [startDate, setStartDate] = useState(new Date());
     // 현지시간 기준 전 월,주,일 기준 filtered data
-    const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState(false);
+    const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState([]);
     // 전월 매출데이터
-    const [beforePeriodSalesData, setBeforePeriodSalesData] = useState(false);
+    const [beforePeriodSalesData, setBeforePeriodSalesData] = useState([]);
 
     const [currentMembers, setCurrentMembers] = useState([]);
     const email = useSelector((state) => {
@@ -37,17 +38,16 @@ const SalesStatus = () => {
     });
 
     const getFirestoreSalesData = async () => {
-        const docRef = doc(firestoreDB, 'Users', email);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            console.log('Document data:', docSnap.data());
-            const members = docSnap.data().members;
-            setCurrentMembers(members);
-            console.log('members', members);
-        } else {
-            // docSnap.data() will be undefined in this case
-            console.log('No such document!');
-        }
+        const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
+
+        onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
+            const salesArray = [];
+            querySnapshot.forEach((sale) => {
+                salesArray.push({ ...sale.data(), uid: sale.id });
+            });
+
+            setSalesData(salesArray);
+        });
     };
     useEffect(() => {
         getFirestoreSalesData();
@@ -157,11 +157,6 @@ const SalesStatus = () => {
     };
 
     //mockup DATA ==============================================
-    function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
 
     const firestoreSalesFieldSchema = {
         paymentNumber: '111', //결제번호
@@ -173,11 +168,23 @@ const SalesStatus = () => {
         phone: '010-7178-1117', //전화번호
         products: [
             {
+                productCode: '', // 상품코드 , type:string ,
+                product: '', //type: string 상품
+                productType: '', // type: string (batterBox,lesson,locker,etc)
+                regularPrice: 0, // type: number 상품 정상가
+                discountRate: 0, // type: number 할인율
+                discountPrice: 0, // type: number 할인가
+                adjustedPrice: 0, // type: number 조정금액 (최종가)
+                startDate: '', //type: string (yyyy-MM-dd) 시작일
+                endDate: '', // type: string (yyyy-MM-dd) 종료일
+            },
+            {
                 product: '장갑', //상품
                 productType: '기타',
                 regularPrice: '12', //상품 정상가
                 discountRate: '10%', // 할인율
                 discountPrice: 10000, //할인가
+                adjustedPrice: 0, // type: number 조정금액 (최종가)
                 startDate: '', // 시작일
                 endDate: '', // 종료일
             },
@@ -187,6 +194,7 @@ const SalesStatus = () => {
                 regularPrice: '23', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: 200000, //할인가
+                adjustedPrice: 0, // type: number 조정금액 (최종가)
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -196,6 +204,7 @@ const SalesStatus = () => {
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: 300000, //할인가
+                adjustedPrice: 0, // type: number 조정금액 (최종가)
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -205,6 +214,7 @@ const SalesStatus = () => {
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: 100000, //할인가
+                adjustedPrice: 0, // type: number 조정금액 (최종가)
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
             },
@@ -285,32 +295,36 @@ const SalesStatus = () => {
     }, [datePickDate, selectedPeriod]);
 
     useEffect(() => {
-        const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
-            const paymentDate = new Date('2023-01-01');
-            paymentDate.setDate(paymentDate.getDate() + index);
-            return {
-                ...firestoreSalesFieldSchema,
-                paymentDate: paymentDate.toISOString().split('T')[0],
-                paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-                // totalPaymentPrice: index + 1,
-                refund: index % 2 === 0 ? true : false,
-            };
-        }).filter((ele) => {
+        // const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
+        //     const paymentDate = new Date('2023-01-01');
+        //     paymentDate.setDate(paymentDate.getDate() + index);
+        //     return {
+        //         ...firestoreSalesFieldSchema,
+        //         paymentDate: paymentDate.toISOString().split('T')[0],
+        //         paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
+        //         // totalPaymentPrice: index + 1,
+        //         refund: index % 2 === 0 ? true : false,
+        //     };
+        // })
+
+        const sortedPeriodData = salesData?.filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
             return paymentDate >= startDate && paymentDate <= datePickDate ? true : false;
         });
 
-        const beforePeriodData = Array.from({ length: 360 }, (_, index) => {
-            const paymentDate = new Date('2023-01-01');
-            paymentDate.setDate(paymentDate.getDate() + index);
-            return {
-                ...firestoreSalesFieldSchema,
-                paymentDate: paymentDate.toISOString().split('T')[0],
-                paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-                // totalPaymentPrice: index + 1,
-                refund: index % 2 === 0 ? true : false,
-            };
-        }).filter((ele) => {
+        // const beforePeriodData = Array.from({ length: 360 }, (_, index) => {
+        //     const paymentDate = new Date('2023-01-01');
+        //     paymentDate.setDate(paymentDate.getDate() + index);
+        //     return {
+        //         ...firestoreSalesFieldSchema,
+        //         paymentDate: paymentDate.toISOString().split('T')[0],
+        //         paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
+        //         // totalPaymentPrice: index + 1,
+        //         refund: index % 2 === 0 ? true : false,
+        //     };
+        // }).
+
+        const beforePeriodData = salesData?.filter((ele) => {
             const paymentDate = new Date(ele.paymentDate);
 
             switch (selectedPeriod) {
@@ -329,75 +343,78 @@ const SalesStatus = () => {
 
         setSortedByPeriodSalesData(sortedPeriodData);
         setBeforePeriodSalesData(beforePeriodData);
-    }, [startDate, datePickDate, selectedPeriod]);
+    }, [salesData, startDate, datePickDate, selectedPeriod]);
 
+    console.log(sortedByPeriodSalesData, beforePeriodSalesData);
     return (
         <>
-            <Row>
-                <Col xs={12}>
-                    <div className="page-title-box">
-                        <div className="page-title-right">
-                            <form className="d-flex">
-                                <div className="btn-group">
-                                    <ButtonsGroup
-                                        selectedPeriod={selectedPeriod}
-                                        setSelectedPeriod={setSelectedPeriod}
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <HyperDatepicker
-                                        value={datePickDate}
-                                        maxDate={new Date()}
-                                        inputClass="form-control-light"
-                                        onChange={(date) => {
-                                            onDateChange(date);
-                                        }}
-                                    />
-                                </div>
+            <div>
+                <Row>
+                    <Col xs={12}>
+                        <div className="page-title-box">
+                            <div className="page-title-right">
+                                <form className="d-flex">
+                                    <div className="btn-group">
+                                        <ButtonsGroup
+                                            selectedPeriod={selectedPeriod}
+                                            setSelectedPeriod={setSelectedPeriod}
+                                        />
+                                    </div>
+                                    <div className="input-group">
+                                        <HyperDatepicker
+                                            value={datePickDate}
+                                            maxDate={new Date()}
+                                            inputClass="form-control-light"
+                                            onChange={(date) => {
+                                                onDateChange(date);
+                                            }}
+                                        />
+                                    </div>
 
-                                <Link to="#" className="btn btn-primary ms-2">
-                                    <i className="mdi mdi-autorenew"></i>
-                                </Link>
-                                <Link to="#" className="btn btn-primary ms-1">
-                                    <i className="mdi mdi-filter-variant"></i>
-                                </Link>
-                            </form>
+                                    <Link to="#" className="btn btn-primary ms-2">
+                                        <i className="mdi mdi-autorenew"></i>
+                                    </Link>
+                                    <Link to="#" className="btn btn-primary ms-1">
+                                        <i className="mdi mdi-filter-variant"></i>
+                                    </Link>
+                                </form>
+                            </div>
+                            <h4 className="page-title">매출현황</h4>
                         </div>
-                        <h4 className="page-title">매출현황</h4>
-                    </div>
-                </Col>
-            </Row>
+                    </Col>
+                </Row>
 
-            <Row>
-                <Col xl={12}>
-                    <Statistics
-                        selectedPeriod={selectedPeriod}
-                        sortedByPeriodSalesData={sortedByPeriodSalesData}
-                        beforePeriodSalesData={beforePeriodSalesData}
-                        datePickDate={datePickDate}
-                    />
-                </Col>
-            </Row>
+                <Row>
+                    <Col xl={12}>
+                        <Statistics
+                            selectedPeriod={selectedPeriod}
+                            sortedByPeriodSalesData={sortedByPeriodSalesData}
+                            beforePeriodSalesData={beforePeriodSalesData}
+                            datePickDate={datePickDate}
+                        />
+                    </Col>
+                </Row>
 
-            <Row>
-                <Col lg={12}>
-                    <RevenueChart
-                        sortedByPeriodSalesData={sortedByPeriodSalesData}
-                        selectedPeriod={selectedPeriod}
-                        beforePeriodSalesData={beforePeriodSalesData}
-                        datePickDate={datePickDate}
-                    />
-                </Col>
-            </Row>
+                <Row>
+                    <Col lg={12}>
+                        <RevenueChart
+                            sortedByPeriodSalesData={sortedByPeriodSalesData}
+                            selectedPeriod={selectedPeriod}
+                            beforePeriodSalesData={beforePeriodSalesData}
+                            datePickDate={datePickDate}
+                        />
+                    </Col>
+                </Row>
 
-            <Row>
-                <Col lg={4}>
-                    <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
-                </Col>
-                <Col lg={8}>
-                    <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
-                </Col>
-            </Row>
+                <Row>
+                    <Col lg={4}>
+                        <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
+                    </Col>
+                    <Col lg={8}>
+                        <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
+                    </Col>
+                </Row>
+            </div>
         </>
     );
 };
