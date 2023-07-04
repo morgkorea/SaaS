@@ -24,7 +24,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.product === '타석') {

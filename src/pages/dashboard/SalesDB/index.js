@@ -19,7 +19,7 @@ import { firestoreDB } from '../../../firebase/firebase.js';
 
 const SalesDB = () => {
     const [modal, setModal] = useState(false);
-    const [currentMembers, setCurrentMembers] = useState('');
+    const [salesData, setSalesData] = useState([]);
 
     // 페이지네이션
     const [page, setPage] = useState(1);
@@ -41,6 +41,7 @@ const SalesDB = () => {
             const saleData = sale.data();
             firestoreSalesArray.push(saleData);
         });
+        setSalesData(firestoreSalesArray);
         console.log(firestoreSalesArray);
     };
 
@@ -51,66 +52,64 @@ const SalesDB = () => {
     const toggle = () => {
         setModal(!modal);
     };
-    // const tableColumns = [
-    //     {
-    //         id: '1', // 열 ID
-    //         accessor: 'paymentNumber', // 해당 열에 표시할 데이터 필드
-    //         Header: '결제번호', // 열 헤더 텍스트
-    //         sort: true,
-    //         // ... 추가적인 열 설정
-    //     },
-    //     {
-    //         id: '2', // 열 ID
-    //         accessor: 'paymentDate', // 해당 열에 표시할 데이터 필드
-    //         Header: '결제일', // 열 헤더 텍스트
-    //         sort: true,
-    //         // ... 추가적인 열 설정
-    //     },
-    //     {
-    //         id: '3', // 열 ID
-    //         accessor: 'type', // 해당 열에 표시할 데이터 필드
-    //         Header: '결제시간', // 열 헤더 텍스트
-    //         sort: true,
-
-    //     },
-    //     {
-    //         id: '4', // 열 ID
-    //         accessor: 'name', // 해당 열에 표시할 데이터 필드
-    //         Header: '이름', // 열 헤더 텍스트
-    //         sort: true,
-
-    //     },
-    //     {
-    //         id: '5',
-    //         accessor: 'phone',
-    //         Header: '전화번호',
-    //         sort: true,
-    //     },
-    //     {
-    //         id: '6',
-    //         accessor: 'memberNumber',
-    //         Header: '회원번호',
-    //         sort: true,
-    //     },
-    //     {
-    //         id: '7',
-    //         accessor: 'salesProducts',
-    //         Header: '유형',
-
-    //     },
-    //     {
-    //         id: '8',
-    //         accessor: 'salesProducts',
-    //         Header: '상품',
-    //         sort: true,
-    //     },
-    //     {
-    //         id: '9',
-    //         accessor: 'modifiedDate',
-    //         Header: '정상가',
-    //         sort: true,
-    //     },
-    // ];
+    const tableColumns = [
+        {
+            id: '1', // 열 ID
+            accessor: 'paymentNumber', // 해당 열에 표시할 데이터 필드
+            Header: '결제번호', // 열 헤더 텍스트
+            sort: true,
+            // ... 추가적인 열 설정
+        },
+        {
+            id: '2', // 열 ID
+            accessor: 'paymentDate', // 해당 열에 표시할 데이터 필드
+            Header: '결제일', // 열 헤더 텍스트
+            sort: true,
+            // ... 추가적인 열 설정
+        },
+        {
+            id: '3', // 열 ID
+            accessor: 'paymentTime', // 해당 열에 표시할 데이터 필드
+            Header: '결제시간', // 열 헤더 텍스트
+            sort: true,
+        },
+        {
+            id: '4', // 열 ID
+            accessor: 'name', // 해당 열에 표시할 데이터 필드
+            Header: '회원명', // 열 헤더 텍스트
+            sort: true,
+        },
+        {
+            id: '5',
+            accessor: 'phone',
+            Header: '전화번호',
+            sort: true,
+        },
+        {
+            id: '6',
+            accessor: 'memberNumber',
+            Header: '회원번호',
+            sort: true,
+        },
+        {
+            id: '7',
+            accessor: 'salesProducts[0].product',
+            Header: '상품',
+            sort: true,
+        },
+        {
+            id: '8',
+            accessor: 'salesProducts[0].discountRate',
+            Header: '할인율',
+            sort: true,
+        },
+        {
+            id: '9',
+            accessor: 'salesProducts[0].regularPrice',
+            Header: '정상가',
+            sort: true,
+        },
+    ];
 
     //         Cell: ({ value, row }) => (
     //             <Container className="d-flex p-0">
@@ -142,7 +141,7 @@ const SalesDB = () => {
                 theme="light"
             /> */}
             {modal && <SalesRegistrationModal modal={modal} setModal={setModal} />}
-            {/* <SalesTable data={productsData} columns={tableColumns} /> */}
+            <SalesTable data={salesData} columns={tableColumns} />
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />

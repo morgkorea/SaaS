@@ -41,7 +41,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         if (beforePeriodSalesData) {
             const totalSales = [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .reduce((acc, curr) => {
                     return acc + curr.discountPrice;
@@ -54,7 +54,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         if (sortedByPeriodSalesData) {
             const totalSales = [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .reduce((acc, curr) => {
                     return acc + curr.discountPrice;

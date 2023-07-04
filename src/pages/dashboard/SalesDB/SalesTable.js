@@ -42,7 +42,7 @@ const SalesTable = ({ data, columns }): React$Element<any> => {
                                 pagination={true}
                                 isSearchable={true}
                                 tablePurpose={'salesDB'}
-                                productTablePlaceholder={'상품명 / 코드 검색'}
+                                productTablePlaceholder={'검색'}
                             />
                         </Card.Body>
                     </Card>

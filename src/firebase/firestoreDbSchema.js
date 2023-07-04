@@ -90,7 +90,7 @@ export const firestoreSalesProductSchema = {
     regularPrice: 0, // type: number 상품 정상가
     discountRate: 0, // type: number 할인율
     discountPrice: 0, // type: number 할인가
-    adjustedPrice: 0, // type: number 조정금액
+    adjustedPrice: 0, // type: number 조정금액 (최종가)
     startDate: '', //type: string (yyyy-MM-dd) 시작일
     endDate: '', // type: string (yyyy-MM-dd) 종료일
 };
