@@ -64,8 +64,8 @@ const Career = ({ members }) => {
                 <Table responsive className="table table-sm table-centered mb-0 font-14">
                     <thead className="table-light">
                         <tr>
-                            <th style={{ width: '120px' }}>경력기간</th>
-                            <th style={{ width: '100px' }}>인원</th>
+                            <th style={{ width: '30%' }}>경력기간</th>
+                            <th style={{ width: '20%' }}>인원</th>
                             <th colspan="2">비율(100%)</th>
                         </tr>
                     </thead>
@@ -77,7 +77,7 @@ const Career = ({ members }) => {
                                 <td style={{ width: '40px' }}>
                                     {Math.floor((data.rate / totalNumber) * 100) + '%'}
                                 </td>
-                                <td>
+                                <td className='ps-0'>
                                     <ProgressBar
                                         now={Math.floor((data.rate / totalNumber) * 100)}
                                         style={{ height: '3px' }}

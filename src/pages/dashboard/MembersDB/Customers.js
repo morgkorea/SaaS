@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Card, Button } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import Table from './Table';
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import moment from 'moment';
+import { doc, updateDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const onClickMemberInfo = ({ row }) => {
@@ -14,36 +15,6 @@ const onClickMemberInfo = ({ row }) => {
         </>
     );
 };
-
-
-const ActionColumn = ({ row }) => {
-    return (
-        <>
-            <Link className="action-icon">
-                <Button onClick={() => editUser(row)}>
-                    <i className="mdi mdi-square-edit-outline"></i>
-                </Button>
-            </Link>
-            <Link to="#" className="action-icon">
-                <Button onClick={() => deleteUser(row)}>
-                    <i className="mdi mdi-delete"></i>
-                </Button>
-            </Link>
-        </>
-    );
-};
-
-const editUser = async (row) => {
-    const id = row.original.id
-    const userDoc = doc(firestoreDB, 'Users', 'rnfkd@naver.com', 'Members', id);
-    await updateDoc(userDoc, { name: '메롱' });
-}
-
-const deleteUser = async (row) => {
-    const id = row.original.id
-    const userDoc = doc(firestoreDB, 'Users', 'rnfkd@naver.com', 'Members', id);
-    await deleteDoc(userDoc);
-}
 
 const MarketingInputColumn = ({ row }) => {
     return (
@@ -61,6 +32,90 @@ const PrivateInputColumn = ({ row }) => {
     );
 };
 
+const AgeColumn = ({ row }) => {
+    const birthday = row.original.birthDate.replace(/-/gi, '');
+    const today = moment().format('YYYYMMDD');
+
+    const calcAge = () => {
+        return Math.floor((today - birthday) / 10000);
+    };
+
+    let ageGroup = '';
+
+    if (birthday.length === 8) {
+        const age = calcAge();
+
+        if (age < 20) {
+            ageGroup = '10대';
+        } else if (age < 30) {
+            ageGroup = '20대';
+        } else if (age < 40) {
+            ageGroup = '30대';
+        } else if (age < 50) {
+            ageGroup = '40대';
+        } else if (age < 60) {
+            ageGroup = '50대';
+        } else {
+            ageGroup = '60대 이상';
+        }
+    } else {
+        return false;
+    }
+
+    const email = 'rnfkd@naver.com';
+
+    if (row.original.birthDate) {
+        const AgeUpdate = async () => {
+            const memberRef = doc(firestoreDB, 'Users', email, 'Members', row.original.id);
+            const editData = { ageGroup: ageGroup };
+            await updateDoc(memberRef, editData);
+        };
+        AgeUpdate();
+    } else {
+        return false;
+    }
+
+    return <>{ageGroup}</>;
+};
+
+const HoursUseColumn = ({ row }) => {
+    const hours = row.original.hoursUse;
+    let newHours = hours;
+
+    const replacements = [
+        ['오전 (6:00am~12:00pm)', '오전'],
+        ['낮 (12:00pm~4:00pm)', '낮'],
+        ['저녁 (4:00pm~8:00pm)', '저녁'],
+        ['밤 (8:00pm~11:00pm)', '밤'],
+    ];
+
+    replacements.forEach(([searchValue, replaceValue]) => {
+        newHours = newHours.replace(searchValue, replaceValue);
+    });
+
+    return <>{newHours}</>;
+};
+
+const PhoneColumn = ({ row }) => {
+    const phoneNumber = row.original.phone;
+
+    const digitsOnly = phoneNumber.replace(/\D/g, '');
+
+    // 국가 코드와 나머지 번호로 분리
+    let countryCode = '';
+    let phoneNumberDigits = digitsOnly;
+
+    // 국가 코드 추출
+    if (digitsOnly.startsWith('82') && digitsOnly.length > 10) {
+        countryCode = '';
+        phoneNumberDigits = digitsOnly.slice(1);
+    }
+
+    const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
+
+    return countryCode + formattedPhoneNumber;
+};
+
 const columns = [
     {
         Header: '성함',
@@ -72,8 +127,6 @@ const columns = [
         Header: '회원번호',
         accessor: 'memberNumber',
         sort: true,
-        // Cell: ActionColumn,
-        // classes: 'table-action',
     },
     {
         Header: '생성날짜',
@@ -98,12 +151,13 @@ const columns = [
     },
     {
         Header: '연령대',
-        accessor: 'ageGroup',
+        Cell: AgeColumn,
         sort: true,
     },
     {
         Header: '휴대전화번호',
-        accessor: 'phone',
+        // accessor: 'phone',
+        Cell: PhoneColumn,
         sort: true,
     },
     {
@@ -138,7 +192,8 @@ const columns = [
     },
     {
         Header: '이용시간대',
-        accessor: 'hoursUse',
+        // accessor: 'hoursUse',
+        Cell: HoursUseColumn,
         sort: true,
     },
     {
@@ -158,13 +213,11 @@ const columns = [
     },
     {
         Header: '마케팅수신동의',
-        accessor: 'marketingRecieveAllow',
         Cell: MarketingInputColumn,
         sort: false,
     },
     {
         Header: '개인정보수집동의',
-        accessor: 'privateInfoAllow',
         Cell: PrivateInputColumn,
         sort: false,
     },
@@ -205,10 +258,8 @@ const sizePerPageList = [
     },
 ];
 
-
-const Customers = ({ currentMembers, addMode, email, editMode, setAddMode }) => {
-    let location = useLocation();
-    console.log(location);
+const Customers = ({ currentMembers, addMode, editMode, setAddMode }) => {
+    const location = useLocation();
 
     return (
         <>
@@ -217,12 +268,10 @@ const Customers = ({ currentMembers, addMode, email, editMode, setAddMode }) => 
                     <Table
                         columns={columns}
                         data={currentMembers}
-                        email={email}
                         addMode={addMode}
                         setAddMode={setAddMode}
-                        editMode={editMode}
-                        pageSize={30}
                         sizePerPageList={sizePerPageList}
+                        pageSize={sizePerPageList[0].value}
                         isSortable={true}
                         pagination={true}
                         isSelectable={false}

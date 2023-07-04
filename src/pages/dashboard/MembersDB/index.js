@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Customers from './Customers.js';
@@ -15,17 +15,18 @@ const SalesDB = () => {
 
     const getMembers = async () => {
         const data = await getDocs(memberRef);
-        
         setCurrentMembers(data.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
         })))
     };
-
+    
     useEffect(() => {
-        getMembers();
+        getMembers()
     }, []);
 
+    // console.log(currentMembers)
+    
     return (
         <>
             <Row>
@@ -39,13 +40,11 @@ const SalesDB = () => {
                 <Col xs={12}>
                     <Customers
                         currentMembers={currentMembers}
-                        email={email}
                         addMode={addMode}
                         setAddMode={setAddMode}
                     />
                 </Col>
             </Row>
-            {/* <BtnWrap setEditMode={setEditMode} setAddMode={setAddMode} addMode={addMode} editMode={editMode} /> */}
         </>
     );
 };

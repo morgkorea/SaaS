@@ -3,7 +3,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import Select from 'react-select';
 import { firestoreDB } from '../../../firebase/firebase';
 
-const EditTable = ({ member, email, id }) => {
+const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [nameValue, setNameValue] = useState(member.name);
     const [phoneValue, setPhoneValue] = useState(member.phone);
     const [birthDateValue, setBirthDateValue] = useState(member.birthDate);
@@ -14,17 +14,14 @@ const EditTable = ({ member, email, id }) => {
     const [injuriedPartValue, setInjuriedPartValue] = useState(member.injuriedPart);
     const [audienceValue, setAudienceValue] = useState(member.audience);
     const [regionValue, setRegionValue] = useState(member.region);
-    const [isChecked, setChecked] = React.useState(true);
-    const [isChecked2, setChecked2] = React.useState(true);
-    // const [sexValue, setSexValue] = useState('');
-    // const [purposeValue, setPurposeValue] = useState('');
-    // const [activeStatus, setActiveStatus] = useState('');
+    const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
+    const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
 
-    function handleChange(event) {
-        setChecked(event.target.checked);
+    function privateInfoChange(event) {
+        setPrivateInfoChecked(event.target.checked);
     }
-    function handleChange2(event) {
-        setChecked2(event.target.checked);
+    function marketingChange(event) {
+        setMarketingChecked(event.target.checked);
     }
 
     const editUser = async () => {
@@ -32,56 +29,32 @@ const EditTable = ({ member, email, id }) => {
 
         const editData = {
             name: nameValue,
-            phone: phoneValue,
             birthDate: birthDateValue,
+            phone: phoneValue,
             location: locationValue,
             region: regionValue,
             golfPeriod: periodValue,
+            audience: audienceValue,
+            // 관심품목
             hoursUse: hoursUseValue,
             injuries: injuriesValue,
             injuriedPart: injuriedPartValue,
-            marketingRecieveAllow: isChecked,
-            privateInfoAllow: isChecked2,
-            amountPayments: '',
-            lifetimeValue: '',
-            audience: audienceValue,
-             // typeFormToken: '',
-            // memberNumber: '',
-            // createdDate: '',
-            // createdTime: '',
-            // sex: sexValue,
-            // golfPurpose: purposeValue,
-            // activation: activeStatus,
-            // availableProducts: [
-            //     {
-            //         activateProduct: '레슨',
-            //         startDate: '2023-05-24',
-            //         endDate: '2023-05-30',
-            //         dDays: '6',
-            //     },
-            // ],
-            // unavailableProducts: [
-            //     {
-            //         inactiveProduct: '락커',
-            //         startDate: '2023-02-19',
-            //         endDate: '2023-02-19',
-            //         dDays: 0,
-            //     },
-            // ],
+            // 유입경로
+            privateInfoAllow: privateInfoChecked,
+            marketingRecieveAllow: marketingChecked,
         };
 
         await updateDoc(memberRef, editData);
     };
 
-    const modifyMember = (e) => {
-        e.preventDefault();
-        editUser();
-    };
-
+    useImperativeHandle(ref, () => ({
+        modifyMember() {
+            editUser();
+        },
+    }));
 
     return (
         <>
-        <button onClick={modifyMember}>저장</button>
             <table className="basic-table mt-3">
                 <tbody>
                     <tr>
@@ -122,7 +95,7 @@ const EditTable = ({ member, email, id }) => {
                     </tr>
                     <tr>
                         <th>위치</th>
-                        <td>
+                        <td className="me-2">
                             <input
                                 style={{ width: '80px' }}
                                 className="editInput"
@@ -151,7 +124,9 @@ const EditTable = ({ member, email, id }) => {
                     </tr>
                     <tr>
                         <th>생성일자</th>
-                        <td>{member?.createdDate} / {member?.createdTime}</td>
+                        <td>
+                            {member?.createdDate} / {member?.createdTime}
+                        </td>
                     </tr>
                     <tr>
                         <th>골프 경력</th>
@@ -193,7 +168,7 @@ const EditTable = ({ member, email, id }) => {
                                 options={[
                                     { value: '타석권', label: '타석권' },
                                     { value: '레슨', label: '레슨' },
-                                    { value: '레슨 + 타석권', label: '레슨 + 타석권' },
+                                    { value: '레슨 + 타석권', label: '레슨+타석권' },
                                 ]}></Select>
                         </td>
                     </tr>
@@ -215,7 +190,7 @@ const EditTable = ({ member, email, id }) => {
                     </tr>
                     <tr>
                         <th>부상 전적</th>
-                        <td>
+                        <td className="me-2">
                             <Select
                                 className="react-select"
                                 classNamePrefix="react-select"
@@ -273,8 +248,8 @@ const EditTable = ({ member, email, id }) => {
                         <td>
                             <input
                                 type="checkbox"
-                                checked={member.privateInfoAllow}
-                                onChange={handleChange2}
+                                checked={privateInfoChecked}
+                                onChange={privateInfoChange}
                                 name="privateInfo"
                             />
                         </td>
@@ -284,8 +259,8 @@ const EditTable = ({ member, email, id }) => {
                         <td>
                             <input
                                 type="checkbox"
-                                checked={member.marketingRecieveAllow}
-                                onChange={handleChange}
+                                checked={marketingChecked}
+                                onChange={marketingChange}
                                 name="marketing"
                             />
                         </td>
@@ -294,6 +269,6 @@ const EditTable = ({ member, email, id }) => {
             </table>
         </>
     );
-};
+});
 
 export default EditTable;

@@ -1,27 +1,32 @@
 import { deleteDoc, doc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { firestoreDB } from '../../../firebase/firebase';
 import { useSelector } from 'react-redux';
 import EditTable from './EditTable';
+import Table from './Table';
 
 const MemberInfo = () => {
     const [editMode, setEditMode] = useState(false);
+
     const location = useLocation();
     const { member } = location.state;
+    // console.log('member', member)
+
     const email = useSelector((state) => {
         return state.Auth?.user.email;
     });
+
     const id = member.id;
 
     const deleteUser = async () => {
         const userDoc = doc(firestoreDB, 'Users', email, 'Members', id);
         await deleteDoc(userDoc);
-        toggle()
+        toggle();
     };
 
-    console.log(member)
+    const childRef = useRef();
     /**
      *  modal
      */
@@ -37,22 +42,73 @@ const MemberInfo = () => {
         toggle();
     };
 
+    const payments = [
+        {
+            data1: '1회차',
+            data2: '락커 결제',
+            data3: '6개월권',
+            data4: '10% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 3451,
+        },
+        {
+            data1: '2회차',
+            data2: '회원권 결제',
+            data3: '3개월권',
+            data4: '20% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 59301,
+        },
+        {
+            data1: '3회차',
+            data2: '회원권 결제',
+            data3: '1개월권',
+            data4: '30% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 300000,
+        },
+        {
+            data1: '4회차',
+            data2: '회원권 결제',
+            data3: '6개월권',
+            data4: '10% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 400000,
+        },
+        {
+            data1: '5회차',
+            data2: '회원권 결제',
+            data3: '6개월권',
+            data4: '10% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 500000,
+        },
+        {
+            data1: '6회차',
+            data2: '회원권 결제',
+            data3: '6개월권',
+            data4: '10% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 600000,
+        },
+        {
+            data1: '7회차',
+            data2: '회원권 결제',
+            data3: '6개월권',
+            data4: '10% 할인',
+            data5: '2022.07.12 ~ 2023.01.08',
+            data6: 202222110,
+        },
+    ];
     return (
         <>
-            <Row>
-                <Col xs={12}>
-                    <div className="page-title-box">
-                        <h4 className="page-title">회원DB</h4>
-                    </div>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
+            <Row className="justify-content-md-center mt-5">
+                <Col xs={12} xxl={12}>
                     <Card>
                         <Card.Body>
                             <div className="d-flex justify-content-between">
-                                <h4>현재 이용 정보</h4>
                                 <div className="payment-info">
+                                    <h4 className="me-5">현재 이용 정보</h4>
                                     <h4 className="me-2">7회차</h4>
                                     <p>회원권 결제</p>
                                     <p>6개월권</p>
@@ -65,9 +121,9 @@ const MemberInfo = () => {
                     </Card>
                 </Col>
             </Row>
-            <Row>
-                <Col xs={12} xl={4}>
-                    <Card>
+            <Row className="justify-content-md-center">
+                <Col xs={12} xl={6} xxl={4}>
+                    <Card style={{ height: '700px' }}>
                         <Card.Body>
                             <div className="d-flex justify-content-between">
                                 <h4>기본 정보</h4>
@@ -77,21 +133,30 @@ const MemberInfo = () => {
                                             <i className="mdi mdi-square-edit-outline"></i>
                                         </Button>
                                     ) : (
-                                        <Button onClick={() => console.log('저장')}>저장</Button>
+                                        <Button
+                                            onClick={() => {
+                                                childRef.current.modifyMember();
+                                            }}>
+                                            저장
+                                        </Button>
                                     )}
-                                    <Button  onClick={() => openModalWithClass('modal-dialog-centered')} className="ms-1">
+                                    <Button
+                                        onClick={() => openModalWithClass('modal-dialog-centered')}
+                                        className="ms-1">
                                         <i className="mdi mdi-delete"></i>
                                     </Button>
                                     <Modal show={modal} onHide={toggle} dialogClassName={className}>
                                         <Modal.Body>
-                                            <h4>Alerts</h4>
-                                            <p>{member.name} 님의 회원 정보가 모두 삭제됩니다. 정말 삭제하시겠습니까?</p>
+                                            <h3>Alert</h3>
+                                            <p>
+                                                {member.name} 님의 회원 정보가 모두 삭제됩니다. 정말 삭제하시겠습니까?
+                                            </p>
                                         </Modal.Body>
                                         <Modal.Footer>
                                             <Button variant="light" onClick={toggle}>
                                                 취소
                                             </Button>
-                                            <Button variant="primary" onClick={deleteUser}>
+                                            <Button variant="info" onClick={deleteUser}>
                                                 삭제
                                             </Button>
                                         </Modal.Footer>
@@ -99,114 +164,45 @@ const MemberInfo = () => {
                                 </div>
                             </div>
                             {!editMode ? (
-                                <table className="basic-table mt-3">
-                                    <tbody>
-                                        <tr>
-                                            <th>성함</th>
-                                            <td>
-                                                <span className="text-primary fs-4 me-1 fw-600">{member?.name}</span>
-                                                회원님
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>생년월일</th>
-                                            <td>{member?.birthDate} 만 25세</td>
-                                        </tr>
-                                        <tr>
-                                            <th>휴대전화</th>
-                                            <td>{member?.phone}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>위치</th>
-                                            <td>
-                                                {member?.region} / {member?.location}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>회원번호</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th>생성일자</th>
-                                            <td>
-                                                {member?.createdDate} / {member?.createdTime}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>골프 경력</th>
-                                            <td>{member?.golfPeriod}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>상담 유형</th>
-                                            <td>{member?.audience}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>관심 품목</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th>이용시간</th>
-                                            <td>{member?.hoursUse}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>부상 전적</th>
-                                            <td>
-                                                {member?.injuries}
-                                                {member.injuries === '무' ? null : ` / ${member?.injuriedPart}`}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>유입 경로</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th>개인정보수집동의</th>
-                                            <td>
-                                                {member?.privateInfoAllow === true ? (
-                                                    <i className="mdi mdi-check widget-icon2" />
-                                                ) : (
-                                                    <i className="mdi mdi-check" />
-                                                )}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>마케팅수집동의</th>
-                                            <td>
-                                                {member?.marketingRecieveAllow === true ? (
-                                                    <i className="mdi mdi-check widget-icon2" />
-                                                ) : (
-                                                    <i className="mdi mdi-check" />
-                                                )}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <Table member={member} />
                             ) : (
-                                <EditTable member={member} email={email} id={id} />
+                                <EditTable member={member} email={email} id={id} ref={childRef} />
                             )}
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col xs={12} xl={8}>
-                    <Card>
-                        <Card.Body>
-                            <h4>결제 정보</h4>
-                            <div className="payment-card">
-                                <div className="d-flex align-items-center justify-content-between">
-                                    <div>
-                                        <h4>1회차</h4>
-                                    </div>
-                                    <div className="d-flex">
-                                        <div className="payment-info">
-                                            <p>회원권 결제</p>
-                                            <p>6개월권</p>
-                                            <p>10% 할인</p>
-                                            <p>2022.07.12 ~ 2023.01.08</p>
+                <Col xs={12} xl={6} xxl={8}>
+                    <Card style={{ height: '700px' }}>
+                        <Card.Body className="payment-wrap">
+                            <h4 className="mb-4">결제 정보</h4>
+                            <div className="payment-list">
+                                {payments.map((payment) => {
+                                    return (
+                                        <div className="payment-card">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <div className="d-flex">
+                                                    <h4 className='number'>{payment.data1}</h4>
+                                                    <div className="payment-info">
+                                                        <p>{payment.data2}</p>
+                                                        <p>{payment.data3}</p>
+                                                        <p>{payment.data4}</p>
+                                                        <p>{payment.data5}</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h4>{payment.data6.toLocaleString()} 원</h4>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <h4>202,222,110</h4>
-                                    </div>
+                                    );
+                                })}
+                            </div>
+                            <div className="position-absolute bottom-0 end-0 p-4">
+                                <div className="payment-amount">
+                                    <p>평균 200,000 원</p>
+                                    <p className="text-primary">
+                                        총 <span className="h2">1,000,000</span> 원
+                                    </p>
                                 </div>
                             </div>
                         </Card.Body>
