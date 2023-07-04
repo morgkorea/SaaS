@@ -96,11 +96,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     console.log('selectedProduct', selectedProduct);
     const putFirestoreRegistrationSalesData = () => {
-        const salesProducts = [...registrationSalesProducts];
+        const salesProducts = [...registrationSalesProducts].filter((product) => product.hasOwnProperty('productCode'));
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
             .join(',');
+        const paymentInfo = [paymentInfo1, paymentInfo2, paymentInfo3].filter(
+            (paymentInfo) => paymentInfo.paymentMethod.length
+        );
         const salesData = {
             ...firestoreSalesFieldSchema,
             paymentDate: paymentDate,
@@ -111,6 +114,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             totalPaymentPrice: totalPaymentPrice,
             remainingPaymentPrice: remainingPrice,
             paymentMethod: paymentMethod,
+            paymentInfo: paymentInfo,
         };
         console.log(salesData);
     };
