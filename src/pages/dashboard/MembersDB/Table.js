@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, memo} from 'react';
+import React, { useRef, useEffect, forwardRef, memo } from 'react';
 import {
     useTable,
     useSortBy,
@@ -82,13 +82,15 @@ const Table = (props: TableProps) => {
     const isExpandable = props['isExpandable'] || false;
     const addMode = props['addMode'] || false;
     const setAddMode = props['setAddMode'] || false;
-    const editMode = props['editMode'] || false;
+
+    const childComponentRef = useRef(null);
+
 
     const onClickAdd = () => {
         if (!addMode) {
-            setAddMode((prev) => !prev) // add 모드로 변경
+            setAddMode((prev) => !prev); // add 모드로 변경
         }
-    }
+    };
 
     const dataTable = useTable(
         {
@@ -148,23 +150,31 @@ const Table = (props: TableProps) => {
 
     return (
         <>
-        <div className='d-flex'>
-            <div>
-            {isSearchable && (
-                <GlobalFilter
-                    preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
-                    globalFilter={dataTable.state.globalFilter}
-                    setGlobalFilter={dataTable.setGlobalFilter}
-                    searchBoxClass={props['searchBoxClass']}
-                />
-            )}
+            <div className="d-flex">
+                <div>
+                    {isSearchable && (
+                        <GlobalFilter
+                            preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
+                            globalFilter={dataTable.state.globalFilter}
+                            setGlobalFilter={dataTable.setGlobalFilter}
+                            searchBoxClass={props['searchBoxClass']}
+                        />
+                    )}
+                </div>
+                <div className="ms-2">
+                    {!addMode ? (
+                        <Button onClick={onClickAdd}>회원등록</Button>
+                    ) : (
+                        <Button
+                            onClick={() => {
+                                childComponentRef.current.updateFirestoreAddMember();
+                            }}>
+                            저장
+                        </Button>
+                    )}
+                </div>
             </div>
-            <div className='ms-2'>
-                <Button onClick={onClickAdd}>회원등록</Button>
-            </div>
-        </div>
-            
-           
+
             <div className="table-responsive member-table">
                 <table
                     {...dataTable.getTableProps()}
@@ -187,13 +197,17 @@ const Table = (props: TableProps) => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {addMode ? <AddCell /> : null}
+                        {addMode ? <AddCell ref={childComponentRef} /> : null}
                         {(rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
                                 <tr {...row.getRowProps()} key={row.original.id}>
                                     {row.cells.map((cell) => {
-                                        return <td key={cell.id} {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                                        return (
+                                            <td key={cell.id} {...cell.getCellProps()}>
+                                                {cell.render('Cell')}
+                                            </td>
+                                        );
                                     })}
                                 </tr>
                             );
@@ -207,4 +221,4 @@ const Table = (props: TableProps) => {
     );
 };
 
-export default memo(Table);
+export default Table;

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { firestoreDB } from '../../../firebase/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import moment from 'moment';
 import Select from 'react-select';
-import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-const AddCell = () => {
+const AddCell = forwardRef((props, ref) => {
     const email = useSelector((state) => {
         return state.Auth?.user.email;
     });
@@ -24,6 +23,8 @@ const AddCell = () => {
     const [activeStatus, setActiveStatus] = useState('');
     const [audienceValue, setAudienceValue] = useState('');
     const [regionValue, setRegionValue] = useState('');
+    // const [inflowPathValue, setInflowPathValue] = useState(''); // 유입경로
+    // 관심상품 추가
 
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
@@ -36,7 +37,7 @@ const AddCell = () => {
     }
 
     const updateFirestoreAddMember = async () => {
-        const memberRef = collection(firestoreDB, 'Users', email, 'Members')
+        const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
             // typeFormToken: '',
             memberNumber: '',
@@ -46,15 +47,16 @@ const AddCell = () => {
             phone: phoneValue,
             sex: sexValue,
             birthDate: birthDateValue,
-            ageGroup: '', //연령대
+            // ageGroup: '',연령대
             location: locationValue,
             region: regionValue,
             golfPeriod: periodValue,
             golfPurpose: purposeValue,
             hoursUse: hoursUseValue,
             injuries: injuriesValue,
-            injuriedPart: injuriedPartValue, 
-            marketingRecieveAllow: isChecked, 
+            injuriedPart: injuriedPartValue,
+            // inflowPathValue: inflowPathValue,  // 유입경로
+            marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
             amountPayments: '',
             lifetimeValue: '',
@@ -63,9 +65,9 @@ const AddCell = () => {
             activation: activeStatus,
             availableProducts: [
                 {
-                    activateProduct: '', 
+                    activateProduct: '',
                     startDate: '',
-                    endDate: '', 
+                    endDate: '',
                     dDays: '',
                 },
                 {
@@ -88,10 +90,16 @@ const AddCell = () => {
         await addDoc(memberRef, newMemberData);
     };
 
-    const updateAddMembers = () => {
-        updateFirestoreAddMember();
-    };
+    // const updateAddMembers = () => {
+    //     updateFirestoreAddMember();
+    // };
 
+    useImperativeHandle(ref, () => ({
+        updateFirestoreAddMember: () => {
+            updateFirestoreAddMember();
+        }
+    }));
+    
     return (
         <>
             <tr>
@@ -105,9 +113,7 @@ const AddCell = () => {
                         onChange={(e) => setNameValue(e.target.value)}
                     />
                 </td>
-                <td>
-                    <Button onClick={updateAddMembers}>Save</Button>
-                </td>
+                <td>{/* <Button onClick={updateAddMembers}>Save</Button> */}</td>
                 <td></td>
                 <td></td>
                 <td>
@@ -258,6 +264,7 @@ const AddCell = () => {
                         data-width="100%"
                         className="react-select"
                         classNamePrefix="react-select"
+                        // onChange={(e) => inflowPathValue(e.value)}
                         options={[
                             { value: '네이버', label: '네이버' },
                             { value: '지인추천', label: '지인추천' },
@@ -294,6 +301,6 @@ const AddCell = () => {
             </tr>
         </>
     );
-};
+});
 
 export default AddCell;

@@ -8,18 +8,15 @@ const GenderStatus = ({ members }) => {
     let woman = 0;
     let junior = 0;
 
-    function gender() {
-        members.map((user) => {
-            if (user.sex === '남성') {
-                return man++;
-            } else if (user.sex === '여성') {
-                return woman++;
-            } else {
-                return junior++;
-            }
-        });
-    }
-    gender();
+    members.forEach((member) => {
+        if (member.sex === '남성') {
+            return man++;
+        } else if (member.sex === '여성') {
+            return woman++;
+        } else {
+            return junior++;
+        }
+    });
 
     const colors = ['#727cf5', '#fa5c7c', '#0acf97'];
     const donutChartData = {

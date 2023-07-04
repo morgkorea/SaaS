@@ -14,9 +14,9 @@ import { collection, getDocs } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const MemberDashboard = () => {
-    const [currentMembers, setCurrentMembers] = useState([]); // 전체회원
-    const [activeMembers, setActiveMembers] = useState([]); // 활성회원
-    console.log('전체: ', currentMembers);
+    const [activeMembers, setActiveMembers] = useState([]);
+    const [currentMembers, setCurrentMembers] = useState([]);
+    // console.log('활성: ', activeMembers, '전체: ', currentMembers);
 
     const email = useSelector((state) => {
         return state.Auth?.user.email;
@@ -26,10 +26,16 @@ const MemberDashboard = () => {
 
     const getMembers = async () => {
         const data = await getDocs(memberRef);
+
+        setActiveMembers(data.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        })).filter((m) => m.activation === '활성'));
+
         setCurrentMembers(data.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
-        })))
+        })));
     };
 
     useEffect(() => {
@@ -91,7 +97,7 @@ const MemberDashboard = () => {
                             <Statistics members={activeMembers} index={index} />
                         </Col>
                         <Col xxl={9} xl={8}>
-                            <SessionsChart />
+                            <SessionsChart members={activeMembers} index={index} />
                         </Col>
                     </Row>
                     <Row>
@@ -108,7 +114,7 @@ const MemberDashboard = () => {
                             <LocationStatus members={activeMembers} />
                         </Col>
                         <Col xxl={3} xl={6}>
-                            <Location />
+                            <Location members={activeMembers} />
                         </Col>
                         <Col xxl={3} xl={6}>
                             <Goal members={activeMembers} />
@@ -126,7 +132,7 @@ const MemberDashboard = () => {
                         </Col>
 
                         <Col xxl={9} xl={8}>
-                            <SessionsChart />
+                            <SessionsChart members={currentMembers} />
                         </Col>
                     </Row>
 
@@ -144,7 +150,7 @@ const MemberDashboard = () => {
                             <LocationStatus members={currentMembers} />
                         </Col>
                         <Col xxl={3} xl={6}>
-                            <Location />
+                            <Location members={currentMembers} />
                         </Col>
                         <Col xxl={3} xl={6}>
                             <Goal members={currentMembers} />

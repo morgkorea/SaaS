@@ -1,42 +1,69 @@
-// @flow
-import React from 'react';
+import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
-const SessionsChart = () => {
-    const colors = ['#0acf97'];
-   
+const SessionsChart = ({ members, index }) => {
+    const [isMonthlyView, setIsMonthlyView] = useState(true); // 월간 데이터 보기 설정
+
+    const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+
     const getDaysInMonth = (month, year) => {
-        var date = new Date(year, month, 1);
+        var startDate = new Date(year, month, 1);
+        var endDate = new Date(year, month + 1, 0);
         var days = [];
-        var idx = 0;
-        while (date.getMonth() === month && idx < 15) {
-            var d = new Date(date);
-            days.push(d.getDate() + ' ' + d.toLocaleString('en-us', { month: 'short' }));
-            date.setDate(date.getDate() + 1);
-            idx += 1;
+
+        while (startDate <= endDate) {
+            var d = new Date(startDate);
+            if (month === d.getMonth()) {
+                // days.push(d.getDate() + ' ' + d.toLocaleString('en-us', { month: 'short' }));
+                days.push(d.getDate() + '일');
+            }
+            startDate.setDate(startDate.getDate() + 1);
         }
+
         return days;
     };
 
     const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
 
-    const labels = getDaysInMonth(now.getFullYear());
+    const labels = isMonthlyView 
+        ? getDaysInMonth(currentMonth, currentYear)
+        : Array(12).fill('').map((_, idx) => idx + 1 + '월');
+
+    const colors = ['#0acf97'];
+
+    // 일별 데이터 생성
+    const dailyData = new Array(labels.length).fill(0);
+    for (const member of sortedMembers) {
+        const createdDate = new Date(member.createdDate);
+        if (createdDate.getFullYear() === currentYear && createdDate.getMonth() === currentMonth) {
+            const day = createdDate.getDate();
+            dailyData[day - 1]++;
+        }
+    }
+
+    // 월별 데이터 생성
+    const monthlyData = new Array(12).fill(0);
+    for (const member of sortedMembers) {
+        const createdDate = new Date(member.createdDate);
+        const year = createdDate.getFullYear();
+        const month = createdDate.getMonth();
+        if (year === currentYear) {
+            monthlyData[month]++;
+        }
+    }
+
+    const chartData = isMonthlyView ? dailyData : monthlyData;
 
     const apexBarChartOpts = {
-        grid: {
-            padding: {
-                left: 0,
-                right: 0,
-            },
-        },
         chart: {
             height: 309,
             type: 'area',
-            parentHeightOffset: 0,
             toolbar: {
-                show: false,
+                show: false, // zoom, download 기능
             },
         },
         dataLabels: {
@@ -44,7 +71,7 @@ const SessionsChart = () => {
         },
         stroke: {
             curve: 'smooth',
-            width: 4,
+            width: 5,
         },
         zoom: {
             enabled: false,
@@ -62,14 +89,10 @@ const SessionsChart = () => {
             axisBorder: {
                 show: false,
             },
-            labels: {},
         },
         yaxis: {
             labels: {
-                formatter: function (val) {
-                    return val + 'k';
-                },
-                offsetX: -15,
+                offsetX: -50, // hide
             },
         },
         fill: {
@@ -88,7 +111,7 @@ const SessionsChart = () => {
     const apexBarChartData = [
         {
             name: 'Sessions',
-            data: [10, 20, 5, 15, 10, 20, 15, 25, 20, 30, 25, 40],
+            data: chartData,
         },
     ];
 
@@ -97,19 +120,30 @@ const SessionsChart = () => {
             <Card.Body>
                 <ul className="nav float-end d-none d-lg-flex">
                     <li className="nav-item">
-                        <Link to="#" className="nav-link active">
+                        <Link
+                            to="#"
+                            className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}
+                            onClick={() => setIsMonthlyView(true)}
+                        >
                             월간
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="#" className="nav-link text-muted">
+                        <Link
+                            to="#"
+                            className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
+                            onClick={() => setIsMonthlyView(false)}
+                        >
                             년간
                         </Link>
                     </li>
                 </ul>
 
-                <h4 className="header-title mb-3">전체 회원 추이</h4>
-
+                {
+                    index === 1 ?  <h4 className="header-title mb-3">활성 회원 추이</h4>
+                    : <h4 className="header-title mb-3">전체 회원 추이</h4>
+                }
+               
                 <Chart
                     options={apexBarChartOpts}
                     series={apexBarChartData}
