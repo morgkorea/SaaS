@@ -63,6 +63,12 @@ const MENU_ITEMS = [
                 url: '/dashboard/product-db',
                 parentKey: 'dashboards',
             },
+            {
+                key: 'members-db',
+                label: '회원DB',
+                url: '/dashboard/members-db',
+                parentKey: 'dashboards',
+            },
         ],
     },
     { key: 'apps', label: 'Apps', isTitle: true },

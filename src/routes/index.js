@@ -39,6 +39,7 @@ const Counsel = React.lazy(() => import('../pages/dashboard/Counsel'));
 const Crm = React.lazy(() => import('../pages/dashboard/CRM'));
 const SalesDB = React.lazy(() => import('../pages/dashboard/SalesDB'));
 const MemberInfo = React.lazy(() => import('../pages/dashboard/MemberInfo'));
+const MembersDB = React.lazy(() => import('../pages/dashboard/MembersDB'));
 const ProductDB = React.lazy(() => import('../pages/dashboard/ProductDB'));
 
 // apps
@@ -278,9 +279,13 @@ const AllRoutes = () => {
                             element: <LoadComponent component={SalesDB} />,
                         },
                         {
+                            path: 'members-db',
+                            element: <LoadComponent component={MembersDB} />,
+                        },
+                        {
                             path: 'member-info',
-                            element: <LoadComponent component={MemberInfo} />,}
-                            ,
+                            element: <LoadComponent component={MemberInfo} />,
+                        },
                         {
                             path: 'product-db',
                             element: <LoadComponent component={ProductDB} />,
