@@ -65,17 +65,17 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
                 }, [])
-                .forEach((product, idx) => {
-                    if (product.productType === 'batterBox') {
-                        productsSales.batterBox = productsSales.batterBox + Number(product.adjustedPrice);
-                    } else if (product.productType === 'lesson') {
-                        productsSales.lesson = productsSales.lesson + Number(product.adjustedPrice);
-                    } else if (product.productType === 'locker') {
-                        productsSales.locker = productsSales.locker + Number(product.adjustedPrice);
+                .forEach((ele, idx) => {
+                    if (ele.product === '타석') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
+                    } else if (ele.product === '레슨') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
+                    } else if (ele.product === '락커') {
+                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(product.adjustedPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
                     }
                 });
         }
@@ -95,17 +95,17 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (beforePeriodSalesData) {
             [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
                 }, [])
-                .forEach((product, idx) => {
-                    if (product.productType === 'batterBox') {
-                        productsSales.batterBox = productsSales.batterBox + Number(product.adjustedPrice);
-                    } else if (product.productType === 'lesson') {
-                        productsSales.lesson = productsSales.lesson + Number(product.adjustedPrice);
-                    } else if (product.productType === 'locker') {
-                        productsSales.locker = productsSales.locker + Number(product.adjustedPrice);
+                .forEach((ele, idx) => {
+                    if (ele.product === '타석') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
+                    } else if (ele.product === '레슨') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
+                    } else if (ele.product === '락커') {
+                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(product.adjustedPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
                     }
                 });
         }

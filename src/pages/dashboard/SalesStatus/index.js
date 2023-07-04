@@ -171,57 +171,42 @@ const SalesStatus = () => {
         memeberNumber: '', //회원번호
         name: '유승훈', //이름
         phone: '010-7178-1117', //전화번호
-        salesProducts: [
-            {
-                productCode: '', // 상품코드 , type:string ,
-                product: '장갑', //type: string 상품
-                productType: 'etc', // type: string (batterBox,lesson,locker,etc)
-                regularPrice: 300, // type: number 상품 정상가
-                discountRate: 10, // type: number 할인율
-                discountPrice: 270, // type: number 할인가
-                adjustedPrice: 250, // type: number 조정금액 (최종가)
-                startDate: '', //type: string (yyyy-MM-dd) 시작일
-                endDate: '', // type: string (yyyy-MM-dd) 종료일
-            },
+        products: [
             {
                 product: '장갑', //상품
-                productType: 'etc',
+                productType: '기타',
                 regularPrice: '12', //상품 정상가
                 discountRate: '10%', // 할인율
                 discountPrice: 10000, //할인가
                 startDate: '', // 시작일
                 endDate: '', // 종료일
-                adjustedPrice: 250, // type: number 조정금액 (최종가)
             },
             {
                 product: '레슨', //상품
-                productType: 'lesson',
+                productType: '레슨',
                 regularPrice: '23', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: 200000, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
-                adjustedPrice: 250, // type: number 조정금액 (최종가)
             },
             {
                 product: '타석', //상품
-                productType: 'batterBox',
+                productType: '타석',
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: 300000, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
-                adjustedPrice: 250, // type: number 조정금액 (최종가)
             },
             {
                 product: '락커', //상품
-                productType: 'locker',
+                productType: '락커',
                 regularPrice: '100000', //상품 정상가
                 discountRate: '20%', // 할인율
                 discountPrice: 100000, //할인가
                 startDate: '2022-05-16', // 시작일
                 endDate: '2022-06-16', // 종료일
-                adjustedPrice: 250, // type: number 조정금액 (최종가)
             },
         ],
         totalPaymentPrice: 610000, //결제총액 type number

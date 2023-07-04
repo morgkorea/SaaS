@@ -36,7 +36,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
         let mergedSalesData = [];
         if (sortedByPeriodSalesData) {
             mergedSalesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                return !curr.refund ? [...acc, ...curr.products] : [...acc];
             }, []);
         }
 
