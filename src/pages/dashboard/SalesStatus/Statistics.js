@@ -116,26 +116,23 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const compareWithPreviousSales = () => {
         setAmountCompoareWithPreviousSales({ batterBox: 0, lesson: 0, locker: 0, etc: 0 });
 
+        const percentCalculator = (before, current) => {
+            const percentage = (((current - before) / before) * 100).toFixed(2);
+
+            if (before === 0 && current === 0) {
+                return 0;
+            } else if (before === 0) {
+                return 100;
+            }
+            return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
+        };
+
         const comparedPercentages = {
             batterBox: percentCalculator(amountBeforeProductsSales.batterBox, amountProductsSales.batterBox),
             lesson: percentCalculator(amountBeforeProductsSales.lesson, amountProductsSales.lesson),
             locker: percentCalculator(amountBeforeProductsSales.locker, amountProductsSales.locker),
             etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
         };
-
-        function percentCalculator(before, current) {
-            const percentage = (((current - before) / before) * 100).toFixed(2);
-            if (before === 0 && current === 0) {
-                return 0;
-            } else if (before === 0) {
-                return 100;
-            } else if (percentage % 1 === 0) {
-                return Math.floor(percentage);
-            } else {
-                return percentage;
-            }
-            // return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
-        }
 
         setAmountCompoareWithPreviousSales(comparedPercentages);
     };
@@ -189,7 +186,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
 
-                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%',
+                            value: amountCompareWithPreviousSales.batterBox,
+                            // beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -210,7 +208,9 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%',
+                            value: amountCompareWithPreviousSales.lesson + '%',
+
+                            // beforePeriodSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -254,7 +254,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%',
+                            value: amountCompareWithPreviousSales.etc,
+                            //  beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>

@@ -48,6 +48,8 @@ const SalesStatus = () => {
 
             setSalesData(salesArray);
         });
+
+        console.log(salesData);
     };
     useEffect(() => {
         getFirestoreSalesData();
@@ -247,18 +249,24 @@ const SalesStatus = () => {
 
     const checkPreviousWeek = (paymentDate, datePickDate) => {
         const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
-        const currentWeekSunday = new Date(
+        const previousSaturday = new Date(
             datePickDate.getFullYear(),
             datePickDate.getMonth(),
             datePickDate.getDate() - datePickDay
         );
-        const previousSunday = new Date(
-            currentWeekSunday.getFullYear(),
-            currentWeekSunday.getMonth(),
-            currentWeekSunday.getDate() - 7
-        ); // datePickDate 이전의 가장 가까운 일요일을 계산
+        // datePickDate 이전의 가장 가까운 토요일 자정 - 1밀리초 계산
+        previousSaturday.setMilliseconds(previousSaturday.getMilliseconds() - 1);
 
-        if (paymentDate >= previousSunday && paymentDate <= currentWeekSunday) {
+        const previousSunday = new Date(
+            previousSaturday.getFullYear(),
+            previousSaturday.getMonth(),
+            previousSaturday.getDate() - 6
+        );
+
+        console.log(datePickDate);
+        console.log(paymentDate);
+        console.log(previousSunday, previousSaturday);
+        if (paymentDate >= previousSunday && paymentDate <= previousSaturday) {
             return true;
         } else {
             return false;
@@ -327,12 +335,9 @@ const SalesStatus = () => {
         const beforePeriodData = salesData?.filter((ele) => {
             console.log(ele.paymentDate);
             const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
-            // const offset = paymentDate.getTimezoneOffset();
-
-            // paymentDate.setMinutes(paymentDate.getMinutes() + offset);
-            // paymentDate.setHours(0, 0, 0, 0);
 
             console.log(paymentDate);
+
             switch (selectedPeriod) {
                 case 'month':
                     return paymentDate.getMonth() === datePickDate.getMonth() - 1;

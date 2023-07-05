@@ -543,6 +543,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         modifyPriceList.forEach((subtract, idx) => {
             if (subtract > 0) {
                 registerArray[idx].adjustedPrice = registerArray[idx].discountPrice - subtract;
+            } else if (subtract === 0) {
+                registerArray[idx].adjustedPrice = registerArray[idx].discountPrice;
             }
         });
         setRegistrationSalesProducts(registerArray);
