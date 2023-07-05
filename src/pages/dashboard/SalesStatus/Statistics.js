@@ -27,7 +27,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
-    const testNumber = (123423423424).toLocaleString();
+    console.log(amountProductsSales, amountBeforeProductsSales, amountCompareWithPreviousSales);
 
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
@@ -99,10 +99,10 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                     return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
-                    if (ele.product === 'batterBox') {
-                        productsSales.productType = productsSales.batterBox + Number(ele.adjustedPrice);
-                    } else if (ele.product === 'lesson') {
-                        productsSales.productType = productsSales.lesson + Number(ele.adjustedPrice);
+                    if (ele.productType === 'batterBox') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'lesson') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.adjustedPrice);
                     } else if (ele.productType === 'locker') {
                         productsSales.locker = productsSales.locker + Number(ele.adjustedPrice);
                     } else {
