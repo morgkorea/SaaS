@@ -4,27 +4,30 @@ import { addDoc, collection } from 'firebase/firestore';
 import moment from 'moment';
 import Select from 'react-select';
 import { useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddCell = forwardRef((props, ref) => {
+    const notify = () => toast('저장되었습니다.');
+
     const email = useSelector((state) => {
         return state.Auth?.user.email;
     });
-
     const [nameValue, setNameValue] = useState('');
-    const [phoneValue, setPhoneValue] = useState('');
     const [sexValue, setSexValue] = useState('');
     const [birthDateValue, setBirthDateValue] = useState('');
+    const [phoneValue, setPhoneValue] = useState('');
+    const [audienceValue, setAudienceValue] = useState('');
     const [locationValue, setLocationValue] = useState('');
+    const [regionValue, setRegionValue] = useState('');
     const [periodValue, setPeriodValue] = useState('');
     const [purposeValue, setPurposeValue] = useState('');
+    // 관심상품 추가
     const [hoursUseValue, setHoursUseValue] = useState('');
     const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
+    // 유입경로 추가 inflowPathValue
     const [activeStatus, setActiveStatus] = useState('');
-    const [audienceValue, setAudienceValue] = useState('');
-    const [regionValue, setRegionValue] = useState('');
-    // const [inflowPathValue, setInflowPathValue] = useState(''); // 유입경로
-    // 관심상품 추가
 
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
@@ -37,71 +40,64 @@ const AddCell = forwardRef((props, ref) => {
     }
 
     const updateFirestoreAddMember = async () => {
+        if (!nameValue) {
+            alert('이름을 입력해주세요.');
+            return;
+        }
+
         const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
+            name: nameValue,
             // typeFormToken: '',
             memberNumber: '',
             createdDate: moment().format('YYYY.MM.DD'),
             createdTime: moment().format('A hh:mm'),
-            name: nameValue,
-            phone: phoneValue,
             sex: sexValue,
             birthDate: birthDateValue,
-            // ageGroup: '',연령대
+            // ageGroup: '', 연령대
+            phone: phoneValue,
+            audience: audienceValue,
             location: locationValue,
             region: regionValue,
             golfPeriod: periodValue,
             golfPurpose: purposeValue,
+            // 골프 목적
             hoursUse: hoursUseValue,
             injuries: injuriesValue,
             injuriedPart: injuriedPartValue,
             // inflowPathValue: inflowPathValue,  // 유입경로
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
-            amountPayments: '',
-            lifetimeValue: '',
-            amountPaymentAverage: '',
-            audience: audienceValue,
+            // amountPayments: '',
+            // lifetimeValue: '',
+            // amountPaymentAverage: '',
             activation: activeStatus,
-            availableProducts: [
-                {
-                    activateProduct: '',
-                    startDate: '',
-                    endDate: '',
-                    dDays: '',
-                },
-                {
-                    activateProduct: '',
-                    startDate: '',
-                    endDate: '',
-                    dDays: '',
-                },
-            ],
-            unavailableProducts: [
-                {
-                    inactiveProduct: '',
-                    startDate: '',
-                    endDate: '',
-                    dDays: 0,
-                    refund: false,
-                },
-            ],
         };
-        await addDoc(memberRef, newMemberData);
-    };
 
-    // const updateAddMembers = () => {
-    //     updateFirestoreAddMember();
-    // };
+        await addDoc(memberRef, newMemberData);
+
+        notify();
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+    };
 
     useImperativeHandle(ref, () => ({
         updateFirestoreAddMember: () => {
             updateFirestoreAddMember();
-        }
+        },
     }));
-    
+
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={1500}
+                hideProgressBar={false}
+                closeButton={false}
+                theme="light"
+                limit={1}
+            />
             <tr>
                 <td>
                     <input
@@ -113,7 +109,7 @@ const AddCell = forwardRef((props, ref) => {
                         onChange={(e) => setNameValue(e.target.value)}
                     />
                 </td>
-                <td>{/* <Button onClick={updateAddMembers}>Save</Button> */}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td>
@@ -287,7 +283,7 @@ const AddCell = forwardRef((props, ref) => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td className="text-center">
+                <td>
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"

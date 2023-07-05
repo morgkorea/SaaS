@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, memo } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import {
     useTable,
     useSortBy,
@@ -174,7 +174,6 @@ const Table = (props: TableProps) => {
                     )}
                 </div>
             </div>
-
             <div className="table-responsive member-table">
                 <table
                     {...dataTable.getTableProps()}
@@ -217,6 +216,7 @@ const Table = (props: TableProps) => {
             </div>
 
             {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
+
         </>
     );
 };

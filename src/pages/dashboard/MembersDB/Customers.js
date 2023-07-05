@@ -156,7 +156,7 @@ const columns = [
     },
     {
         Header: '휴대전화번호',
-        // accessor: 'phone',
+        accessor: 'phone',
         Cell: PhoneColumn,
         sort: true,
     },
@@ -245,8 +245,12 @@ const columns = [
 
 const sizePerPageList = [
     {
-        text: '30',
-        value: 30,
+        text: '15',
+        value: 15,
+    },
+    {
+        text: '25',
+        value: 25,
     },
     {
         text: '50',

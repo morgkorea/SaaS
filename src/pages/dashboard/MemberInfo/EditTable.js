@@ -2,8 +2,12 @@ import { doc, updateDoc } from 'firebase/firestore';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import Select from 'react-select';
 import { firestoreDB } from '../../../firebase/firebase';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditTable = forwardRef(({ member, email, id }, ref) => {
+    const notify = () => toast('개인정보가 수정되었습니다.');
+
     const [nameValue, setNameValue] = useState(member.name);
     const [phoneValue, setPhoneValue] = useState(member.phone);
     const [birthDateValue, setBirthDateValue] = useState(member.birthDate);
@@ -16,7 +20,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [regionValue, setRegionValue] = useState(member.region);
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
-
+    const [activeStatus, setActiveStatus] = useState('');
     function privateInfoChange(event) {
         setPrivateInfoChecked(event.target.checked);
     }
@@ -42,9 +46,15 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
             // 유입경로
             privateInfoAllow: privateInfoChecked,
             marketingRecieveAllow: marketingChecked,
+            activation: activeStatus,
         };
 
         await updateDoc(memberRef, editData);
+
+        notify();
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
     };
 
     useImperativeHandle(ref, () => ({
@@ -66,7 +76,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 type="text"
                                 value={nameValue}
                                 onChange={(e) => setNameValue(e.target.value)}
-                            />
+                            /> 회원님
                         </td>
                     </tr>
                     <tr>
@@ -129,6 +139,20 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         </td>
                     </tr>
                     <tr>
+                        <th>유형</th>
+                        <td>
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.audience}
+                                onChange={(e) => setAudienceValue(e.value)}
+                                options={[
+                                    { value: '신규', label: '신규' },
+                                    { value: '재등록', label: '재등록' },
+                                ]}></Select>
+                        </td>
+                    </tr>
+                    <tr>
                         <th>골프 경력</th>
                         <td>
                             <Select
@@ -150,11 +174,10 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                             <Select
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                placeholder={member.audience}
-                                onChange={(e) => setAudienceValue(e.value)}
+                                // placeholder={member.audience}
+                                // onChange={(e) => setAudienceValue(e.value)}
                                 options={[
-                                    { value: '신규', label: '신규' },
-                                    { value: '재등록', label: '재등록' },
+                                    { value: '비거리 향상', label: '비거리 향상' },
                                 ]}></Select>
                         </td>
                     </tr>
@@ -265,8 +288,33 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                             />
                         </td>
                     </tr>
+                    <tr>
+                        <th>활성여부</th>
+                        <td>
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.activation}
+                                onChange={(e) => setActiveStatus(e.value)}
+                                options={[
+                                    { value: '활성', label: '활성' },
+                                    { value: '이탈', label: '이탈' },
+                                    { value: '일시중지', label: '일시중지' },
+                                ]}></Select>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={1500}
+                hideProgressBar={false}
+                closeButton={false}
+                theme="light"
+                limit={1}
+            />
+            
         </>
     );
 });

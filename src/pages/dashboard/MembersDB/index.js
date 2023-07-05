@@ -25,10 +25,10 @@ const SalesDB = () => {
         getMembers()
     }, []);
 
-    // console.log(currentMembers)
+    // console.log('currentMembers', currentMembers)
     
     return (
-        <>
+        <>        
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">

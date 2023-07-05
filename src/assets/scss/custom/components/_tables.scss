@@ -221,18 +221,19 @@ table.basic-table > input, select, textarea {
 
 .payment-wrap {
     position: relative;
+    overflow: hidden;
 }
 .payment-wrap::after {
     content: '';
     position: absolute;
-    bottom: 110px;
+    bottom: 100px;
     width: 100%;
     height: 60px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 100%);
 }
 .payment-list {
     overflow-y: scroll;
-    height: 500px;
+    height: 550px;
     flex-shrink: 0;
 }
 .payment-card {
@@ -250,7 +251,6 @@ table.basic-table > input, select, textarea {
     display: flex;
     align-items: center;
     text-align: left;
-
     > p {
         position: relative;
         margin: 0 20px 0 0;
@@ -286,4 +286,12 @@ table.basic-table > input, select, textarea {
         width: 1px;
         height: 15px;
     }
+}
+
+.box-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: 50px;
 }

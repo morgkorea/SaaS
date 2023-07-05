@@ -54,12 +54,16 @@ const Table = ({ member }) => {
                         </td>
                     </tr>
                     <tr>
+                        <th>유형</th>
+                        <td>{member?.audience}</td>
+                    </tr>
+                    <tr>
                         <th>골프 경력</th>
                         <td>{member?.golfPeriod}</td>
                     </tr>
                     <tr>
                         <th>상담 유형</th>
-                        <td>{member?.audience}</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>관심 품목</th>
@@ -99,6 +103,10 @@ const Table = ({ member }) => {
                                 <i className="mdi mdi-check" />
                             )}
                         </td>
+                    </tr>
+                    <tr>
+                        <th>활성여부</th>
+                        <td>{member?.activation}</td>
                     </tr>
                 </tbody>
             </table>

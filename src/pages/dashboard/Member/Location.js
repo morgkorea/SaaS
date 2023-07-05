@@ -5,7 +5,7 @@ import CardTitle from '../../../components/CardTitle';
 const Location = ({ members }) => {
     const allRegions = members.map(m => m.region)
 
-    let regions = allRegions.filter((element) => element !== undefined);
+    let regions = allRegions.filter((element) => element !== undefined && element.trim() !== '');
 
     function mergeDuplicatesWithCount(regions) {
       const counts = {};
