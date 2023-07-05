@@ -325,8 +325,14 @@ const SalesStatus = () => {
         // }).
 
         const beforePeriodData = salesData?.filter((ele) => {
-            const paymentDate = new Date(ele.paymentDate);
+            console.log(ele.paymentDate);
+            const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
+            // const offset = paymentDate.getTimezoneOffset();
 
+            // paymentDate.setMinutes(paymentDate.getMinutes() + offset);
+            // paymentDate.setHours(0, 0, 0, 0);
+
+            console.log(paymentDate);
             switch (selectedPeriod) {
                 case 'month':
                     return paymentDate.getMonth() === datePickDate.getMonth() - 1;
@@ -395,7 +401,7 @@ const SalesStatus = () => {
                     </Col>
                 </Row>
 
-                <Row>
+                {/* <Row>
                     <Col lg={12}>
                         <RevenueChart
                             sortedByPeriodSalesData={sortedByPeriodSalesData}
@@ -404,8 +410,8 @@ const SalesStatus = () => {
                             datePickDate={datePickDate}
                         />
                     </Col>
-                </Row>
-
+                </Row> */}
+                {/* 
                 <Row>
                     <Col lg={4}>
                         <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
@@ -413,7 +419,7 @@ const SalesStatus = () => {
                     <Col lg={8}>
                         <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
                     </Col>
-                </Row>
+                </Row> */}
             </div>
         </>
     );

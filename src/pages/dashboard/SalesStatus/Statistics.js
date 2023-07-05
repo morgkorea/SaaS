@@ -3,6 +3,7 @@ import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
 const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, startDate }) => {
+    console.log(sortedByPeriodSalesData, beforePeriodSalesData);
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -68,14 +69,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                     return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
-                    if (ele.product === '타석') {
-                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
-                    } else if (ele.product === '레슨') {
-                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
-                    } else if (ele.product === '락커') {
-                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    if (ele.productType === 'batterBox') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'lesson') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'locker') {
+                        productsSales.locker = productsSales.locker + Number(ele.adjustedPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.adjustedPrice);
                     }
                 });
         }
@@ -98,14 +99,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                     return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
-                    if (ele.product === '타석') {
-                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
-                    } else if (ele.product === '레슨') {
-                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
-                    } else if (ele.product === '락커') {
-                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    if (ele.product === 'batterBox') {
+                        productsSales.productType = productsSales.batterBox + Number(ele.adjustedPrice);
+                    } else if (ele.product === 'lesson') {
+                        productsSales.productType = productsSales.lesson + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'locker') {
+                        productsSales.locker = productsSales.locker + Number(ele.adjustedPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.adjustedPrice);
                     }
                 });
         }
