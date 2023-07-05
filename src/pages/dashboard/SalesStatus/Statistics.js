@@ -3,7 +3,6 @@ import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
 const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, startDate }) => {
-    console.log(sortedByPeriodSalesData, beforePeriodSalesData);
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -26,7 +25,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
-
+    console.log(sortedByPeriodSalesData, beforePeriodSalesData);
     console.log(amountProductsSales, amountBeforeProductsSales, amountCompareWithPreviousSales);
 
     const getCurrentPeriodRefund = () => {
@@ -130,8 +129,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                 return 0;
             } else if (before === 0) {
                 return 100;
+            } else if (percentage % 1 === 0) {
+                return Math.floor(percentage);
+            } else {
+                return percentage;
             }
-            return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
+            // return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
         }
 
         setAmountCompoareWithPreviousSales(comparedPercentages);
