@@ -21,22 +21,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
-
-    // const getWeeksOfMinMaxDate = (datePickDate, selectedPeriod) => {
-    //     if (selectedPeriod === 'week') {
-    //         const oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초 수
-
-    //         const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
-    //         const previousSunday = new Date(datePickDate.getTime() - datePickDay * oneDay); // datePickDate 이전의 가장 가까운 일요일을 계산
-
-    //         const previousWeekStart = new Date(previousSunday.getTime() - 8 * oneDay); // 전 주의 시작일을 구함
-
-    //         console.log('previousWeekStart', previousWeekStart);
-    //     }
-    // };
-
-    // console.log(getWeeksOfMinMaxDate(datePickDate, selectedPeriod));
-
+    console.log(previousPeriodSalesData, currentPeriodSalesData);
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
         if (beforePeriodSalesData) {
             const totalSales = [...beforePeriodSalesData].reduce((acc, curr) => {
@@ -213,7 +198,6 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         },
     ];
 
-    console.log('previousPeriodSalesData', previousPeriodSalesData);
     return (
         <Card>
             {selectedPeriod !== 'day' ? (

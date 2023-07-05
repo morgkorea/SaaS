@@ -22,11 +22,11 @@ const SalesStatus = () => {
     const [isFetchingData, setisFethcingData] = useState(true);
     //
 
-    const [datePickDate, setDatePickDate] = useState(new Date());
+    const [datePickDate, setDatePickDate] = useState(new Date(new Date().toISOString().split('T')[0]));
     // 월간,주간,일간 선택
     const [selectedPeriod, setSelectedPeriod] = useState('month');
     // 현재시간 기준 전 월,주,일 날짜
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(new Date().toISOString().split('T')[0] + ' 00:00:00'));
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState([]);
     // 전월 매출데이터
@@ -48,8 +48,6 @@ const SalesStatus = () => {
 
             setSalesData(salesArray);
         });
-
-        console.log(salesData);
     };
     useEffect(() => {
         getFirestoreSalesData();
@@ -133,7 +131,7 @@ const SalesStatus = () => {
                     return member;
                 }
             });
-            console.log(modifyingMembers);
+
             try {
                 await updateDoc(washingtonRef, {
                     members: [...modifyingMembers],
@@ -147,13 +145,13 @@ const SalesStatus = () => {
     };
 
     const modifyMember = () => {
-        console.log('modifying member');
         modifyingFirestoreMember();
     };
 
     const onDateChange = (date) => {
         if (date) {
             console.log(date);
+
             setDatePickDate(date);
         }
     };
@@ -263,9 +261,6 @@ const SalesStatus = () => {
             previousSaturday.getDate() - 6
         );
 
-        console.log(datePickDate);
-        console.log(paymentDate);
-        console.log(previousSunday, previousSaturday);
         if (paymentDate >= previousSunday && paymentDate <= previousSaturday) {
             return true;
         } else {
@@ -274,8 +269,9 @@ const SalesStatus = () => {
     };
 
     const checkPreviousDate = (paymentDate, datePickDate) => {
-        var previousDay = new Date(datePickDate.getTime() - 24 * 60 * 60 * 1000); // datePickDate의 전일을 계산
-
+        const previousDay = new Date(datePickDate);
+        previousDay.setDate(previousDay.getDate() - 1);
+        console.log(previousDay);
         if (
             paymentDate.getDate() === previousDay.getDate() &&
             paymentDate.getMonth() === previousDay.getMonth() &&
@@ -296,7 +292,7 @@ const SalesStatus = () => {
             case 'week':
                 return setStartDate(firstDayOfWeek);
             case 'day':
-                return setStartDate(subDays(datePickDate, 1));
+                return setStartDate(datePickDate);
 
             default:
         }
@@ -316,7 +312,9 @@ const SalesStatus = () => {
         // })
 
         const sortedPeriodData = salesData?.filter((ele) => {
-            const paymentDate = new Date(ele.paymentDate);
+            const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
+            console.log(startDate);
+            console.log(datePickDate);
             return paymentDate >= startDate && paymentDate <= datePickDate ? true : false;
         });
 
@@ -333,10 +331,7 @@ const SalesStatus = () => {
         // }).
 
         const beforePeriodData = salesData?.filter((ele) => {
-            console.log(ele.paymentDate);
             const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
-
-            console.log(paymentDate);
 
             switch (selectedPeriod) {
                 case 'month':
@@ -406,7 +401,7 @@ const SalesStatus = () => {
                     </Col>
                 </Row>
 
-                {/* <Row>
+                <Row>
                     <Col lg={12}>
                         <RevenueChart
                             sortedByPeriodSalesData={sortedByPeriodSalesData}
@@ -415,7 +410,7 @@ const SalesStatus = () => {
                             datePickDate={datePickDate}
                         />
                     </Col>
-                </Row> */}
+                </Row>
                 {/* 
                 <Row>
                     <Col lg={4}>

@@ -25,9 +25,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
-    console.log(sortedByPeriodSalesData, beforePeriodSalesData);
-    console.log(amountProductsSales, amountBeforeProductsSales, amountCompareWithPreviousSales);
 
+    console.log(amountBeforeProductsSales, amountProductsSales, amountCompareWithPreviousSales);
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
@@ -186,7 +185,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
 
-                            value: amountCompareWithPreviousSales.batterBox,
+                            value: amountCompareWithPreviousSales.batterBox + '%',
                             // beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
@@ -254,7 +253,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: amountCompareWithPreviousSales.etc,
+                            value: amountCompareWithPreviousSales.etc + '%',
                             //  beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
