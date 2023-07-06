@@ -94,7 +94,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         paymentInfo3.paymentPrice;
 
     const putFirestoreRegistrationSalesData = async () => {
-        const salesProducts = [...registrationSalesProducts].filter((product) => product.hasOwnProperty('productCode'));
+        const salesProducts = [...registrationSalesProducts]
+            .filter((product) => product.hasOwnProperty('productCode'))
+            .map((product, idx) => {
+                //최종가 할당 (adjustedPrice)
+                product.adjustedPrice = product.discountPrice - modifyPriceList[idx];
+                return product;
+            });
+
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
@@ -527,13 +534,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const handleResitrationProductsAdujestPrice = () => {
         const registerArray = [...registrationSalesProducts];
         modifyPriceList.forEach((subtract, idx) => {
-            if (subtract > 0) {
+            if (subtract > 0 && subtract.hasOwnProperty('productCode')) {
                 registerArray[idx].adjustedPrice = registerArray[idx].discountPrice - subtract;
             }
-            if (subtract === 0) {
+            if (subtract === 0 && subtract.hasOwnProperty('productCode')) {
                 registerArray[idx].adjustedPrice = registerArray[idx].discountPrice;
             }
         });
+
         setRegistrationSalesProducts(registerArray);
     };
 
@@ -605,10 +613,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         }}>
                                         <FormInput
                                             type="text"
-                                            name="productDiscountRate"
+                                            name="modifyPrice"
                                             placeholder="-"
                                             containerClass={''}
-                                            key="productDiscountRate"
+                                            key="modifyPrice"
                                             min={0}
                                             max={100}
                                             style={{

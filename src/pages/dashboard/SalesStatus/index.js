@@ -18,15 +18,17 @@ import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase
 import { firestoreDB } from '../../../firebase/firebase';
 
 const SalesStatus = () => {
+    const todayStart = new Date(new Date().toISOString().split('T')[0] + ' 00:00:00');
+
     const [salesData, setSalesData] = useState([]);
     const [isFetchingData, setisFethcingData] = useState(true);
     //
 
-    const [datePickDate, setDatePickDate] = useState(new Date(new Date().toISOString().split('T')[0]));
+    const [datePickDate, setDatePickDate] = useState(todayStart);
     // 월간,주간,일간 선택
     const [selectedPeriod, setSelectedPeriod] = useState('month');
     // 현재시간 기준 전 월,주,일 날짜
-    const [startDate, setStartDate] = useState(new Date(new Date().toISOString().split('T')[0] + ' 00:00:00'));
+    const [startDate, setStartDate] = useState(todayStart);
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState([]);
     // 전월 매출데이터
@@ -401,7 +403,7 @@ const SalesStatus = () => {
                     </Col>
                 </Row>
 
-                <Row>
+                {/* <Row>
                     <Col lg={12}>
                         <RevenueChart
                             sortedByPeriodSalesData={sortedByPeriodSalesData}
@@ -410,7 +412,7 @@ const SalesStatus = () => {
                             datePickDate={datePickDate}
                         />
                     </Col>
-                </Row>
+                </Row> */}
                 {/* 
                 <Row>
                     <Col lg={4}>
