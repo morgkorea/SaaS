@@ -11,7 +11,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         locker: 0,
         etc: 0,
     });
-    const [apexDonutData, setApexDonutData] = useState([1, 2, 3, 4]);
+    const [apexDonutData, setApexDonutData] = useState([1, 1, 1, 1]);
 
     const amountEachProductsSales = () => {
         setAmountProductsSales({
@@ -58,7 +58,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         },
         colors: ['#727cf5', '#fa5c7c', '#0acf97', '#ffbc00'],
         legend: {
-            show: false,
+            show: true,
         },
         labels: ['타석', '레슨', '락커', '기타'],
         responsive: [
@@ -75,10 +75,18 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                 },
             },
         ],
+
         tooltip: {
-            enabled: true,
-            style: {
-                color: '#ffffff',
+            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                return (
+                    '<div class="arrow_box" style="padding: 2px 6px;">' +
+                    '<span>' +
+                    series[seriesIndex].toLocaleString() +
+                    '원' +
+                    [dataPointIndex] +
+                    '</span>' +
+                    '</div>'
+                );
             },
         },
     };
