@@ -182,9 +182,9 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
         yaxis: {
             max:
-                previousPeriodTotalSales > currentPeriodTotalSales
-                    ? previousPeriodTotalSales * 1.1
-                    : currentPeriodTotalSales * 1.1,
+                Math.max(...currentPeriodSalesData) > Math.max(...previousPeriodSalesData)
+                    ? Math.max(...currentPeriodSalesData) * 1.1
+                    : Math.max(...previousPeriodSalesData) * 1.1,
             labels: {
                 formatter: function (value) {
                     return (value / 10000).toFixed() + '만원';
