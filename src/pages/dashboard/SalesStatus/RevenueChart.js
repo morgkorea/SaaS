@@ -4,21 +4,26 @@ import { Card, Row, Col } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
 const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, datePickDate }) => {
-    const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([]);
+    const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([0]);
 
     const [previousPeriodTotalSales, setPreviousPeriodTotalSales] = useState(0);
     const [currentPeriodTotalSales, setCurrentPeriodTotalSales] = useState(0);
 
-    const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState([]);
-    const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState([]);
+    const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState([0]);
+    const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState([0]);
 
     const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
+
+    const apexLineInitData =
+        selectedPeriod === 'month'
+            ? Array.from({ length: currentPeriodOfDate.length }, () => 0)
+            : [0, 0, 0, 0, 0, 0, 0];
 
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
         const month = datePickDate.getMonth();
         const lastDay = new Date(year, month + 1, 0).getDate();
-
+        console.log(lastDay);
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
     console.log(previousPeriodSalesData, currentPeriodSalesData);
@@ -45,7 +50,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         const currentDate = datePickDate?.getDate();
         // const lastDate = new Date(year, month, 0).getDate();
         const currentPeriodSalesArray = [];
-        if (sortedByPeriodSalesData && selectedPeriod === 'month') {
+        if (sortedByPeriodSalesData.length && selectedPeriod === 'month') {
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -61,7 +66,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 currentPeriodSalesArray.push(totalSalesByDate);
             }
             setCurrentPeriodSalesData(currentPeriodSalesArray);
-        } else if (sortedByPeriodSalesData && selectedPeriod === 'week') {
+        } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -77,8 +82,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
                 currentPeriodSalesArray.push(totalSalesByDay);
             }
-            const setDateArrayLength = currentPeriodSalesArray.slice(0, sortedByPeriodSalesData.length);
-            setCurrentPeriodSalesData(setDateArrayLength);
+            setCurrentPeriodSalesData(currentPeriodSalesArray);
         }
     };
 
@@ -86,7 +90,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         const previousMonthLastDate = new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 0).getDate();
 
         const previousSalesData = [];
-        if (beforePeriodSalesData && selectedPeriod === 'month') {
+        if (beforePeriodSalesData.length && selectedPeriod === 'month') {
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -100,7 +104,9 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 });
                 previousSalesData.push(totalSalesByDate);
             }
-        } else if (beforePeriodSalesData && selectedPeriod === 'week') {
+
+            setPreviousPeriodSalesData(previousSalesData);
+        } else if (beforePeriodSalesData.length && selectedPeriod === 'week') {
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -114,23 +120,24 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 });
                 previousSalesData.push(totalSalesByDay);
             }
+
+            setPreviousPeriodSalesData(previousSalesData);
         }
-        setPreviousPeriodSalesData(previousSalesData);
     };
 
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
-    }, [datePickDate]);
+    }, [datePickDate, selectedPeriod]);
     useEffect(() => {
         getPreviousPeriodTotalSales(beforePeriodSalesData);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
-    }, [beforePeriodSalesData]);
+    }, [beforePeriodSalesData, selectedPeriod]);
     useEffect(() => {
         getCurrentPeriodTotalSales(sortedByPeriodSalesData);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
-    }, [sortedByPeriodSalesData]);
+    }, [sortedByPeriodSalesData, selectedPeriod]);
 
     const apexLineChartWithLables = {
         chart: {
@@ -154,9 +161,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 right: 20, // or whatever value that works
             },
         },
-        dataLabels: {
-            enabled: false,
-        },
+        dataLabels: { enabled: false },
         stroke: {
             curve: 'straight',
             width: 6,
@@ -174,8 +179,12 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 show: false,
             },
         },
+
         yaxis: {
-            max: Math.max(...previousPeriodSalesData) + Math.max(...previousPeriodSalesData) * 0.1,
+            max:
+                previousPeriodTotalSales > currentPeriodTotalSales
+                    ? previousPeriodTotalSales * 1.1
+                    : currentPeriodTotalSales * 1.1,
             labels: {
                 formatter: function (value) {
                     return (value / 10000).toFixed() + '만원';
@@ -190,11 +199,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
     const apexLineChartWithLablesData = [
         {
             name: selectedPeriod === 'month' ? '이번 달' : '이번 주',
-            data: currentPeriodSalesData.length > 0 ? currentPeriodSalesData : [0],
+            data: sortedByPeriodSalesData.length ? [...currentPeriodSalesData] : apexLineInitData,
         },
         {
             name: selectedPeriod === 'month' ? '지난 달' : '지난 주',
-            data: previousPeriodSalesData.length > 0 ? previousPeriodSalesData : [0],
+            data: beforePeriodSalesData.length ? [...previousPeriodSalesData] : apexLineInitData,
         },
     ];
 

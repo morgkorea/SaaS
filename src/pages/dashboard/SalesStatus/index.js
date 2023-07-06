@@ -273,7 +273,7 @@ const SalesStatus = () => {
     const checkPreviousDate = (paymentDate, datePickDate) => {
         const previousDay = new Date(datePickDate);
         previousDay.setDate(previousDay.getDate() - 1);
-        console.log(previousDay);
+
         if (
             paymentDate.getDate() === previousDay.getDate() &&
             paymentDate.getMonth() === previousDay.getMonth() &&
@@ -315,8 +315,7 @@ const SalesStatus = () => {
 
         const sortedPeriodData = salesData?.filter((ele) => {
             const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
-            console.log(startDate);
-            console.log(datePickDate);
+
             return paymentDate >= startDate && paymentDate <= datePickDate ? true : false;
         });
 
@@ -403,7 +402,7 @@ const SalesStatus = () => {
                     </Col>
                 </Row>
 
-                {/* <Row>
+                <Row>
                     <Col lg={12}>
                         <RevenueChart
                             sortedByPeriodSalesData={sortedByPeriodSalesData}
@@ -412,7 +411,7 @@ const SalesStatus = () => {
                             datePickDate={datePickDate}
                         />
                     </Col>
-                </Row> */}
+                </Row>
                 {/* 
                 <Row>
                     <Col lg={4}>
