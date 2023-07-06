@@ -21,20 +21,20 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
             etc: 0,
         });
         const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
-        if (sortedByPeriodSalesData) {
+        if (sortedByPeriodSalesData.length) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
                     return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
-                    if (ele.product === '타석') {
-                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
-                    } else if (ele.product === '레슨') {
-                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
-                    } else if (ele.product === '락커') {
-                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    if (ele.productType === 'batterBox') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'lesson') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'locker') {
+                        productsSales.locker = productsSales.locker + Number(ele.adjustedPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.adjustedPrice);
                     }
                 });
 
@@ -75,6 +75,12 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                 },
             },
         ],
+        tooltip: {
+            enabled: true,
+            style: {
+                color: '#ffffff',
+            },
+        },
     };
 
     return (

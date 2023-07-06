@@ -301,37 +301,13 @@ const SalesStatus = () => {
     }, [datePickDate, selectedPeriod]);
 
     useEffect(() => {
-        // const sortedPeriodData = Array.from({ length: 360 }, (_, index) => {
-        //     const paymentDate = new Date('2023-01-01');
-        //     paymentDate.setDate(paymentDate.getDate() + index);
-        //     return {
-        //         ...firestoreSalesFieldSchema,
-        //         paymentDate: paymentDate.toISOString().split('T')[0],
-        //         paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-        //         // totalPaymentPrice: index + 1,
-        //         refund: index % 2 === 0 ? true : false,
-        //     };
-        // })
-
-        const sortedPeriodData = salesData?.filter((ele) => {
+        const sortedPeriodData = salesData.filter((ele) => {
             const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
 
             return paymentDate >= startDate && paymentDate <= datePickDate ? true : false;
         });
 
-        // const beforePeriodData = Array.from({ length: 360 }, (_, index) => {
-        //     const paymentDate = new Date('2023-01-01');
-        //     paymentDate.setDate(paymentDate.getDate() + index);
-        //     return {
-        //         ...firestoreSalesFieldSchema,
-        //         paymentDate: paymentDate.toISOString().split('T')[0],
-        //         paymentTime: paymentDate.toISOString().split('T')[1].split('.')[0],
-        //         // totalPaymentPrice: index + 1,
-        //         refund: index % 2 === 0 ? true : false,
-        //     };
-        // }).
-
-        const beforePeriodData = salesData?.filter((ele) => {
+        const beforePeriodData = salesData.filter((ele) => {
             const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
 
             switch (selectedPeriod) {
@@ -412,15 +388,15 @@ const SalesStatus = () => {
                         />
                     </Col>
                 </Row>
-                {/* 
+
                 <Row>
-                    <Col lg={4}>
+                    {/* <Col lg={4}>
                         <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
-                    </Col>
-                    <Col lg={8}>
+                    </Col> */}
+                    {/* <Col lg={8}>
                         <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
-                    </Col>
-                </Row> */}
+                    </Col> */}
+                </Row>
             </div>
         </>
     );
