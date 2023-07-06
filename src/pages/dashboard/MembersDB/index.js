@@ -25,7 +25,7 @@ const SalesDB = () => {
         getMembers()
     }, []);
 
-    // console.log('currentMembers', currentMembers)
+    console.log('currentMembers', currentMembers)
     
     return (
         <>        

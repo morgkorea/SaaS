@@ -65,7 +65,7 @@ const Career = ({ members }) => {
                     <thead className="table-light">
                         <tr>
                             <th style={{ width: '30%' }}>경력기간</th>
-                            <th style={{ width: '20%' }}>인원</th>
+                            <th style={{ width: '25%' }}>인원</th>
                             <th colspan="2">비율(100%)</th>
                         </tr>
                     </thead>

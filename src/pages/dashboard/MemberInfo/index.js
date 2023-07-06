@@ -8,6 +8,7 @@ import { firestoreDB } from '../../../firebase/firebase';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import EditTable from './EditTable';
 import Table from './Table';
+import Memo from './Memo';
 
 const MemberInfo = () => {
     const [editMode, setEditMode] = useState(false);
@@ -18,12 +19,6 @@ const MemberInfo = () => {
     const email = useSelector((state) => state.Auth?.user.email);
 
     const id = member.id;
-
-    const notify = () => toast('삭제되었습니다.');
-
-    const toggle = () => {
-        setModal(!modal);
-    };
 
     const childRef = useRef();
 
@@ -37,6 +32,12 @@ const MemberInfo = () => {
         setTimeout(() => {
             window.location.replace('/dashboard/members-db'); // 주소 변경 시 수정하기
         }, 1500);
+    };
+
+    const notify = () => toast('삭제되었습니다.');
+
+    const toggle = () => {
+        setModal(!modal);
     };
 
     const [modal, setModal] = useState(false);
@@ -154,7 +155,7 @@ const MemberInfo = () => {
                         <Col xs={12} xxl={12}>
                             <Card>
                                 <Card.Body>
-                                    <div className="box-wrap d-flex justify-content-between">
+                                    <div className="d-flex justify-content-between">
                                         <div className="payment-info">
                                             <h4 className="me-5">
                                                 <span className="me-2">🕦</span>현재 이용 정보
@@ -170,8 +171,7 @@ const MemberInfo = () => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                    </Row>
-                    <Row>
+
                         <Col>
                             <Card style={{ height: '740px' }}>
                                 <Card.Body className="payment-wrap">
@@ -215,6 +215,11 @@ const MemberInfo = () => {
                 </Col>
             </Row>
 
+            <Row>
+                <Col>
+                    <Memo member={member} email={email} id={id}/>
+                </Col>
+            </Row>
             <ToastContainer
                 position="top-right"
                 autoClose={1500}

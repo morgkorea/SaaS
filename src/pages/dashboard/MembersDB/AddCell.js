@@ -22,11 +22,11 @@ const AddCell = forwardRef((props, ref) => {
     const [regionValue, setRegionValue] = useState('');
     const [periodValue, setPeriodValue] = useState('');
     const [purposeValue, setPurposeValue] = useState('');
-    // 관심상품 추가
+    const [productValue, setProductValue] = useState('');
     const [hoursUseValue, setHoursUseValue] = useState('');
     const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
-    // 유입경로 추가 inflowPathValue
+    const [inflowPathValue, setInflowPathValue] = useState('');
     const [activeStatus, setActiveStatus] = useState('');
 
     const [isChecked, setChecked] = React.useState(true);
@@ -61,11 +61,11 @@ const AddCell = forwardRef((props, ref) => {
             region: regionValue,
             golfPeriod: periodValue,
             golfPurpose: purposeValue,
-            // 골프 목적
+            product: productValue,
             hoursUse: hoursUseValue,
             injuries: injuriesValue,
             injuriedPart: injuriedPartValue,
-            // inflowPathValue: inflowPathValue,  // 유입경로
+            inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
             // amountPayments: '',
@@ -209,6 +209,7 @@ const AddCell = forwardRef((props, ref) => {
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
+                        onChange={(e) => setProductValue(e.value)}
                         options={[
                             { value: '타석권', label: '타석권' },
                             { value: '레슨', label: '레슨' },
@@ -260,7 +261,7 @@ const AddCell = forwardRef((props, ref) => {
                         data-width="100%"
                         className="react-select"
                         classNamePrefix="react-select"
-                        // onChange={(e) => inflowPathValue(e.value)}
+                        onChange={(e) => setInflowPathValue(e.value)}
                         options={[
                             { value: '네이버', label: '네이버' },
                             { value: '지인추천', label: '지인추천' },

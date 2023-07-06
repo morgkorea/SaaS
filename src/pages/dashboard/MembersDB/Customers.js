@@ -187,7 +187,7 @@ const columns = [
     },
     {
         Header: '관심상품',
-        accessor: '',
+        accessor: 'product',
         sort: true,
     },
     {
@@ -208,7 +208,7 @@ const columns = [
     },
     {
         Header: '유입경로',
-        accessor: '',
+        accessor: 'inflowPath',
         sort: true,
     },
     {
