@@ -21,17 +21,21 @@ const RoundedCircle = ({ size }) => {
 
 const Crm = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
-    
-    const email = useSelector((state) => { return state.Auth?.user.email; });
-    const memberRef = collection(firestoreDB, "Users", email, "Members")
+
+    const email = useSelector((state) => {
+        return state.Auth?.user.email;
+    });
+    const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
     const getMembers = async () => {
         const data = await getDocs(memberRef);
-        
-        setCurrentMembers(data.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        })))
+
+        setCurrentMembers(
+            data.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }))
+        );
     };
 
     useEffect(() => {
@@ -139,10 +143,6 @@ const Crm = () => {
         modifyingFirestoreMember();
     };
 
-
-
-
-    
     const [page, setPage] = useState(1);
     const limit = 20;
     const offset = (page - 1) * limit;
@@ -165,7 +165,7 @@ const Crm = () => {
 
     return (
         <>
-            <Row>
+            {/* <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
                         <h4 className="page-title">
@@ -256,7 +256,7 @@ const Crm = () => {
                         </Button>
                     </form>
                 </Modal.Body>
-            </Modal>
+            </Modal> */}
 
             {/* <div className="app-search mt-3">
                 <Form.Group>
@@ -281,7 +281,6 @@ const Crm = () => {
                     <Button>회원 정보 입력</Button>
                 </div>
             </div>  */}
-
         </>
     );
 };
