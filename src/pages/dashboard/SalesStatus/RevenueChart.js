@@ -27,10 +27,10 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         const year = datePickDate.getFullYear();
         const month = datePickDate.getMonth();
         const lastDay = new Date(year, month + 1, 0).getDate();
-        console.log(lastDay);
+
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
-    console.log(previousPeriodSalesData, currentPeriodSalesData);
+
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
         if (beforePeriodSalesData.length) {
             const totalSales = [...beforePeriodSalesData].reduce((acc, curr) => {
