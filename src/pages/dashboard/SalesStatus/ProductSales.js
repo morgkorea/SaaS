@@ -46,13 +46,13 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                 productsInfo[`${sale.product}`] = {
                     title: sale.product,
                     type: sale.productType,
-                    total: Number(sale.discountPrice),
+                    total: Number(sale.adjustedPrice),
                     number: 1,
                 };
             } else {
                 productsInfo[`${sale.product}`] = {
                     ...productsInfo[`${sale.product}`],
-                    total: Number(productsInfo[`${sale.product}`].total) + Number(sale.discountPrice),
+                    total: Number(productsInfo[`${sale.product}`].total) + Number(sale.adjustedPrice),
                     number: productsInfo[`${sale.product}`].number + 1,
                 };
             }
@@ -64,14 +64,28 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
         }
         setProductSalesData(productsSalesArray);
     };
+
+    const productTypeTextHandler = (productType) => {
+        console.log(productType);
+        switch (productType) {
+            case 'batterBox':
+                return '타석';
+            case 'lesson':
+                return '레슨';
+            case 'locker':
+                return '락커';
+            case 'etc':
+                return '기타';
+        }
+    };
     useEffect(() => {
         getProductSales();
     }, [sortedByPeriodSalesData]);
 
     return (
-        <Row>
+        <Row style={{ height: '100%' }}>
             <Col xs={12}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                     <Card.Body>
                         <Row className="mb-2">
                             <Col xl={12}>
@@ -132,7 +146,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                                     {data.title}
                                                 </Link>
                                             </td>
-                                            <td className="table-border">{data.type}</td>
+                                            <td className="table-border">{productTypeTextHandler(data.type)}</td>
                                             <td className="table-border">
                                                 <Row>
                                                     <Col>

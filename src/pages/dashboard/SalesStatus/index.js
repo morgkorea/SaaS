@@ -220,9 +220,9 @@ const SalesStatus = () => {
                     <Col lg={4}>
                         <SalesChart sortedByPeriodSalesData={sortedByPeriodSalesData} />
                     </Col>
-                    {/* <Col lg={8}>
+                    <Col lg={8}>
                         <ProductSales sortedByPeriodSalesData={sortedByPeriodSalesData} />
-                    </Col> */}
+                    </Col>
                 </Row>
             </div>
         </>

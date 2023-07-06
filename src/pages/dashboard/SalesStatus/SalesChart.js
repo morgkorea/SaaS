@@ -11,7 +11,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         locker: 0,
         etc: 0,
     });
-    const [apexDonutData, setApexDonutData] = useState([1, 1, 1, 1]);
+    const [apexDonutData, setApexDonutData] = useState([0, 0, 0, 0]);
 
     const amountEachProductsSales = () => {
         setAmountProductsSales({
@@ -92,7 +92,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
     };
 
     return (
-        <Card>
+        <Card style={{ height: '100%' }}>
             <Card.Body>
                 <CardTitle
                     containerClass="d-flex align-items-center justify-content-between"
