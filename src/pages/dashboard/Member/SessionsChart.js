@@ -94,6 +94,7 @@ const SessionsChart = ({ members, index }) => {
             labels: {
                 offsetX: -50, // hide
             },
+            // stepSize: 1,
         },
         fill: {
             type: 'gradient',

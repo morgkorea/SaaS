@@ -69,6 +69,9 @@ const AgeChart = ({ members }) => {
         xaxis: {
             categories: ageGroups,
         },
+        yaxis: {
+            stepSize: 1,
+        },
         legend: {
             show: false,
         },

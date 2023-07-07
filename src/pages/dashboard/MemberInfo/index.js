@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import EditTable from './EditTable';
@@ -15,12 +15,36 @@ const MemberInfo = () => {
 
     const location = useLocation();
     const { member } = location.state;
-
+    console.log(member);
     const email = useSelector((state) => state.Auth?.user.email);
 
     const id = member.id;
 
     const childRef = useRef();
+
+    const [salesData, setSalesData] = useState([]); // 전체 매출 db
+    const [salesData2, setSalesData2] = useState(); // 웨이드 매출 db
+    const salesRef = collection(firestoreDB, 'Users', email, 'Sales');
+
+    const getSales = async () => {
+        const data = await getDocs(salesRef);
+        const salesDataArray = data.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setSalesData(salesDataArray);
+
+        // 웨이드 이름을 찾아 salesData2에 할당
+        const wadeData = salesDataArray.find((data) => data.name === '웨이드');
+        if (wadeData) {
+            setSalesData2(wadeData);
+        }
+    };
+    console.log('salesData2: ', salesData2);
+
+    useEffect(() => {
+        getSales();
+    }, []);
 
     const deleteUser = async () => {
         const userDoc = doc(firestoreDB, 'Users', email, 'Members', id);
@@ -30,7 +54,7 @@ const MemberInfo = () => {
         notify();
 
         setTimeout(() => {
-            window.location.replace('/dashboard/members-db'); // 주소 변경 시 수정하기
+            window.location.replace('/dashboard/members-db'); // 하은 - 주소 변경 시 수정하기
         }, 1500);
     };
 
@@ -112,7 +136,7 @@ const MemberInfo = () => {
             <Row className="justify-content-md-center mt-4">
                 <Col xs={12} xl={6} xxl={4}>
                     <Card style={{ height: '850px' }}>
-                        <Card.Body className='position-relative'>
+                        <Card.Body className="position-relative">
                             <div className="d-flex justify-content-between">
                                 <h4>
                                     <span className="me-2">ℹ️</span>기본 정보
@@ -123,7 +147,7 @@ const MemberInfo = () => {
                             ) : (
                                 <EditTable member={member} email={email} id={id} ref={childRef} />
                             )}
-                            <div className='box-wrap d-flex justify-content-center'>
+                            <div className="box-wrap d-flex justify-content-center">
                                 {!editMode ? (
                                     <Button className="px-5" onClick={() => setEditMode((prev) => !prev)}>
                                         수정하기
@@ -149,7 +173,6 @@ const MemberInfo = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-
                 <Col xs={12} xl={6} xxl={8}>
                     <Row className="justify-content-md-center">
                         <Col xs={12} xxl={12}>
@@ -179,7 +202,31 @@ const MemberInfo = () => {
                                         <span className="me-2">💰</span>결제 정보
                                     </h4>
                                     <div className="payment-list">
-                                        {payments.map((payment) => {
+                                        {
+                                            !salesData2 ? null : <> {salesData2.salesProducts.map((data, index) => {
+                                                return (
+                                                    <div className="payment-card">
+                                                        <div className="d-flex align-items-center justify-content-between">
+                                                            <div className="d-flex">
+                                                                <h4 className="number">{index}</h4>
+                                                                <div className="payment-info">
+                                                                    <p>{data.productCode}</p>
+                                                                    <p>{data.product}</p>
+                                                                    <p>{data.startDate}</p>
+                                                                    <p>{data.endDate}</p>
+                                                                    <p>{data.productType}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <h4>{data.adjustedPrice.toLocaleString()}원</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}</>
+                                        }
+                                        
+                                        {/* {payments.map((payment) => {
                                             return (
                                                 <div className="payment-card">
                                                     <div className="d-flex align-items-center justify-content-between">
@@ -198,7 +245,7 @@ const MemberInfo = () => {
                                                     </div>
                                                 </div>
                                             );
-                                        })}
+                                        })} */}
                                     </div>
                                     <div className="position-absolute bottom-0 end-0 p-4">
                                         <div className="payment-amount">
@@ -217,9 +264,10 @@ const MemberInfo = () => {
 
             <Row>
                 <Col>
-                    <Memo member={member} email={email} id={id}/>
+                    <Memo email={email} id={id} />
                 </Col>
             </Row>
+
             <ToastContainer
                 position="top-right"
                 autoClose={1500}

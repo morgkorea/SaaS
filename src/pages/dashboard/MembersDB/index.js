@@ -21,11 +21,31 @@ const SalesDB = () => {
         })))
     };
     
+    // 매출db
+    const [SalesData, setSalesData] = useState([]);
+    const salesRef = collection(firestoreDB, "Users", email, "Sales")
+
+    const getSales = async () => {
+        const data = await getDocs(salesRef);
+        setSalesData(data.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        })))
+    };
+
+    // SalesData.map(data => {
+    //     if (data.name === '웨이드') {
+    //         console.log(data)
+    //     }
+    // })
+
     useEffect(() => {
         getMembers()
+        // getSales()
     }, []);
 
-    console.log('currentMembers', currentMembers)
+    // console.log('member:', currentMembers)
+    // console.log('sales:', SalesData)
     
     return (
         <>        

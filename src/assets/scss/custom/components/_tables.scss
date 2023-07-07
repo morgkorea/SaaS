@@ -206,16 +206,18 @@ table.basic-table tbody tr {
     margin-right: 4px;
     align-items: center;
 }
-table.basic-table tbody th {
-    min-width: 110px;
-    color: $secondary;
-}
-table.basic-table tbody > td {
-    color: #313A46;
+table.basic-table tbody > tr > th {
+    min-width: 114px;
+    color: #6C757D;
     font-weight: 500;
 }
-table.basic-table > input, select, textarea {
+table.basic-table tbody > tr > td {
     color: #313A46;
+    font-weight: 700;
+}
+table.basic-table input, select, textarea {
+    // color: #313A46;
+    // font-weight: 700;
 }
 
 
