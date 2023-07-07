@@ -4,7 +4,7 @@ import { Card } from 'react-bootstrap';
 
 import CardTitle from '../../../components/CardTitle';
 
-const SalesChart = ({ sortedByPeriodSalesData }) => {
+const SalesChart = ({ sortedByPeriodSalesData, selectedPeriod, datePickDate }) => {
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -12,14 +12,8 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         etc: 0,
     });
     const [apexDonutData, setApexDonutData] = useState([1, 1, 1, 1]);
-
+    console.log(apexDonutData, sortedByPeriodSalesData);
     const amountEachProductsSales = () => {
-        setAmountProductsSales({
-            batterBox: 0,
-            lesson: 0,
-            locker: 0,
-            etc: 0,
-        });
         const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
         if (sortedByPeriodSalesData.length) {
             [...sortedByPeriodSalesData]
@@ -40,16 +34,28 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
 
             const apexData = [];
             for (let key in productsSales) {
-                apexData.push(productsSales[`${key}`]);
+                if (!productsSales[`${key}`]) {
+                    apexData.push(0);
+                } else {
+                    apexData.push(productsSales[`${key}`]);
+                }
+                setAmountProductsSales(productsSales);
+                setApexDonutData(apexData);
             }
-            setAmountProductsSales(productsSales);
-            setApexDonutData(apexData);
+        } else if (!sortedByPeriodSalesData.length) {
+            setAmountProductsSales({
+                batterBox: 0,
+                lesson: 0,
+                locker: 0,
+                etc: 0,
+            });
+            setApexDonutData([1, 1, 1, 1]);
         }
     };
 
     useEffect(() => {
         amountEachProductsSales();
-    }, [sortedByPeriodSalesData]);
+    }, [sortedByPeriodSalesData, selectedPeriod, datePickDate]);
     const apexDonutOpts = {
         chart: {
             height: 340,
