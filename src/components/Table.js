@@ -9,17 +9,21 @@ import {
     useExpanded,
 } from 'react-table';
 import classNames from 'classnames';
-import Pagination from './Pagination'
+import Pagination from './Pagination';
 
 // Define a default UI for filtering
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
+const GlobalFilter = ({
+    preGlobalFilteredRows,
+    globalFilter,
+    setGlobalFilter,
+    searchBoxClass,
+    productTablePlaceholder,
+}) => {
     const count = preGlobalFilteredRows.length;
     const [value, setValue] = React.useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
-
-    console.log(productTablePlaceholder)
 
     return (
         <div className={classNames(searchBoxClass)}>
@@ -72,7 +76,7 @@ type TableProps = {
         text: string,
         value: number,
     }[],
-
+    pageVisible?: boolean,
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
@@ -201,7 +205,13 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 </table>
             </div>
 
-            {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
+            {pagination && (
+                <Pagination
+                    tableProps={dataTable}
+                    sizePerPageList={props['sizePerPageList']}
+                    pageVisible={props['pageVisible']}
+                />
+            )}
         </>
     );
 };

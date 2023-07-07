@@ -149,22 +149,6 @@ const SalesDB = () => {
         },
     ];
 
-    //         Cell: ({ value, row }) => (
-    //             <Container className="d-flex p-0">
-    //                 {
-    //                     <Form className="pe-auto">
-    //                         <Form.Check
-    //                             type="switch"
-    //                             id={`custom-switch-${row.index}`}
-    //                             label={value ? '활성' : '비활성'}
-    //                             onChange={(event) => productsActivationHandler(event, row.index)}
-    //                             defaultChecked={value}
-    //                         />
-    //                     </Form>
-    //                 }
-    //             </Container>
-    //         ),
-
     return (
         <>
             {modal && <SalesRegistrationModal modal={modal} setModal={setModal} />}
