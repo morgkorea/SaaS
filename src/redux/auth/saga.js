@@ -22,11 +22,7 @@ import { AuthActionTypes } from './constants';
 import { authApiResponseSuccess, authApiResponseError } from './actions';
 
 import { firestoreDB } from '../../firebase/firebase';
-import {
-    firestoreDbSchema,
-    firestoreMemebersFieldSchema,
-   
-} from '../../firebase/firestoreDbSchema';
+import { firestoreDbSchema, firestoreMemebersFieldSchema } from '../../firebase/firestoreDbSchema';
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
 
 import { doc, getDoc, setDoc, collection, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
@@ -46,7 +42,8 @@ function* login({ payload: { email, password } }) {
 
         console.log(response);
 
-        yield call(firestoreMembersDataSyncWithRealtime, email); //firestore users : { memebers: []} synchronized with realtime db
+        // yield call(firestoreMembersDataSyncWithRealtime, email);
+        //firestore users : { memebers: []} synchronized with realtime db
 
         const firebaseAuthSession = {
             id: response.user.uid,
@@ -67,7 +64,7 @@ function* login({ payload: { email, password } }) {
 
         api.setLoggedInUser(firebaseAuthSession);
 
-        yield call(firestoreMembersDataSyncWithRealtime, email);
+        // yield call(firestoreMembersDataSyncWithRealtime, email);
         // setAuthorization(firebaseAuthSession.data['token']); axios http header jwt token setup
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
     } catch (error) {
@@ -137,16 +134,14 @@ function* signup({ payload: { username, email, password } }) {
         yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email, userCode }));
 
         // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
-        const membersCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
+        // const membersCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
         // const productsCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Products'));
 
         //members collection 생성
-        yield setDoc(membersCollectionRef, { ...firestoreMemebersFieldSchema });
-        //products collection 생성
-        // yield setDoc(productsCollectionRef, { ...firestoreProductsFieldSchema });
+        // yield setDoc(membersCollectionRef, { ...firestoreMemebersFieldSchema });
 
         //firestore users : { memebers: []} synchronized with realtime db
-        yield call(firestoreMembersDataSyncWithRealtime, email);
+        // yield call(firestoreMembersDataSyncWithRealtime, email);
 
         api.setLoggedInUser(firebaseAuthSession);
 

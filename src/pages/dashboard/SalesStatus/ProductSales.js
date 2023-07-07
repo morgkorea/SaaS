@@ -66,7 +66,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
     };
 
     const productTypeTextHandler = (productType) => {
-        console.log(productType);
         switch (productType) {
             case 'batterBox':
                 return '타석';

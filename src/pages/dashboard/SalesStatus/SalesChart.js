@@ -34,14 +34,10 @@ const SalesChart = ({ sortedByPeriodSalesData, selectedPeriod, datePickDate }) =
 
             const apexData = [];
             for (let key in productsSales) {
-                if (!productsSales[`${key}`]) {
-                    apexData.push(0);
-                } else {
-                    apexData.push(productsSales[`${key}`]);
-                }
-                setAmountProductsSales(productsSales);
-                setApexDonutData(apexData);
+                apexData.push(productsSales[`${key}`]);
             }
+            setAmountProductsSales(productsSales);
+            setApexDonutData(apexData);
         } else if (!sortedByPeriodSalesData.length) {
             setAmountProductsSales({
                 batterBox: 0,

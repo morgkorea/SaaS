@@ -206,7 +206,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                 const price = series[seriesIndex][dataPointIndex]
-                    ? Math.floor(series[seriesIndex][dataPointIndex]) + '원'
+                    ? Math.floor(series[seriesIndex][dataPointIndex]).toLocaleString() + '원'
                     : '0원';
                 return (
                     '<div class="arrow_box" style="padding: 2px 6px;  background-color:#000000; opacity: 0.75; color:#FFFFFF;">' +
