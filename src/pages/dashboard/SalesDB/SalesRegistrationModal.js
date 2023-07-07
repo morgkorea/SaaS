@@ -98,8 +98,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             .filter((product) => product.hasOwnProperty('productCode'))
             .map((product, idx) => {
                 //최종가 할당 (adjustedPrice)
-                product.adjustedPrice = product.discountPrice - modifyPriceList[idx];
-                return product;
+
+                return { ...product, adjustedPrice: product.discountPrice - modifyPriceList[idx] };
             });
 
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;

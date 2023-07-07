@@ -56,59 +56,96 @@ const SalesDB = () => {
     const tableColumns = [
         {
             id: '1', // 열 ID
-            accessor: 'paymentNumber', // 해당 열에 표시할 데이터 필드
-            Header: '결제번호', // 열 헤더 텍스트
-            sort: true,
-            // ... 추가적인 열 설정
-        },
-        {
-            id: '2', // 열 ID
             accessor: 'paymentDate', // 해당 열에 표시할 데이터 필드
             Header: '결제일', // 열 헤더 텍스트
             sort: true,
             // ... 추가적인 열 설정
         },
         {
-            id: '3', // 열 ID
+            id: '2', // 열 ID
             accessor: 'paymentTime', // 해당 열에 표시할 데이터 필드
             Header: '결제시간', // 열 헤더 텍스트
             sort: true,
         },
         {
-            id: '4', // 열 ID
+            id: '3', // 열 ID
             accessor: 'name', // 해당 열에 표시할 데이터 필드
             Header: '회원명', // 열 헤더 텍스트
             sort: true,
         },
         {
-            id: '5',
+            id: '4',
             accessor: 'phone',
             Header: '전화번호',
             sort: true,
         },
         {
-            id: '6',
-            accessor: 'memberNumber',
-            Header: '회원번호',
+            id: '5',
+            accessor: 'totalPaymentPrice',
+            Header: '결제총액',
             sort: true,
         },
         {
-            id: '7',
-            accessor: 'salesProducts[0].product',
-            Header: '상품',
+            id: '6',
+            accessor: 'remainingPaymentPrice',
+            Header: '미결제금액',
             sort: true,
+            Cell: ({ value, raw }) => {
+                return value === 0 ? '-' : value;
+            },
+        },
+
+        {
+            id: '7',
+            accessor: 'paymentInfo[0].paymentMethod',
+            Header: '결제수단1',
+            sort: true,
+            Cell: ({ value, raw }) => {
+                switch (value) {
+                    case 'creditCard':
+                        return '카드';
+                    case 'cash':
+                        return '현금';
+
+                    default:
+                        return '-';
+                }
+            },
         },
         {
             id: '8',
-            accessor: 'salesProducts[0].discountRate',
-            Header: '할인율',
+            accessor: 'paymentInfo[0].paymentReceiptNumber',
+            Header: '영수증번호1',
             sort: true,
+            Cell: ({ value, raw }) => {
+                return value ? value : '-';
+            },
         },
         {
             id: '9',
-            accessor: 'salesProducts[0].regularPrice',
-            Header: '정상가',
+            accessor: 'paymentInfo[1].paymentMethod',
+            Header: '결제수단2',
             sort: true,
+            Cell: ({ value, raw }) => {
+                switch (value) {
+                    case 'creditCard':
+                        return '카드';
+                    case 'cash':
+                        return '현금';
+
+                    default:
+                        return '-';
+                }
+            },
+        },
+        {
+            id: '10',
+            accessor: 'paymentInfo[1].paymentReceiptNumber',
+            Header: '영수증번호2',
+            sort: true,
+            Cell: ({ value, raw }) => {
+                return value ? value : '-';
+            },
         },
     ];
 
