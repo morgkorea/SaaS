@@ -39,12 +39,14 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                     return {
                         ...state,
                         sendVerifyingEmail: true,
+                        // loading: false,
                     };
                 }
                 case AuthActionTypes.EMAIL_VERIFIED: {
                     return {
                         ...state,
                         emailVerified: true,
+                        // loading: false,
                     };
                 }
 
@@ -98,12 +100,14 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                     return {
                         ...state,
                         sendVerifyingEmail: false,
+                        // loading: false,
                     };
                 case AuthActionTypes.EMAIL_VERIFIED: {
                     return {
                         ...state,
                         error: action.payload.error,
                         emailVerified: false,
+                        // loading: false,
                     };
                 }
                 case AuthActionTypes.FORGOT_PASSWORD: {
@@ -138,8 +142,13 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
         case AuthActionTypes.FORGOT_PASSWORD_CHANGE:
             return { ...state, loading: true, passwordChange: false };
         case AuthActionTypes.EMAIL_VERIFIED:
-            return { ...state, emailVerified: true };
-
+            return { ...state, emailVerified: true, loading: false };
+        // case AuthActionTypes.SEND_VERIFYING_EMAIL:
+        //     return {
+        //         ...state,
+        //         sendVerifyingEmail: true,
+        //         loading: true,
+        //     };
         case AuthActionTypes.RESET:
             return {
                 ...state,

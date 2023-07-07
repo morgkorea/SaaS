@@ -35,6 +35,7 @@ const BottomLink = () => {
 };
 
 const Register2 = (): React$Element<React$FragmentType> => {
+    const [isEmailVerifying, setIsEmailVerifying] = useState(false);
     const [emailAddress, setEmailAddress] = useState('');
 
     const { t } = useTranslation();
@@ -47,15 +48,20 @@ const Register2 = (): React$Element<React$FragmentType> => {
         registerError: state.Auth.registerError,
     }));
 
-    const { isEmailVerified, isEmailVerifying } = useSelector((state) => ({
+    const { isEmailVerified, emailVerifying } = useSelector((state) => ({
         isEmailVerified: state.Auth.emailVerified,
-        isEmailVerifying: state.Auth.sendVerifyingEmail,
+        emailVerifying: state.Auth.sendVerifyingEmail,
     }));
 
     useEffect(() => {
         dispatch(resetAuth());
     }, [dispatch]);
 
+    useEffect(() => {
+        if (!emailVerifying) {
+            setIsEmailVerifying(false);
+        }
+    }, [emailVerifying]);
     /*
      * form validation schema
      */
@@ -83,6 +89,7 @@ const Register2 = (): React$Element<React$FragmentType> => {
     };
 
     const getVerfiedUserFromFirebase = () => {
+        setIsEmailVerifying(true);
         dispatch(sendVerifyingEmail(emailAddress));
     };
 

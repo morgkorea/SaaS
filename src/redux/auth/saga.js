@@ -15,6 +15,7 @@ import {
     firebaseForgotPasswordSendPasswordResetEmail as firebaseForgotPasswordSendPasswordResetEmailApi,
     firebaseUpdateProfile as firebaseUpdateProfileApi,
     firebaseDeleteUser as firebaseDeleteUserApi,
+    firebaseFakeUpdateProfile as firebaseFakeUpdateProfileApi,
 } from '../../helpers/';
 import { APICore, setAuthorization } from '../../helpers/api/apiCore';
 
@@ -40,11 +41,6 @@ function* login({ payload: { email, password } }) {
     try {
         const response = yield call(firebaseLoginApi, { email, password });
 
-        console.log(response);
-
-        // yield call(firestoreMembersDataSyncWithRealtime, email);
-        //firestore users : { memebers: []} synchronized with realtime db
-
         const firebaseAuthSession = {
             id: response.user.uid,
             email: response.user.email,
@@ -60,12 +56,8 @@ function* login({ payload: { email, password } }) {
             // proviersDAta : response.user.providerData
         };
 
-        console.log('firebaseUser', response);
-
         api.setLoggedInUser(firebaseAuthSession);
 
-        // yield call(firestoreMembersDataSyncWithRealtime, email);
-        // setAuthorization(firebaseAuthSession.data['token']); axios http header jwt token setup
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
     } catch (error) {
         console.log('login error message: ' + error.message);
@@ -100,7 +92,6 @@ function* signup({ payload: { username, email, password } }) {
         yield call(firebaseUpdateProfileApi, { username });
 
         // usersCodes pool에서 추출후 회원정보에 할당
-
         const koCodesRef = yield doc(firestoreDB, 'UsersCodes', 'koCodes');
         const koCodes = yield getDoc(koCodesRef);
         const userCode = koCodes.data()?.codePool?.length ? koCodes.data()?.codePool[0] : 'KO';
@@ -133,19 +124,8 @@ function* signup({ payload: { username, email, password } }) {
         //Firestore DB init setup , signup과 함께 DB 구조 생성
         yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email, userCode }));
 
-        // users(collection) => email(doc) => 1.members(collection) 2. fields(data)
-        // const membersCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Members'));
-        // const productsCollectionRef = yield doc(collection(firestoreDB, 'Users', email, 'Products'));
-
-        //members collection 생성
-        // yield setDoc(membersCollectionRef, { ...firestoreMemebersFieldSchema });
-
-        //firestore users : { memebers: []} synchronized with realtime db
-        // yield call(firestoreMembersDataSyncWithRealtime, email);
-
         api.setLoggedInUser(firebaseAuthSession);
 
-        // setAuthorization(user['token']);
         yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, firebaseAuthSession));
     } catch (error) {
         console.log('signup error message :', error.message);
@@ -169,6 +149,8 @@ function* fakeSignupForEmailVerification({ payload: { email } }) {
         ).toString();
 
         yield call(firebaseFakeSingupForEmailVerificationApi, { email, encryptedPassword });
+
+        yield call(firebaseFakeUpdateProfileApi, '모그(Morg)');
 
         yield call(firebaseSendEmailVerificationApi);
 

@@ -132,17 +132,20 @@ class APICore {
     };
 
     firebaseSignup = (params) => {
-        console.log(params);
         const auth = getAuth();
         return createUserWithEmailAndPassword(auth, params.email, params.password);
     };
 
     firebaseFakeSingupForEmailVerification = (params) => {
-        console.log(params);
         const auth = getAuth();
         return createUserWithEmailAndPassword(auth, params.email, params.encryptedPassword);
     };
 
+    firebaseFakeUpdateProfile = (params) => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        return updateProfile(user, { displayName: params + '회원', appName: params });
+    };
     firebaseLogout = () => {
         const auth = getAuth();
         return signOut(auth);
