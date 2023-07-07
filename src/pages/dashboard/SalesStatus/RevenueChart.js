@@ -205,6 +205,19 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         tooltip: {
             enabled: true,
         },
+        tooltip: {
+            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                const price = series[seriesIndex] === 1 ? 0 : series[seriesIndex];
+                console.log(typeof series[seriesIndex]);
+                return (
+                    '<div class="arrow_box" style="padding: 2px 6px;">' +
+                    '<span>' +
+                    series[seriesIndex] +
+                    '</span>' +
+                    '</div>'
+                );
+            },
+        },
     };
 
     const apexLineChartWithLablesData = [
