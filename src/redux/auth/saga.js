@@ -56,6 +56,8 @@ function* login({ payload: { email, password } }) {
             // proviersDAta : response.user.providerData
         };
 
+        console.log('firebaseUser', response);
+
         api.setLoggedInUser(firebaseAuthSession);
 
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
@@ -92,6 +94,7 @@ function* signup({ payload: { username, email, password } }) {
         yield call(firebaseUpdateProfileApi, { username });
 
         // usersCodes pool에서 추출후 회원정보에 할당
+
         const koCodesRef = yield doc(firestoreDB, 'UsersCodes', 'koCodes');
         const koCodes = yield getDoc(koCodesRef);
         const userCode = koCodes.data()?.codePool?.length ? koCodes.data()?.codePool[0] : 'KO';
@@ -150,9 +153,8 @@ function* fakeSignupForEmailVerification({ payload: { email } }) {
 
         yield call(firebaseFakeSingupForEmailVerificationApi, { email, encryptedPassword });
 
-        yield call(firebaseFakeUpdateProfileApi, '모그(Morg)');
-
         yield call(firebaseSendEmailVerificationApi);
+        yield call(firebaseFakeUpdateProfileApi, '모그(Morg)');
 
         yield put(authApiResponseSuccess(AuthActionTypes.SEND_VERIFYING_EMAIL));
 
@@ -162,7 +164,7 @@ function* fakeSignupForEmailVerification({ payload: { email } }) {
     } catch (error) {
         yield put(authApiResponseError(AuthActionTypes.EMAIL_VERIFIED, errorConverter(error.code)));
 
-        yield put(authApiResponseError(AuthActionTypes.SEND_VERIFYING_EMAIL));
+        yield put(authApiResponseError(AuthActionTypes.SEND_VERIFYING_EMAIL, errorConverter(error.code)));
 
         console.log('fakeSignupForEmailVerification', error);
     }
