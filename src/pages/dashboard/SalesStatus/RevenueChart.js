@@ -202,17 +202,16 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 },
             },
         },
-        tooltip: {
-            enabled: true,
-        },
+
         tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-                const price = series[seriesIndex] === 1 ? 0 : series[seriesIndex];
-                console.log(typeof series[seriesIndex]);
+                const price = series[seriesIndex][dataPointIndex]
+                    ? Math.floor(series[seriesIndex][dataPointIndex]) + '원'
+                    : '0원';
                 return (
-                    '<div class="arrow_box" style="padding: 2px 6px;">' +
+                    '<div class="arrow_box" style="padding: 2px 6px;  background-color:#000000; opacity: 0.75; color:#FFFFFF;">' +
                     '<span>' +
-                    series[seriesIndex] +
+                    price +
                     '</span>' +
                     '</div>'
                 );
