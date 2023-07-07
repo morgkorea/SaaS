@@ -10,9 +10,10 @@ type PaginationProps = {
         value: number,
     }[],
     pageVisible: boolean,
+    styleCenter: boolean,
 };
 
-const Pagination = ({ tableProps, sizePerPageList, pageVisible }: PaginationProps): React$Element<any> => {
+const Pagination = ({ tableProps, sizePerPageList, pageVisible, styleCenter }: PaginationProps): React$Element<any> => {
     /**
      * pagination count , index
      */
@@ -81,7 +82,9 @@ const Pagination = ({ tableProps, sizePerPageList, pageVisible }: PaginationProp
     const activePage = pageIndex + 1;
 
     return (
-        <div className="d-lg-flex align-items-center text-center pb-1">
+        <div
+            className="d-lg-flex align-items-center text-center pb-1"
+            style={styleCenter ? { display: 'flex', justifyContent: 'center' } : null}>
             {sizePerPageList.length > 0 && (
                 <div className="d-inline-block me-3">
                     <label className="me-1">Display :</label>
@@ -128,7 +131,12 @@ const Pagination = ({ tableProps, sizePerPageList, pageVisible }: PaginationProp
             )}
 
             {/* if you want rounded pagination => add className  "pagination-rounded" */}
-            <ul className="pagination d-inline-flex ms-auto align-item-center mb-0">
+            <ul
+                className={
+                    styleCenter
+                        ? 'pagination align-item-center mb-0'
+                        : 'pagination d-inline-flex ms-auto align-item-center mb-0'
+                }>
                 <li
                     key="prevpage"
                     className={classNames('page-item', 'paginate_button', 'previous', {

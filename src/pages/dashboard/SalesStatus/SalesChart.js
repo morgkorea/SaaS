@@ -11,7 +11,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         locker: 0,
         etc: 0,
     });
-    const [apexDonutData, setApexDonutData] = useState([0, 0, 0, 0]);
+    const [apexDonutData, setApexDonutData] = useState([1, 1, 1, 1]);
 
     const amountEachProductsSales = () => {
         setAmountProductsSales({
@@ -38,17 +38,16 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                     }
                 });
 
-            setAmountProductsSales(productsSales);
             const apexData = [];
             for (let key in productsSales) {
                 apexData.push(productsSales[`${key}`]);
             }
+            setAmountProductsSales(productsSales);
             setApexDonutData(apexData);
         }
     };
 
     useEffect(() => {
-        setApexDonutData([0, 0, 0, 0]);
         amountEachProductsSales();
     }, [sortedByPeriodSalesData]);
     const apexDonutOpts = {
@@ -58,7 +57,7 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
         },
         colors: ['#727cf5', '#fa5c7c', '#0acf97', '#ffbc00'],
         legend: {
-            show: true,
+            show: false,
         },
         labels: ['타석', '레슨', '락커', '기타'],
         responsive: [
@@ -78,10 +77,11 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
 
         tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                const price = series[seriesIndex] === 1 ? 0 : series[seriesIndex];
                 return (
                     '<div class="arrow_box" style="padding: 2px 6px;">' +
                     '<span>' +
-                    series[seriesIndex].toLocaleString() +
+                    price.toLocaleString() +
                     '원' +
                     [dataPointIndex] +
                     '</span>' +
@@ -89,6 +89,20 @@ const SalesChart = ({ sortedByPeriodSalesData }) => {
                 );
             },
         },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+                enabled: true,
+                delay: 150,
+            },
+            dynamicAnimation: {
+                enabled: true,
+                speed: 350,
+            },
+        },
+        cutout: '80%',
     };
 
     return (

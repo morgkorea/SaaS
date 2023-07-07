@@ -84,6 +84,9 @@ const SalesDB = () => {
             accessor: 'totalPaymentPrice',
             Header: '결제총액',
             sort: true,
+            Cell: ({ value, raw }) => {
+                return <div style={{ width: '100%', textAlign: 'right' }}>{value.toLocaleString() + '원'}</div>;
+            },
         },
         {
             id: '6',
@@ -91,7 +94,11 @@ const SalesDB = () => {
             Header: '미결제금액',
             sort: true,
             Cell: ({ value, raw }) => {
-                return value === 0 ? '-' : value;
+                return value === 0 ? (
+                    <div style={{ width: '100%', textAlign: 'right' }}>{'-'}</div>
+                ) : (
+                    <div style={{ width: '100%', textAlign: 'right' }}>{value.toLocaleString() + '원'}</div>
+                );
             },
         },
 

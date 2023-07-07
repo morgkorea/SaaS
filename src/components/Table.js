@@ -76,7 +76,8 @@ type TableProps = {
         text: string,
         value: number,
     }[],
-    pageVisible?: boolean,
+    paginationPageVisible?: boolean,
+    paginationStyleCenter?: boolean,
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
@@ -209,7 +210,8 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 <Pagination
                     tableProps={dataTable}
                     sizePerPageList={props['sizePerPageList']}
-                    pageVisible={props['pageVisible']}
+                    pageVisible={props['paginationPageVisible']}
+                    styleCenter={props['paginationStyleCenter']}
                 />
             )}
         </>
