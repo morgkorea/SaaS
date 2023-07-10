@@ -15,17 +15,19 @@ const VerticalForm = ({
     resolver,
     children,
     onSubmit,
+    onChange,
     formClass,
 }: VerticalFromProps): React$Element<any> => {
     /*
      * form methods
      */
-    const methods = useForm({ defaultValues, resolver: resolver });
+    const methods = useForm({ defaultValues, resolver });
     const {
         handleSubmit,
         register,
         control,
         formState: { errors },
+        watch,
     } = methods;
 
     return (

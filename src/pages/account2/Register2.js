@@ -65,7 +65,18 @@ const Register2 = (): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            username: yup.string().min(2, '2글자 이상 입력해주세요').required(t('성함을 입력해주세요')),
+            username: yup
+                .string()
+                .min(2, '2글자 이상 입력해주세요')
+                .required(t('성함을 입력해주세요'))
+                .test('is-valid-username', '단일 모음 또는 단일 자음은 사용할 수 없습니다', (value) => {
+                    if (value) {
+                        const regex = /^[^aeiouㄱ-ㅎㅏ-ㅣ]+$/i;
+                        return regex.test(value);
+                    }
+                    return true;
+                })
+                .matches(/^[a-zA-Z가-힣]+$/, '특수문자, 숫자, 공백을 제외한 문자로 입력해주세요'),
             email: yup.string().required(t('E-mail을 입력해주세요')).email('유효한 E-mail을 입력해주세요'),
             password: yup.string().required(t('비밀번호를 입력해주세요')).min(8, `8자 이상 입력해주세요`),
             passwordconfirm: yup
@@ -89,7 +100,7 @@ const Register2 = (): React$Element<React$FragmentType> => {
         setUserName(event.target.value);
     };
 
-    const getVerfiedUserFromFirebase = (formData) => {
+    const getVerfiedUserFromFirebase = () => {
         dispatch(sendVerifyingEmail(emailAddress));
     };
 
@@ -98,7 +109,7 @@ const Register2 = (): React$Element<React$FragmentType> => {
             {userSignUp ? <Navigate to={'/dashboard/ecommerce'} /> : null}
 
             <AccountLayout bottomLinks={<BottomLink />}>
-                <h4 className="mt-0">{t('Bestify 회원가입')}</h4>
+                <h4 className="mt-0">{t('Morg 회원가입')}</h4>
                 <p className="text-muted mb-4">{t('')}</p>
                 {sentVerifyEmail && (
                     <Alert variant="primary" className="my-2">
@@ -122,7 +133,10 @@ const Register2 = (): React$Element<React$FragmentType> => {
                         {registerError}
                     </Alert>
                 )}
-                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{ mail: '', password: '' }}>
+                <VerticalForm
+                    onSubmit={onSubmit}
+                    resolver={schemaResolver}
+                    defaultValues={{ username: '', email: '', password: '' }}>
                     <FormInput
                         label={t('이름')}
                         type="text"
@@ -148,8 +162,6 @@ const Register2 = (): React$Element<React$FragmentType> => {
                         isEmailVerified={isEmailVerified}
                         loading={loading}
                     />
-                </VerticalForm>
-                <VerticalForm>
                     <FormInput
                         label={t('비밀번호')}
                         type="password"

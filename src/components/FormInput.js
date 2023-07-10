@@ -194,7 +194,6 @@ const FormInput = ({
                                                             ref={(r) => {
                                                                 if (refCallback) refCallback(r);
                                                             }}
-                                                            disabled={isEmailVerified || isEmailVerifying}
                                                             className={className}
                                                             isInvalid={errors && errors[name] ? true : false}
                                                             {...(register ? register(name) : {})}

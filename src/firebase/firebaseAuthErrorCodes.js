@@ -1,11 +1,11 @@
 export const firebaseAuthErrorCodes = {
     'auth/email-already-in-use': '사용중인 이메일 입니다.',
-    'auth/invalid-email': '유효한 이메일을 입력해주세요',
+    'auth/invalid-email': '유효한 이메일을 입력해주세요.',
     'auth/user-not-found': '존재하지 않는 이메일입니다',
     'auth/wrong-password': '비밀번호가 틀렸습니다',
     'auth/user-token-expired': '이메일 인증 유효시간이 경과하였습니다. 재인증 해주세요',
     'auth/missing-email': '이메일을 입력해주세요.',
-    'auth/requires-recent-login': '사용중인 이메일 입니다.',
+    'auth/requires-recent-login': '유효한 이메일을 입력해주세요.',
 };
 
 // firebase auth error message
