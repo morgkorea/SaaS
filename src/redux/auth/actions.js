@@ -54,6 +54,10 @@ export const emailVerified = () => {
 };
 
 export const sendVerifyingEmail = (email) => {
+    console.log({
+        type: AuthActionTypes.SEND_VERIFYING_EMAIL,
+        payload: { email },
+    });
     return {
         type: AuthActionTypes.SEND_VERIFYING_EMAIL,
         payload: { email },

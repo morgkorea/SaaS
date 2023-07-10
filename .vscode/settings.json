@@ -8,7 +8,7 @@
     "editor.colorDecorators": true,
     "editor.codeActionsOnSave": {},
     "editor.fontFamily": "JetBrains Mono, Proggy,  Hack,   ",
-    "editor.fontSize": 12,
+    "editor.fontSize": 10,
     "explorer.confirmDelete": false,
     "editor.tokenColorCustomizations": {
         "comments": "#807c5c"

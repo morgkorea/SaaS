@@ -23,6 +23,10 @@ function firebaseFakeUpdateProfile(params) {
     return api.firebaseFakeUpdateProfile(params);
 }
 
+function firebaseDeleteFakeUser() {
+    return api.firebaseDeleteFakeUser();
+}
+
 function firebaseWatchEmailVerification() {
     return api.firebaseWatchEmailVerification();
 }
@@ -86,4 +90,5 @@ export {
     firebaseDeleteUser,
     firebaseUpdateProfile,
     firebaseFakeUpdateProfile,
+    firebaseDeleteFakeUser,
 };

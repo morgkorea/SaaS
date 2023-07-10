@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { getAuth, deleteUser } from 'firebase/auth';
+
 //loading spinner
 import Spinner from '../../components/Spinner';
 
@@ -35,7 +37,7 @@ const BottomLink = () => {
 };
 
 const Register2 = (): React$Element<React$FragmentType> => {
-    const [isEmailVerifying, setIsEmailVerifying] = useState(false);
+    const [userName, setUserName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
 
     const { t } = useTranslation();
@@ -48,20 +50,16 @@ const Register2 = (): React$Element<React$FragmentType> => {
         registerError: state.Auth.registerError,
     }));
 
-    const { isEmailVerified, emailVerifying } = useSelector((state) => ({
+    const { isEmailVerified, emailVerifying, sentVerifyEmail } = useSelector((state) => ({
         isEmailVerified: state.Auth.emailVerified,
         emailVerifying: state.Auth.sendVerifyingEmail,
+        sentVerifyEmail: state.Auth.sentVerifyEmail,
     }));
 
     useEffect(() => {
         dispatch(resetAuth());
     }, [dispatch]);
 
-    useEffect(() => {
-        if (!emailVerifying) {
-            setIsEmailVerifying(false);
-        }
-    }, [emailVerifying]);
     /*
      * form validation schema
      */
@@ -87,9 +85,11 @@ const Register2 = (): React$Element<React$FragmentType> => {
     const getEmailAddress = (event) => {
         setEmailAddress(event.target.value);
     };
+    const getUsername = (event) => {
+        setUserName(event.target.value);
+    };
 
-    const getVerfiedUserFromFirebase = () => {
-        setIsEmailVerifying(true);
+    const getVerfiedUserFromFirebase = (formData) => {
         dispatch(sendVerifyingEmail(emailAddress));
     };
 
@@ -100,17 +100,15 @@ const Register2 = (): React$Element<React$FragmentType> => {
             <AccountLayout bottomLinks={<BottomLink />}>
                 <h4 className="mt-0">{t('Bestify 회원가입')}</h4>
                 <p className="text-muted mb-4">{t('')}</p>
-
-                {isEmailVerifying ? (
-                    !isEmailVerified ? (
-                        <Alert variant="primary" className="my-2">
-                            인증 이메일이 발송되었습니다. 이메일을 확인해주세요.
-                        </Alert>
-                    ) : (
-                        <Alert variant="success" className="my-2">
-                            인증되었습니다
-                        </Alert>
-                    )
+                {sentVerifyEmail && (
+                    <Alert variant="primary" className="my-2">
+                        인증 이메일이 발송되었습니다. 이메일을 확인해주세요.
+                    </Alert>
+                )}
+                {isEmailVerified ? (
+                    <Alert variant="success" className="my-2">
+                        인증되었습니다
+                    </Alert>
                 ) : (
                     error && (
                         <Alert variant="danger" className="my-2">
@@ -131,6 +129,10 @@ const Register2 = (): React$Element<React$FragmentType> => {
                         name="username"
                         placeholder={t('이름을 입력해주세요')}
                         containerClass={'mb-3'}
+                        onChange={getUsername}
+                        isEmailVerifying={emailVerifying}
+                        isEmailVerified={isEmailVerified}
+                        loading={loading}
                     />
                     <FormInput
                         label={t('ID (E-mail)')}
@@ -140,18 +142,21 @@ const Register2 = (): React$Element<React$FragmentType> => {
                         containerClass={'mb-3'}
                         containerStyle={{ display: 'flex' }}
                         emailVerfication={true}
-                        isEmailVerifying={isEmailVerifying}
+                        isEmailVerifying={emailVerifying}
                         onChange={getEmailAddress}
                         getVerfiedUserFromFirebase={getVerfiedUserFromFirebase}
                         isEmailVerified={isEmailVerified}
                         loading={loading}
                     />
+                </VerticalForm>
+                <VerticalForm>
                     <FormInput
                         label={t('비밀번호')}
                         type="password"
                         name="password"
                         placeholder={t('비밀번호를 입력해주세요')}
                         containerClass={'mb-3'}
+                        isEmailVerifying={emailVerifying}
                     />
 
                     <FormInput
@@ -167,7 +172,6 @@ const Register2 = (): React$Element<React$FragmentType> => {
                         name="checkboxsignup"
                         containerClass={'mb-3 text-muted'}
                     />
-
                     <div className="mb-0 d-grid text-center">
                         <Button variant="primary" type="submit" disabled={loading || !isEmailVerified}>
                             {loading ? (

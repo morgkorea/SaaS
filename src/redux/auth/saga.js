@@ -16,6 +16,7 @@ import {
     firebaseUpdateProfile as firebaseUpdateProfileApi,
     firebaseDeleteUser as firebaseDeleteUserApi,
     firebaseFakeUpdateProfile as firebaseFakeUpdateProfileApi,
+    firebaseDeleteFakeUser as firebaseDeleteFakeUserApi,
 } from '../../helpers/';
 import { APICore, setAuthorization } from '../../helpers/api/apiCore';
 
@@ -27,6 +28,8 @@ import { firestoreDbSchema, firestoreMemebersFieldSchema } from '../../firebase/
 import { firestoreMembersDataSyncWithRealtime } from '../../firebase/firestore';
 
 import { doc, getDoc, setDoc, collection, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+
+import { getAuth, deleteUser } from 'firebase/auth';
 
 import { errorConverter } from '../../utils/errorConverter';
 
@@ -127,9 +130,9 @@ function* signup({ payload: { username, email, password } }) {
         //Firestore DB init setup , signup과 함께 DB 구조 생성
         yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email, userCode }));
 
-        api.setLoggedInUser(firebaseAuthSession);
-
         yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, firebaseAuthSession));
+
+        api.setLoggedInUser(firebaseAuthSession);
     } catch (error) {
         console.log('signup error message :', error.message);
 
@@ -151,20 +154,25 @@ function* fakeSignupForEmailVerification({ payload: { email } }) {
             `${process.env.REACT_APP_FIREBASE_CRYPTO_SECRET_KEY}`
         ).toString();
 
+        yield call(firebaseDeleteFakeUserApi);
+
         yield call(firebaseFakeSingupForEmailVerificationApi, { email, encryptedPassword });
 
         yield call(firebaseSendEmailVerificationApi);
-        yield call(firebaseFakeUpdateProfileApi, '모그(Morg)');
 
         yield put(authApiResponseSuccess(AuthActionTypes.SEND_VERIFYING_EMAIL));
+
+        yield call(firebaseFakeUpdateProfileApi, '모그(Morg)');
 
         yield call(firebaseWatchEmailVerificationApi);
 
         yield put(authApiResponseSuccess(AuthActionTypes.EMAIL_VERIFIED));
     } catch (error) {
-        yield put(authApiResponseError(AuthActionTypes.EMAIL_VERIFIED, errorConverter(error.code)));
+        // yield call(firebaseDeleteUserApi);
 
         yield put(authApiResponseError(AuthActionTypes.SEND_VERIFYING_EMAIL, errorConverter(error.code)));
+
+        yield put(authApiResponseError(AuthActionTypes.EMAIL_VERIFIED, errorConverter(error.code)));
 
         console.log('fakeSignupForEmailVerification', error);
     }

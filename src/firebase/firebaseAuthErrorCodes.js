@@ -5,6 +5,7 @@ export const firebaseAuthErrorCodes = {
     'auth/wrong-password': '비밀번호가 틀렸습니다',
     'auth/user-token-expired': '이메일 인증 유효시간이 경과하였습니다. 재인증 해주세요',
     'auth/missing-email': '이메일을 입력해주세요.',
+    'auth/requires-recent-login': '사용중인 이메일 입니다.',
 };
 
 // firebase auth error message

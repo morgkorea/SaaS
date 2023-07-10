@@ -110,6 +110,7 @@ const FormInput = ({
                                     errors={errors}
                                     register={register}
                                     className={className}
+                                    disabled={isEmailVerifying}
                                 />
 
                                 {errors && errors[name] ? (
@@ -193,8 +194,8 @@ const FormInput = ({
                                                             ref={(r) => {
                                                                 if (refCallback) refCallback(r);
                                                             }}
-                                                            className={className}
                                                             disabled={isEmailVerified || isEmailVerifying}
+                                                            className={className}
                                                             isInvalid={errors && errors[name] ? true : false}
                                                             {...(register ? register(name) : {})}
                                                             {...otherProps}
@@ -204,7 +205,8 @@ const FormInput = ({
                                                         {emailVerfication && name === 'email' ? (
                                                             <Button
                                                                 variant="primary"
-                                                                disabled={isEmailVerifying}
+                                                                disabled={isEmailVerified || isEmailVerifying}
+                                                                isInvalid={errors && errors[name] ? true : false}
                                                                 style={{
                                                                     minWidth: '55.71px',
                                                                     padding: '0.3rem 0.45rem',

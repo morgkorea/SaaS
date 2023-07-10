@@ -20,7 +20,7 @@ const VerticalForm = ({
     /*
      * form methods
      */
-    const methods = useForm({ defaultValues, resolver });
+    const methods = useForm({ defaultValues, resolver: resolver });
     const {
         handleSubmit,
         register,

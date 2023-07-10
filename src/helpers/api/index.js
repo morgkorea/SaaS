@@ -15,6 +15,7 @@ import {
     firebaseDeleteUser,
     firebaseUpdateProfile,
     firebaseFakeUpdateProfile,
+    firebaseDeleteFakeUser,
 } from './auth';
 
 export {
@@ -33,4 +34,5 @@ export {
     firebaseDeleteUser,
     firebaseUpdateProfile,
     firebaseFakeUpdateProfile,
+    firebaseDeleteFakeUser,
 };
