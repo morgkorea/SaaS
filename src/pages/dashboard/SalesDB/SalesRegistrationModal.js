@@ -16,7 +16,7 @@ import {
     firestorePaymentInfoFieldSchema,
 } from '../../../firebase/firestoreDbSchema';
 
-import { collection, query, where, setDoc, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, setDoc, doc, getDocs, updateDoc, onSnapshot, arrayUnion } from 'firebase/firestore';
 
 import * as Hangul from 'hangul-js';
 import { disassemble } from 'hangul-js';
@@ -46,7 +46,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     // fetching data
     const [membersList, setMembersList] = useState([]);
-
+    console.log(isSelectedMember);
     const [isHoveredCard, setIsHoveredCard] = useState(false);
 
     //step 2 ==================================================================
@@ -123,9 +123,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         };
 
         const salesCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Sales'));
+        const selectedMemberRef = doc(firestoreDB, 'Users', email, 'Members', isSelectedMember.memberId);
 
         try {
             await setDoc(salesCollectionRef, salesData);
+            // await setDec(selectedMemberRef)
+            await updateDoc(selectedMemberRef, {
+                availableProducts: arrayUnion(...salesProducts),
+            });
         } catch (error) {
             console.log(error);
         }
@@ -378,7 +383,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             onSnapshot(memebersCollectionRef, (querySnapshot) => {
                 const membersArray = [];
                 querySnapshot.forEach((member) => {
-                    membersArray.push(member.data());
+                    membersArray.push({ memberId: member.id, ...member.data() });
                 });
 
                 setMembersList(membersArray);

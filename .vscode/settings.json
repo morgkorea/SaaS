@@ -76,7 +76,7 @@
     "vs-code-prettier-eslint.prettierLast": true,
     "prettier.jsxSingleQuote": true,
     "editor.cursorSmoothCaretAnimation": "on",
-    "files.autoSave": "afterDelay",
+    "files.autoSave": "off",
     "oneDarkPro.editorTheme": "One Dark Pro Flat",
     "oneDarkPro.vivid": true,
     "oneDarkPro.bold": true,
