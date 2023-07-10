@@ -109,8 +109,8 @@ const Register2 = (): React$Element<React$FragmentType> => {
             {userSignUp ? <Navigate to={'/dashboard/ecommerce'} /> : null}
 
             <AccountLayout bottomLinks={<BottomLink />}>
-                <h4 className="mt-0">{t('Morg 회원가입')}</h4>
-                <p className="text-muted mb-4">{t('')}</p>
+                <h4 className="mt-6">{t('Morg 회원가입')}</h4>
+                {/* <p className="text-muted mb-4">{t('')}</p> */}
                 {sentVerifyEmail && (
                     <Alert variant="primary" className="my-2">
                         인증 이메일이 발송되었습니다. 이메일을 확인해주세요.
