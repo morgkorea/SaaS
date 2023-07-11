@@ -181,12 +181,12 @@ const SalesStatus = () => {
                                         />
                                     </div>
 
-                                    <Link to="#" className="btn btn-primary ms-2">
+                                    {/* <Link to="#" className="btn btn-primary ms-2">
                                         <i className="mdi mdi-autorenew"></i>
                                     </Link>
                                     <Link to="#" className="btn btn-primary ms-1">
                                         <i className="mdi mdi-filter-variant"></i>
-                                    </Link>
+                                    </Link> */}
                                 </form>
                             </div>
                             <h4 className="page-title">매출현황</h4>

@@ -30,9 +30,9 @@ const ForgetPassword2 = React.lazy(() => import('../pages/account2/ForgetPasswor
 const LockScreen2 = React.lazy(() => import('../pages/account2/LockScreen2'));
 
 // dashboard
-const AnalyticsDashboard = React.lazy(() => import('../pages/dashboard/Member'));
+const MembersDashboard = React.lazy(() => import('../pages/dashboard/Members'));
 const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Sales'));
-const ProjectDashboard = React.lazy(() => import('../pages/dashboard/SalesStatus'));
+const SalesStatusDashboard = React.lazy(() => import('../pages/dashboard/SalesStatus'));
 const MarketingDashboard = React.lazy(() => import('../pages/dashboard/Marketing'));
 const MarketingDashboard2 = React.lazy(() => import('../pages/dashboard/Marketing2'));
 const Counsel = React.lazy(() => import('../pages/dashboard/Counsel'));
@@ -247,16 +247,16 @@ const AllRoutes = () => {
                     path: 'dashboard',
                     children: [
                         {
-                            path: 'analytics',
-                            element: <LoadComponent component={AnalyticsDashboard} />,
+                            path: 'members',
+                            element: <LoadComponent component={MembersDashboard} />,
                         },
                         {
                             path: 'ecommerce',
                             element: <LoadComponent component={EcommerceDashboard} />,
                         },
                         {
-                            path: 'project',
-                            element: <LoadComponent component={ProjectDashboard} />,
+                            path: 'sales-status',
+                            element: <LoadComponent component={SalesStatusDashboard} />,
                         },
                         {
                             path: 'marketing',
