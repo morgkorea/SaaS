@@ -30,8 +30,8 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     const [validationError, setValidationError] = useState(false);
 
     const schema = yup.object().shape({
-        productName: yup.string().required('상품명을 입력해주세요.'),
-        regularPrice: yup.number().required('상품 가격을 입력해주세요.').positive('상품 가격은 양수여야 합니다.'),
+        productName: yup.string().min(2, '상품명 2글자 이상 입력해주세요'),
+        regularPrice: yup.number().required('상품 가격을 입력해주세요.').positive('상품 가격을 입력해주세요.'),
     });
 
     /**
@@ -166,7 +166,11 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         setModal(!modal);
     };
     const getProductName = (event) => {
-        setProductName(event.target.value);
+        let name = event.target.value;
+        if (name.length > 2) {
+            setValidationError({ ...validationError, productName: false });
+        }
+        setProductName(name);
     };
     const getProductType = (event) => {
         setProductType(event.target.value);
@@ -189,6 +193,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         if (isNaN(Number(price)) || price < 0) {
             price = 0;
         }
+
+        if (price > 0) {
+            setValidationError({ ...validationError, regularPrice: false });
+        }
         setRegularPrice(Number(price));
         console.log(regularPrice);
     };
@@ -210,7 +218,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         <>
             <Modal show={modal} onHide={toggle} size={size} centered={true}>
                 <Modal.Header className="border-bottom-0" onHide={toggle} closeButton></Modal.Header>
-                <Modal.Body style={{ height: '430px', padding: '0px 60px' }}>
+                <Modal.Body style={{ height: '500px', padding: '0px 60px' }}>
                     <h4 className="modal-title mb-3 ">상품 등록</h4>
                     <Alert variant="info" className="mb-3" style={{ color: '#1E5B6D' }}>
                         <span className="fw-bold">패키지 상품 관련 안내</span> - 패키지는 각각의 단품상품 등록 후
@@ -232,10 +240,12 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
-                                        border: '1px solid #DEE2E6',
+                                        border: `1px solid ${validationError.productName ? '#fa5c7c' : '#DEE2E6'}`,
                                         borderRadius: ' 2px',
                                     }}></input>
-                                {validationError.productName}
+                                <div style={{ color: '#fa5c7c', fontSize: '12px', marginTop: '2px' }}>
+                                    {validationError.productName}
+                                </div>
                             </Col>
                             <Col className="">
                                 <div className="mb-1">
@@ -323,27 +333,32 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                             </Col>
                         </Row>
                         <Row className="mb-4">
-                            <Col style={{ position: 'relative' }}>
-                                <div className="mb-1">
-                                    {' '}
-                                    <span>상품 가격</span>
-                                </div>
-                                <input
-                                    type="text"
-                                    // defaultValue={0}
-                                    className="w-100 p-1"
-                                    onChange={(e) => {
-                                        getRegularPrice(e);
-                                    }}
-                                    value={regularPrice}
-                                    style={{
-                                        height: '40px',
-                                        border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
-                                    }}></input>
+                            <Col>
+                                <div style={{ position: 'relative' }}>
+                                    <div className="mb-1">
+                                        {' '}
+                                        <span>상품 가격</span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        // defaultValue={0}
+                                        className="w-100 p-1"
+                                        onChange={(e) => {
+                                            getRegularPrice(e);
+                                        }}
+                                        value={regularPrice}
+                                        style={{
+                                            height: '40px',
+                                            border: `1px solid ${validationError.regularPrice ? '#fa5c7c' : '#DEE2E6'}`,
+                                            borderRadius: ' 2px',
+                                        }}></input>
 
-                                <span style={{ position: 'absolute', right: '20px', bottom: '10px' }}>원</span>
-                                <div> {validationError.regularPrice}</div>
+                                    <span style={{ position: 'absolute', right: '20px', bottom: '10px' }}>원</span>
+                                </div>
+
+                                <div style={{ color: '#fa5c7c', fontSize: '12px', marginTop: '2px' }}>
+                                    {validationError.regularPrice}
+                                </div>
                             </Col>
 
                             <Col>
