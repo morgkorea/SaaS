@@ -44,7 +44,6 @@ const SalesTable = ({ data, columns }): React$Element<any> => {
                                 tablePurpose={'salesDB'}
                                 productTablePlaceholder={'검색'}
                                 paginationStyleCenter={true}
-                                style={{ textAlign: 'right' }}
                             />
                         </Card.Body>
                     </Card>

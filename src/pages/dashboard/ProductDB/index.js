@@ -217,6 +217,9 @@ const ProductDB = () => {
             accessor: 'regularPrice',
             Header: '정상가',
             sort: true,
+            Cell: ({ value, raw }) => {
+                return <div style={{ width: '100%', textAlign: 'right' }}>{value.toLocaleString() + '원'}</div>;
+            },
         },
         {
             id: '7',

@@ -46,11 +46,12 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     // fetching data
     const [membersList, setMembersList] = useState([]);
-    console.log(isSelectedMember);
+
     const [isHoveredCard, setIsHoveredCard] = useState(false);
 
     //step 2 ==================================================================
     // fetching data
+
     const [productsList, setProductsList] = useState([]);
 
     //selected product
