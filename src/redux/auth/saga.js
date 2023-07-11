@@ -7,7 +7,7 @@ import CryptoJS from 'crypto-js';
 import {
     forgotPasswordConfirm,
     firebaseLogin as firebaseLoginApi,
-    firebaseSignup as firebasefirebaseSignupApi,
+    firebaseSignup as firebaseSignupApi,
     firebaseLogout as firebaseLogoutApi,
     firebaseFakeSingupForEmailVerification as firebaseFakeSingupForEmailVerificationApi,
     firebaseSendEmailVerification as firebaseSendEmailVerificationApi,
@@ -88,10 +88,10 @@ function* logout() {
     }
 }
 
-function* signup({ payload: { username, email, password } }) {
+function* signup({ payload: { username, phone, email, password } }) {
     try {
         // 회원가입 Api
-        const response = yield call(firebasefirebaseSignupApi, { email, password });
+        const response = yield call(firebaseSignupApi, { email, password });
 
         // username update
         yield call(firebaseUpdateProfileApi, { username });
@@ -128,7 +128,7 @@ function* signup({ payload: { username, email, password } }) {
         console.log('firebaseDBSchema', firestoreDbSchema({ username, email }));
 
         //Firestore DB init setup , signup과 함께 DB 구조 생성
-        yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, email, userCode }));
+        yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, phone, email, userCode }));
 
         yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, firebaseAuthSession));
 

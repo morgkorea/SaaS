@@ -1,30 +1,15 @@
-export const firestoreDbSchema = ({ username, email, userCode }) => {
+export const firestoreDbSchema = ({ username, phone, email, userCode }) => {
     // Users > email ID > firestoreSchema
     const firestoreSchema = {
         email: email,
         username: username,
         userCode: userCode,
+        ownerPhone: phone, //type string : ex) '010xxxxxxxx' || "",
         role: 'Admin',
         // owner, coworker
-        store: '엘파르케_양재',
+        store: '',
         // 매장명_지점
-        photoUrl: 'img.jpn',
-        ownerPhone: '010-7178-1117', //ex) '010-xxxx-xxxx' || null,
-        //회원DB
-        members: [{ ...firestoreMemebersFieldSchema }],
-
-        //매출DB
-        sales: {
-            ...firestoreSalesFieldSchema,
-        },
-        //마케팅DB
-        marketing: {
-            ...firestoreMarketingFieldSchema,
-        },
-        //컨설팅DB
-        consulting: {
-            ...firestoreConsultingFieldSchema,
-        },
+        photoUrl: '',
     };
 
     return firestoreSchema;
@@ -169,12 +154,3 @@ export const firestoreConsultingFieldSchema = [
         etcConsulting: '', //기타상담내용
     },
 ];
-
-export const createMembersAvailableProduct = (activateProduct, startDate, endDate, dDays) => {
-    return {
-        activateProduct: activateProduct, //활성상품
-        startDate: startDate, //시작일
-        endDate: endDate, //종료일
-        dDays: dDays, //남은일수
-    };
-};

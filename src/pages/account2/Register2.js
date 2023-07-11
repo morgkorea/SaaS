@@ -38,6 +38,7 @@ const BottomLink = () => {
 
 const Register2 = (): React$Element<React$FragmentType> => {
     const [userName, setUserName] = useState('');
+    const [userPhone, setUserPhone] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
 
     const { t } = useTranslation();
@@ -90,7 +91,7 @@ const Register2 = (): React$Element<React$FragmentType> => {
      * handle form submission
      */
     const onSubmit = (formData) => {
-        dispatch(signupUser(formData['username'], formData['email'], formData['password']));
+        dispatch(signupUser(formData['username'], formData['phone'], formData['email'], formData['password']));
     };
 
     const getEmailAddress = (event) => {
@@ -98,6 +99,11 @@ const Register2 = (): React$Element<React$FragmentType> => {
     };
     const getUsername = (event) => {
         setUserName(event.target.value);
+    };
+    const getUserphone = (event) => {
+        let phoneNumber = event.target.value.replace(/\D/g, '');
+        setUserPhone(phoneNumber);
+        console.log(userPhone);
     };
 
     const getVerfiedUserFromFirebase = () => {
@@ -144,6 +150,18 @@ const Register2 = (): React$Element<React$FragmentType> => {
                         placeholder={t('이름을 입력해주세요')}
                         containerClass={'mb-3'}
                         onChange={getUsername}
+                        isEmailVerifying={emailVerifying}
+                        isEmailVerified={isEmailVerified}
+                        loading={loading}
+                    />
+                    <FormInput
+                        label={t('전화번호')}
+                        type="text"
+                        name="phone"
+                        placeholder={t('전화번호를 입력해주세요')}
+                        containerClass={'mb-3'}
+                        value={userPhone}
+                        onChange={getUserphone}
                         isEmailVerifying={emailVerifying}
                         isEmailVerified={isEmailVerified}
                         loading={loading}
