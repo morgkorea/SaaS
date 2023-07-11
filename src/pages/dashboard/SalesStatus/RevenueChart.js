@@ -4,15 +4,24 @@ import { Card, Row, Col } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
 const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, datePickDate }) => {
-    const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([]);
+    const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([0]);
 
     const [previousPeriodTotalSales, setPreviousPeriodTotalSales] = useState(0);
     const [currentPeriodTotalSales, setCurrentPeriodTotalSales] = useState(0);
 
-    const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState([]);
-    const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState([]);
+    const periodSaelsDataInit =
+        selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : [1, 1, 1, 1, 1, 1, 1];
+
+    // const periodSaelsDataInit = Array.from({ length: 31 }, () => 1);
+    const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
+    const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState(periodSaelsDataInit);
 
     const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
+
+    const apexLineInitData =
+        selectedPeriod === 'month'
+            ? Array.from({ length: currentPeriodOfDate.length }, () => 0)
+            : [0, 0, 0, 0, 0, 0, 0];
 
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
@@ -22,52 +31,35 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         setCurrentPeriodOfDate(Array.from({ length: lastDay }, (_, index) => (index + 1).toString()));
     };
 
-    // const getWeeksOfMinMaxDate = (datePickDate, selectedPeriod) => {
-    //     if (selectedPeriod === 'week') {
-    //         const oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초 수
-
-    //         const datePickDay = datePickDate.getDay(); // datePickDate의 요일을 구함
-    //         const previousSunday = new Date(datePickDate.getTime() - datePickDay * oneDay); // datePickDate 이전의 가장 가까운 일요일을 계산
-
-    //         const previousWeekStart = new Date(previousSunday.getTime() - 8 * oneDay); // 전 주의 시작일을 구함
-
-    //         console.log('previousWeekStart', previousWeekStart);
-    //     }
-    // };
-
-    // console.log(getWeeksOfMinMaxDate(datePickDate, selectedPeriod));
-
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
-        if (beforePeriodSalesData) {
-            const totalSales = [...beforePeriodSalesData]
-                .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
-                }, [])
-                .reduce((acc, curr) => {
-                    return acc + curr.discountPrice;
-                }, 0);
+        if (beforePeriodSalesData.length) {
+            const totalSales = [...beforePeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? acc + curr.totalPaymentPrice : acc;
+            }, 0);
+
             setPreviousPeriodTotalSales(totalSales);
+        } else {
+            setPreviousPeriodTotalSales(0);
         }
     };
 
     const getCurrentPeriodTotalSales = (sortedByPeriodSalesData) => {
-        if (sortedByPeriodSalesData) {
-            const totalSales = [...sortedByPeriodSalesData]
-                .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
-                }, [])
-                .reduce((acc, curr) => {
-                    return acc + curr.discountPrice;
-                }, 0);
+        if (sortedByPeriodSalesData.length) {
+            const totalSales = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+                return !curr.refund ? acc + curr.totalPaymentPrice : acc;
+            }, 0);
             setCurrentPeriodTotalSales(totalSales);
+        } else {
+            setCurrentPeriodTotalSales(0);
         }
     };
 
     const getCurrentPeriodSalesData = (sortedByPeriodSalesData, datePickDate) => {
         const currentDate = datePickDate?.getDate();
         // const lastDate = new Date(year, month, 0).getDate();
-        const currentPeriodSalesArray = [];
-        if (sortedByPeriodSalesData && selectedPeriod === 'month') {
+
+        if (sortedByPeriodSalesData.length && selectedPeriod === 'month') {
+            const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -83,7 +75,8 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 currentPeriodSalesArray.push(totalSalesByDate);
             }
             setCurrentPeriodSalesData(currentPeriodSalesArray);
-        } else if (sortedByPeriodSalesData && selectedPeriod === 'week') {
+        } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
+            const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -99,16 +92,15 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
 
                 currentPeriodSalesArray.push(totalSalesByDay);
             }
-            const setDateArrayLength = currentPeriodSalesArray.slice(0, sortedByPeriodSalesData.length);
-            setCurrentPeriodSalesData(setDateArrayLength);
+            setCurrentPeriodSalesData(currentPeriodSalesArray);
         }
     };
 
     const getPreviousPeriodSalesData = (beforePeriodSalesData, datePickDate) => {
         const previousMonthLastDate = new Date(datePickDate.getFullYear(), datePickDate.getMonth(), 0).getDate();
 
-        const previousSalesData = [];
-        if (beforePeriodSalesData && selectedPeriod === 'month') {
+        if (beforePeriodSalesData.length && selectedPeriod === 'month') {
+            const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -122,7 +114,10 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 });
                 previousSalesData.push(totalSalesByDate);
             }
-        } else if (beforePeriodSalesData && selectedPeriod === 'week') {
+
+            setPreviousPeriodSalesData(previousSalesData);
+        } else if (beforePeriodSalesData.length && selectedPeriod === 'week') {
+            const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
                 return !curr.refund ? [...acc, curr] : [...acc];
             }, []);
@@ -136,23 +131,24 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 });
                 previousSalesData.push(totalSalesByDay);
             }
+
+            setPreviousPeriodSalesData(previousSalesData);
         }
-        setPreviousPeriodSalesData(previousSalesData);
     };
 
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
-    }, [datePickDate]);
+    }, [datePickDate, selectedPeriod]);
     useEffect(() => {
         getPreviousPeriodTotalSales(beforePeriodSalesData);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
-    }, [beforePeriodSalesData]);
+    }, [beforePeriodSalesData, selectedPeriod, datePickDate]);
     useEffect(() => {
         getCurrentPeriodTotalSales(sortedByPeriodSalesData);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
-    }, [sortedByPeriodSalesData]);
+    }, [sortedByPeriodSalesData, selectedPeriod, datePickDate]);
 
     const apexLineChartWithLables = {
         chart: {
@@ -176,9 +172,7 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 right: 20, // or whatever value that works
             },
         },
-        dataLabels: {
-            enabled: false,
-        },
+        dataLabels: { enabled: false },
         stroke: {
             curve: 'straight',
             width: 6,
@@ -196,22 +190,44 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                 show: false,
             },
         },
+
         yaxis: {
-            max: Math.max(...previousPeriodSalesData) + Math.max(...previousPeriodSalesData) * 0.1,
+            max:
+                Math.max(...currentPeriodSalesData) > Math.max(...previousPeriodSalesData)
+                    ? Math.max(...currentPeriodSalesData) * 1.1
+                    : Math.max(...previousPeriodSalesData) * 1.1,
             labels: {
                 formatter: function (value) {
                     return (value / 10000).toFixed() + '만원';
                 },
             },
         },
+
         tooltip: {
-            enabled: true,
+            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                const price = series[seriesIndex][dataPointIndex]
+                    ? Math.floor(series[seriesIndex][dataPointIndex]).toLocaleString() + '원'
+                    : '0원';
+                return (
+                    '<div class="arrow_box" style="padding: 2px 6px;  background-color:#000000; opacity: 0.75; color:#FFFFFF;">' +
+                    '<span>' +
+                    price +
+                    '</span>' +
+                    '</div>'
+                );
+            },
         },
     };
 
     const apexLineChartWithLablesData = [
-        { name: selectedPeriod === 'month' ? '이번 달' : '이번 주', data: currentPeriodSalesData },
-        { name: selectedPeriod === 'month' ? '지난 달' : '지난 주', data: previousPeriodSalesData },
+        {
+            name: selectedPeriod === 'month' ? '이번 달' : '이번 주',
+            data: sortedByPeriodSalesData.length ? [...currentPeriodSalesData] : apexLineInitData,
+        },
+        {
+            name: selectedPeriod === 'month' ? '지난 달' : '지난 주',
+            data: beforePeriodSalesData.length ? [...previousPeriodSalesData] : apexLineInitData,
+        },
     ];
 
     return (

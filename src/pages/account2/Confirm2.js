@@ -29,7 +29,7 @@ const Confirm2 = (): React$Element<React$FragmentType> => {
                 <div className="text-center m-auto">
                     <img src={mailSent} alt="mail sent" height="64" />
                     <h4 className="text-dark-50 text-center mt-4 fw-bold">{t('계정생성이 완료되었습니다')}</h4>
-                    <p className="text-muted mb-4">{t('BestiFy의 회원이 되신것을 축하드립니다!')}</p>
+                    <p className="text-muted mb-4">{t('Mrog의 회원이 되신것을 축하드립니다!')}</p>
                     <form>
                         <div className="mb-0 d-grid text-center">
                             <Link to="/account/login2" className="btn btn-primary">

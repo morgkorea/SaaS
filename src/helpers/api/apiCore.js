@@ -132,17 +132,44 @@ class APICore {
     };
 
     firebaseSignup = (params) => {
-        console.log(params);
         const auth = getAuth();
         return createUserWithEmailAndPassword(auth, params.email, params.password);
     };
 
     firebaseFakeSingupForEmailVerification = (params) => {
-        console.log(params);
         const auth = getAuth();
         return createUserWithEmailAndPassword(auth, params.email, params.encryptedPassword);
     };
 
+    firebaseFakeUpdateProfile = (params) => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        return updateProfile(user, { displayName: params + '회원', appName: params });
+    };
+
+    firebaseDeleteFakeUser = () => {
+        console.log('firebaseDeleteFakeUser');
+        return new Promise((resolve, reject) => {
+            console.log('firebaseDeleteFakeUser');
+            const auth = getAuth();
+            const user = auth.currentUser;
+            console.log(user);
+            if (user && user.emailVerified === false) {
+                console.log(user);
+                deleteUser(user)
+                    .then(() => {
+                        console.log('deleter fake user');
+                        resolve();
+                    })
+                    .catch((error) => {
+                        console.log('deleter fake failed', error);
+                        reject(error);
+                    });
+            } else {
+                resolve();
+            }
+        });
+    };
     firebaseLogout = () => {
         const auth = getAuth();
         return signOut(auth);
@@ -183,6 +210,23 @@ class APICore {
         });
     };
 
+    firebaseDeleteUser = () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+            return new Promise((resolve, reject) => {
+                deleteUser(user)
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            });
+        }
+    };
+
     firebaseForgotPasswordSendPasswordResetEmail = (params) => {
         const auth = getAuth();
         return sendPasswordResetEmail(auth, params.email);
@@ -192,14 +236,6 @@ class APICore {
         const auth = getAuth();
         const user = auth.currentUser;
         return updateProfile(user, { displayName: params.username });
-    };
-
-    firebaseDeleteUser = () => {
-        const auth = getAuth();
-        const user = auth?.currentUser;
-        if (user) {
-            return deleteUser(user);
-        }
     };
 
     create = (url, data) => {

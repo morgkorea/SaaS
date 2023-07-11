@@ -80,7 +80,7 @@ const Login2 = (): React$Element<React$FragmentType> => {
             {(userLoggedIn || user) && <Navigate to={redirectUrl} />}
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center">
-                    <h4 className="mt-0">{t('안녕하세요 Bestify 입니다')}</h4>
+                    <h4 className="mt-0">{t('안녕하세요 MORG 입니다')}</h4>
                     <p className="text-muted mb-4">{t('로그인 후 이용하실 수 있어요')}</p>
                 </div>
 

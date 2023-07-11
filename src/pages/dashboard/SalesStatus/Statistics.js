@@ -26,8 +26,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
-    const testNumber = (123423423424).toLocaleString();
-
+    console.log(amountBeforeProductsSales, amountProductsSales, amountCompareWithPreviousSales);
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
@@ -65,17 +64,17 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
-                    if (ele.product === '타석') {
-                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
-                    } else if (ele.product === '레슨') {
-                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
-                    } else if (ele.product === '락커') {
-                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    if (ele.productType === 'batterBox') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'lesson') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'locker') {
+                        productsSales.locker = productsSales.locker + Number(ele.adjustedPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.adjustedPrice);
                     }
                 });
         }
@@ -95,17 +94,17 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (beforePeriodSalesData) {
             [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.products] : [...acc];
+                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
-                    if (ele.product === '타석') {
-                        productsSales.batterBox = productsSales.batterBox + Number(ele.discountPrice);
-                    } else if (ele.product === '레슨') {
-                        productsSales.lesson = productsSales.lesson + Number(ele.discountPrice);
-                    } else if (ele.product === '락커') {
-                        productsSales.locker = productsSales.locker + Number(ele.discountPrice);
+                    if (ele.productType === 'batterBox') {
+                        productsSales.batterBox = productsSales.batterBox + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'lesson') {
+                        productsSales.lesson = productsSales.lesson + Number(ele.adjustedPrice);
+                    } else if (ele.productType === 'locker') {
+                        productsSales.locker = productsSales.locker + Number(ele.adjustedPrice);
                     } else {
-                        productsSales.etc = productsSales.etc + Number(ele.discountPrice);
+                        productsSales.etc = productsSales.etc + Number(ele.adjustedPrice);
                     }
                 });
         }
@@ -116,22 +115,23 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const compareWithPreviousSales = () => {
         setAmountCompoareWithPreviousSales({ batterBox: 0, lesson: 0, locker: 0, etc: 0 });
 
-        const comparedPercentages = {
-            batterBox: percentCalculator(amountBeforeProductsSales.batterBox, amountProductsSales.batterBox),
-            lesson: percentCalculator(amountBeforeProductsSales.lesson, amountProductsSales.lesson),
-            locker: percentCalculator(amountBeforeProductsSales.locker, amountProductsSales.locker),
-            etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
-        };
-
-        function percentCalculator(before, current) {
+        const percentCalculator = (before, current) => {
             const percentage = (((current - before) / before) * 100).toFixed(2);
+
             if (before === 0 && current === 0) {
                 return 0;
             } else if (before === 0) {
                 return 100;
             }
             return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
-        }
+        };
+
+        const comparedPercentages = {
+            batterBox: percentCalculator(amountBeforeProductsSales.batterBox, amountProductsSales.batterBox),
+            lesson: percentCalculator(amountBeforeProductsSales.lesson, amountProductsSales.lesson),
+            locker: percentCalculator(amountBeforeProductsSales.locker, amountProductsSales.locker),
+            etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
+        };
 
         setAmountCompoareWithPreviousSales(comparedPercentages);
     };
@@ -185,7 +185,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
 
-                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%',
+                            value: amountCompareWithPreviousSales.batterBox + '%',
+                            // beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -206,7 +207,9 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%',
+                            value: amountCompareWithPreviousSales.lesson + '%',
+
+                            // beforePeriodSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -250,7 +253,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                                     ? ''
                                     : 'mdi mdi-arrow-down-bold'
                                 : '',
-                            value: beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%',
+                            value: amountCompareWithPreviousSales.etc + '%',
+                            //  beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%'
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>

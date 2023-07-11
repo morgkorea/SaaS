@@ -24,9 +24,9 @@ export const logoutUser = (): AuthAction => ({
     payload: {},
 });
 
-export const signupUser = (username: string, email: string, password: string): AuthAction => ({
+export const signupUser = (username: string, phone: string, email: string, password: string): AuthAction => ({
     type: AuthActionTypes.SIGNUP_USER,
-    payload: { username, email, password },
+    payload: { username, phone, email, password },
 });
 
 export const forgotPassword = (email: string): AuthAction => ({
@@ -54,6 +54,10 @@ export const emailVerified = () => {
 };
 
 export const sendVerifyingEmail = (email) => {
+    console.log({
+        type: AuthActionTypes.SEND_VERIFYING_EMAIL,
+        payload: { email },
+    });
     return {
         type: AuthActionTypes.SEND_VERIFYING_EMAIL,
         payload: { email },

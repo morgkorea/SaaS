@@ -8,18 +8,18 @@ import Table from '../../../components/Table';
 
 const SalesTable = ({ data, columns }): React$Element<any> => {
     const sizePerPageList = [
-        {
-            text: '30',
-            value: 30,
-        },
-        {
-            text: '60',
-            value: 60,
-        },
-        {
-            text: '90',
-            value: 90,
-        },
+        // {
+        //     text: '30',
+        //     value: 30,
+        // },
+        // {
+        //     text: '60',
+        //     value: 60,
+        // },
+        // {
+        //     text: '90',
+        //     value: 90,
+        // },
         // {
         //     text: 'All',
         //     value: data.length,
@@ -43,6 +43,7 @@ const SalesTable = ({ data, columns }): React$Element<any> => {
                                 isSearchable={true}
                                 tablePurpose={'salesDB'}
                                 productTablePlaceholder={'검색'}
+                                paginationStyleCenter={true}
                             />
                         </Card.Body>
                     </Card>
