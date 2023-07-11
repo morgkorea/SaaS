@@ -1,13 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
 const Statistics = ({ members, index }) => {
     const allMember = members.length;
-    let memberDueExpire = 2;
-    let expiredMembers = 8;
+    const [expires30Days, setExpires30Days] = useState(0);
+    const [expiredMembers, setExpiredMembers] = useState(0);
 
-    // 기간만료 회원 - if (availableProducts X, unavailableProducts O)
-    // 기간만료 회원 - if (availableProducts X, unavailableProducts O)
+    // 기간만료 회원 (availableProducts X, unavailableProducts O)
+    useEffect(() => {
+        const FindUserWithMissingValue = () => {
+            let count = 0;
+            members.filter((member) => {
+                if (!member.availableProducts && member.unavailableProducts) {
+                    count++;
+                }
+            });
+
+            setExpiredMembers(count);
+        };
+
+        FindUserWithMissingValue();
+    }, []);
+
+    // 만료 예정 회원 (availableProducts의 endData가 30일 이내 인 회원)
+    useEffect(() => {
+        const filterDataWithin30Days = () => {
+            const today = new Date();
+
+            const filteredMembers = members.filter((member) => {
+                if (member.availableProducts) {
+                    const endDate = member?.availableProducts
+                        .map((products) => products.endDate)
+                        .filter((endDate) => endDate !== '' && typeof endDate !== 'undefined');
+
+                    // console.log(endDate);
+                }
+                return false;
+            });
+
+            // console.log('30일 이내 만료 예정 회원:', filteredMembers);
+            // setExpires30Days(filteredMembers);
+        };
+
+        filterDataWithin30Days();
+    }, [members]);
 
     return (
         <>
@@ -31,7 +67,7 @@ const Statistics = ({ members, index }) => {
                     border="danger"
                     description="Refund"
                     title="만료 예정 회원 (1개월 내)"
-                    stats={memberDueExpire + '명'}
+                    stats={expires30Days + '명'}
                     trend={{
                         textClass: 'text-danger',
                         icon: 'mdi mdi-arrow-down-bold',

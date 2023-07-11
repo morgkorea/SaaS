@@ -1,50 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import EditTable from './EditTable';
 import Table from './Table';
-import Memo from './Memo';
+import MemberMemo from './MemberMemo';
+import PaymentInfo from './PaymentInfo';
+import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
+import CurrentUsageInfo from './CurrentUsageInfo';
 
 const MemberInfo = () => {
     const [editMode, setEditMode] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [className, setClassName] = useState(null);
+    const email = useSelector((state) => state.Auth?.user.email);
+    const [activeTab, setActiveTab] = useState('payment');
 
     const location = useLocation();
-    const { member } = location.state;
-    console.log(member);
-    const email = useSelector((state) => state.Auth?.user.email);
-
-    const id = member.id;
-
+    const member = location.state && location.state.member;
+    const id = member && member.id;
     const childRef = useRef();
 
-    const [salesData, setSalesData] = useState([]); // 전체 매출 db
-    const [salesData2, setSalesData2] = useState(); // 웨이드 매출 db
-    const salesRef = collection(firestoreDB, 'Users', email, 'Sales');
-
-    const getSales = async () => {
-        const data = await getDocs(salesRef);
-        const salesDataArray = data.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-        setSalesData(salesDataArray);
-
-        // 웨이드 이름을 찾아 salesData2에 할당
-        const wadeData = salesDataArray.find((data) => data.name === '웨이드');
-        if (wadeData) {
-            setSalesData2(wadeData);
-        }
-    };
-    console.log('salesData2: ', salesData2);
-
-    useEffect(() => {
-        getSales();
-    }, []);
+    console.log('memberData:', member);
 
     const deleteUser = async () => {
         const userDoc = doc(firestoreDB, 'Users', email, 'Members', id);
@@ -59,88 +40,67 @@ const MemberInfo = () => {
     };
 
     const notify = () => toast('삭제되었습니다.');
+    const toggle = () => setModal(!modal);
 
-    const toggle = () => {
-        setModal(!modal);
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
     };
-
-    const [modal, setModal] = useState(false);
-    const [className, setClassName] = useState(null);
-
     const openModalWithClass = (className) => {
         setClassName(className);
         toggle();
     };
 
-    const payments = [
-        {
-            data1: '1회차',
-            data2: '락커 결제',
-            data3: '6개월권',
-            data4: '10% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 3451,
-        },
-        {
-            data1: '2회차',
-            data2: '회원권 결제',
-            data3: '3개월권',
-            data4: '20% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 59301,
-        },
-        {
-            data1: '3회차',
-            data2: '회원권 결제',
-            data3: '1개월권',
-            data4: '30% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 300000,
-        },
-        {
-            data1: '4회차',
-            data2: '회원권 결제',
-            data3: '6개월권',
-            data4: '10% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 400000,
-        },
-        {
-            data1: '5회차',
-            data2: '회원권 결제',
-            data3: '6개월권',
-            data4: '10% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 500000,
-        },
-        {
-            data1: '6회차',
-            data2: '회원권 결제',
-            data3: '6개월권',
-            data4: '10% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 600000,
-        },
-        {
-            data1: '7회차',
-            data2: '회원권 결제',
-            data3: '6개월권',
-            data4: '10% 할인',
-            data5: '2022.07.12 ~ 2023.01.08',
-            data6: 202222110,
-        },
-    ];
+    if (!member) {
+        return (
+            <Row className="justify-content-md-center mt-4">
+                <Col xs={12} xl={4} xxl={3}>
+                    <Card style={{ height: '850px' }}>
+                        <Card.Body className="position-relative">
+                            <div className="d-flex justify-content-between">
+                                <h4>기본 정보</h4>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xs={12} xl={8} xxl={9}>
+                    <Row className="justify-content-md-center">
+                        <Col xs={12} xxl={12}>
+                            <Card>
+                                <Card.Body>
+                                    <div className="d-flex justify-content-between">
+                                        <div className="payment-info">
+                                            <h4 className="me-5">현재 이용 정보</h4>
+                                        </div>
+                                        <h4 className="text-danger">미등록 회원</h4>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+
+                        <Col>
+                            <Card className="centralized-parents" style={{ height: '740px' }}>
+                                <div className="centralized">
+                                    <h5>회원 정보가 없습니다.</h5>
+                                    <div className="mt-3">
+                                        <Warning />
+                                    </div>
+                                </div>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+        );
+    }
 
     return (
         <>
             <Row className="justify-content-md-center mt-4">
-                <Col xs={12} xl={6} xxl={4}>
+                <Col xs={12} xl={4} xxl={3}>
                     <Card style={{ height: '850px' }}>
                         <Card.Body className="position-relative">
                             <div className="d-flex justify-content-between">
-                                <h4>
-                                    <span className="me-2">ℹ️</span>기본 정보
-                                </h4>
+                                <h4>기본 정보</h4>
                             </div>
                             {!editMode ? (
                                 <Table member={member} />
@@ -173,98 +133,20 @@ const MemberInfo = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col xs={12} xl={6} xxl={8}>
+                <Col xs={12} xl={8} xxl={9}>
                     <Row className="justify-content-md-center">
                         <Col xs={12} xxl={12}>
-                            <Card>
-                                <Card.Body>
-                                    <div className="d-flex justify-content-between">
-                                        <div className="payment-info">
-                                            <h4 className="me-5">
-                                                <span className="me-2">🕦</span>현재 이용 정보
-                                            </h4>
-                                            <h4 className="me-2">7회차</h4>
-                                            <p>회원권 결제</p>
-                                            <p>6개월권</p>
-                                            <p>10% 할인</p>
-                                            <p>2022.07.12 ~ 2023.01.08</p>
-                                        </div>
-                                        <h4 className="text-primary">{member?.activation} 회원</h4>
-                                    </div>
-                                </Card.Body>
-                            </Card>
+                            <CurrentUsageInfo member={member} />
                         </Col>
-
                         <Col>
-                            <Card style={{ height: '740px' }}>
-                                <Card.Body className="payment-wrap">
-                                    <h4 className="mb-4">
-                                        <span className="me-2">💰</span>결제 정보
-                                    </h4>
-                                    <div className="payment-list">
-                                        {
-                                            !salesData2 ? null : <> {salesData2.salesProducts.map((data, index) => {
-                                                return (
-                                                    <div className="payment-card">
-                                                        <div className="d-flex align-items-center justify-content-between">
-                                                            <div className="d-flex">
-                                                                <h4 className="number">{index}</h4>
-                                                                <div className="payment-info">
-                                                                    <p>{data.productCode}</p>
-                                                                    <p>{data.product}</p>
-                                                                    <p>{data.startDate}</p>
-                                                                    <p>{data.endDate}</p>
-                                                                    <p>{data.productType}</p>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <h4>{data.adjustedPrice.toLocaleString()}원</h4>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}</>
-                                        }
-                                        
-                                        {/* {payments.map((payment) => {
-                                            return (
-                                                <div className="payment-card">
-                                                    <div className="d-flex align-items-center justify-content-between">
-                                                        <div className="d-flex">
-                                                            <h4 className="number">{payment.data1}</h4>
-                                                            <div className="payment-info">
-                                                                <p>{payment.data2}</p>
-                                                                <p>{payment.data3}</p>
-                                                                <p>{payment.data4}</p>
-                                                                <p>{payment.data5}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <h4>{payment.data6.toLocaleString()} 원</h4>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })} */}
-                                    </div>
-                                    <div className="position-absolute bottom-0 end-0 p-4">
-                                        <div className="payment-amount">
-                                            <p>평균 200,000 원</p>
-                                            <p className="text-primary">
-                                                총 <span className="h2">1,000,000</span> 원
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Card.Body>
-                            </Card>
+                            {activeTab === 'memo' && (
+                                <MemberMemo email={email} id={id} handleTabChange={handleTabChange} />
+                            )}
+                            {activeTab === 'payment' && (
+                                <PaymentInfo member={member} handleTabChange={handleTabChange} />
+                            )}
                         </Col>
                     </Row>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col>
-                    <Memo email={email} id={id} />
                 </Col>
             </Row>
 

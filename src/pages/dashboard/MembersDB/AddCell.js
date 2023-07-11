@@ -9,10 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AddCell = forwardRef((props, ref) => {
     const notify = () => toast('저장되었습니다.');
-
-    const email = useSelector((state) => {
-        return state.Auth?.user.email;
-    });
+    const email = useSelector((state) => state.Auth?.user.email);
     const [nameValue, setNameValue] = useState('');
     const [sexValue, setSexValue] = useState('');
     const [birthDateValue, setBirthDateValue] = useState('');
