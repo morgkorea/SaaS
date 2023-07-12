@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Tab, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
@@ -156,20 +156,61 @@ const SalesStatus = () => {
     }, [salesData, startDate, datePickDate, selectedPeriod]);
 
     console.log(sortedByPeriodSalesData, beforePeriodSalesData);
+
+    const [index, setIndex] = useState(1);
+    const tabContents = [
+        {
+            id: 1,
+            title: '월간',
+        },
+        {
+            id: 2,
+            title: '주간',
+        },
+        {
+            id: 2,
+            title: '일간',
+        },
+    ];
+
     return (
         <>
             <div>
                 <Row>
                     <Col xs={12}>
                         <div className="page-title-box">
-                            <div className="page-title-right">
-                                <form className="d-flex">
-                                    <div className="btn-group">
+                            <div className="page-title-right d-flex">
+                                <Tab.Container defaultActiveKey="월간">
+                                    <Nav variant="pills" justify className="bg-nav-pills">
+                                        {tabContents.map((tab, index) => {
+                                            return (
+                                                <Nav.Item
+                                                    key={index}
+                                                    onClick={() => {
+                                                        if (index === 0) {
+                                                            setSelectedPeriod('month');
+                                                        } else if (index === 1) {
+                                                            setSelectedPeriod('week');
+                                                        } else if (index === 2) {
+                                                            setSelectedPeriod('day');
+                                                        }
+                                                        setIndex(tab.id);
+                                                    }}>
+                                                    <Nav.Link as={Link} to="#" eventKey={tab.title}>
+                                                        <span className="d-none d-md-block">{tab.title}</span>
+                                                    </Nav.Link>
+                                                </Nav.Item>
+                                            );
+                                        })}
+                                    </Nav>
+                                </Tab.Container>
+                                <form className="d-flex ms-2">
+                                    {/* <div className="btn-group">
                                         <ButtonsGroup
                                             selectedPeriod={selectedPeriod}
                                             setSelectedPeriod={setSelectedPeriod}
                                         />
-                                    </div>
+                                    </div> */}
                                     <div className="input-group">
                                         <HyperDatepicker
                                             value={datePickDate}

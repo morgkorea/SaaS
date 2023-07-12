@@ -83,7 +83,7 @@ type TableProps = {
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
     const [currentSortBy, setCurrentSortBy] = useState([
         {
-            id: '6',
+            id: '1',
             desc: true,
         },
     ]);
@@ -169,7 +169,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 />
             )}
 
-            <div className="table-responsive">
+            <div className="table-responsive mt-4">
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
