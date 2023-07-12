@@ -192,7 +192,7 @@ const SalesStatus = () => {
                                                         } else if (index === 1) {
                                                             setSelectedPeriod('week');
                                                         } else if (index === 2) {
-                                                            setSelectedPeriod('date');
+                                                            setSelectedPeriod('day');
                                                         }
                                                         setIndex(tab.id);
                                                     }}>

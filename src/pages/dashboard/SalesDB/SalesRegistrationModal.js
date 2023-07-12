@@ -85,6 +85,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [paymentTime, setPaymentTime] = useState('00:00');
 
+    console.log(productsList);
     const remainingPrice =
         registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
@@ -100,9 +101,14 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             .map((product, idx) => {
                 //최종가 할당 (adjustedPrice)
 
-                return { ...product, adjustedPrice: product.discountPrice - modifyPriceList[idx] };
+                return {
+                    ...product,
+                    adjustedPrice: product.discountPrice - modifyPriceList[idx],
+                    paymentDate: paymentDate,
+                    paymentTime: paymentTime,
+                };
             });
-
+        console.log(salesProducts);
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
@@ -230,6 +236,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             discountPrice: selectedProduct?.regularPrice - selectedProduct?.regularPrice * (productDiscountRate / 100),
             startDate: productStartDate,
             endDate: calculateProductDuration(productStartDate, selectedProduct.expirationPeriod),
+            expirationPeriod: selectedProduct?.expirationPeriod,
         };
 
         registrationSalesProductsArray.unshift(salesProductData);
