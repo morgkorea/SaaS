@@ -6,43 +6,51 @@ const Statistics = ({ members, index }) => {
     const [expires30Days, setExpires30Days] = useState(0);
     const [expiredMembers, setExpiredMembers] = useState(0);
 
-    // 기간만료 회원 (availableProducts X, unavailableProducts O)
-    useEffect(() => {
-        const FindUserWithMissingValue = () => {
-            let count = 0;
-            members.filter((member) => {
-                if (!member.availableProducts && member.unavailableProducts) {
-                    count++;
-                }
-            });
-
-            setExpiredMembers(count);
-        };
-
-        FindUserWithMissingValue();
-    }, []);
-
-    // 만료 예정 회원 (availableProducts의 endData가 30일 이내 인 회원)
     useEffect(() => {
         const filterDataWithin30Days = () => {
             const today = new Date();
+            const thirtyDaysFromNow = new Date();
+            thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+            let expiresCount = 0;
 
             const filteredMembers = members.filter((member) => {
-                if (member.availableProducts) {
-                    const endDate = member?.availableProducts
-                        .map((products) => products.endDate)
-                        .filter((endDate) => endDate !== '' && typeof endDate !== 'undefined');
+                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                    const hasProductWithin30Days = member.availableProducts.some((product) => {
+                        if (product && product.endDate) {
+                            const endDate = new Date(product.endDate);
+                            return endDate >= today && endDate <= thirtyDaysFromNow;
+                        }
+                        return false;
+                    });
 
-                    // console.log(endDate);
+                    return hasProductWithin30Days;
+
                 }
                 return false;
             });
 
+            expiresCount = filteredMembers.length;
             // console.log('30일 이내 만료 예정 회원:', filteredMembers);
-            // setExpires30Days(filteredMembers);
+            setExpires30Days(expiresCount);
         };
 
         filterDataWithin30Days();
+    }, [members]);
+
+    useEffect(() => {
+        const FindUserWithMissingValue = () => {
+            let count = 0;
+
+            members.filter((member) => {
+                if ((!member.availableProducts || member.availableProducts.length === 0) && member.unavailableProducts && member.unavailableProducts.length > 0) {
+                    count++;
+                    // console.log('기간만료 회원:', member.name)
+                }
+            });
+            setExpiredMembers(count);
+        };
+        FindUserWithMissingValue();
     }, [members]);
 
     return (

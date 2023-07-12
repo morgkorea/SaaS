@@ -13,49 +13,56 @@ const MembersDB = () => {
 
     const moveUnavailableProducts = (data) => {
         const today = new Date();
-
-        const newData = data.map((doc) => {
-            const updatedDoc = { ...doc };
-
-            if (Array.isArray(updatedDoc.availableProducts)) {
-                const unavailableProducts = [];
-                updatedDoc.availableProducts = updatedDoc.availableProducts.filter((product) => {
-                    const endDate = new Date(product.endDate);
-                    if (endDate < today) {
-                        unavailableProducts.push(product);
-                        return false;
-                    }
-                    return true;
+        
+        const newData = data.map((member) => {
+            const updatedMember = { ...member };
+            
+            if (Array.isArray(updatedMember.availableProducts)) {
+                
+                const availableProducts = (updatedMember.availableProducts || []).filter((product)=> {
+                    const endDate = new Date(product?.endDate);
+                    return endDate >= today;
                 });
-                updatedDoc.unavailableProducts = unavailableProducts;
+            
+                const unavailableProducts = (updatedMember.availableProducts || []).filter((product) => {
+                    const endDate = new Date(product?.endDate);
+                    return endDate < today;
+                });
+          
+                updatedMember.availableProducts = availableProducts;
+                updatedMember.unavailableProducts = [
+                    ...(updatedMember.unavailableProducts || []),
+                    ...unavailableProducts,
+                ];
             }
 
-            return updatedDoc;
+            return updatedMember;
         });
-
+      
         setCurrentMembers(newData);
-
+      
         // 파이어베이스에 업데이트
-        newData.forEach((updatedDoc) => {
-            const docRef = doc(firestoreDB, 'Users', email, 'Members', updatedDoc.id);
-            updateDoc(docRef, updatedDoc);
+        newData.forEach((updatedMember) => {
+            const docRef = doc(firestoreDB, 'Users', email, 'Members', updatedMember.id);
+            updateDoc(docRef, updatedMember);
         });
     };
-
+      
     const getMembers = async () => {
         const querySnapshot = await getDocs(memberRef);
         const data = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
         }));
-
+      
         setCurrentMembers(data);
         moveUnavailableProducts(data);
     };
-
+      
     useEffect(() => {
         getMembers();
     }, []);
+      
 
     console.log('member:', currentMembers);
 

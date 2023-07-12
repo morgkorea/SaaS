@@ -11,7 +11,12 @@ const PaymentInfo = ({ member, handleTabChange }) => {
     useEffect(() => {
         if (member.availableProducts && member.unavailableProducts) {
             const products = [...member.availableProducts, ...member.unavailableProducts];
-            const amounts = products.map((data) => data.regularPrice - data.discountPrice);
+            const amounts = products.map((data) => {
+                const regularPrice = data.regularPrice || 0;
+                const discountPrice = data.discountPrice || 0;
+                return regularPrice - discountPrice;
+            });
+
             const totalValue = Math.floor(amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
             const averageValue = Math.floor(totalValue / amounts.length);
 
@@ -21,6 +26,7 @@ const PaymentInfo = ({ member, handleTabChange }) => {
             setAllProducts(products);
         }
     }, [member.availableProducts, member.unavailableProducts]);
+
 
     return (
         <>
@@ -32,7 +38,7 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                             회원 메모
                         </p>
                     </div>
-                    {!member.availableProducts && !member.unavailableProducts ? (
+                    {(!member.availableProducts || member.availableProducts.length) === 0 && (!member.unavailableProducts || member.unavailableProducts.length === 0) ? (
                         <>
                             <div className="centralized">
                                 <h5>결제 정보가 없습니다.</h5>
@@ -52,6 +58,11 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                                                     <h4 className="number">{index + 1}회차</h4>
                                                     <div className="payment-info">
                                                         <p>{data.product}</p>
+                                                        {!data.expirationPeriod ? <></> :
+                                                            (
+                                                                <p>{data.expirationPeriod}</p>
+                                                            )
+                                                        }
                                                         <p>{data.discountRate}% 할인</p>
                                                         <p>
                                                             {data.startDate} ~ {data.endDate}
@@ -60,7 +71,7 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                                                 </div>
                                                 <div>
                                                     <h4>
-                                                        {(data.regularPrice - data.discountPrice).toLocaleString()}원
+                                                        {(data.regularPrice && data.discountPrice) ? (data.regularPrice - data.discountPrice).toLocaleString() + '원' : '0원'}
                                                     </h4>
                                                 </div>
                                             </div>

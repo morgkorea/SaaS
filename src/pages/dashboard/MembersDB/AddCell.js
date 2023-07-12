@@ -45,7 +45,6 @@ const AddCell = forwardRef((props, ref) => {
         const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
             name: nameValue,
-            // typeFormToken: '',
             memberNumber: '',
             createdDate: moment().format('YYYY.MM.DD'),
             createdTime: moment().format('A hh:mm'),
@@ -65,10 +64,73 @@ const AddCell = forwardRef((props, ref) => {
             inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
+            activation: activeStatus,
             // amountPayments: '',
             // lifetimeValue: '',
             // amountPaymentAverage: '',
-            activation: activeStatus,
+            
+            // availableProducts: [
+            //     {
+            //         adjustedPrice: 0,
+            //         discountPrice: 0,
+            //         discountRate: 0,
+            //         startDate: '', // '2023-02-19'
+            //         endDate: '', // '2023-02-19'
+            //         paymentDate: "", // '2023-02-19'
+            //         paymentTime: "", // "15:00"
+            //         product: "",
+            //         productCode: "",
+            //         productType: "",
+            //         regularPrice: 0,
+            //     },
+            // ],
+            // unavailableProducts: [
+            //     {
+            //         adjustedPrice: 0,
+            //         discountPrice: 0,
+            //         discountRate: 0,
+            //         startDate: '', // '2023-02-19'
+            //         endDate: '', // '2023-02-19'
+            //         paymentDate: "", // '2023-02-19'
+            //         paymentTime: "", // "15:00"
+            //         product: "",
+            //         productCode: "",
+            //         productType: "",
+            //         regularPrice: 0,
+            //     },
+            // ],
+            
+            // 임시 데이터 !! 추후 삭제
+            // availableProducts: [
+            //     {
+            //         adjustedPrice: 60000,
+            //         discountPrice: 60000,
+            //         discountRate: 50,
+            //         startDate: '2023-07-01', //시작일
+            //         endDate: '2023-08-01', //종료일
+            //         paymentDate: "2023-07-01",
+            //         paymentTime: "14:02",
+            //         product: "락커 12개월",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 120000,
+            //     },
+            // ],
+            // unavailableProducts: [
+            //     {
+            //         adjustedPrice: 60000,
+            //         discountPrice: 60000,
+            //         discountRate: 50,
+            //         startDate: '2023-02-19', //시작일
+            //         endDate: '2023-03-19', //종료일
+            //         paymentDate: "2023-02-19",
+            //         paymentTime: "14:02",
+            //         product: "락커 12개월",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 120000,
+            //     },
+            // ],
         };
 
         await addDoc(memberRef, newMemberData);

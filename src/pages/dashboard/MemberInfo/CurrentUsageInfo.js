@@ -11,7 +11,7 @@ const CurrentUsageInfo = ({ member }) => {
                         <div className="payment-info">
                             <h4 className="me-5">현재 이용 정보</h4>
                             <h4 className="me-2">회차</h4>
-                            {!member.availableProducts ? (
+                            {!member.availableProducts || member.availableProducts.length === 0 ? (
                                 <></>
                             ) : (
                                 <>
