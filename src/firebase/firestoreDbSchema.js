@@ -25,8 +25,7 @@ export const firestoreSalesProductSchema = {
     adjustedPrice: 0, // type: number 조정금액 (최종가)
     startDate: '', //type: string (yyyy-MM-dd) 시작일
     endDate: '', // type: string (yyyy-MM-dd) 종료일
-    expirationPeriod: //type string "1개월","150일"
-
+    expirationPeriod: '', //type string "1개월","150일"
 };
 
 export const firestorePaymentInfoFieldSchema = {
