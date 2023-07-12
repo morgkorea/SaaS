@@ -185,9 +185,9 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                     )}
 
                     <ul className="list-unstyled topbar-menu float-end mb-0">
-                        <li className="notification-list topbar-dropdown d-xl-none">
+                        {/* <li className="notification-list topbar-dropdown d-xl-none">
                             <SearchDropdown />
-                        </li>
+                        </li> */}
                         {/* <li className="dropdown notification-list">
                             <NotificationDropdown notifications={Notifications} />
                         </li>
