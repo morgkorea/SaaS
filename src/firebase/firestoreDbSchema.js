@@ -43,9 +43,9 @@ export const firestoreSalesFieldSchema = {
     name: '', //type: string 이름
     phone: '', //type string 전화번호 010xxxxyyyy
     salesProducts: [
-        {
-            ...firestoreSalesProductSchema,
-        },
+        // {
+        //     ...firestoreSalesProductSchema,
+        // },
     ], //type : array, elements : object 결제상품
     totalPaymentPrice: 0, //type: number 결제총액
     remainingPaymentPrice: 0, //type: number 미결제금액
@@ -95,10 +95,14 @@ export const firestoreMemebersFieldSchema = {
     activation: false, //활성여부 false || true
 
     //이용가능상품
-    availableProducts: [{ ...firestoreSalesProductSchema }],
+    availableProducts: [
+        // { ...firestoreSalesProductSchema }
+    ],
 
     //이용불가상품
-    unavailableProducts: [{ ...firestoreSalesProductSchema }],
+    unavailableProducts: [
+        // { ...firestoreSalesProductSchema }
+    ],
 };
 export const firestoreMarketingFieldSchema = {
     marketingDate: '2023-06-11', //날짜
