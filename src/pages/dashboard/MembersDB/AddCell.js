@@ -4,27 +4,27 @@ import { addDoc, collection } from 'firebase/firestore';
 import moment from 'moment';
 import Select from 'react-select';
 import { useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddCell = forwardRef((props, ref) => {
-    const email = useSelector((state) => {
-        return state.Auth?.user.email;
-    });
-
+    const notify = () => toast('저장되었습니다.');
+    const email = useSelector((state) => state.Auth?.user.email);
     const [nameValue, setNameValue] = useState('');
-    const [phoneValue, setPhoneValue] = useState('');
     const [sexValue, setSexValue] = useState('');
     const [birthDateValue, setBirthDateValue] = useState('');
+    const [phoneValue, setPhoneValue] = useState('');
+    const [audienceValue, setAudienceValue] = useState('');
     const [locationValue, setLocationValue] = useState('');
+    const [regionValue, setRegionValue] = useState('');
     const [periodValue, setPeriodValue] = useState('');
     const [purposeValue, setPurposeValue] = useState('');
+    const [productValue, setProductValue] = useState('');
     const [hoursUseValue, setHoursUseValue] = useState('');
     const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
-    const [activeStatus, setActiveStatus] = useState('');
-    const [audienceValue, setAudienceValue] = useState('');
-    const [regionValue, setRegionValue] = useState('');
-    // const [inflowPathValue, setInflowPathValue] = useState(''); // 유입경로
-    // 관심상품 추가
+    const [inflowPathValue, setInflowPathValue] = useState('');
+    // const [activeStatus, setActiveStatus] = useState('');
 
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
@@ -37,71 +37,148 @@ const AddCell = forwardRef((props, ref) => {
     }
 
     const updateFirestoreAddMember = async () => {
+        if (!nameValue) {
+            alert('이름을 입력해주세요.');
+            return;
+        }
+
         const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
-            // typeFormToken: '',
+            name: nameValue,
             memberNumber: '',
             createdDate: moment().format('YYYY.MM.DD'),
             createdTime: moment().format('A hh:mm'),
-            name: nameValue,
-            phone: phoneValue,
             sex: sexValue,
             birthDate: birthDateValue,
-            // ageGroup: '',연령대
+            // ageGroup: '', 연령대
+            phone: phoneValue,
+            audience: audienceValue,
             location: locationValue,
             region: regionValue,
             golfPeriod: periodValue,
             golfPurpose: purposeValue,
+            product: productValue,
             hoursUse: hoursUseValue,
             injuries: injuriesValue,
             injuriedPart: injuriedPartValue,
-            // inflowPathValue: inflowPathValue,  // 유입경로
+            inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
-            amountPayments: '',
-            lifetimeValue: '',
-            amountPaymentAverage: '',
-            audience: audienceValue,
-            activation: activeStatus,
-            availableProducts: [
-                {
-                    activateProduct: '',
-                    startDate: '',
-                    endDate: '',
-                    dDays: '',
-                },
-                {
-                    activateProduct: '',
-                    startDate: '',
-                    endDate: '',
-                    dDays: '',
-                },
-            ],
-            unavailableProducts: [
-                {
-                    inactiveProduct: '',
-                    startDate: '',
-                    endDate: '',
-                    dDays: 0,
-                    refund: false,
-                },
-            ],
-        };
-        await addDoc(memberRef, newMemberData);
-    };
+            activation: '', // activeStatus
+            // amountPayments: '',
+            // lifetimeValue: '',
+            // amountPaymentAverage: '',
 
-    // const updateAddMembers = () => {
-    //     updateFirestoreAddMember();
-    // };
+            // 임시 데이터 !! 추후 삭제
+            // availableProducts: [
+            //     {
+            //         adjustedPrice: 250000,
+            //         discountPrice: 250000,
+            //         discountRate: 50,
+            //         startDate: '2023-05-13', //시작일
+            //         endDate: '2023-08-13', //종료일
+            //         paymentDate: "2023-05-13",
+            //         paymentTime: "15:02",
+            //         product: "회원권",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 500000,
+            //     },
+            //     {
+            //         adjustedPrice: 200000,
+            //         discountPrice: 200000,
+            //         discountRate: 50,
+            //         startDate: '2023-04-13', //시작일
+            //         endDate: '2023-07-13', //종료일
+            //         paymentDate: "2023-04-13",
+            //         paymentTime: "14:02",
+            //         product: "레슨",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 400000,
+            //     },
+            //     {
+            //         adjustedPrice: 60000,
+            //         discountPrice: 60000,
+            //         discountRate: 50,
+            //         startDate: '2023-07-13', //시작일
+            //         endDate: '2023-06-13', //종료일
+            //         paymentDate: "2023-07-13",
+            //         paymentTime: "14:02",
+            //         product: "락커",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 120000,
+            //     },
+            //     {
+            //         adjustedPrice: 150000,
+            //         discountPrice: 150000,
+            //         discountRate: 50,
+            //         startDate: '2023-02-13', //시작일
+            //         endDate: '2023-06-13', //종료일
+            //         paymentDate: "2023-02-13",
+            //         paymentTime: "14:02",
+            //         product: "타석",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 300000,
+            //     },
+            //     {
+            //         adjustedPrice: 60000,
+            //         discountPrice: 60000,
+            //         discountRate: 50,
+            //         startDate: '2023-03-13', //시작일
+            //         endDate: '2023-06-13', //종료일
+            //         paymentDate: "2023-01-13",
+            //         paymentTime: "15:02",
+            //         product: "락커",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 120000,
+            //     },
+            // ],
+            
+            // unavailableProducts: [
+            //     {
+            //         adjustedPrice: 60000,
+            //         discountPrice: 60000,
+            //         discountRate: 50,
+            //         startDate: '2023-02-19', //시작일
+            //         endDate: '2023-03-19', //종료일
+            //         paymentDate: "2023-02-19",
+            //         paymentTime: "14:02",
+            //         product: "락커 12개월",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 120000,
+            //     },
+            // ],
+        };
+
+        await addDoc(memberRef, newMemberData);
+
+        notify();
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+    };
 
     useImperativeHandle(ref, () => ({
         updateFirestoreAddMember: () => {
             updateFirestoreAddMember();
-        }
+        },
     }));
-    
+
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={1500}
+                hideProgressBar={false}
+                closeButton={false}
+                theme="light"
+                limit={1}
+            />
             <tr>
                 <td>
                     <input
@@ -113,7 +190,7 @@ const AddCell = forwardRef((props, ref) => {
                         onChange={(e) => setNameValue(e.target.value)}
                     />
                 </td>
-                <td>{/* <Button onClick={updateAddMembers}>Save</Button> */}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td>
@@ -213,6 +290,7 @@ const AddCell = forwardRef((props, ref) => {
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
+                        onChange={(e) => setProductValue(e.value)}
                         options={[
                             { value: '타석권', label: '타석권' },
                             { value: '레슨', label: '레슨' },
@@ -264,7 +342,7 @@ const AddCell = forwardRef((props, ref) => {
                         data-width="100%"
                         className="react-select"
                         classNamePrefix="react-select"
-                        // onChange={(e) => inflowPathValue(e.value)}
+                        onChange={(e) => setInflowPathValue(e.value)}
                         options={[
                             { value: '네이버', label: '네이버' },
                             { value: '지인추천', label: '지인추천' },
@@ -287,8 +365,8 @@ const AddCell = forwardRef((props, ref) => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td className="text-center">
-                    <Select
+                <td>
+                    {/* <Select
                         className="react-select"
                         classNamePrefix="react-select"
                         onChange={(e) => setActiveStatus(e.value)}
@@ -296,7 +374,7 @@ const AddCell = forwardRef((props, ref) => {
                             { value: '활성', label: '활성' },
                             { value: '이탈', label: '이탈' },
                             { value: '일시중지', label: '일시중지' },
-                        ]}></Select>
+                        ]}></Select> */}
                 </td>
             </tr>
         </>

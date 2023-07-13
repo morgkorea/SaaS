@@ -94,9 +94,9 @@ input.editInput {
   color: $dropdown-link-hover-color !important;
   background-color: $dropdown-link-hover-bg !important;
 }
-.react-select__single-value {
-  color: #{map-get($grays, "600")} !important;
-}
+// .react-select__single-value {
+//   color: #{map-get($grays, "600")} !important;
+// }
 .react-select__multi-value {
   background-color: rgba($primary, 0.2) !important;
   color: $primary !important;

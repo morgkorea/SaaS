@@ -1,20 +1,9 @@
-// @flow
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-type PaginationProps = {
-    tableProps: any,
-    sizePerPageList: {
-        text: string,
-        value: number,
-    }[],
-};
+const Pagination = ({ tableProps, sizePerPageList }) => {
 
-const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Element<any> => {
-    /**
-     * pagination count , index
-     */
     const [pageCount, setPageCount] = useState(tableProps.pageCount);
     const [pageIndex, setPageIndex] = useState(tableProps.state.pageIndex);
 
@@ -23,9 +12,6 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
         setPageIndex(tableProps.state.pageIndex);
     }, [tableProps.pageCount, tableProps.state.pageIndex]);
 
-    /**
-     * get filter pages
-     */
     const filterPages = useCallback(
         (visiblePages, totalPages) => {
             return visiblePages.filter((page) => page <= pageCount);
@@ -33,9 +19,6 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
         [pageCount]
     );
 
-    /**
-     * handle visible pages
-     */
     const getVisiblePages = useCallback(
         (page: number, total) => {
             if (total < 7) {
@@ -53,11 +36,6 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
         [filterPages]
     );
 
-    /**
-     * handle page change
-     * @param page - current page
-     * @returns
-     */
     const changePage = (page) => {
         const activePage = pageIndex + 1;
 
@@ -100,28 +78,6 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
                     </select>
                 </div>
             )}
-
-            <span className="me-3">
-                Page{' '}
-                <strong>
-                    {pageIndex + 1} of {tableProps.pageOptions.length}
-                </strong>{' '}
-            </span>
-
-            <span className="d-inline-block align-items-center text-sm-start text-center my-sm-0 my-2">
-                <label>Go to page : </label>
-                <input
-                    type="number"
-                    value={pageIndex + 1}
-                    min="1"
-                    onChange={(e: any) => {
-                        const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                        tableProps.gotoPage(page);
-                        setPageIndex(tableProps.state.pageIndex);
-                    }}
-                    className="form-control w-25 ms-1 d-inline-block"
-                />
-            </span>
 
             <ul className="pagination pagination-rounded d-inline-flex ms-auto align-item-center mb-0">
                 <li

@@ -80,42 +80,43 @@ const Goal = ({ members }) => {
 
     return (
         <Card>
-            <Card.Body style={{ height: '450px', overflowY: 'scroll' }}>
+            <Card.Body style={{ height: '450px' }}>
                 <CardTitle
-                    containerClass="d-flex align-items-center justify-content-between mb-2"
+                    containerClass="d-flex align-items-center justify-content-between mb-3 pt-1"
                     title="골프목적"
-                    menuItems={[
-                        { label: 'Weekly Report' },
-                        { label: 'Monthly Report' },
-                        { label: 'Action' },
-                        { label: 'Settings' },
-                    ]}
+                    // menuItems={[
+                    //     { label: 'Weekly Report' },
+                    //     { label: 'Monthly Report' },
+                    //     { label: 'Action' },
+                    //     { label: 'Settings' },
+                    // ]}
                 />
-
-                <Table responsive className="table table-sm table-centered mb-0 font-14">
-                    <thead className="table-light">
-                        <tr>
-                            <th style={{ width: '35%' }}>목적</th>
-                            <th style={{ width: '30%' }}>인원</th>
-                            <th>&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {purpose.map((data) => (
+                <div style={{ height: '370px', overflowY: 'scroll' }}>
+                    <Table responsive className="table table-sm table-centered mb-0 font-14">
+                        <thead className="table-light">
                             <tr>
-                                <td>{data.name}</td>
-                                <td>{data.number.toLocaleString()}명</td>
-                                <td>
-                                    <ProgressBar
-                                        now={Math.floor((data.number / totalNumber) * 100)}
-                                        style={{ height: '3px' }}
-                                        variant=""
-                                    />
-                                </td>
+                                <th style={{ width: '35%' }}>목적</th>
+                                <th style={{ width: '30%' }}>인원</th>
+                                <th>&nbsp;</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {purpose.map((data) => (
+                                <tr key={data.index}>
+                                    <td>{data.name}</td>
+                                    <td>{data.number.toLocaleString()}명</td>
+                                    <td>
+                                        <ProgressBar
+                                            now={Math.floor((data.number / totalNumber) * 100)}
+                                            style={{ height: '3px' }}
+                                            variant=""
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
             </Card.Body>
         </Card>
     );

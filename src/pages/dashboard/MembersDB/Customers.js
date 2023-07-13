@@ -40,10 +40,11 @@ const AgeColumn = ({ row }) => {
         return Math.floor((today - birthday) / 10000);
     };
 
+    let age = 0;
     let ageGroup = '';
 
     if (birthday.length === 8) {
-        const age = calcAge();
+        age = calcAge();
 
         if (age < 20) {
             ageGroup = '10대';
@@ -67,8 +68,8 @@ const AgeColumn = ({ row }) => {
     if (row.original.birthDate) {
         const AgeUpdate = async () => {
             const memberRef = doc(firestoreDB, 'Users', email, 'Members', row.original.id);
-            const editData = { ageGroup: ageGroup };
-            await updateDoc(memberRef, editData);
+            const updateAgeData = { ageGroup: ageGroup, age: age };
+            await updateDoc(memberRef, updateAgeData);
         };
         AgeUpdate();
     } else {
@@ -156,7 +157,7 @@ const columns = [
     },
     {
         Header: '휴대전화번호',
-        // accessor: 'phone',
+        accessor: 'phone',
         Cell: PhoneColumn,
         sort: true,
     },
@@ -187,7 +188,7 @@ const columns = [
     },
     {
         Header: '관심상품',
-        accessor: '',
+        accessor: 'product',
         sort: true,
     },
     {
@@ -208,7 +209,7 @@ const columns = [
     },
     {
         Header: '유입경로',
-        accessor: '',
+        accessor: 'inflowPath',
         sort: true,
     },
     {
@@ -245,8 +246,12 @@ const columns = [
 
 const sizePerPageList = [
     {
-        text: '30',
-        value: 30,
+        text: '15',
+        value: 15,
+    },
+    {
+        text: '25',
+        value: 25,
     },
     {
         text: '50',
@@ -258,7 +263,7 @@ const sizePerPageList = [
     },
 ];
 
-const Customers = ({ currentMembers, addMode, editMode, setAddMode }) => {
+const Customers = ({ currentMembers, addMode, setAddMode }) => {
     const location = useLocation();
 
     return (
