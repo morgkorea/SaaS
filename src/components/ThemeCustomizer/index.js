@@ -156,16 +156,16 @@ const ThemeCustomizer = (): React$Element<React$FragmentType> => {
     return (
         <React.Fragment>
             <div className="p-3">
-                <div className="alert alert-warning" role="alert">
+                {/* <div className="alert alert-warning" role="alert">
                     <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
-                </div>
+                </div> */}
 
                 {/* Layouts */}
-                <LayoutTypes
+                {/* <LayoutTypes
                     changeLayoutType={changeLayoutType}
                     layoutType={layoutType}
                     layoutConstants={layoutConstants}
-                />
+                /> */}
 
                 {/* color scheme */}
                 <LayoutColor
@@ -175,13 +175,13 @@ const ThemeCustomizer = (): React$Element<React$FragmentType> => {
                 />
 
                 {/* Width */}
-                {disableLayoutWidth && (
+                {/* {disableLayoutWidth && (
                     <LayoutWidth
                         changeWidthMode={changeWidthMode}
                         layoutWidth={layoutWidth}
                         layoutConstants={layoutConstants}
                     />
-                )}
+                )} */}
 
                 {/* Left Sidebar */}
                 {disableSidebarTheme && (
@@ -193,17 +193,17 @@ const ThemeCustomizer = (): React$Element<React$FragmentType> => {
                 )}
 
                 {/* Left Sidebar Size */}
-                {disableSidebarType && (
+                {/* {disableSidebarType && (
                     <LeftSideBarType
                         changeLeftSiderbarType={changeLeftSiderbarType}
                         leftSideBarType={leftSideBarType}
                         layoutConstants={layoutConstants}
                     />
-                )}
+                )} */}
 
                 <div className="d-grid mt-4">
                     <button className="btn btn-primary" id="resetBtn" onClick={() => reset()}>
-                        Reset to Default
+                        설정 초기화
                     </button>
                 </div>
             </div>
