@@ -108,10 +108,6 @@ const Table = ({ member }) => {
                             )}
                         </td>
                     </tr>
-                    <tr>
-                        <th>활성여부</th>
-                        <td>{member?.activation}</td>
-                    </tr>
                 </tbody>
             </table>
         </>

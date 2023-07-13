@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditTable = forwardRef(({ member, email, id }, ref) => {
     const notify = () => toast('개인정보가 수정되었습니다.');
+    console.log(member)
 
     const [nameValue, setNameValue] = useState(member.name);
     const [birthDateValue, setBirthDateValue] = useState(member.birthDate);
@@ -15,12 +16,12 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [regionValue, setRegionValue] = useState(member.region);
     const [audienceValue, setAudienceValue] = useState(member.audience);
     const [periodValue, setPeriodValue] = useState(member.golfPeriod);
-    const [purposeValue, setPurposeValue] = useState('');
-    const [productValue, setProductValue] = useState('');
+    const [purposeValue, setPurposeValue] = useState(member.golfPurpose);
+    const [productValue, setProductValue] = useState(member.product);
     const [hoursUseValue, setHoursUseValue] = useState(member.hoursUse);
     const [injuriesValue, setInjuriesValue] = useState(member.injuries);
     const [injuriedPartValue, setInjuriedPartValue] = useState(member.injuriedPart);
-    const [inflowPathValue, setInflowPathValue] = useState('');
+    const [inflowPathValue, setInflowPathValue] = useState(member.inflowPath);
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
 
@@ -108,7 +109,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     </tr>
                     <tr>
                         <th>위치</th>
-                        <div className='d-flex flex-wrap'>
+                        {/* <div className='d-flex flex-wrap'> */}
                             <td className="me-2">
                                 <input
                                     style={{ width: '120px' }}
@@ -131,7 +132,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                         { value: '기타', label: '기타' },
                                     ]}></Select>
                             </td>
-                        </div>
+                        {/* </div> */}
                     </tr>
                     <tr>
                         <th>회원번호</th>
@@ -228,7 +229,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     </tr>
                     <tr>
                         <th>부상 전적</th>
-                        <div className='d-flex flex-wrap'>
+                        {/* <div className='d-flex flex-wrap'> */}
                             <td className="me-2">
                                 <Select
                                     className="react-select"
@@ -259,7 +260,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                         ]}></Select>
                                 )}
                             </td>
-                        </div>
+                        {/* </div> */}
                     </tr>
                     <tr>
                         <th>유입 경로</th>

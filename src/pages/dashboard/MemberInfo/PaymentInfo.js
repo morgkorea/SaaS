@@ -10,16 +10,13 @@ const PaymentInfo = ({ member, handleTabChange }) => {
     const [sortedProducts, setSortedProducts] = useState([]);
 
     const sortProductsByDate = () => {
-      const sortedProducts = [...allProducts].sort((a, b) => {
-        const dateA = new Date(a.paymentDate);
-        const dateB = new Date(b.paymentDate);
-        return dateA - dateB;
-      });
-      setSortedProducts(sortedProducts);
+        const sortedProducts = [...allProducts].sort((a, b) => {
+            const dateA = new Date(a.paymentDate);
+            const dateB = new Date(b.paymentDate);
+            return dateA - dateB;
+        });
+        setSortedProducts(sortedProducts);
     };
-
-    console.log(allProducts)
-    console.log('sortedProducts', sortedProducts)
 
     useEffect(() => {
         if (member.availableProducts && member.unavailableProducts) {
@@ -42,8 +39,15 @@ const PaymentInfo = ({ member, handleTabChange }) => {
 
     useEffect(() => {
         sortProductsByDate();
-    }, []);
+    }, [allProducts]);
 
+    if (!member) {
+        return <div>Loading...</div>;
+    }
+
+    // console.log('member', member);
+    // console.log('allProducts', allProducts);
+    // console.log('sortedProducts', sortedProducts);
     return (
         <>
             <Card style={{ height: '740px' }}>
@@ -54,7 +58,8 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                             회원 메모
                         </p>
                     </div>
-                    {(!member.availableProducts || member.availableProducts.length) === 0 && (!member.unavailableProducts || member.unavailableProducts.length === 0) ? (
+                    {(!member.availableProducts || member.availableProducts.length) === 0 &&
+                    (!member.unavailableProducts || member.unavailableProducts.length === 0) ? (
                         <>
                             <div className="centralized">
                                 <h5>결제 정보가 없습니다.</h5>
@@ -74,11 +79,11 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                                                     <h4 className="number">{index + 1}회차</h4>
                                                     <div className="payment-info">
                                                         <p>{data.product}</p>
-                                                        {!data.expirationPeriod ? <></> :
-                                                            (
-                                                                <p>{data.expirationPeriod}</p>
-                                                            )
-                                                        }
+                                                        {!data.expirationPeriod ? (
+                                                            <></>
+                                                        ) : (
+                                                            <p>{data.expirationPeriod}</p>
+                                                        )}
                                                         <p>{data.discountRate}% 할인</p>
                                                         <p>
                                                             {data.startDate} ~ {data.endDate}
@@ -87,7 +92,11 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                                                 </div>
                                                 <div>
                                                     <h4>
-                                                        {(data.regularPrice && data.discountPrice) ? (data.regularPrice - data.discountPrice).toLocaleString() + '원' : '0원'}
+                                                        {data.regularPrice && data.discountPrice
+                                                            ? (
+                                                                  data.regularPrice - data.discountPrice
+                                                              ).toLocaleString() + '원'
+                                                            : '0원'}
                                                     </h4>
                                                 </div>
                                             </div>

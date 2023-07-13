@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import EditTable from './EditTable';
@@ -17,23 +17,30 @@ const MemberInfo = () => {
     const [editMode, setEditMode] = useState(false);
     const [modal, setModal] = useState(false);
     const [className, setClassName] = useState(null);
-    const email = useSelector((state) => state.Auth?.user.email);
     const [activeTab, setActiveTab] = useState('payment');
+    const [memberData, setMemberData] = useState(null);
 
     const location = useLocation();
     const member = location.state && location.state.member;
     const id = member && member.id;
     const childRef = useRef();
+    const email = useSelector((state) => state.Auth?.user.email);
+    const memberRef = doc(firestoreDB, 'Users', email, 'Members', id);
 
-    useEffect(()=>{
-    console.log("location", location)
-    },[location])
+    useEffect(() => {
+        const unsubscribe = onSnapshot(memberRef, (snapshot) => {
+            const data = snapshot.data();
+            setMemberData(data);
+        });
+        
+        return () => unsubscribe();
+    }, []);
 
-    console.log('memberData:', member);
+    // console.log('member:', member);
+    // console.log('memberData', memberData)
 
     const deleteUser = async () => {
-        const userDoc = doc(firestoreDB, 'Users', email, 'Members', id);
-        await deleteDoc(userDoc);
+        await deleteDoc(memberRef);
 
         toggle();
         notify();
@@ -97,6 +104,14 @@ const MemberInfo = () => {
         );
     }
 
+    if (!memberData) {
+        return (
+            <>
+            <p>Loading...</p>
+            </>
+        );
+    }
+    
     return (
         <>
             <Row className="justify-content-md-center mt-4">
@@ -107,9 +122,9 @@ const MemberInfo = () => {
                                 <h4>기본 정보</h4>
                             </div>
                             {!editMode ? (
-                                <Table member={member} />
+                                <Table member={memberData} />
                             ) : (
-                                <EditTable member={member} email={email} id={id} ref={childRef} />
+                                <EditTable member={memberData} email={email} id={id} ref={childRef} />
                             )}
                             <div className="box-wrap d-flex justify-content-center">
                                 {!editMode ? (
@@ -140,14 +155,14 @@ const MemberInfo = () => {
                 <Col xs={12} xl={8} xxl={9}>
                     <Row className="justify-content-md-center">
                         <Col xs={12} xxl={12}>
-                            <CurrentUsageInfo member={member} />
+                            <CurrentUsageInfo member={memberData} />
                         </Col>
                         <Col>
                             {activeTab === 'memo' && (
-                                <MemberMemo email={email} id={id} handleTabChange={handleTabChange} />
+                                <MemberMemo memberData={memberData} memberRef={memberRef} handleTabChange={handleTabChange} />
                             )}
                             {activeTab === 'payment' && (
-                                <PaymentInfo member={member} handleTabChange={handleTabChange} />
+                                <PaymentInfo member={memberData} handleTabChange={handleTabChange} />
                             )}
                         </Col>
                     </Row>
@@ -166,7 +181,7 @@ const MemberInfo = () => {
             <Modal show={modal} onHide={toggle} dialogClassName={className}>
                 <Modal.Body>
                     <h3>Alert</h3>
-                    <p>{member.name} 님의 회원 정보가 모두 삭제됩니다. 정말 삭제하시겠습니까?</p>
+                    <p>{memberData.name} 님의 회원 정보가 모두 삭제됩니다. 정말 삭제하시겠습니까?</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="light" onClick={toggle}>

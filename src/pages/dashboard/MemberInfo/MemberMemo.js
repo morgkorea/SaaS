@@ -1,28 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Col, Row } from 'react-bootstrap';
-import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { firestoreDB } from '../../../firebase/firebase';
+import { getDoc, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
-const MemberMemo = ({ email, id, handleTabChange }) => {
+const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
     const [memoContent, setMemoContent] = useState('');
-    const [memberData, setMemberData] = useState(null);
-
-    const memberRef = doc(firestoreDB, 'Users', email, 'Members', id);
-
     const notify = (message) => toast(message);
-
-    useEffect(() => {
-        const unsubscribe = onSnapshot(memberRef, (snapshot) => {
-            const data = snapshot.data();
-            setMemberData(data);
-        });
-        
-        return () => unsubscribe();
-    }, []);
 
     const updateMemo = async () => {
         const newMemo = {
