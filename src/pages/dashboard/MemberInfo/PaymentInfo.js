@@ -7,6 +7,19 @@ const PaymentInfo = ({ member, handleTabChange }) => {
     const [totalValue, setTotalValue] = useState(0);
     const [averageValue, setAverageValue] = useState(0);
     const [allProducts, setAllProducts] = useState([]);
+    const [sortedProducts, setSortedProducts] = useState([]);
+
+    const sortProductsByDate = () => {
+      const sortedProducts = [...allProducts].sort((a, b) => {
+        const dateA = new Date(a.paymentDate);
+        const dateB = new Date(b.paymentDate);
+        return dateA - dateB;
+      });
+      setSortedProducts(sortedProducts);
+    };
+
+    console.log(allProducts)
+    console.log('sortedProducts', sortedProducts)
 
     useEffect(() => {
         if (member.availableProducts && member.unavailableProducts) {
@@ -27,6 +40,9 @@ const PaymentInfo = ({ member, handleTabChange }) => {
         }
     }, [member.availableProducts, member.unavailableProducts]);
 
+    useEffect(() => {
+        sortProductsByDate();
+    }, []);
 
     return (
         <>
@@ -50,7 +66,7 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                     ) : (
                         <>
                             <div className="member-info-list">
-                                {allProducts.map((data, index) => {
+                                {sortedProducts.map((data, index) => {
                                     return (
                                         <div key={index} className="member-info-card">
                                             <div className="d-flex align-items-center justify-content-between">

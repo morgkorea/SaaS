@@ -16,7 +16,6 @@ import { firestoreDB } from '../../../firebase/firebase';
 const MemberDashboard = () => {
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
-    console.log('활성: ', activeMembers, '전체: ', currentMembers);
 
     const email = useSelector((state) => state.Auth?.user.email);
 
@@ -39,6 +38,7 @@ const MemberDashboard = () => {
     useEffect(() => {
         getMembers();
     }, []);
+    // console.log('활성: ', activeMembers, '전체: ', currentMembers);
 
     const [show, setShow] = useState(true);
     const [index, setIndex] = useState(1);

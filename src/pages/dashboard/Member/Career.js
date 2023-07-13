@@ -49,45 +49,46 @@ const Career = ({ members }) => {
 
     return (
         <Card>
-            <Card.Body style={{ height: '450px', overflowY: 'scroll' }}>
+            <Card.Body style={{ height: '450px' }}>
                 <CardTitle
-                    containerClass="d-flex align-items-center justify-content-between mb-2"
+                    containerClass="d-flex align-items-center justify-content-between mb-3 pt-1"
                     title="골프경력"
-                    menuItems={[
-                        { label: 'Weekly Report' },
-                        { label: 'Monthly Report' },
-                        { label: 'Action' },
-                        { label: 'Settings' },
-                    ]}
+                    // menuItems={[
+                    //     { label: 'Weekly Report' },
+                    //     { label: 'Monthly Report' },
+                    //     { label: 'Action' },
+                    //     { label: 'Settings' },
+                    // ]}
                 />
-
-                <Table responsive className="table table-sm table-centered mb-0 font-14">
-                    <thead className="table-light">
-                        <tr>
-                            <th style={{ width: '30%' }}>경력기간</th>
-                            <th style={{ width: '25%' }}>인원</th>
-                            <th colspan="2">비율(100%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {period.map((data) => (
+                <div style={{ height: '370px', overflowY: 'scroll' }}>
+                    <Table responsive className="table table-sm table-centered mb-0 font-14">
+                        <thead className="table-light">
                             <tr>
-                                <td>{data.name}</td>
-                                <td>{data.number.toLocaleString()}명</td>
-                                <td style={{ width: '40px' }}>
-                                    {Math.floor((data.rate / totalNumber) * 100) + '%'}
-                                </td>
-                                <td className='ps-0'>
-                                    <ProgressBar
-                                        now={Math.floor((data.rate / totalNumber) * 100)}
-                                        style={{ height: '3px' }}
-                                        variant=""
-                                    />
-                                </td>
+                                <th style={{ width: '30%' }}>경력기간</th>
+                                <th style={{ width: '25%' }}>인원</th>
+                                <th colSpan="2">비율(100%)</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {period.map((data) => (
+                                <tr key={data.index}>
+                                    <td>{data.name}</td>
+                                    <td>{data.number.toLocaleString()}명</td>
+                                    <td style={{ width: '40px' }}>
+                                        {Math.floor((data.rate / totalNumber) * 100) + '%'}
+                                    </td>
+                                    <td className='ps-0'>
+                                        <ProgressBar
+                                            now={Math.floor((data.rate / totalNumber) * 100)}
+                                            style={{ height: '3px' }}
+                                            variant=""
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
             </Card.Body>
         </Card>
     );

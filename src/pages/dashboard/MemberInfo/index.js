@@ -116,12 +116,12 @@ const MemberInfo = () => {
                                     <>
                                         <Button
                                             onClick={() => openModalWithClass('modal-dialog-centered')}
-                                            className="me-1 px-4"
+                                            className="me-1 px-3"
                                             variant="outline-danger">
                                             삭제하기
                                         </Button>
                                         <Button
-                                            className="px-5"
+                                            className='px-5'
                                             onClick={() => {
                                                 childRef.current.modifyMember();
                                             }}>

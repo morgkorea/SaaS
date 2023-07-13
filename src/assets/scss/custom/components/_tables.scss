@@ -199,8 +199,11 @@ body[data-layout-color="dark"] {
     }
 }
 
-
+table.basic-table {
+    width: 100%;
+}
 table.basic-table tbody tr {
+    width: 100%;
     display: flex;
     margin-bottom: 1rem; 
     margin-right: 4px;
@@ -213,11 +216,17 @@ table.basic-table tbody > tr > th {
 }
 table.basic-table tbody > tr > td {
     color: #313A46;
-    font-weight: 700;
+    font-weight: 500;
+    @media (max-width: 419px) {
+        width: 100%;
+    }
 }
-table.basic-table input, select, textarea {
-    // color: #313A46;
-    // font-weight: 700;
+table.basic-table input, select, textarea, input[type=date]:invalid,
+.react-select__single-value, 
+.react-select__single-value option:checked, 
+.react-select__placeholder {
+    color: #313A46 !important;
+    font-weight: 500;
 }
 
 
@@ -321,7 +330,7 @@ table.basic-table input, select, textarea {
     left: 0;
     right: 0;
     width: 100%;
-    bottom: 50px;
+    bottom: 25px;
 }
 
 .memoTextarea {

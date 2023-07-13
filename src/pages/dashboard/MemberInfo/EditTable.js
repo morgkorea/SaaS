@@ -23,7 +23,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [inflowPathValue, setInflowPathValue] = useState('');
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
-    const [activeStatus, setActiveStatus] = useState('');
+
     function privateInfoChange(event) {
         setPrivateInfoChecked(event.target.checked);
     }
@@ -49,7 +49,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
             inflowPath: inflowPathValue,
             privateInfoAllow: privateInfoChecked,
             marketingRecieveAllow: marketingChecked,
-            activation: activeStatus,
         };
 
         await updateDoc(memberRef, editData);
@@ -75,12 +74,12 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         <th>성함</th>
                         <td>
                             <input
-                                style={{ width: '110px' }}
+                                style={{ width: '75px', marginRight: '10px' }}
                                 className="editInput"
                                 type="text"
                                 value={nameValue}
                                 onChange={(e) => setNameValue(e.target.value)}
-                            /> 회원님
+                            />회원님
                         </td>
                     </tr>
                     <tr>
@@ -98,7 +97,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         <th>휴대전화</th>
                         <td>
                             <input
-                                style={{ width: '130px' }}
+                                style={{ width: '120px' }}
                                 className="editInput"
                                 type="tel"
                                 pattern="[0-9]*"
@@ -109,28 +108,30 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     </tr>
                     <tr>
                         <th>위치</th>
-                        <td className="me-2">
-                            <input
-                                style={{ width: '80px' }}
-                                className="editInput"
-                                type="text"
-                                placeholder="지역"
-                                value={regionValue}
-                                onChange={(e) => setRegionValue(e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder={member.location}
-                                onChange={(e) => setLocationValue(e.value)}
-                                options={[
-                                    { value: '자택', label: '자택' },
-                                    { value: '직장', label: '직장' },
-                                    { value: '기타', label: '기타' },
-                                ]}></Select>
-                        </td>
+                        <div className='d-flex flex-wrap'>
+                            <td className="me-2">
+                                <input
+                                    style={{ width: '120px' }}
+                                    className="editInput"
+                                    type="text"
+                                    placeholder="지역"
+                                    value={regionValue}
+                                    onChange={(e) => setRegionValue(e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <Select
+                                    className="react-select"
+                                    classNamePrefix="react-select"
+                                    placeholder={member.location}
+                                    onChange={(e) => setLocationValue(e.value)}
+                                    options={[
+                                        { value: '자택', label: '자택' },
+                                        { value: '직장', label: '직장' },
+                                        { value: '기타', label: '기타' },
+                                    ]}></Select>
+                            </td>
+                        </div>
                     </tr>
                     <tr>
                         <th>회원번호</th>
@@ -139,7 +140,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     <tr>
                         <th>생성일자</th>
                         <td>
-                            {member?.createdDate} / {member?.createdTime}
+                            {member?.createdDate} {member?.createdTime}
                         </td>
                     </tr>
                     <tr>
@@ -227,36 +228,38 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     </tr>
                     <tr>
                         <th>부상 전적</th>
-                        <td className="me-2">
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder={member.injuries}
-                                onChange={(e) => setInjuriesValue(e.value)}
-                                options={[
-                                    { value: '유', label: '유' },
-                                    { value: '무', label: '무' },
-                                ]}></Select>
-                        </td>
-                        <td>
-                            {injuriesValue === '무' ? null : (
+                        <div className='d-flex flex-wrap'>
+                            <td className="me-2">
                                 <Select
                                     className="react-select"
                                     classNamePrefix="react-select"
-                                    placeholder={member.injuriedPart}
-                                    onChange={(e) => setInjuriedPartValue(e.value)}
+                                    placeholder={member.injuries}
+                                    onChange={(e) => setInjuriesValue(e.value)}
                                     options={[
-                                        { value: '팔꿈치', label: '팔꿈치' },
-                                        { value: '허리', label: '허리' },
-                                        { value: '무릎', label: '무릎' },
-                                        { value: '손목', label: '손목' },
-                                        { value: '어깨', label: '어깨' },
-                                        { value: '등', label: '등' },
-                                        { value: '손가락', label: '손가락' },
-                                        { value: '기타', label: '기타' },
+                                        { value: '유', label: '유' },
+                                        { value: '무', label: '무' },
                                     ]}></Select>
-                            )}
-                        </td>
+                            </td>
+                            <td>
+                                {injuriesValue === '무' ? null : (
+                                    <Select
+                                        className="react-select"
+                                        classNamePrefix="react-select"
+                                        placeholder={member.injuriedPart}
+                                        onChange={(e) => setInjuriedPartValue(e.value)}
+                                        options={[
+                                            { value: '팔꿈치', label: '팔꿈치' },
+                                            { value: '허리', label: '허리' },
+                                            { value: '무릎', label: '무릎' },
+                                            { value: '손목', label: '손목' },
+                                            { value: '어깨', label: '어깨' },
+                                            { value: '등', label: '등' },
+                                            { value: '손가락', label: '손가락' },
+                                            { value: '기타', label: '기타' },
+                                        ]}></Select>
+                                )}
+                            </td>
+                        </div>
                     </tr>
                     <tr>
                         <th>유입 경로</th>
@@ -301,21 +304,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 onChange={marketingChange}
                                 name="marketing"
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>활성여부</th>
-                        <td>
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder={member.activation}
-                                onChange={(e) => setActiveStatus(e.value)}
-                                options={[
-                                    { value: '활성', label: '활성' },
-                                    { value: '이탈', label: '이탈' },
-                                    { value: '일시중지', label: '일시중지' },
-                                ]}></Select>
                         </td>
                     </tr>
                 </tbody>

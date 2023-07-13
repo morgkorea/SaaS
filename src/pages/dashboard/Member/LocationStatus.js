@@ -52,14 +52,14 @@ const LocationStatus = ({ members }) => {
         <Card>
             <Card.Body>
                 <CardTitle
-                    containerClass="d-flex align-items-center justify-content-between"
+                    containerClass="d-flex align-items-center justify-content-between py-1"
                     title="위치 추이"
-                    menuItems={[
-                        { label: 'Weekly Report' },
-                        { label: 'Monthly Report' },
-                        { label: 'Action' },
-                        { label: 'Settings' },
-                    ]}
+                    // menuItems={[
+                    //     { label: 'Weekly Report' },
+                    //     { label: 'Monthly Report' },
+                    //     { label: 'Action' },
+                    //     { label: 'Settings' },
+                    // ]}
                 />
 
                 <div className="my-4" style={{ height: '180px' }}>

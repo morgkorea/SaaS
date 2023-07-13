@@ -24,7 +24,7 @@ const AddCell = forwardRef((props, ref) => {
     const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
-    const [activeStatus, setActiveStatus] = useState('');
+    // const [activeStatus, setActiveStatus] = useState('');
 
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
@@ -64,58 +64,80 @@ const AddCell = forwardRef((props, ref) => {
             inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
-            activation: activeStatus,
+            activation: '', // activeStatus
             // amountPayments: '',
             // lifetimeValue: '',
             // amountPaymentAverage: '',
-            
-            // availableProducts: [
-            //     {
-            //         adjustedPrice: 0,
-            //         discountPrice: 0,
-            //         discountRate: 0,
-            //         startDate: '', // '2023-02-19'
-            //         endDate: '', // '2023-02-19'
-            //         paymentDate: "", // '2023-02-19'
-            //         paymentTime: "", // "15:00"
-            //         product: "",
-            //         productCode: "",
-            //         productType: "",
-            //         regularPrice: 0,
-            //     },
-            // ],
-            // unavailableProducts: [
-            //     {
-            //         adjustedPrice: 0,
-            //         discountPrice: 0,
-            //         discountRate: 0,
-            //         startDate: '', // '2023-02-19'
-            //         endDate: '', // '2023-02-19'
-            //         paymentDate: "", // '2023-02-19'
-            //         paymentTime: "", // "15:00"
-            //         product: "",
-            //         productCode: "",
-            //         productType: "",
-            //         regularPrice: 0,
-            //     },
-            // ],
-            
+
             // 임시 데이터 !! 추후 삭제
             // availableProducts: [
+            //     {
+            //         adjustedPrice: 250000,
+            //         discountPrice: 250000,
+            //         discountRate: 50,
+            //         startDate: '2023-05-13', //시작일
+            //         endDate: '2023-08-13', //종료일
+            //         paymentDate: "2023-05-13",
+            //         paymentTime: "15:02",
+            //         product: "회원권",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 500000,
+            //     },
+            //     {
+            //         adjustedPrice: 200000,
+            //         discountPrice: 200000,
+            //         discountRate: 50,
+            //         startDate: '2023-04-13', //시작일
+            //         endDate: '2023-07-13', //종료일
+            //         paymentDate: "2023-04-13",
+            //         paymentTime: "14:02",
+            //         product: "레슨",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 400000,
+            //     },
             //     {
             //         adjustedPrice: 60000,
             //         discountPrice: 60000,
             //         discountRate: 50,
-            //         startDate: '2023-07-01', //시작일
-            //         endDate: '2023-08-01', //종료일
-            //         paymentDate: "2023-07-01",
+            //         startDate: '2023-07-13', //시작일
+            //         endDate: '2023-06-13', //종료일
+            //         paymentDate: "2023-07-13",
             //         paymentTime: "14:02",
-            //         product: "락커 12개월",
+            //         product: "락커",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 120000,
+            //     },
+            //     {
+            //         adjustedPrice: 150000,
+            //         discountPrice: 150000,
+            //         discountRate: 50,
+            //         startDate: '2023-02-13', //시작일
+            //         endDate: '2023-06-13', //종료일
+            //         paymentDate: "2023-02-13",
+            //         paymentTime: "14:02",
+            //         product: "타석",
+            //         productCode: "KO0001_LO_12000_014",
+            //         productType: "locker",
+            //         regularPrice: 300000,
+            //     },
+            //     {
+            //         adjustedPrice: 60000,
+            //         discountPrice: 60000,
+            //         discountRate: 50,
+            //         startDate: '2023-03-13', //시작일
+            //         endDate: '2023-06-13', //종료일
+            //         paymentDate: "2023-01-13",
+            //         paymentTime: "15:02",
+            //         product: "락커",
             //         productCode: "KO0001_LO_12000_014",
             //         productType: "locker",
             //         regularPrice: 120000,
             //     },
             // ],
+            
             // unavailableProducts: [
             //     {
             //         adjustedPrice: 60000,
@@ -344,7 +366,7 @@ const AddCell = forwardRef((props, ref) => {
                 <td></td>
                 <td></td>
                 <td>
-                    <Select
+                    {/* <Select
                         className="react-select"
                         classNamePrefix="react-select"
                         onChange={(e) => setActiveStatus(e.value)}
@@ -352,7 +374,7 @@ const AddCell = forwardRef((props, ref) => {
                             { value: '활성', label: '활성' },
                             { value: '이탈', label: '이탈' },
                             { value: '일시중지', label: '일시중지' },
-                        ]}></Select>
+                        ]}></Select> */}
                 </td>
             </tr>
         </>
