@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, memo } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import {
     useTable,
     useSortBy,
@@ -30,7 +30,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder="검색어를 입력하세요."
+                    placeholder="회원명 등 검색"
                     className="form-control w-auto ms-1"
                 />
             </span>
@@ -163,7 +163,7 @@ const Table = (props: TableProps) => {
                 </div>
                 <div className="ms-2">
                     {!addMode ? (
-                        <Button onClick={onClickAdd}>회원등록</Button>
+                        <Button onClick={onClickAdd}>회원 등록하기</Button>
                     ) : (
                         <Button
                             onClick={() => {
@@ -174,7 +174,6 @@ const Table = (props: TableProps) => {
                     )}
                 </div>
             </div>
-
             <div className="table-responsive member-table">
                 <table
                     {...dataTable.getTableProps()}
@@ -217,6 +216,7 @@ const Table = (props: TableProps) => {
             </div>
 
             {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
+
         </>
     );
 };

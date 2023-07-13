@@ -45,20 +45,18 @@ const GenderStatus = ({ members }) => {
         <Card>
             <Card.Body>
                 <CardTitle
-                    containerClass="d-flex align-items-center justify-content-between"
+                    containerClass="d-flex align-items-center justify-content-between py-1"
                     title="성별 추이"
-                    menuItems={[
-                        { label: 'Weekly Report' },
-                        { label: 'Monthly Report' },
-                        { label: 'Action' },
-                        { label: 'Settings' },
-                    ]}
+                    // menuItems={[
+                    //     { label: 'Weekly Report' },
+                    //     { label: 'Monthly Report' },
+                    //     { label: 'Action' },
+                    //     { label: 'Settings' },
+                    // ]}
                 />
-
                 <div className="my-4" style={{ height: '180px' }}>
                     <Doughnut data={donutChartData} options={donutChartOpts} />
                 </div>
-
                 <Row className="text-center mt-2 py-2">
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">

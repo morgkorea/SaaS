@@ -92,7 +92,8 @@ const SessionsChart = ({ members, index }) => {
         },
         yaxis: {
             labels: {
-                offsetX: -50, // hide
+                offsetX: 0,
+                // offsetX: -50, // hide
             },
         },
         fill: {

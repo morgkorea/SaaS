@@ -1,13 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
 const Statistics = ({ members, index }) => {
     const allMember = members.length;
-    let memberDueExpire = 2;
-    let expiredMembers = 8;
+    const [expires30Days, setExpires30Days] = useState(0);
+    const [expiredMembers, setExpiredMembers] = useState(0);
 
-    // 기간만료 회원 - if (availableProducts X, unavailableProducts O)
-    // 기간만료 회원 - if (availableProducts X, unavailableProducts O)
+    useEffect(() => {
+        const filterDataWithin30Days = () => {
+            const today = new Date();
+            const thirtyDaysFromNow = new Date();
+            thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+            let expiresCount = 0;
+
+            const filteredMembers = members.filter((member) => {
+                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                    const hasProductWithin30Days = member.availableProducts.some((product) => {
+                        if (product && product.endDate) {
+                            const endDate = new Date(product.endDate);
+                            return endDate >= today && endDate <= thirtyDaysFromNow;
+                        }
+                        return false;
+                    });
+
+                    return hasProductWithin30Days;
+
+                }
+                return false;
+            });
+
+            expiresCount = filteredMembers.length;
+            // console.log('30일 이내 만료 예정 회원:', filteredMembers);
+            setExpires30Days(expiresCount);
+        };
+
+        filterDataWithin30Days();
+    }, [members]);
+
+    useEffect(() => {
+        const FindUserWithMissingValue = () => {
+            let count = 0;
+
+            members.filter((member) => {
+                if ((!member.availableProducts || member.availableProducts.length === 0) && member.unavailableProducts && member.unavailableProducts.length > 0) {
+                    count++;
+                    // console.log('기간만료 회원:', member.name)
+                }
+            });
+            setExpiredMembers(count);
+        };
+        FindUserWithMissingValue();
+    }, [members]);
 
     return (
         <>
@@ -31,7 +75,7 @@ const Statistics = ({ members, index }) => {
                     border="danger"
                     description="Refund"
                     title="만료 예정 회원 (1개월 내)"
-                    stats={memberDueExpire + '명'}
+                    stats={expires30Days + '명'}
                     trend={{
                         textClass: 'text-danger',
                         icon: 'mdi mdi-arrow-down-bold',

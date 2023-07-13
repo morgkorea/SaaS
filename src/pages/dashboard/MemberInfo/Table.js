@@ -13,7 +13,7 @@ const Table = ({ member }) => {
     }
 
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
-    
+
     const phone = countryCode + formattedPhoneNumber;
 
     return (
@@ -30,7 +30,11 @@ const Table = ({ member }) => {
                     <tr>
                         <th>생년월일</th>
                         <td>
-                            {member?.birthDate} {member.ageGroup}
+                            {member.birthDate ? (
+                                <>
+                                    {member.birthDate} 만 {member.age}세
+                                </>
+                            ) : null}
                         </td>
                     </tr>
                     <tr>
@@ -54,16 +58,20 @@ const Table = ({ member }) => {
                         </td>
                     </tr>
                     <tr>
+                        <th>유형</th>
+                        <td>{member?.audience}</td>
+                    </tr>
+                    <tr>
                         <th>골프 경력</th>
                         <td>{member?.golfPeriod}</td>
                     </tr>
                     <tr>
-                        <th>상담 유형</th>
-                        <td>{member?.audience}</td>
+                        <th>골프 목적</th>
+                        <td>{member?.golfPurpose}</td>
                     </tr>
                     <tr>
                         <th>관심 품목</th>
-                        <td></td>
+                        <td>{member?.product}</td>
                     </tr>
                     <tr>
                         <th>이용시간</th>
@@ -78,7 +86,7 @@ const Table = ({ member }) => {
                     </tr>
                     <tr>
                         <th>유입 경로</th>
-                        <td></td>
+                        <td>{member?.inflowPath}</td>
                     </tr>
                     <tr>
                         <th>개인정보수집동의</th>
@@ -99,6 +107,10 @@ const Table = ({ member }) => {
                                 <i className="mdi mdi-check" />
                             )}
                         </td>
+                    </tr>
+                    <tr>
+                        <th>활성여부</th>
+                        <td>{member?.activation}</td>
                     </tr>
                 </tbody>
             </table>

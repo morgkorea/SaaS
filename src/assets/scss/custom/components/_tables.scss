@@ -199,58 +199,95 @@ body[data-layout-color="dark"] {
     }
 }
 
-
+table.basic-table {
+    width: 100%;
+}
 table.basic-table tbody tr {
+    width: 100%;
     display: flex;
     margin-bottom: 1rem; 
     margin-right: 4px;
     align-items: center;
 }
-table.basic-table tbody th {
-    min-width: 110px;
-    color: $secondary;
-}
-table.basic-table tbody > td {
-    color: #313A46;
+table.basic-table tbody > tr > th {
+    min-width: 114px;
+    color: #6C757D;
     font-weight: 500;
 }
-table.basic-table > input, select, textarea {
+table.basic-table tbody > tr > td {
     color: #313A46;
+    font-weight: 500;
+    @media (max-width: 419px) {
+        width: 100%;
+    }
+}
+table.basic-table input, select, textarea, input[type=date]:invalid,
+.react-select__single-value, 
+.react-select__single-value option:checked, 
+.react-select__placeholder {
+    color: #313A46 !important;
+    font-weight: 500;
 }
 
 
 .payment-wrap {
     position: relative;
+    overflow: hidden;
+}
+.memo-wrap {
+    position: relative;
+    overflow: hidden;
 }
 .payment-wrap::after {
     content: '';
     position: absolute;
-    bottom: 110px;
+    bottom: 100px;
     width: 100%;
     height: 60px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 100%);
 }
-.payment-list {
-    overflow-y: scroll;
-    height: 500px;
-    flex-shrink: 0;
+.memo-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 100%);
 }
-.payment-card {
+.member-info-list {
+    overflow-y: scroll;
+    width: 100%;
+    height: 550px;
+    flex-shrink: 0;
+    .member-info-card:last-child {
+        margin-bottom: 2rem;
+    }
+    .member-info-card.memo:last-child {
+        margin-bottom: 6rem;
+    }
+}
+.member-info-card {
     border: 1px solid #EEF2F7;
+    width: 100%;
     padding: 24px;
     border-radius: 10px;
     margin-bottom: 1rem;
+    box-sizing: border-box;
     .number {
         display: block;
         width: 100px;
     }
+    > div > p {
+        margin-bottom: 0;
+        color: #6C757D;
+    }
 }
+
 
 .payment-info {
     display: flex;
     align-items: center;
     text-align: left;
-
     > p {
         position: relative;
         margin: 0 20px 0 0;
@@ -285,5 +322,56 @@ table.basic-table > input, select, textarea {
         right: -25px;
         width: 1px;
         height: 15px;
+    }
+}
+
+.box-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: 25px;
+}
+
+.memoTextarea {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    border: none;
+    resize: none;
+    font-size: 1rem;
+}
+.memoTextarea:focus {
+    outline: none;
+}
+.memoTextarea::placeholder {
+    color: #98A6AD;
+}
+
+
+button.basic-icon {
+    background: inherit; 
+    border:none; 
+    box-shadow:none; 
+    border-radius:0; 
+    padding:0; 
+    overflow:visible; 
+    cursor:pointer;
+    i {
+        color: #6C757D;
+    }
+}
+
+.centralized-parents {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .centralized {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        align-items: center;
+        text-align: center;
     }
 }
