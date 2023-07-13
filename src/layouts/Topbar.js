@@ -87,21 +87,21 @@ const Notifications = [
 
 // get the profilemenu
 const ProfileMenus = [
-    {
-        label: 'My Account',
-        icon: 'mdi mdi-account-circle',
-        redirectTo: '#',
-    },
-    {
-        label: 'Settings',
-        icon: 'mdi mdi-account-edit',
-        redirectTo: '#',
-    },
-    {
-        label: 'Support',
-        icon: 'mdi mdi-lifebuoy',
-        redirectTo: '#',
-    },
+    // {
+    //     label: 'My Account',
+    //     icon: 'mdi mdi-account-circle',
+    //     redirectTo: '#',
+    // },
+    // {
+    //     label: 'Settings',
+    //     icon: 'mdi mdi-account-edit',
+    //     redirectTo: '#',
+    // },
+    // {
+    //     label: 'Support',
+    //     icon: 'mdi mdi-lifebuoy',
+    //     redirectTo: '#',
+    // },
     {
         label: 'Lock Screen',
         icon: 'mdi mdi-lock-outline',
@@ -188,12 +188,12 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                         <li className="notification-list topbar-dropdown d-xl-none">
                             <SearchDropdown />
                         </li>
-                        <li className="dropdown notification-list">
+                        {/* <li className="dropdown notification-list">
                             <NotificationDropdown notifications={Notifications} />
                         </li>
                         <li className="dropdown notification-list d-none d-sm-inline-block">
                             <AppsDropdown />
-                        </li>
+                        </li> */}
                         <li className="notification-list">
                             <button
                                 className="nav-link dropdown-toggle end-bar-toggle arrow-none btn btn-link shadow-none"
@@ -205,7 +205,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                             <ProfileDropdown
                                 profilePic={profilePic}
                                 menuItems={ProfileMenus}
-                                username={'주용환'}
+                                username={''}
                                 userTitle={'대표'}
                             />
                         </li>
@@ -242,7 +242,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                             </div>
                         </Link>
                     )}
-                    <TopbarSearch />
+                    {/* <TopbarSearch /> */}
                 </div>
             </div>
         </>

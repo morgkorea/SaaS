@@ -21,17 +21,22 @@ const RoundedCircle = ({ size }) => {
 
 const Crm = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
-    
-    const email = useSelector((state) => { return state.Auth?.user.email; });
-    const memberRef = collection(firestoreDB, "Users", email, "Members")
+
+    const email = useSelector((state) => {
+        return state.Auth?.user.email;
+    });
+    const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
     const getMembers = async () => {
         const data = await getDocs(memberRef);
-        
-        setCurrentMembers(data.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        })))
+
+        console.log(data);
+        setCurrentMembers(
+            data.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }))
+        );
     };
 
     useEffect(() => {
@@ -139,10 +144,6 @@ const Crm = () => {
         modifyingFirestoreMember();
     };
 
-
-
-
-    
     const [page, setPage] = useState(1);
     const limit = 20;
     const offset = (page - 1) * limit;
@@ -194,7 +195,6 @@ const Crm = () => {
                 </span>
             </div>
 
-
             <Modal show={modal} onHide={toggle} dialogClassName={className} size="lg" scrollable={scroll}>
                 <Modal.Header className="border-bottom-0 p-4 pb-2" closeButton />
                 <Modal.Body className="px-5 pb-5 pt-0">
@@ -204,31 +204,18 @@ const Crm = () => {
                         <p className="pt-2">기본 프로필 이미지</p>
                     </div>
                     <form>
-                        <FormInput
-                            label="이름" 
-                            type="text" 
-                            name="text" 
-                            containerClass={'mb-2'} 
-                            key="text"
-                        />
+                        <FormInput label="이름" type="text" name="text" containerClass={'mb-2'} key="text" />
                         <FormInput
                             name="select"
                             label="성별"
                             type="select"
                             containerClass={'mb-2'}
                             className="form-select"
-                            key="select"
-                        >
+                            key="select">
                             <option>남성</option>
                             <option>여성</option>
                         </FormInput>
-                        <FormInput 
-                            label="생년월일" 
-                            type="date" 
-                            name="date" 
-                            containerClass={'mb-2'} 
-                            key="date"
-                        />
+                        <FormInput label="생년월일" type="date" name="date" containerClass={'mb-2'} key="date" />
                         <FormInput
                             label="이메일"
                             type="email"
@@ -250,15 +237,14 @@ const Crm = () => {
                         <Button
                             variant="primary"
                             type="submit"
-                            className="col-md-3 mt-4 mx-auto d-flex justify-content-center"
-                        >
+                            className="col-md-3 mt-4 mx-auto d-flex justify-content-center">
                             등록
                         </Button>
                     </form>
                 </Modal.Body>
             </Modal>
 
-            {/* <div className="app-search mt-3">
+            <div className="app-search mt-3">
                 <Form.Group>
                     <InputGroup className="mb-2">
                         <Form.Control
@@ -280,8 +266,7 @@ const Crm = () => {
                     <p className="text-muted">검색결과가 없습니다.</p>
                     <Button>회원 정보 입력</Button>
                 </div>
-            </div>  */}
-
+            </div>
         </>
     );
 };

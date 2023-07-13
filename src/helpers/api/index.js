@@ -14,6 +14,8 @@ import {
     firebaseForgotPasswordSendPasswordResetEmail,
     firebaseDeleteUser,
     firebaseUpdateProfile,
+    firebaseFakeUpdateProfile,
+    firebaseDeleteFakeUser,
 } from './auth';
 
 export {
@@ -31,4 +33,6 @@ export {
     firebaseForgotPasswordSendPasswordResetEmail,
     firebaseDeleteUser,
     firebaseUpdateProfile,
+    firebaseFakeUpdateProfile,
+    firebaseDeleteFakeUser,
 };

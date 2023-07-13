@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect,useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
@@ -24,6 +24,10 @@ const MemberInfo = () => {
     const member = location.state && location.state.member;
     const id = member && member.id;
     const childRef = useRef();
+
+    useEffect(()=>{
+    console.log("location", location)
+    },[location])
 
     console.log('memberData:', member);
 

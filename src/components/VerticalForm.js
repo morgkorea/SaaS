@@ -15,6 +15,7 @@ const VerticalForm = ({
     resolver,
     children,
     onSubmit,
+    onChange,
     formClass,
 }: VerticalFromProps): React$Element<any> => {
     /*
@@ -26,6 +27,7 @@ const VerticalForm = ({
         register,
         control,
         formState: { errors },
+        watch,
     } = methods;
 
     return (

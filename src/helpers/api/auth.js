@@ -19,6 +19,14 @@ function firebaseFakeSingupForEmailVerification(params) {
     return api.firebaseFakeSingupForEmailVerification(params);
 }
 
+function firebaseFakeUpdateProfile(params) {
+    return api.firebaseFakeUpdateProfile(params);
+}
+
+function firebaseDeleteFakeUser() {
+    return api.firebaseDeleteFakeUser();
+}
+
 function firebaseWatchEmailVerification() {
     return api.firebaseWatchEmailVerification();
 }
@@ -81,4 +89,6 @@ export {
     firebaseForgotPasswordSendPasswordResetEmail,
     firebaseDeleteUser,
     firebaseUpdateProfile,
+    firebaseFakeUpdateProfile,
+    firebaseDeleteFakeUser,
 };

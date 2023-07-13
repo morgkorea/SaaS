@@ -10,10 +10,10 @@ import { getMenuItems } from '../helpers/menu';
 import AppMenu from './Menu';
 
 // images
-import logoSm from '../assets/images/logo_sm.png';
-import logoDark from '../assets/images/logo-dark.png';
-import logoDarkSm from '../assets/images/logo_sm_dark.png';
-import logo from '../assets/images/logo.png';
+import logoSm from '../assets/images/icons/png/Morg.png';
+import logoDark from '../assets/images/icons/png/Morg.png';
+import logoDarkSm from '../assets/images/icons/png/Morg.png';
+import logo from '../assets/images/icons/png/Morg.png';
 import helpBoxImage from '../assets/images/help-icon.svg';
 import profileImg from '../assets/images/users/avatar-1.jpg';
 
@@ -35,7 +35,7 @@ const SideBarContent = ({ hideUserProfile }: SideBarContentProps) => {
             )}
             <AppMenu menuItems={getMenuItems()} />
 
-            <div
+            {/* <div
                 className={classNames('help-box', 'text-center', {
                     'text-white': hideUserProfile,
                 })}>
@@ -54,7 +54,7 @@ const SideBarContent = ({ hideUserProfile }: SideBarContentProps) => {
                     )}>
                     Upgrade
                 </button>
-            </div>
+            </div> */}
             <div className="clearfix" />
         </>
     );

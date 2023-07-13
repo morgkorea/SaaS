@@ -16,7 +16,7 @@ import {
     firestorePaymentInfoFieldSchema,
 } from '../../../firebase/firestoreDbSchema';
 
-import { collection, query, where, setDoc, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, setDoc, doc, getDocs, updateDoc, onSnapshot, arrayUnion } from 'firebase/firestore';
 
 import * as Hangul from 'hangul-js';
 import { disassemble } from 'hangul-js';
@@ -35,7 +35,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     const [registrationSalesProducts, setRegistrationSalesProducts] = useState(Array.from({ length: 5 }, () => ({})));
 
-    console.log(registrationSalesProducts);
     //step 1 =================================================================
     //선택 회원
     const [isSelectedMember, setIsSelectedMember] = useState(false);
@@ -52,6 +51,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
     //step 2 ==================================================================
     // fetching data
+
     const [productsList, setProductsList] = useState([]);
 
     //selected product
@@ -85,6 +85,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [paymentTime, setPaymentTime] = useState('00:00');
 
+    console.log(productsList);
     const remainingPrice =
         registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
@@ -94,9 +95,20 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         paymentInfo2.paymentPrice -
         paymentInfo3.paymentPrice;
 
-    console.log('selectedProduct', selectedProduct);
     const putFirestoreRegistrationSalesData = async () => {
-        const salesProducts = [...registrationSalesProducts].filter((product) => product.hasOwnProperty('productCode'));
+        const salesProducts = [...registrationSalesProducts]
+            .filter((product) => product.hasOwnProperty('productCode'))
+            .map((product, idx) => {
+                //최종가 할당 (adjustedPrice)
+
+                return {
+                    ...product,
+                    adjustedPrice: product.discountPrice - modifyPriceList[idx],
+                    paymentDate: paymentDate,
+                    paymentTime: paymentTime,
+                };
+            });
+        console.log(salesProducts);
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
@@ -116,17 +128,21 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             paymentMethod: paymentMethod,
             paymentInfo: paymentInfo,
         };
-        console.log(salesData);
 
         const salesCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Sales'));
+        const selectedMemberRef = doc(firestoreDB, 'Users', email, 'Members', isSelectedMember.memberId);
 
         try {
             await setDoc(salesCollectionRef, salesData);
+            // await setDec(selectedMemberRef)
+            await updateDoc(selectedMemberRef, {
+                availableProducts: arrayUnion(...salesProducts),
+            });
         } catch (error) {
             console.log(error);
         }
     };
-    console.log(isSelectedMember);
+
     // 미결제 금액, 잔여 금액
 
     const [size, setSize] = useState('lg');
@@ -190,7 +206,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         }
     };
 
-    console.log(paymentInfo1);
     const createFirestorePaymentInfoList = () => {
         const paymentInfoArray = [...paymentInfoList];
         const paymentInfo = { ...firestorePaymentInfoFieldSchema };
@@ -204,7 +219,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             if (periodString.includes('개월')) {
                 calculatedDate.setMonth(calculatedDate.getMonth() + ~~periodString.replace('개월', ''));
                 calculatedDate.setDate(calculatedDate.getDate() - 1);
-                console.log(~~periodString.replace('개월', ''));
             } else if (periodString.includes('일')) {
                 calculatedDate.setDate(calculatedDate.getDate() + ~~periodString.replace('일', '') - 1);
             }
@@ -222,9 +236,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             discountPrice: selectedProduct?.regularPrice - selectedProduct?.regularPrice * (productDiscountRate / 100),
             startDate: productStartDate,
             endDate: calculateProductDuration(productStartDate, selectedProduct.expirationPeriod),
+            expirationPeriod: selectedProduct?.expirationPeriod,
         };
-
-        console.log(salesProductData);
 
         registrationSalesProductsArray.unshift(salesProductData);
         registrationSalesProductsArray.pop();
@@ -238,8 +251,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setProductEndDate(new Date().toISOString().split('T')[0]);
         setProductSelectIndexValue(false);
     };
-    console.log('productsList', productsList);
-    console.log('selectedProduct', selectedProduct);
 
     const toggle = () => {
         setModal(!modal);
@@ -292,7 +303,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         const registrationSalesProducts = [...registrationSalesProducts];
     };
     const handleRegistrationStep = (event) => {
-        console.log(event.target.textContent);
         return event.target.textContent === '다음'
             ? setRegistrationStep(registrationStep + 1)
             : setRegistrationStep(registrationStep - 1);
@@ -302,7 +312,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         const registrationSalesProductsArray = [...registrationSalesProducts];
 
         registrationSalesProductsArray.splice(index, 1);
-        console.log(registrationSalesProductsArray);
+
         registrationSalesProductsArray.push({});
 
         setRegistrationSalesProducts(registrationSalesProductsArray);
@@ -325,13 +335,11 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         } else {
             setIsSelectedMember(false);
         }
-
-        console.log(isSelectedMember);
     };
 
     const getSearchingName = (event) => {
         // event.persist(); // event pooling , event 객체 null 값 방지
-        console.log(event.target.value);
+
         setSearchingName(event.target.value);
     };
 
@@ -358,7 +366,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                           }
                       })
                     : [];
-            console.log(members);
+
             setSearchedMembersList(members);
         } else if (searchingName.length < 1 && searchingPhone.length < 1) {
             setSearchedMembersList([]);
@@ -374,7 +382,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     const getProductStartDate = (event) => {
-        console.log(event.target.value);
         setProductStartDate(event.target.value);
     };
 
@@ -384,9 +391,9 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             onSnapshot(memebersCollectionRef, (querySnapshot) => {
                 const membersArray = [];
                 querySnapshot.forEach((member) => {
-                    membersArray.push(member.data());
+                    membersArray.push({ memberId: member.id, ...member.data() });
                 });
-                console.log(membersArray);
+
                 setMembersList(membersArray);
             });
         } catch (error) {
@@ -402,7 +409,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 querySnapshot.forEach((product) => {
                     productArray.push(product.data());
                 });
-                console.log(productArray);
+
                 setProductsList(productArray);
             });
         } catch (error) {
@@ -415,7 +422,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             e.preventDefault();
 
             setIsHoveredCard(idx);
-            console.log(isHoveredCard);
         };
 
         const handleMouseLeave = () => {
@@ -541,14 +547,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const handleResitrationProductsAdujestPrice = () => {
         const registerArray = [...registrationSalesProducts];
         modifyPriceList.forEach((subtract, idx) => {
-            if (subtract > 0) {
+            if (subtract > 0 && subtract.hasOwnProperty('productCode')) {
                 registerArray[idx].adjustedPrice = registerArray[idx].discountPrice - subtract;
             }
+            if (subtract === 0 && subtract.hasOwnProperty('productCode')) {
+                registerArray[idx].adjustedPrice = registerArray[idx].discountPrice;
+            }
         });
+
         setRegistrationSalesProducts(registerArray);
     };
-
-    console.log(modifyPriceList);
 
     const handleRenderingBodyContent = (registrationStep) => {
         const resitrationProductsTotalPrice = registrationSalesProducts.reduce((acc, curr) => {
@@ -618,10 +626,10 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         }}>
                                         <FormInput
                                             type="text"
-                                            name="productDiscountRate"
+                                            name="modifyPrice"
                                             placeholder="-"
                                             containerClass={''}
-                                            key="productDiscountRate"
+                                            key="modifyPrice"
                                             min={0}
                                             max={100}
                                             style={{

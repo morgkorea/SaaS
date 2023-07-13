@@ -9,17 +9,21 @@ import {
     useExpanded,
 } from 'react-table';
 import classNames from 'classnames';
-import Pagination from './Pagination'
+import Pagination from './Pagination';
 
 // Define a default UI for filtering
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass,productTablePlaceholder }) => {
+const GlobalFilter = ({
+    preGlobalFilteredRows,
+    globalFilter,
+    setGlobalFilter,
+    searchBoxClass,
+    productTablePlaceholder,
+}) => {
     const count = preGlobalFilteredRows.length;
     const [value, setValue] = React.useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
-
-    console.log(productTablePlaceholder)
 
     return (
         <div className={classNames(searchBoxClass)}>
@@ -72,13 +76,14 @@ type TableProps = {
         text: string,
         value: number,
     }[],
-
+    paginationPageVisible?: boolean,
+    paginationStyleCenter?: boolean,
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
     const [currentSortBy, setCurrentSortBy] = useState([
         {
-            id: '6',
+            id: '1',
             desc: true,
         },
     ]);
@@ -164,7 +169,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 />
             )}
 
-            <div className="table-responsive">
+            <div className="table-responsive mt-4">
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
@@ -201,7 +206,14 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 </table>
             </div>
 
-            {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
+            {pagination && (
+                <Pagination
+                    tableProps={dataTable}
+                    sizePerPageList={props['sizePerPageList']}
+                    pageVisible={props['paginationPageVisible']}
+                    styleCenter={props['paginationStyleCenter']}
+                />
+            )}
         </>
     );
 };

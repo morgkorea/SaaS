@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Customers from './Customers.js';
 import { firestoreDB } from '../../../firebase/firebase';
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, updateDoc,onSnapshot } from 'firebase/firestore';
 
 const MembersDB = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
@@ -54,11 +54,15 @@ const MembersDB = () => {
             id: doc.id,
             ...doc.data(),
         }));
+       
+
       
         setCurrentMembers(data);
         moveUnavailableProducts(data);
-    };
+
       
+    };
+    console.log("currentMembers",currentMembers)
     useEffect(() => {
         getMembers();
     }, []);
