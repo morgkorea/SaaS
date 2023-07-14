@@ -7,14 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditTable = forwardRef(({ member, email, id }, ref) => {
     const notify = () => toast('개인정보가 수정되었습니다.');
-    console.log(member)
+    console.log(member);
 
     const [nameValue, setNameValue] = useState(member.name);
     const [birthDateValue, setBirthDateValue] = useState(member.birthDate);
     const [phoneValue, setPhoneValue] = useState(member.phone);
     const [locationValue, setLocationValue] = useState(member.location);
     const [regionValue, setRegionValue] = useState(member.region);
-    const [audienceValue, setAudienceValue] = useState(member.audience);
     const [periodValue, setPeriodValue] = useState(member.golfPeriod);
     const [purposeValue, setPurposeValue] = useState(member.golfPurpose);
     const [productValue, setProductValue] = useState(member.product);
@@ -42,7 +41,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
             region: regionValue,
             golfPeriod: periodValue,
             golfPurpose: purposeValue,
-            audience: audienceValue,
             product: productValue,
             hoursUse: hoursUseValue,
             injuries: injuriesValue,
@@ -80,7 +78,8 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 type="text"
                                 value={nameValue}
                                 onChange={(e) => setNameValue(e.target.value)}
-                            />회원님
+                            />
+                            회원님
                         </td>
                     </tr>
                     <tr>
@@ -95,7 +94,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         </td>
                     </tr>
                     <tr>
-                        <th>휴대전화</th>
+                        <th>전화번호</th>
                         <td>
                             <input
                                 style={{ width: '120px' }}
@@ -108,35 +107,32 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         </td>
                     </tr>
                     <tr>
-                        <th>위치</th>
-                        {/* <div className='d-flex flex-wrap'> */}
-                            <td className="me-2">
-                                <input
-                                    style={{ width: '120px' }}
-                                    className="editInput"
-                                    type="text"
-                                    placeholder="지역"
-                                    value={regionValue}
-                                    onChange={(e) => setRegionValue(e.target.value)}
-                                />
-                            </td>
-                            <td>
-                                <Select
-                                    className="react-select"
-                                    classNamePrefix="react-select"
-                                    placeholder={member.location}
-                                    onChange={(e) => setLocationValue(e.value)}
-                                    options={[
-                                        { value: '자택', label: '자택' },
-                                        { value: '직장', label: '직장' },
-                                        { value: '기타', label: '기타' },
-                                    ]}></Select>
-                            </td>
-                        {/* </div> */}
+                        <th>지역</th>
+                        <td className="me-2">
+                            <input
+                                style={{ width: '120px' }}
+                                className="editInput"
+                                type="text"
+                                placeholder="지역"
+                                value={regionValue}
+                                onChange={(e) => setRegionValue(e.target.value)}
+                            />
+                        </td>
                     </tr>
                     <tr>
-                        <th>회원번호</th>
-                        <td>{member.memberNumber}</td>
+                        <th>위치</th>
+                        <td>
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.location ? member.location : '선택'}
+                                onChange={(e) => setLocationValue(e.value)}
+                                options={[
+                                    { value: '자택', label: '자택' },
+                                    { value: '직장', label: '직장' },
+                                    { value: '기타', label: '기타' },
+                                ]}></Select>
+                        </td>
                     </tr>
                     <tr>
                         <th>생성일자</th>
@@ -147,15 +143,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     <tr>
                         <th>유형</th>
                         <td>
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder={member.audience}
-                                onChange={(e) => setAudienceValue(e.value)}
-                                options={[
-                                    { value: '신규', label: '신규' },
-                                    { value: '재등록', label: '재등록' },
-                                ]}></Select>
+                            {member.audience}
                         </td>
                     </tr>
                     <tr>
@@ -164,7 +152,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                             <Select
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                placeholder={member.golfPeriod}
+                                placeholder={member.golfPeriod ? member.golfPeriod : '선택'}
                                 onChange={(e) => setPeriodValue(e.value)}
                                 options={[
                                     { value: '비기너', label: '비기너' },
@@ -180,7 +168,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                             <Select
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                placeholder={member.golfPurpose}
+                                placeholder={member.golfPurpose ? member.golfPurpose : '선택'}
                                 onChange={(e) => setPurposeValue(e.value)}
                                 options={[
                                     { value: '골프 입문', label: '골프 입문' },
@@ -197,70 +185,19 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         </td>
                     </tr>
                     <tr>
-                        <th>관심 품목</th>
+                        <th>관심 상품</th>
                         <td>
                             <Select
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                placeholder={member.product}
+                                placeholder={member.product ? member.product : '선택'}
                                 onChange={(e) => setProductValue(e.value)}
                                 options={[
-                                    { value: '타석권', label: '타석권' },
+                                    { value: '타석', label: '타석' },
                                     { value: '레슨', label: '레슨' },
-                                    { value: '레슨 + 타석권', label: '레슨+타석권' },
+                                    { value: '기타', label: '기타' },
                                 ]}></Select>
                         </td>
-                    </tr>
-                    <tr>
-                        <th>이용시간</th>
-                        <td>
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder={member.hoursUse}
-                                onChange={(e) => setHoursUseValue(e.value)}
-                                options={[
-                                    { value: '오전', label: '오전' },
-                                    { value: '낮', label: '낮' },
-                                    { value: '저녁', label: '저녁' },
-                                    { value: '밤', label: '밤' },
-                                ]}></Select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>부상 전적</th>
-                        {/* <div className='d-flex flex-wrap'> */}
-                            <td className="me-2">
-                                <Select
-                                    className="react-select"
-                                    classNamePrefix="react-select"
-                                    placeholder={member.injuries}
-                                    onChange={(e) => setInjuriesValue(e.value)}
-                                    options={[
-                                        { value: '유', label: '유' },
-                                        { value: '무', label: '무' },
-                                    ]}></Select>
-                            </td>
-                            <td>
-                                {injuriesValue === '무' ? null : (
-                                    <Select
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        placeholder={member.injuriedPart}
-                                        onChange={(e) => setInjuriedPartValue(e.value)}
-                                        options={[
-                                            { value: '팔꿈치', label: '팔꿈치' },
-                                            { value: '허리', label: '허리' },
-                                            { value: '무릎', label: '무릎' },
-                                            { value: '손목', label: '손목' },
-                                            { value: '어깨', label: '어깨' },
-                                            { value: '등', label: '등' },
-                                            { value: '손가락', label: '손가락' },
-                                            { value: '기타', label: '기타' },
-                                        ]}></Select>
-                                )}
-                            </td>
-                        {/* </div> */}
                     </tr>
                     <tr>
                         <th>유입 경로</th>
@@ -269,7 +206,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 data-width="100%"
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                placeholder={member.inflowPath}
+                                placeholder={member.inflowPath ? member.inflowPath : '선택'}
                                 onChange={(e) => setInflowPathValue(e.value)}
                                 options={[
                                     { value: '네이버', label: '네이버' },
@@ -283,6 +220,58 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                     { value: '외부간판 및 현수막', label: '외부간판 및 현수막' },
                                     { value: '기타', label: '기타' },
                                 ]}></Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>이용 시간대</th>
+                        <td>
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.hoursUse ? member.hoursUse : '선택'}
+                                onChange={(e) => setHoursUseValue(e.value)}
+                                options={[
+                                    { value: '오전', label: '오전' },
+                                    { value: '낮', label: '낮' },
+                                    { value: '저녁', label: '저녁' },
+                                    { value: '밤', label: '밤' },
+                                ]}></Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>부상 전적</th>
+                        <td className="me-2">
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.injuries ? member.injuries : '선택'}
+                                onChange={(e) => setInjuriesValue(e.value)}
+                                options={[
+                                    { value: '유', label: '유' },
+                                    { value: '무', label: '무' },
+                                ]}></Select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>부상 부위</th>
+                        <td>
+                            {injuriesValue === '무' ? null : (
+                                <Select
+                                    className="react-select"
+                                    classNamePrefix="react-select"
+                                    placeholder={member.injuriedPart ? member.injuriedPart : '선택'}
+                                    onChange={(e) => setInjuriedPartValue(e.value)}
+                                    options={[
+                                        { value: '팔꿈치', label: '팔꿈치' },
+                                        { value: '허리', label: '허리' },
+                                        { value: '무릎', label: '무릎' },
+                                        { value: '손목', label: '손목' },
+                                        { value: '어깨', label: '어깨' },
+                                        { value: '등', label: '등' },
+                                        { value: '손가락', label: '손가락' },
+                                        { value: '기타', label: '기타' },
+                                    ]}></Select>
+                            )}
                         </td>
                     </tr>
                     <tr>
@@ -318,7 +307,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                 theme="light"
                 limit={1}
             />
-            
         </>
     );
 });

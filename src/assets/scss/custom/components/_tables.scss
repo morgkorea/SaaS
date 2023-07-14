@@ -69,6 +69,9 @@
     > :not(caption) > * > * {
         padding: $table-cell-padding-y 35px;
     }
+    tbody > tr > td {
+        min-height: 52.98px;
+    }
 }
 
 .editTable td:hover {
@@ -199,12 +202,30 @@ body[data-layout-color="dark"] {
     }
 }
 
+
 table.basic-table {
     width: 100%;
+    height: 100%;
+}
+body[data-layout-color="dark"] table.basic-table {
+    tbody > tr > th {
+        color: var(--ct-table-color);
+    }
+    tbody > tr > td {
+        color: var(--ct-table-color);
+    }
+    input, select, textarea, input[type=date]:invalid,
+    .react-select__single-value, 
+    .react-select__single-value option:checked, 
+    .react-select__placeholder {
+        color: var(--ct-table-color);
+        font-weight: 500;
+    }
 }
 table.basic-table tbody tr {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     margin-bottom: 1rem; 
     margin-right: 4px;
     align-items: center;
@@ -225,36 +246,15 @@ table.basic-table input, select, textarea, input[type=date]:invalid,
 .react-select__single-value, 
 .react-select__single-value option:checked, 
 .react-select__placeholder {
-    color: #313A46 !important;
+    color: #313A46;
     font-weight: 500;
 }
 
 
-.payment-wrap {
-    position: relative;
-    overflow: hidden;
-}
-.memo-wrap {
-    position: relative;
-    overflow: hidden;
-}
-.payment-wrap::after {
-    content: '';
-    position: absolute;
-    bottom: 100px;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 100%);
-}
-.memo-wrap::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 100%);
-}
+
+
 .member-info-list {
+    position: relative;
     overflow-y: scroll;
     width: 100%;
     height: 550px;
@@ -262,10 +262,24 @@ table.basic-table input, select, textarea, input[type=date]:invalid,
     .member-info-card:last-child {
         margin-bottom: 2rem;
     }
-    .member-info-card.memo:last-child {
-        margin-bottom: 6rem;
+}
+.member-info-list.memo {
+    height: 490px;
+}
+.member-info-list::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, #FFF 100%);
+}
+body[data-layout-color="dark"] {
+    .member-info-list::after {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, var(--ct-card-bg) 100%);
     }
 }
+
 .member-info-card {
     border: 1px solid #EEF2F7;
     width: 100%;
@@ -287,19 +301,29 @@ table.basic-table input, select, textarea, input[type=date]:invalid,
 .payment-info {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     text-align: left;
-    > p {
+    > div > div {
         position: relative;
-        margin: 0 20px 0 0;
-    }
-    > p::after {
-        position: absolute;
-        content: '/';
-        top: 0; right: -10px;
-        width: 2px; height: 15px;
-    }
-    > p:last-child::after {
-        display: none;
+        display: flex;
+        align-items: center;
+        height: 30px;
+        line-height: 30px;
+        > p {
+            margin: 0 20px 0 0;
+        }
+        ::after {
+            display: block;
+            position: absolute;
+            content: '';
+            width: 1px;
+            height: 11px;
+            top: 0; right: 0;
+            background: #EEF2F7;
+        }
+        :last-child::after {
+            display: none;
+        }
     }
 }
 
@@ -340,6 +364,7 @@ table.basic-table input, select, textarea, input[type=date]:invalid,
     border: none;
     resize: none;
     font-size: 1rem;
+    background: transparent;
 }
 .memoTextarea:focus {
     outline: none;

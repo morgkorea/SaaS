@@ -14,7 +14,6 @@ const AddCell = forwardRef((props, ref) => {
     const [sexValue, setSexValue] = useState('');
     const [birthDateValue, setBirthDateValue] = useState('');
     const [phoneValue, setPhoneValue] = useState('');
-    const [audienceValue, setAudienceValue] = useState('');
     const [locationValue, setLocationValue] = useState('');
     const [regionValue, setRegionValue] = useState('');
     const [periodValue, setPeriodValue] = useState('');
@@ -24,7 +23,9 @@ const AddCell = forwardRef((props, ref) => {
     const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
-    // const [activeStatus, setActiveStatus] = useState('');
+    const audienceValue = '잠재';
+    const teeActive = '비활성';
+    const lessonActive = '비활성';
 
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
@@ -45,12 +46,10 @@ const AddCell = forwardRef((props, ref) => {
         const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
             name: nameValue,
-            memberNumber: '',
-            createdDate: moment().format('YYYY.MM.DD'),
+            createdDate: moment().format('YYYY/MM/DD'),
             createdTime: moment().format('A hh:mm'),
             sex: sexValue,
             birthDate: birthDateValue,
-            // ageGroup: '', 연령대
             phone: phoneValue,
             audience: audienceValue,
             location: locationValue,
@@ -64,7 +63,8 @@ const AddCell = forwardRef((props, ref) => {
             inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
-            activation: '', // activeStatus
+            teeActive: teeActive,
+            lessonActive: lessonActive,
             // amountPayments: '',
             // lifetimeValue: '',
             // amountPaymentAverage: '',
@@ -79,7 +79,7 @@ const AddCell = forwardRef((props, ref) => {
                     endDate: '2023-08-13', //종료일
                     paymentDate: "2023-05-13",
                     paymentTime: "15:02",
-                    product: "회원권",
+                    product: "레슨",
                     productCode: "KO0001_LO_12000_014",
                     productType: "locker",
                     regularPrice: 500000,
@@ -132,6 +132,19 @@ const AddCell = forwardRef((props, ref) => {
                     paymentDate: "2023-01-13",
                     paymentTime: "15:02",
                     product: "락커",
+                    productCode: "KO0001_LO_12000_014",
+                    productType: "locker",
+                    regularPrice: 120000,
+                },
+                {
+                    adjustedPrice: 60000,
+                    discountPrice: 60000,
+                    discountRate: 50,
+                    startDate: '2023-07-14', //시작일
+                    endDate: '2023-08-01', //종료일
+                    paymentDate: "2023-07-14",
+                    paymentTime: "15:02",
+                    product: "타석",
                     productCode: "KO0001_LO_12000_014",
                     productType: "locker",
                     regularPrice: 120000,
@@ -192,12 +205,12 @@ const AddCell = forwardRef((props, ref) => {
                 </td>
                 <td></td>
                 <td></td>
-                <td></td>
                 <td>
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
                         onChange={(e) => setSexValue(e.value)}
+                        placeholder="선택"
                         options={[
                             { value: '남성', label: '남성' },
                             { value: '여성', label: '여성' },
@@ -226,20 +239,12 @@ const AddCell = forwardRef((props, ref) => {
                         onChange={(e) => setPhoneValue(e.target.value)}
                     />
                 </td>
+                <td></td>
                 <td>
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
-                        onChange={(e) => setAudienceValue(e.value)}
-                        options={[
-                            { value: '신규', label: '신규' },
-                            { value: '재등록', label: '재등록' },
-                        ]}></Select>
-                </td>
-                <td>
-                    <Select
-                        className="react-select"
-                        classNamePrefix="react-select"
+                        placeholder="선택"
                         onChange={(e) => setLocationValue(e.value)}
                         options={[
                             { value: '자택', label: '자택' },
@@ -261,6 +266,7 @@ const AddCell = forwardRef((props, ref) => {
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
+                        placeholder="선택"
                         onChange={(e) => setPeriodValue(e.value)}
                         options={[
                             { value: '비기너', label: '비기너' },
@@ -273,6 +279,7 @@ const AddCell = forwardRef((props, ref) => {
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
+                        placeholder="선택"
                         onChange={(e) => setPurposeValue(e.value)}
                         options={[
                             { value: '골프 입문', label: '골프 입문' },
@@ -290,58 +297,20 @@ const AddCell = forwardRef((props, ref) => {
                     <Select
                         className="react-select"
                         classNamePrefix="react-select"
+                        placeholder="선택"
                         onChange={(e) => setProductValue(e.value)}
                         options={[
-                            { value: '타석권', label: '타석권' },
+                            { value: '타석', label: '타석' },
                             { value: '레슨', label: '레슨' },
-                            { value: '레슨 + 타석권', label: '레슨 + 타석권' },
+                            { value: '기타', label: '기타' },
                         ]}></Select>
-                </td>
-                <td>
-                    <Select
-                        className="react-select"
-                        classNamePrefix="react-select"
-                        onChange={(e) => setHoursUseValue(e.value)}
-                        options={[
-                            { value: '오전', label: '오전' },
-                            { value: '낮', label: '낮' },
-                            { value: '저녁', label: '저녁' },
-                            { value: '밤', label: '밤' },
-                        ]}></Select>
-                </td>
-                <td>
-                    <Select
-                        className="react-select"
-                        classNamePrefix="react-select"
-                        onChange={(e) => setInjuriesValue(e.value)}
-                        options={[
-                            { value: '유', label: '유' },
-                            { value: '무', label: '무' },
-                        ]}></Select>
-                </td>
-                <td>
-                    {injuriesValue === '무' ? null : (
-                        <Select
-                            className="react-select"
-                            classNamePrefix="react-select"
-                            onChange={(e) => setInjuriedPartValue(e.value)}
-                            options={[
-                                { value: '팔꿈치', label: '팔꿈치' },
-                                { value: '허리', label: '허리' },
-                                { value: '무릎', label: '무릎' },
-                                { value: '손목', label: '손목' },
-                                { value: '어깨', label: '어깨' },
-                                { value: '등', label: '등' },
-                                { value: '손가락', label: '손가락' },
-                                { value: '기타', label: '기타' },
-                            ]}></Select>
-                    )}
                 </td>
                 <td>
                     <Select
                         data-width="100%"
                         className="react-select"
                         classNamePrefix="react-select"
+                        placeholder="선택"
                         onChange={(e) => setInflowPathValue(e.value)}
                         options={[
                             { value: '네이버', label: '네이버' },
@@ -356,26 +325,60 @@ const AddCell = forwardRef((props, ref) => {
                             { value: '기타', label: '기타' },
                         ]}></Select>
                 </td>
+                <td>
+                    <Select
+                        className="react-select"
+                        classNamePrefix="react-select"
+                        placeholder="선택"
+                        onChange={(e) => setHoursUseValue(e.value)}
+                        options={[
+                            { value: '오전', label: '오전' },
+                            { value: '낮', label: '낮' },
+                            { value: '저녁', label: '저녁' },
+                            { value: '밤', label: '밤' },
+                        ]}></Select>
+                </td>
+                <td>
+                    <Select
+                        className="react-select"
+                        classNamePrefix="react-select"
+                        placeholder="선택"
+                        onChange={(e) => setInjuriesValue(e.value)}
+                        options={[
+                            { value: '유', label: '유' },
+                            { value: '무', label: '무' },
+                        ]}></Select>
+                </td>
+                <td>
+                    {injuriesValue === '무' ? null : (
+                        <Select
+                            className="react-select"
+                            classNamePrefix="react-select"
+                            placeholder="선택"
+                            onChange={(e) => setInjuriedPartValue(e.value)}
+                            options={[
+                                { value: '팔꿈치', label: '팔꿈치' },
+                                { value: '허리', label: '허리' },
+                                { value: '무릎', label: '무릎' },
+                                { value: '손목', label: '손목' },
+                                { value: '어깨', label: '어깨' },
+                                { value: '등', label: '등' },
+                                { value: '손가락', label: '손가락' },
+                                { value: '기타', label: '기타' },
+                            ]}></Select>
+                    )}
+                </td>
                 <td className="text-center">
                     <input type="checkbox" defaultChecked={true} onChange={handleChange} name="marketing" />
                 </td>
                 <td className="text-center">
                     <input type="checkbox" defaultChecked={true} onChange={handleChange2} name="privateInfo" />
                 </td>
+                <td></td> 
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>
-                    {/* <Select
-                        className="react-select"
-                        classNamePrefix="react-select"
-                        onChange={(e) => setActiveStatus(e.value)}
-                        options={[
-                            { value: '활성', label: '활성' },
-                            { value: '이탈', label: '이탈' },
-                            { value: '일시중지', label: '일시중지' },
-                        ]}></Select> */}
-                </td>
+                <td></td>
             </tr>
         </>
     );

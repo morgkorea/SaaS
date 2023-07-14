@@ -34,7 +34,7 @@ const PerformanceChart = () => {
         legend: {
             show: false,
         },
-        colors: ['#727cf5', '#e3eaef'],
+        colors: ['#727cf5'],
         xaxis: {
             categories: [
                 '06:00',
@@ -64,7 +64,7 @@ const PerformanceChart = () => {
         yaxis: {
             labels: {
                 formatter: function (val) {
-                    return val + 'k';
+                    return val + '명';
                 },
             },
         },
@@ -74,7 +74,7 @@ const PerformanceChart = () => {
         tooltip: {
             y: {
                 formatter: function (val) {
-                    return '$' + val + 'k';
+                    return val + '명';
                 },
             },
         },
@@ -82,12 +82,8 @@ const PerformanceChart = () => {
 
     const apexBarChartData = [
         {
-            name: 'Actual',
+            name: 'time',
             data: [65, 59, 80, 81, 56, 89, 40, 32, 65, 59, 80, 81, 65, 59, 80, 81, 56, 89, 40],
-        },
-        {
-            name: 'Projection',
-            data: [89, 40, 32, 65, 59, 80, 81, 56, 89, 40, 65, 59, 20, 32, 65, 59, 80, 30, 12],
         },
     ];
 
@@ -104,13 +100,7 @@ const PerformanceChart = () => {
                                 <span className="text-primary">08시</span>엔 한가해요
                             </h5>
                         </div>
-                    }
-                    menuItems={[
-                        { label: 'Sales Report' },
-                        { label: 'Export Report' },
-                        { label: 'Profit' },
-                        { label: 'Action' },
-                    ]}
+                    }ㄴ
                 />
                 <div dir="ltr">
                     <Chart

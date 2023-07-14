@@ -63,11 +63,10 @@ const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
     return (
         <>
             <Card style={{ height: '740px' }}>
-                <Card.Body className="memo-wrap centralized-parents">
+                <Card.Body className="centralized-parents">
                     <div className="d-flex justify-content-between align-content-center">
                         <h4 className="mb-4">회원 메모</h4>
-                        <p
-                            onClick={() => handleTabChange('payment')}
+                        <p onClick={() => handleTabChange('payment')}
                             className="btn btn-link text-decoration-underline">
                             결제 정보
                         </p>
@@ -91,11 +90,11 @@ const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
                         </Row>
                     </div>
 
-                    <div className="member-info-list">
+                    <div className="member-info-list memo">
                         {memberData.memo && memberData.memo.length > 0 ? (
                             <>
                                 {memberData.memo.map((memo, index) => (
-                                    <div className="member-info-card memo" key={index}>
+                                    <div className="member-info-card" key={index}>
                                         <Row className="d-flex justify-content-between">
                                             <Col xxl={10} xl={8}>
                                                 <p>{memo.contents}</p>

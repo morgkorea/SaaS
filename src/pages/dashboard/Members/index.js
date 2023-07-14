@@ -84,9 +84,8 @@ const MemberDashboard = () => {
                     <Row>
                         {show ? (
                             <Alert variant="info" onClose={() => setShow(false)} dismissible className="mb-3">
-                                <span className="fw-bold">활성회원 Tap</span> - 아래 데이터는 지금까지 등록하셨던
-                                회원님들의 데이터에요, 현재 이용중인 회원님의 데이터를 확인하시려면 우측상단 활성탭을
-                                이용해주세요.
+                                <span className="fw-bold">활성회원 Tap</span> - 아래 데이터는 현재 이용중인 회원님의 데이터에요. 
+                                지금까지 등록하셨던 회원님들의 데이터를 확인하시려면 우측상단 전체탭을 이용해주세요.
                             </Alert>
                         ) : null}
                     </Row>

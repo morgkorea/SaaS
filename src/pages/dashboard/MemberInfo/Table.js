@@ -38,7 +38,7 @@ const Table = ({ member }) => {
                         </td>
                     </tr>
                     <tr>
-                        <th>휴대전화</th>
+                        <th>전화번호</th>
                         <td>{phone}</td>
                     </tr>
                     <tr>
@@ -46,10 +46,6 @@ const Table = ({ member }) => {
                         <td>
                             {member?.region} / {member?.location}
                         </td>
-                    </tr>
-                    <tr>
-                        <th>회원번호</th>
-                        <td></td>
                     </tr>
                     <tr>
                         <th>생성일자</th>
@@ -70,11 +66,15 @@ const Table = ({ member }) => {
                         <td>{member?.golfPurpose}</td>
                     </tr>
                     <tr>
-                        <th>관심 품목</th>
+                        <th>관심 상품</th>
                         <td>{member?.product}</td>
                     </tr>
                     <tr>
-                        <th>이용시간</th>
+                        <th>유입 경로</th>
+                        <td>{member?.inflowPath}</td>
+                    </tr>
+                    <tr>
+                        <th>이용 시간대</th>
                         <td>{member?.hoursUse}</td>
                     </tr>
                     <tr>
@@ -83,10 +83,6 @@ const Table = ({ member }) => {
                             {member?.injuries}
                             {member.injuries === '무' ? null : ` / ${member?.injuriedPart}`}
                         </td>
-                    </tr>
-                    <tr>
-                        <th>유입 경로</th>
-                        <td>{member?.inflowPath}</td>
                     </tr>
                     <tr>
                         <th>개인정보수집동의</th>

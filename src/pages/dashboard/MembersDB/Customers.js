@@ -5,6 +5,7 @@ import Table from './Table';
 import moment from 'moment';
 import { doc, updateDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
+import { useSelector } from 'react-redux';
 
 const onClickMemberInfo = ({ row }) => {
     return (
@@ -33,6 +34,7 @@ const PrivateInputColumn = ({ row }) => {
 };
 
 const AgeColumn = ({ row }) => {
+    console.log('row', row)
     const birthday = row.original.birthDate.replace(/-/gi, '');
     const today = moment().format('YYYYMMDD');
 
@@ -63,38 +65,20 @@ const AgeColumn = ({ row }) => {
         return false;
     }
 
-    const email = 'rnfkd@naver.com';
+    // const email = useSelector((state) => state.Auth?.user.email);
 
-    if (row.original.birthDate) {
-        const AgeUpdate = async () => {
-            const memberRef = doc(firestoreDB, 'Users', email, 'Members', row.original.id);
-            const updateAgeData = { ageGroup: ageGroup, age: age };
-            await updateDoc(memberRef, updateAgeData);
-        };
-        AgeUpdate();
-    } else {
-        return false;
-    }
+    // if (row.original.birthDate) {
+    //     const AgeUpdate = async () => {
+    //         const memberRef = doc(firestoreDB, 'Users', email, 'Members', row.original.id);
+    //         const updateAgeData = { ageGroup: ageGroup, age: age };
+    //         await updateDoc(memberRef, updateAgeData);
+    //     };
+    //     AgeUpdate();
+    // } else {
+    //     return false;
+    // }
 
     return <>{ageGroup}</>;
-};
-
-const HoursUseColumn = ({ row }) => {
-    const hours = row.original.hoursUse;
-    let newHours = hours;
-
-    const replacements = [
-        ['오전 (6:00am~12:00pm)', '오전'],
-        ['낮 (12:00pm~4:00pm)', '낮'],
-        ['저녁 (4:00pm~8:00pm)', '저녁'],
-        ['밤 (8:00pm~11:00pm)', '밤'],
-    ];
-
-    replacements.forEach(([searchValue, replaceValue]) => {
-        newHours = newHours.replace(searchValue, replaceValue);
-    });
-
-    return <>{newHours}</>;
 };
 
 const PhoneColumn = ({ row }) => {
@@ -125,11 +109,6 @@ const columns = [
         sort: true,
     },
     {
-        Header: '회원번호',
-        accessor: 'memberNumber',
-        sort: true,
-    },
-    {
         Header: '생성날짜',
         accessor: 'createdDate',
         sort: true,
@@ -153,10 +132,11 @@ const columns = [
     {
         Header: '연령대',
         Cell: AgeColumn,
+        // accessor: 'ageGroup',
         sort: true,
     },
     {
-        Header: '휴대전화번호',
+        Header: '전화번호',
         accessor: 'phone',
         Cell: PhoneColumn,
         sort: true,
@@ -192,9 +172,13 @@ const columns = [
         sort: true,
     },
     {
+        Header: '유입경로',
+        accessor: 'inflowPath',
+        sort: true,
+    },
+    {
         Header: '이용시간대',
-        // accessor: 'hoursUse',
-        Cell: HoursUseColumn,
+        accessor: 'hoursUse',
         sort: true,
     },
     {
@@ -205,11 +189,6 @@ const columns = [
     {
         Header: '부상부위',
         accessor: 'injuriedPart',
-        sort: true,
-    },
-    {
-        Header: '유입경로',
-        accessor: 'inflowPath',
         sort: true,
     },
     {
@@ -238,8 +217,13 @@ const columns = [
         sort: true,
     },
     {
-        Header: '활성여부',
-        accessor: 'activation',
+        Header: '타석 활성여부',
+        accessor: 'teeActive',
+        sort: true,
+    },
+    {
+        Header: '레슨 활성여부',
+        accessor: 'lessonActive',
         sort: true,
     },
 ];

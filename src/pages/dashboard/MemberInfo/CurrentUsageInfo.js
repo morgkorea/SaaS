@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card } from 'react-bootstrap';
 
 const CurrentUsageInfo = ({ member }) => {
@@ -7,8 +7,17 @@ const CurrentUsageInfo = ({ member }) => {
         <>
             <Card>
                 <Card.Body>
-                    <div className="d-flex justify-content-between">
-                        {!member.availableProducts || member.availableProducts.length === 0 ? (
+
+                        <div className="payment-info">
+                            <h4 className="me-5">현재 이용 정보</h4>
+                            <div className='d-flex'>
+                                <div><h4 className='me-2'>타석</h4><p>활성</p></div>
+                                <div><h4 className='me-2'>레슨</h4><p>비활성</p></div>
+                                <div><h4 className='me-2'>락커</h4><p>만료예정</p></div>
+                                <div><h4 className='me-2'>기타</h4><p>-</p></div>
+                            </div>
+                        </div>
+                        {/* {!member.availableProducts || member.availableProducts.length === 0 ? (
                             <>
                                 <div className="payment-info">
                                     <h4 className="me-5">현재 이용 정보</h4>
@@ -21,7 +30,6 @@ const CurrentUsageInfo = ({ member }) => {
                             <>
                                 <div className="payment-info">
                                     <h4 className="me-5">현재 이용 정보</h4>
-                                    <h4 className="me-2">{member.availableProducts[0].index}회차</h4>
                                     <p>{member.availableProducts[0].product}</p>
                                     <p>{member.availableProducts[0].discountRate}% 할인</p>
                                     <p>
@@ -32,8 +40,8 @@ const CurrentUsageInfo = ({ member }) => {
                                     <h4 className="text-primary">활성 회원</h4>
                                 </div>
                             </>
-                        )}
-                    </div>
+                        )} */}
+
                 </Card.Body>
             </Card>
         </>
