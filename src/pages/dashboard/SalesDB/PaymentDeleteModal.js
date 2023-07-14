@@ -4,8 +4,9 @@ import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
 
 const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
     const [size, setSize] = useState('lg');
+    const [isHoverdButton, setIsHoveredButton] = useState(false);
 
-    console.log(deletePaymentData);
+    console.log(isHoverdButton);
 
     const toggle = () => {
         setModal(!modal);
@@ -22,11 +23,29 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                 <h3 className="modal-title">결제 삭제</h3>
             </Modal.Header>
             <Modal.Body style={{ width: '100%', height: '570px', padding: '0px 60px' }}>
-                <div className="container" style={{ padding: '0' }}>
-                    <div>
+                <div className="container mb-2" style={{ padding: '0' }}>
+                    <h4 className="modal-title mb-2">결제 영수증</h4>
+                    <div
+                        className="mb-4"
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            paddingBottom: '24px',
+                            borderBottom: '1px solid #EEF2F7',
+                        }}>
                         {' '}
-                        <h4 className="modal-title mb-2">결제 영수증</h4>
-                        <div>결제일, 결제시간 결제현황</div>
+                        <div style={{ width: '240px', height: '68px', alignItems: 'flex-start' }}>
+                            <div className="mb-1">결제일, 결제시간</div>
+                            <div style={{ width: '100%', padding: '10px 16px', border: '1px solid #DEE2E6' }}>
+                                2023. 05. 04 AM12:12
+                            </div>
+                        </div>
+                        <div style={{ width: '168px', height: '68px', alignItems: 'flex-start' }}>
+                            <div className="mb-1">결제현황</div>
+                            <div style={{ width: '100%', padding: '10px 16px', border: '1px solid #DEE2E6' }}>
+                                결제 완료
+                            </div>
+                        </div>
                     </div>
 
                     <div className="mb-3">
@@ -80,9 +99,25 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                     </div>
                 </div>
             </Modal.Body>
-            <Modal.Footer
-                className="d-flex justify-content-center border-top-0"
-                style={{ paddingBottom: '48px' }}></Modal.Footer>
+            <Modal.Footer className="d-flex justify-content-center border-top-0" style={{ paddingBottom: '48px' }}>
+                <Button
+                    onMouseEnter={(event) => {
+                        setIsHoveredButton(true);
+                    }}
+                    onMouseLeave={() => {
+                        setIsHoveredButton(false);
+                    }}
+                    onClick={(event) => {}}
+                    style={{
+                        width: '200px',
+                        border: '1px solid #FA5C7C',
+                        color: '#FA5C7C',
+                        backgroundColor: !isHoverdButton ? '#FFFFFF' : '#F9D8DE',
+                        boxShadow: 'none',
+                    }}>
+                    결제정보 삭제하기
+                </Button>
+            </Modal.Footer>
         </Modal>
     );
 };
