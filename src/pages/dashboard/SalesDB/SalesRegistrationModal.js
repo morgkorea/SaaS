@@ -31,6 +31,7 @@ import checkImg from '../../../assets/images/icons/png/check-img.png';
 import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
+    const [size, setSize] = useState('lg');
     const [registrationStep, setRegistrationStep] = useState(1);
 
     const [registrationSalesProducts, setRegistrationSalesProducts] = useState(Array.from({ length: 5 }, () => ({})));
@@ -144,8 +145,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     // 미결제 금액, 잔여 금액
-
-    const [size, setSize] = useState('lg');
 
     const getPaymentType = (event, index) => {
         const method = event.target.value;

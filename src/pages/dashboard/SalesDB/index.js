@@ -10,6 +10,7 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 import SalesTable from './SalesTable.js';
 
 import SalesRegistrationModal from './SalesRegistrationModal.js';
+import PaymentDeleteModal from './PaymentDeleteModal.js';
 
 import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
@@ -18,8 +19,10 @@ import { useSelector } from 'react-redux';
 import { firestoreDB } from '../../../firebase/firebase.js';
 
 const SalesDB = () => {
-    const [modal, setModal] = useState(false);
     const [salesData, setSalesData] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deletePaymentData, setDeletePaymentData] = useState(false);
 
     // 페이지네이션
     const [page, setPage] = useState(1);
@@ -45,6 +48,8 @@ const SalesDB = () => {
             setSalesData(salesArray);
         });
     };
+
+    const deleteFiresstorePaymentData = () => {};
 
     useEffect(() => {
         getFirestoreSalesData();
@@ -85,7 +90,15 @@ const SalesDB = () => {
             Header: '결제총액',
             sort: true,
             Cell: ({ value, raw }) => {
-                return <div style={{ width: '100%', textAlign: 'right' }}>{value.toLocaleString() + '원'}</div>;
+                return (
+                    <div
+                        style={{ width: '100%', textAlign: 'right' }}
+                        onClick={() => {
+                            console.log('click');
+                        }}>
+                        {value.toLocaleString() + '원'}
+                    </div>
+                );
             },
         },
         {
@@ -154,11 +167,45 @@ const SalesDB = () => {
                 return value ? value : '-';
             },
         },
+        {
+            id: '11',
+            accessor: 'uid',
+            Header: '환불',
+            sort: true,
+            Cell: ({ value, raw }) => {
+                return `${raw}`;
+            },
+        },
+        {
+            id: '12',
+            accessor: 'uid',
+            Header: '삭제',
+            sort: true,
+            Cell: ({ value, raw }) => {
+                return (
+                    <div
+                        onClick={() => {
+                            const data = salesData.filter((payment) => payment.uid === value);
+                            setDeletePaymentData(data[0]);
+                            setDeleteModal(!deleteModal);
+                        }}>
+                        삭제
+                    </div>
+                );
+            },
+        },
     ];
 
     return (
         <>
             {modal && <SalesRegistrationModal modal={modal} setModal={setModal} />}
+            {deleteModal && deletePaymentData ? (
+                <PaymentDeleteModal
+                    deletePaymentData={deletePaymentData}
+                    modal={deleteModal}
+                    setModal={setDeleteModal}
+                />
+            ) : null}
             <SalesTable data={salesData} columns={tableColumns} />
 
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
