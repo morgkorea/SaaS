@@ -180,10 +180,10 @@ const SalesDB = () => {
                         onMouseEnter={(event) => {
                             if (!refund) {
                                 event.target.style.cursor = 'pointer';
-                                event.target.style.color = '#FA5C7C';
+                                event.target.style.color = '#03C780';
                             } else {
                                 event.target.style.cursor = 'pointer';
-                                event.target.style.color = '#FA5C7C';
+                                event.target.style.color = '#03C780';
                             }
 
                             console.log(event.target);

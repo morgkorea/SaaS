@@ -81,8 +81,8 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
-    return (
-        <Modal show={modal} onHide={toggle} size={size} centered={true} fullscreen={'xxl-down'}>
+    return (    <>
+    {!refundConfirmModal?<Modal show={modal} onHide={toggle} size={size} centered={true} fullscreen={'xxl-down'}>
             <Modal.Header
                 className="border-bottom-0"
                 onHide={toggle}
@@ -310,7 +310,9 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                             }}>
                             <div style={{ fontSize: '16px', fontWeight: '700' }}>환불액</div>
                             <span style={{ color: '#FA5C7C', fontWeight: '700', fontSize: '16px' }}>
-                                {refundEachProducts.length
+                                {paymentData.refund
+                                    ? paymentData.refundPrice.toLocaleString() + '원'
+                                    : refundEachProducts.length
                                     ? (
                                           refundEachProducts.reduce((acc, curr) => {
                                               return acc + curr;
@@ -331,18 +333,152 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                         setIsHoveredButton(false);
                     }}
                     disabled={paymentData.refund}
-                    onClick={updateFirestoreSalesData}
+                    onClick={()=>{setRefundConfirmModal(!refundConfirmModal)}}
                     style={{
                         width: '200px',
-                        border: '1px solid #FA5C7C',
-                        color: '#FA5C7C',
+                        border: `${paymentData.refund ? '1px solid #6C757D' : '1px solid #FA5C7C'}`,
+                        color: `${paymentData.refund ? '#6C757D' : '#FA5C7C'}`,
                         backgroundColor: !isHoverdButton ? '#FFFFFF' : '#F9D8DE',
                         boxShadow: 'none',
                     }}>
                     {paymentData.refund ? '환불 완료' : '환불 등록'}
                 </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal> : <Modal
+                    show={refundConfirmModal}
+                    onHide={() => {
+                       <Modal
+                    show={refundConfirmModal}
+                    onHide={() => {
+                        setRefundConfirmModal(!refundConfirmModal);
+                    }}
+                    backdrop="static"
+                    centered={true}>
+                    <Modal.Body style={{ display: 'grid', placeItems: 'center', height: '300px' }}>
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: '24px',
+                                    fontWeight: '700',
+                                    textAlign: 'center',
+                                    marginBottom: '21px',
+                                }}>
+                                해당결제건을 삭제하시겠어요?
+                            </div>
+                            <div style={{ display: 'grid', placeItems: 'center', marginBottom: '42px' }}>
+                                <img src={WarningIcon} />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <Button
+                                    onMouseEnter={(event) => {
+                                        event.target.style.backgroundColor = '#D3D4D4';
+                                    }}
+                                    onMouseLeave={(event) => {
+                                        event.target.style.backgroundColor = '#FFFFFF';
+                                    }}
+                                    onClick={(event) => {
+                                        setRefundConfirmModal(!refundConfirmModal);
+                                    }}
+                                    style={{
+                                        width: '150px',
+                                        border: '1px solid #6C757D',
+                                        color: '#6C757D',
+                                        backgroundColor: '#FFFFFF',
+                                        boxShadow: 'none',
+                                    }}>
+                                    아니오
+                                </Button>
+                                <Button
+                                    onMouseEnter={(event) => {
+                                        event.target.style.backgroundColor = '#F9D8DE';
+                                    }}
+                                    onMouseLeave={(event) => {
+                                        event.target.style.backgroundColor = '#FFFFFF';
+                                    }}
+                                    onClick={() => {
+                                        setRefundConfirmModal(!refundConfirmModal);
+                                        toggle();
+                                    }}
+                                    style={{
+                                        width: '150px',
+                                        border: '1px solid #FA5C7C',
+                                        color: '#FA5C7C',
+                                        backgroundColor: '#FFFFFF',
+                                        boxShadow: 'none',
+                                    }}>
+                                    결제정보 삭제하기
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>{' '}
+                </Modal>;
+                    }}
+                    backdrop="static"
+                    centered={true}>
+                    <Modal.Body style={{ display: 'grid', placeItems: 'center', height: '300px' }}>
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: '24px',
+                                    fontWeight: '700',
+                                    textAlign: 'center',
+                                    marginBottom: '21px',
+                                }}>
+                                해당결제건을 삭제하시겠어요?
+                            </div>
+                            <div style={{ display: 'grid', placeItems: 'center', marginBottom: '42px' }}>
+                                <img src={WarningIcon} />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <Button
+                                    onMouseEnter={(event) => {
+                                        event.target.style.backgroundColor = '#D3D4D4';
+                                    }}
+                                    onMouseLeave={(event) => {
+                                        event.target.style.backgroundColor = '#FFFFFF';
+                                    }}
+                                    onClick={(event) => {
+                                        setRefundConfirmModal(!refundConfirmModal);
+                                    }}
+                                    style={{
+                                        width: '150px',
+                                        border: '1px solid #6C757D',
+                                        color: '#6C757D',
+                                        backgroundColor: '#FFFFFF',
+                                        boxShadow: 'none',
+                                    }}>
+                                    아니오
+                                </Button>
+                                <Button
+                                    onMouseEnter={(event) => {
+                                        event.target.style.backgroundColor = '#F9D8DE';
+                                    }}
+                                    onMouseLeave={(event) => {
+                                        event.target.style.backgroundColor = '#FFFFFF';
+                                    }}
+                                    onClick={() => {
+                                        setRefundConfirmModal(!refundConfirmModal);
+                                        toggle();
+                                    }}
+                                    style={{
+                                        width: '150px',
+                                        border: '1px solid #FA5C7C',
+                                        color: '#FA5C7C',
+                                        backgroundColor: '#FFFFFF',
+                                        boxShadow: 'none',
+                                    }}>
+                                    결제정보 삭제하기
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>{' '}
+                </Modal>}
+        
+
+    
+         </>
     );
 };
 
