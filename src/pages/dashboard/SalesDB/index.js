@@ -23,6 +23,7 @@ const SalesDB = () => {
     const [modal, setModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [deletePaymentData, setDeletePaymentData] = useState(false);
+    const [refundRegistrationModal, setRefundRegistrationModal] = useState(false);
 
     // 페이지네이션
     const [page, setPage] = useState(1);
@@ -91,11 +92,7 @@ const SalesDB = () => {
             sort: true,
             Cell: ({ value, raw }) => {
                 return (
-                    <div
-                        style={{ width: '100%', textAlign: 'right' }}
-                        onClick={() => {
-                            console.log('click');
-                        }}>
+                    <div style={{ width: '100%', textAlign: 'right' }} onClick={() => {}}>
                         {value.toLocaleString() + '원'}
                     </div>
                 );
@@ -173,7 +170,20 @@ const SalesDB = () => {
             Header: '환불',
             sort: true,
             Cell: ({ value, raw }) => {
-                return `${raw}`;
+                return (
+                    <div
+                        onMouseEnter={(event) => {
+                            event.target.style.cursor = 'pointer';
+                            event.target.style.color = '#FF7400';
+                            console.log(event.target);
+                        }}
+                        onMouseLeave={(event) => {
+                            event.target.style.color = '#FFBC00';
+                        }}
+                        style={{ color: '#FFBC00', textDecoration: 'underline' }}>
+                        환불등록
+                    </div>
+                );
             },
         },
         {
@@ -189,7 +199,18 @@ const SalesDB = () => {
                             setDeletePaymentData(data[0]);
                             setDeleteModal(!deleteModal);
                         }}>
-                        삭제
+                        <i
+                            onMouseEnter={(event) => {
+                                event.target.style.cursor = 'pointer';
+                                event.target.style.color = '#FA5C7C';
+                                console.log(event.target);
+                            }}
+                            onMouseLeave={(event) => {
+                                event.target.style.color = '#6c757d';
+                            }}
+                            className="mdi mdi-delete-outline"
+                            style={{ fontSize: '20px' }}
+                        />
                     </div>
                 );
             },
@@ -206,6 +227,7 @@ const SalesDB = () => {
                     setModal={setDeleteModal}
                 />
             ) : null}
+
             <SalesTable data={salesData} columns={tableColumns} />
 
             <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>

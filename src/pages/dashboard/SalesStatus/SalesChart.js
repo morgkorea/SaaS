@@ -12,7 +12,7 @@ const SalesChart = ({ sortedByPeriodSalesData, selectedPeriod, datePickDate }) =
         etc: 0,
     });
     const [apexDonutData, setApexDonutData] = useState([1, 1, 1, 1]);
-    console.log(apexDonutData, sortedByPeriodSalesData);
+
     const amountEachProductsSales = () => {
         const productsSales = { batterBox: 0, lesson: 0, locker: 0, etc: 0 };
         if (sortedByPeriodSalesData.length) {
