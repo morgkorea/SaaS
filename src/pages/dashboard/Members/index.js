@@ -24,10 +24,17 @@ const MemberDashboard = () => {
     const getMembers = async () => {
         const data = await getDocs(memberRef);
 
-        setActiveMembers(data.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        })).filter((m) => m.activation === '활성'));
+        setActiveMembers(
+            data.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+            })).filter((member) => {
+                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                    return member.availableProducts.some((product) => Object.keys(product).length > 0 && product !== null);
+                }
+                return false;
+            })
+        );
 
         setCurrentMembers(data.docs.map((doc) => ({
             id: doc.id,
@@ -38,8 +45,8 @@ const MemberDashboard = () => {
     useEffect(() => {
         getMembers();
     }, []);
-    // console.log('활성: ', activeMembers, '전체: ', currentMembers);
 
+    // console.log(activeMembers, currentMembers)
     const [show, setShow] = useState(true);
     const [index, setIndex] = useState(1);
 
@@ -84,11 +91,13 @@ const MemberDashboard = () => {
                     <Row>
                         {show ? (
                             <Alert variant="info" onClose={() => setShow(false)} dismissible className="mb-3">
-                                <span className="fw-bold">활성회원 Tap</span> - 아래 데이터는 현재 이용중인 회원님의 데이터에요. 
+                                <span className="fw-bold">활성회원 Tap</span> - 아래 데이터는 현재 이용중인 회원님의 데이터에요.
                                 지금까지 등록하셨던 회원님들의 데이터를 확인하시려면 우측상단 전체탭을 이용해주세요.
                             </Alert>
                         ) : null}
                     </Row>
+
+                    {/* 타석활성 / 레슨활성 */}
                     <Row>
                         <Col xxl={3} xl={4}>
                             <Statistics members={activeMembers} index={index} />
@@ -97,6 +106,7 @@ const MemberDashboard = () => {
                             <SessionsChart members={activeMembers} index={index} />
                         </Col>
                     </Row>
+
                     <Row>
                         <Col xxl={3} xl={4}>
                             <GenderStatus members={activeMembers} />

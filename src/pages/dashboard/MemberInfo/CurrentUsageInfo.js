@@ -1,47 +1,57 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 
+const findKeywordInProducts = (availableProducts, keyword) => {
+    if (Array.isArray(availableProducts) && availableProducts.length > 0) {
+        return availableProducts.some((product) => {
+            return product && product.product.includes(keyword);
+        });
+    }
+    return false;
+};
+
 const CurrentUsageInfo = ({ member }) => {
+    const availableProducts = member.availableProducts;
+    const teeActive = findKeywordInProducts(availableProducts, '타석') ? '활성' : '비활성';
+    const lessonActive = findKeywordInProducts(availableProducts, '레슨') ? '활성' : '비활성';
+    const lockerActive = findKeywordInProducts(availableProducts, '락커') ? '활성' : '비활성';
 
     return (
         <>
             <Card>
                 <Card.Body>
-
-                        <div className="payment-info">
-                            <h4 className="me-5">현재 이용 정보</h4>
-                            <div className='d-flex'>
-                                <div><h4 className='me-2'>타석</h4><p>활성</p></div>
-                                <div><h4 className='me-2'>레슨</h4><p>비활성</p></div>
-                                <div><h4 className='me-2'>락커</h4><p>만료예정</p></div>
-                                <div><h4 className='me-2'>기타</h4><p>-</p></div>
+                    <div className="payment-info">
+                        <h4 className="me-5">현재 이용 정보</h4>
+                        <div className='d-flex'>
+                            <div>
+                                <h4 className="me-2">타석</h4>
+                                <p>{teeActive}
+                                    {
+                                        teeActive === '활성' ? <i className="dripicons-media-record text-primary ms-1" /> : <i className="dripicons-cross text-danger ms-1" />
+                                    }
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className="me-2">레슨</h4>
+                                <p>{lessonActive}
+                                    {
+                                        lessonActive === '활성' ? <i className="dripicons-media-record text-primary ms-1" /> : <i className="dripicons-cross text-danger ms-1" />
+                                    }</p>
+                            </div>
+                            <div>
+                                <h4 className="me-2">락커</h4>
+                                <p>{lockerActive}
+                                    {
+                                        lockerActive === '활성' ? <i className="dripicons-media-record text-primary ms-1" /> : <i className="dripicons-cross text-danger ms-1" />
+                                    }</p>
+                            </div>
+                            <div>
+                                <h4 className="me-2">기타</h4>
+                                <p>-</p>
+                                {/* <i className="dripicons-warning"></i> */}
                             </div>
                         </div>
-                        {/* {!member.availableProducts || member.availableProducts.length === 0 ? (
-                            <>
-                                <div className="payment-info">
-                                    <h4 className="me-5">현재 이용 정보</h4>
-                                </div>
-                                <div>
-                                    <h4 className="text-primary">비활성 회원</h4>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className="payment-info">
-                                    <h4 className="me-5">현재 이용 정보</h4>
-                                    <p>{member.availableProducts[0].product}</p>
-                                    <p>{member.availableProducts[0].discountRate}% 할인</p>
-                                    <p>
-                                        {member.availableProducts[0].startDate} ~ {member.availableProducts[0].endDate}
-                                    </p>
-                                </div>
-                                <div>
-                                    <h4 className="text-primary">활성 회원</h4>
-                                </div>
-                            </>
-                        )} */}
-
+                    </div>
                 </Card.Body>
             </Card>
         </>

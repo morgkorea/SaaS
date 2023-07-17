@@ -2,10 +2,8 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import Table from './Table';
-import moment from 'moment';
-import { doc, updateDoc } from 'firebase/firestore';
-import { firestoreDB } from '../../../firebase/firebase';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const onClickMemberInfo = ({ row }) => {
     return (
@@ -33,56 +31,8 @@ const PrivateInputColumn = ({ row }) => {
     );
 };
 
-const AgeColumn = ({ row }) => {
-    console.log('row', row)
-    const birthday = row.original.birthDate.replace(/-/gi, '');
-    const today = moment().format('YYYYMMDD');
-
-    const calcAge = () => {
-        return Math.floor((today - birthday) / 10000);
-    };
-
-    let age = 0;
-    let ageGroup = '';
-
-    if (birthday.length === 8) {
-        age = calcAge();
-
-        if (age < 20) {
-            ageGroup = '10대';
-        } else if (age < 30) {
-            ageGroup = '20대';
-        } else if (age < 40) {
-            ageGroup = '30대';
-        } else if (age < 50) {
-            ageGroup = '40대';
-        } else if (age < 60) {
-            ageGroup = '50대';
-        } else {
-            ageGroup = '60대 이상';
-        }
-    } else {
-        return false;
-    }
-
-    // const email = useSelector((state) => state.Auth?.user.email);
-
-    // if (row.original.birthDate) {
-    //     const AgeUpdate = async () => {
-    //         const memberRef = doc(firestoreDB, 'Users', email, 'Members', row.original.id);
-    //         const updateAgeData = { ageGroup: ageGroup, age: age };
-    //         await updateDoc(memberRef, updateAgeData);
-    //     };
-    //     AgeUpdate();
-    // } else {
-    //     return false;
-    // }
-
-    return <>{ageGroup}</>;
-};
-
 const PhoneColumn = ({ row }) => {
-    const phoneNumber = row.original.phone;
+    const phoneNumber = row.original.phone || '';
 
     const digitsOnly = phoneNumber.replace(/\D/g, '');
 
@@ -99,6 +49,75 @@ const PhoneColumn = ({ row }) => {
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
 
     return countryCode + formattedPhoneNumber;
+};
+
+const CumulativePayCount = ({ row }) => {
+    const availableProducts = row.original.availableProducts;
+    const unavailableProducts = row.original.unavailableProducts;
+
+    const [allProducts, setAllProducts] = useState(0);
+
+    useEffect(() => {
+        if (availableProducts && unavailableProducts) {
+            const products = [...availableProducts, ...unavailableProducts];
+            setAllProducts(products.length);
+        }
+    }, [availableProducts, unavailableProducts]);
+
+    return <>{String(allProducts)}</>;
+};
+
+const CumulativePayAmount = ({ row }) => {
+    const availableProducts = row.original.availableProducts;
+    const unavailableProducts = row.original.unavailableProducts;
+
+    const [totalValue, setTotalValue] = useState(0);
+
+    useEffect(() => {
+        if (availableProducts && unavailableProducts) {
+            const products = [...availableProducts, ...unavailableProducts];
+            const amounts = products.map((data) => {
+                const regularPrice = data.regularPrice || 0;
+                const discountPrice = data.discountPrice || 0;
+                return regularPrice - discountPrice;
+            });
+
+            const totalValue = Math.floor(
+                amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+            );
+
+            setTotalValue(totalValue);
+        }
+    }, [availableProducts, unavailableProducts]);
+
+    return <>{String(totalValue)}</>;
+};
+
+const AveragePayAmount = ({ row }) => {
+    const availableProducts = row.original.availableProducts;
+    const unavailableProducts = row.original.unavailableProducts;
+
+    const [averageValue, setAverageValue] = useState(0);
+
+    useEffect(() => {
+        if (availableProducts && unavailableProducts) {
+            const products = [...availableProducts, ...unavailableProducts];
+            const amounts = products.map((data) => {
+                const regularPrice = data.regularPrice || 0;
+                const discountPrice = data.discountPrice || 0;
+                return regularPrice - discountPrice;
+            });
+
+            const totalValue = Math.floor(
+                amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+            );
+            const averageValue = Math.floor(totalValue / amounts.length);
+
+            setAverageValue(averageValue);
+        }
+    }, [availableProducts, unavailableProducts]);
+
+    return <>{String(averageValue)}</>;
 };
 
 const columns = [
@@ -131,8 +150,7 @@ const columns = [
     },
     {
         Header: '연령대',
-        Cell: AgeColumn,
-        // accessor: 'ageGroup',
+        accessor: 'ageGroup',
         sort: true,
     },
     {
@@ -193,27 +211,29 @@ const columns = [
     },
     {
         Header: '마케팅수신동의',
+        accessor: 'marketingRecieveAllow',
         Cell: MarketingInputColumn,
         sort: false,
     },
     {
         Header: '개인정보수집동의',
+        accessor: 'privateInfoAllow',
         Cell: PrivateInputColumn,
         sort: false,
     },
     {
         Header: '누적결제수',
-        accessor: '',
+        Cell: CumulativePayCount,
         sort: true,
     },
     {
         Header: 'LTV(누적결제금액)',
-        accessor: '',
+        Cell: CumulativePayAmount,
         sort: true,
     },
     {
         Header: '평균결제금액',
-        accessor: '',
+        Cell: AveragePayAmount,
         sort: true,
     },
     {

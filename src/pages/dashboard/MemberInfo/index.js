@@ -37,7 +37,7 @@ const MemberInfo = () => {
     }, []);
 
     // console.log('member:', member);
-    // console.log('memberData', memberData)
+    console.log('memberData', memberData)
 
     const deleteUser = async () => {
         await deleteDoc(memberRef);

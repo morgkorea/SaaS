@@ -29,7 +29,7 @@ const SessionsChart = ({ members, index }) => {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
 
-    const labels = isMonthlyView 
+    const labels = isMonthlyView
         ? getDaysInMonth(currentMonth, currentYear)
         : Array(12).fill('').map((_, idx) => idx + 1 + '월');
 
@@ -117,43 +117,81 @@ const SessionsChart = ({ members, index }) => {
     ];
 
     return (
-        <Card>
-            <Card.Body>
-                <ul className="nav float-end d-none d-lg-flex">
-                    <li className="nav-item">
-                        <Link
-                            to="#"
-                            className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}
-                            onClick={() => setIsMonthlyView(true)}
-                        >
-                            월간
-                        </Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link
-                            to="#"
-                            className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
-                            onClick={() => setIsMonthlyView(false)}
-                        >
-                            년간
-                        </Link>
-                    </li>
-                </ul>
+        <>
+            <Card>
+                <Card.Body>
+                    <ul className="nav float-end d-none d-lg-flex">
+                        <li className="nav-item">
+                            <Link
+                                to="#"
+                                className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}
+                                onClick={() => setIsMonthlyView(true)}
+                            >
+                                월간
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link
+                                to="#"
+                                className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
+                                onClick={() => setIsMonthlyView(false)}
+                            >
+                                년간
+                            </Link>
+                        </li>
+                    </ul>
 
-                {
-                    index === 1 ?  <h4 className="header-title mb-3">활성 회원 추이</h4>
-                    : <h4 className="header-title mb-3">전체 회원 추이</h4>
-                }
-               
-                <Chart
-                    options={apexBarChartOpts}
-                    series={apexBarChartData}
-                    type="area"
-                    className="apex-charts mt-3"
-                    height={308}
-                />
-            </Card.Body>
-        </Card>
+                    {
+                        index === 1 ? <h4 className="header-title mb-3">타석 활성 회원 추이</h4>
+                            : <h4 className="header-title mb-3">전체 회원 추이</h4>
+                    }
+
+                    <Chart
+                        options={apexBarChartOpts}
+                        series={apexBarChartData}
+                        type="area"
+                        className="apex-charts mt-3"
+                        height={308}
+                    />
+                </Card.Body>
+            </Card>
+
+            {index === 1 ? <>
+                <Card>
+                    <Card.Body>
+                        <ul className="nav float-end d-none d-lg-flex">
+                            <li className="nav-item">
+                                <Link
+                                    to="#"
+                                    className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}
+                                    onClick={() => setIsMonthlyView(true)}
+                                >
+                                    월간
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    to="#"
+                                    className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
+                                    onClick={() => setIsMonthlyView(false)}
+                                >
+                                    년간
+                                </Link>
+                            </li>
+                        </ul>
+
+                        <h4 className="header-title mb-3">레슨 활성 회원 추이</h4>
+                        <Chart
+                            options={apexBarChartOpts}
+                            series={apexBarChartData}
+                            type="area"
+                            className="apex-charts mt-3"
+                            height={308}
+                        />
+                    </Card.Body>
+                </Card></> : null
+            }
+        </>
     );
 };
 

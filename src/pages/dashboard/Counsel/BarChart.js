@@ -2,7 +2,28 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card } from 'react-bootstrap';
 
-const BarChart = () => {
+const BarChart = ({ members }) => {
+    console.log(members.map((m) => {
+        return m.inflowPath
+    }))
+    
+    const groups = [
+        '네이버',
+        '건물방문',
+        '지인추천',
+        '제휴',
+        '인스타그램',
+        '전단지',
+        '김캐디',
+        '카카오채널',
+        '현수막',
+        '간판',
+        '기타',
+        '프로소개',
+        '홈페이지',
+        '베스티파이',
+    ]
+
     const chartOpts = {
         chart: {
             type: 'bar',
@@ -35,22 +56,7 @@ const BarChart = () => {
             colors: ['#fff'],
         },
         xaxis: {
-            categories: [
-                '네이버',
-                '건물방문',
-                '지인추천',
-                '제휴',
-                '인스타그램',
-                '전단지',
-                '김캐디',
-                '카카오채널',
-                '현수막',
-                '간판',
-                '기타',
-                '프로소개',
-                '홈페이지',
-                '베스티파이',
-            ],
+            categories: groups,
             axisBorder: { show: false },
             axisTicks: { show: false },
         },
@@ -69,8 +75,6 @@ const BarChart = () => {
         {
             name: '',
             data: [4, 18, 15, 22, 28, 20, 33, 2, 26, 19, 14, 5, 30, 20],
-            // api로 data 가져오기 예시
-            // data: historyData?.map((price) => price.close)as number[],
         },
     ];
 
