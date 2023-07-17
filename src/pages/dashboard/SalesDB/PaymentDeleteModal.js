@@ -8,7 +8,7 @@ import { doc, deleteDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
-const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
+const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
     const [size, setSize] = useState('lg');
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
@@ -20,7 +20,7 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
     };
 
     const deleteFirestoreSalesData = async () => {
-        const currentDocId = deletePaymentData?.uid;
+        const currentDocId = paymentData?.uid;
         try {
             const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
             await deleteDoc(firstoreSalesDocRef);
@@ -55,8 +55,7 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                                 <div style={{ width: '240px', height: '68px', alignItems: 'flex-start' }}>
                                     <div className="mb-1">결제일, 결제시간</div>
                                     <div style={{ width: '100%', padding: '6px 12px', border: '1px solid #DEE2E6' }}>
-                                        {deletePaymentData &&
-                                            deletePaymentData.paymentDate + ' ' + deletePaymentData.paymentTime}
+                                        {paymentData && paymentData.paymentDate + ' ' + paymentData.paymentTime}
                                     </div>
                                 </div>
                                 <div style={{ width: '168px', height: '68px', alignItems: 'flex-start' }}>
@@ -67,15 +66,11 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                                             width: '100%',
                                             padding: '6px 12px',
                                             border: '1px solid #DEE2E6',
-                                            color: `${
-                                                deletePaymentData.remainingPaymentPrice === 0 ? '#727CF5' : '#FA5C7C'
-                                            }`,
+                                            color: `${paymentData.remainingPaymentPrice === 0 ? '#727CF5' : '#FA5C7C'}`,
                                         }}>
-                                        {deletePaymentData.remainingPaymentPrice === 0
+                                        {paymentData.remainingPaymentPrice === 0
                                             ? '결제 완료'
-                                            : '미결제 : ' +
-                                              deletePaymentData.remainingPaymentPrice.toLocaleString() +
-                                              '원'}
+                                            : '미결제 : ' + paymentData.remainingPaymentPrice.toLocaleString() + '원'}
                                     </div>
                                 </div>
                             </div>
@@ -86,8 +81,8 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                                 <div
                                     className="paymentDelete-receipt-detail-body p-2"
                                     style={{ height: '180px', overflowY: 'scroll' }}>
-                                    {deletePaymentData.salesProducts?.length &&
-                                        deletePaymentData.salesProducts.map((product, idx) => (
+                                    {paymentData.salesProducts?.length &&
+                                        paymentData.salesProducts.map((product, idx) => (
                                             <div className="mb-2">
                                                 <div
                                                     style={{
@@ -144,15 +139,15 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                                 }}>
                                 <div style={{ fontSize: '16px', fontWeight: '700' }}>최종 결제 금액</div>
                                 <span style={{ color: '#727CF5', fontWeight: '700', fontSize: '16px' }}>
-                                    {deletePaymentData.totalPaymentPrice &&
-                                        deletePaymentData.totalPaymentPrice.toLocaleString() + '원'}
+                                    {paymentData.totalPaymentPrice &&
+                                        paymentData.totalPaymentPrice.toLocaleString() + '원'}
                                 </span>
                             </div>
                             <div className="mb-2">
                                 <h4 className="modal-title mb-2">결제 정보</h4>
                                 <div className="mb-1" style={{ padding: '0px 12px 0px 12px' }}>
-                                    {deletePaymentData.paymentInfo?.length &&
-                                        deletePaymentData.paymentInfo.map((paymentInfo, dix) => (
+                                    {paymentData.paymentInfo?.length &&
+                                        paymentData.paymentInfo.map((paymentInfo, dix) => (
                                             <div
                                                 style={{
                                                     width: '100%',

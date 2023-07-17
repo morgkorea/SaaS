@@ -11,6 +11,7 @@ import SalesTable from './SalesTable.js';
 
 import SalesRegistrationModal from './SalesRegistrationModal.js';
 import PaymentDeleteModal from './PaymentDeleteModal.js';
+import PaymentRefundModal from './PaymentRefundModal.js';
 
 import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
@@ -22,8 +23,8 @@ const SalesDB = () => {
     const [salesData, setSalesData] = useState([]);
     const [modal, setModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [deletePaymentData, setDeletePaymentData] = useState(false);
-    const [refundRegistrationModal, setRefundRegistrationModal] = useState(false);
+    const [paymentData, setPaymentData] = useState(false);
+    const [refundModal, setRefundModal] = useState(false);
 
     // 페이지네이션
     const [page, setPage] = useState(1);
@@ -49,8 +50,6 @@ const SalesDB = () => {
             setSalesData(salesArray);
         });
     };
-
-    const deleteFiresstorePaymentData = () => {};
 
     useEffect(() => {
         getFirestoreSalesData();
@@ -172,6 +171,11 @@ const SalesDB = () => {
             Cell: ({ value, raw }) => {
                 return (
                     <div
+                        onClick={() => {
+                            const data = salesData.filter((payment) => payment.uid === value);
+                            setPaymentData(data[0]);
+                            setRefundModal(!refundModal);
+                        }}
                         onMouseEnter={(event) => {
                             event.target.style.cursor = 'pointer';
                             event.target.style.color = '#FF7400';
@@ -181,7 +185,7 @@ const SalesDB = () => {
                             event.target.style.color = '#FFBC00';
                         }}
                         style={{ color: '#FFBC00', textDecoration: 'underline' }}>
-                        환불등록
+                        {paymentData.refund ? '환불완료' : '환불등록'}
                     </div>
                 );
             },
@@ -196,7 +200,7 @@ const SalesDB = () => {
                     <div
                         onClick={() => {
                             const data = salesData.filter((payment) => payment.uid === value);
-                            setDeletePaymentData(data[0]);
+                            setPaymentData(data[0]);
                             setDeleteModal(!deleteModal);
                         }}>
                         <i
@@ -220,12 +224,11 @@ const SalesDB = () => {
     return (
         <>
             {modal && <SalesRegistrationModal modal={modal} setModal={setModal} />}
-            {deleteModal && deletePaymentData ? (
-                <PaymentDeleteModal
-                    deletePaymentData={deletePaymentData}
-                    modal={deleteModal}
-                    setModal={setDeleteModal}
-                />
+            {deleteModal && paymentData ? (
+                <PaymentDeleteModal paymentData={paymentData} modal={deleteModal} setModal={setDeleteModal} />
+            ) : null}
+            {refundModal && paymentData ? (
+                <PaymentRefundModal paymentData={paymentData} modal={refundModal} setModal={setRefundModal} />
             ) : null}
 
             <SalesTable data={salesData} columns={tableColumns} />
