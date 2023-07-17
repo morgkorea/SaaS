@@ -1,10 +1,10 @@
-import react, { useState } from 'react';
+import react, { useState, useEffect } from 'react';
 
 import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 import { FormInput } from '../../../components/';
@@ -16,6 +16,28 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [refundConfirmModal, setRefundConfirmModal] = useState(false);
     const [penaltyPrice, setPenaltyPrice] = useState(0);
+    const [refundEachProducts, setRefundEachProducts] = useState([0, 0, 0, 0, 0]);
+    const [totalRefundPrice, setTotalRefundPrice] = useState(0);
+
+    useEffect(() => {
+        if (paymentData.salesProducts?.length) {
+            const refundPrices = paymentData.salesProducts.map((product) => product.adjustedPrice);
+            setRefundEachProducts([...refundPrices]);
+        }
+        return () => {
+            setRefundEachProducts([]);
+        };
+    }, [paymentData]);
+
+    useEffect(() => {
+        let refundPrices = refundEachProducts.reduce((acc, curr) => acc + curr, 0);
+        let totalRefund = refundPrices - penaltyPrice;
+        setTotalRefundPrice(totalRefund);
+
+        return () => {
+            setTotalRefundPrice(0);
+        };
+    }, [paymentData, refundEachProducts, penaltyPrice]);
 
     const email = useSelector((state) => state.Auth?.user?.email);
 
@@ -23,12 +45,41 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
         setModal(!modal);
     };
 
+    const updateFirestoreSalesData = async () => {
+        const currentDocId = paymentData?.uid;
+        const refundFields = {
+            refund: true,
+            refundDate: new Date().toISOString().split('T')[0],
+            refundPrice: totalRefundPrice,
+            refundPenaltyPrice: penaltyPrice,
+        };
+        try {
+            const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
+            await updateDoc(firstoreSalesDocRef, refundFields);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const getPenaltyPrice = (event) => {
-        let penalty = Number(event.target.value);
+        let penalty = Number(event.target.value.replace(/,/g, ''));
         if (penalty < 0 || isNaN(penalty)) {
             penalty = 0;
         }
         setPenaltyPrice(penalty);
+    };
+
+    const getRefundEachProducts = (event, index) => {
+        let reufndPrice = Number(event.target.value.replace(/,/g, ''));
+        let maximumPrice = paymentData.salesProducts[index].adjustedPrice;
+        if (reufndPrice > maximumPrice) {
+            reufndPrice = maximumPrice;
+        }
+        if (!reufndPrice < 0 || !isNaN(reufndPrice)) {
+            const refundEachProductsArray = [...refundEachProducts];
+            refundEachProductsArray[index] = reufndPrice;
+            setRefundEachProducts([...refundEachProductsArray]);
+        }
     };
     return (
         <Modal show={modal} onHide={toggle} size={size} centered={true} fullscreen={'xxl-down'}>
@@ -189,17 +240,22 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                 </div>
 
                                 <div style={{ display: 'flex', gap: '26px', alignItems: 'center' }}>
-                                    <div>위약금 설정</div>
-
-                                    <FormInput
-                                        type="text"
-                                        name="penaltyPrice"
-                                        placeholder="-"
-                                        containerClass={''}
-                                        onChange={getPenaltyPrice}
-                                        value={penaltyPrice}
-                                        style={{ padding: '2px 8px' }}
-                                    />
+                                    <div style={{ color: '#727CF5' }}>위약금 설정</div>
+                                    {paymentData.refund ? (
+                                        <div style={{ color: '#727CF5' }}>
+                                            {paymentData.refundPenaltyPrice.toLocaleString() + '원'}
+                                        </div>
+                                    ) : (
+                                        <FormInput
+                                            type="text"
+                                            name="penaltyPrice"
+                                            placeholder="-"
+                                            containerClass={''}
+                                            onChange={getPenaltyPrice}
+                                            value={penaltyPrice.toLocaleString()}
+                                            style={{ padding: '2px 8px', textAlign: 'right', color: '#727CF5' }}
+                                        />
+                                    )}
                                 </div>
                             </div>
                             {paymentData.salesProducts?.length &&
@@ -211,16 +267,34 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                 justifyContent: 'space-between',
                                                 marginBottom: '4px',
                                             }}>
-                                            <div style={{ display: 'flex', gap: '12px' }}>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    gap: '12px',
+                                                    color: paymentData.refund ? '#FA5C7C' : '',
+                                                }}>
                                                 <div>{product.product && idx + 1 + '. ' + product.product}</div>
                                                 <div>
                                                     {product.startDate && product.startDate + ' ~ ' + product.endDate}
                                                 </div>
                                             </div>
-
-                                            <div>
-                                                {product.regularPrice && product.regularPrice.toLocaleString() + '원'}
-                                            </div>
+                                            {paymentData.refund ? (
+                                                <div style={{ color: paymentData.refund ? '#FA5C7C' : '' }}>
+                                                    환불 완료
+                                                </div>
+                                            ) : (
+                                                <FormInput
+                                                    type="text"
+                                                    name="penaltyPrice"
+                                                    placeholder="-"
+                                                    containerClass={''}
+                                                    onChange={(event) => {
+                                                        getRefundEachProducts(event, idx);
+                                                    }}
+                                                    value={refundEachProducts[idx].toLocaleString()}
+                                                    style={{ padding: '2px 8px', textAlign: 'right', color: '#FA5C7C' }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -236,8 +310,13 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                             }}>
                             <div style={{ fontSize: '16px', fontWeight: '700' }}>환불액</div>
                             <span style={{ color: '#FA5C7C', fontWeight: '700', fontSize: '16px' }}>
-                                {paymentData.totalPaymentPrice &&
-                                    '-' + paymentData.totalPaymentPrice.toLocaleString() + '원'}
+                                {refundEachProducts.length
+                                    ? (
+                                          refundEachProducts.reduce((acc, curr) => {
+                                              return acc + curr;
+                                          }, 0) - penaltyPrice
+                                      ).toLocaleString() + '원'
+                                    : '- ' + penaltyPrice.toLocaleString() + '원'}
                             </span>
                         </div>
                     </div>
@@ -251,9 +330,8 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                     onMouseLeave={() => {
                         setIsHoveredButton(false);
                     }}
-                    onClick={(event) => {
-                        setRefundConfirmModal(!refundConfirmModal);
-                    }}
+                    disabled={paymentData.refund}
+                    onClick={updateFirestoreSalesData}
                     style={{
                         width: '200px',
                         border: '1px solid #FA5C7C',
@@ -261,7 +339,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                         backgroundColor: !isHoverdButton ? '#FFFFFF' : '#F9D8DE',
                         boxShadow: 'none',
                     }}>
-                    환불 등록
+                    {paymentData.refund ? '환불 완료' : '환불 등록'}
                 </Button>
             </Modal.Footer>
         </Modal>

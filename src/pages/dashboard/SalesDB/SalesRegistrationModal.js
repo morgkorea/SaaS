@@ -791,8 +791,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         placeholder="-"
                                         containerClass={''}
                                         key="productsNumber"
-                                        min={0}
-                                        max={100}
                                         onChange={getProductDiscountRate}
                                         value={productDiscountRate}
                                     />

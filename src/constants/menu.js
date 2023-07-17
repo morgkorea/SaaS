@@ -39,12 +39,7 @@ const MENU_ITEMS = [
                 url: '/dashboard/counsel',
                 parentKey: 'dashboards',
             },
-            {
-                key: 'crm',
-                label: '회원관리',
-                url: '/dashboard/crm',
-                parentKey: 'dashboards',
-            },
+
             {
                 key: 'sales-db',
                 label: '매출DB',

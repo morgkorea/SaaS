@@ -51,9 +51,9 @@ export const firestoreSalesFieldSchema = {
     paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
     paymentMemo: '', //type: string결제메모
     refund: false, // type: boolean 환불여부
-    refundRequest_date: '', //type: string yyyy-MM-dd 환불요청일
     refundDate: '', //type: string yyyy-MM-dd 환불일
     refundPrice: 0, //type: number 환불액
+    refundPenaltyPrice: 0,
     refundReason: '', //type: string 환불사유
 };
 

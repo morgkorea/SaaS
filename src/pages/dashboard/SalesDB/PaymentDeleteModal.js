@@ -66,11 +66,9 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                                             width: '100%',
                                             padding: '6px 12px',
                                             border: '1px solid #DEE2E6',
-                                            color: `${paymentData.remainingPaymentPrice === 0 ? '#727CF5' : '#FA5C7C'}`,
+                                            color: `${!paymentData.refund ? '#727CF5' : '#FA5C7C'}`,
                                         }}>
-                                        {paymentData.remainingPaymentPrice === 0
-                                            ? '결제 완료'
-                                            : '미결제 : ' + paymentData.remainingPaymentPrice.toLocaleString() + '원'}
+                                        {!paymentData.refund ? '결제 완료' : '환불 완료'}
                                     </div>
                                 </div>
                             </div>

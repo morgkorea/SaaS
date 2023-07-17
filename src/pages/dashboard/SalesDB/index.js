@@ -169,6 +169,7 @@ const SalesDB = () => {
             Header: '환불',
             sort: true,
             Cell: ({ value, raw }) => {
+                const refund = salesData.filter((payment) => payment.uid === value)[0]?.refund;
                 return (
                     <div
                         onClick={() => {
@@ -177,15 +178,28 @@ const SalesDB = () => {
                             setRefundModal(!refundModal);
                         }}
                         onMouseEnter={(event) => {
-                            event.target.style.cursor = 'pointer';
-                            event.target.style.color = '#FF7400';
+                            if (!refund) {
+                                event.target.style.cursor = 'pointer';
+                                event.target.style.color = '#FA5C7C';
+                            } else {
+                                event.target.style.cursor = 'pointer';
+                                event.target.style.color = '#FA5C7C';
+                            }
+
                             console.log(event.target);
                         }}
                         onMouseLeave={(event) => {
-                            event.target.style.color = '#FFBC00';
+                            if (!refund) {
+                                event.target.style.color = '#FFBC00';
+                            } else {
+                                event.target.style.color = '#FA5C7C';
+                            }
                         }}
-                        style={{ color: '#FFBC00', textDecoration: 'underline' }}>
-                        {paymentData.refund ? '환불완료' : '환불등록'}
+                        style={{
+                            color: refund ? '#FA5C7C' : '#FFBC00',
+                            textDecoration: 'underline',
+                        }}>
+                        {refund ? '환불완료' : '환불등록'}
                     </div>
                 );
             },
