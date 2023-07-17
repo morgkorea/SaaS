@@ -7,17 +7,28 @@ import { useSelector } from 'react-redux';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
+import { FormInput } from '../../../components/';
+
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
 const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const [size, setSize] = useState('lg');
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [refundConfirmModal, setRefundConfirmModal] = useState(false);
+    const [penaltyPrice, setPenaltyPrice] = useState(0);
 
     const email = useSelector((state) => state.Auth?.user?.email);
 
     const toggle = () => {
         setModal(!modal);
+    };
+
+    const getPenaltyPrice = (event) => {
+        let penalty = Number(event.target.value);
+        if (penalty < 0 || isNaN(penalty)) {
+            penalty = 0;
+        }
+        setPenaltyPrice(penalty);
     };
     return (
         <Modal show={modal} onHide={toggle} size={size} centered={true} fullscreen={'xxl-down'}>
@@ -29,7 +40,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                 {' '}
                 <h3 className="modal-title">결제 삭제</h3>
             </Modal.Header>
-            <Modal.Body style={{ width: '100%', height: '800px', padding: '0px 60px' }}>
+            <Modal.Body style={{ width: '100%', height: '850px', padding: '0px 60px' }}>
                 <div className="container mb-2" style={{ padding: '0' }}>
                     <h4 className="modal-title mb-2">결제 영수증</h4>
                     <div
@@ -61,11 +72,11 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                         </div>
                     </div>
 
-                    <div className="paymentDelete-receipt-detail mb-3">
-                        <h4 className="paymentDelete-receipt-detail modal-title">결제 상세</h4>
+                    <div className="paymentRefund-receipt-detail mb-3">
+                        <h4 className="paymentRefund-receipt-detail modal-title">결제 상세</h4>
 
                         <div
-                            className="paymentDelete-receipt-detail-body p-2"
+                            className="paymentRefund-receipt-detail-body p-2"
                             style={{ height: '180px', overflowY: 'scroll' }}>
                             {paymentData.salesProducts?.length &&
                                 paymentData.salesProducts.map((product, idx) => (
@@ -159,12 +170,38 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                 ))}
                         </div>
                     </div>
-                    <div className="paymentDelete-receipt-detail mb-3">
-                        <h4 className="paymentDelete-receipt-detail modal-title">결제 상세</h4>
+                    <div className="paymentRefund-info-detail mb-3">
+                        <h4 className="paymentRefund-info-detail modal-title">환불 정보</h4>
 
                         <div
-                            className="paymentDelete-receipt-detail-body p-2"
-                            style={{ height: '180px', overflowY: 'scroll' }}>
+                            className="paymentRefund-info-detail-body p-2"
+                            style={{ height: '230px', overflowY: 'scroll' }}>
+                            <div
+                                style={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginBottom: '18px',
+                                    alignItems: 'center',
+                                }}>
+                                <div>
+                                    <div>이용정보</div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '26px', alignItems: 'center' }}>
+                                    <div>위약금 설정</div>
+
+                                    <FormInput
+                                        type="text"
+                                        name="penaltyPrice"
+                                        placeholder="-"
+                                        containerClass={''}
+                                        onChange={getPenaltyPrice}
+                                        value={penaltyPrice}
+                                        style={{ padding: '2px 8px' }}
+                                    />
+                                </div>
+                            </div>
                             {paymentData.salesProducts?.length &&
                                 paymentData.salesProducts.map((product, idx) => (
                                     <div className="mb-2">
@@ -185,28 +222,23 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                 {product.regularPrice && product.regularPrice.toLocaleString() + '원'}
                                             </div>
                                         </div>
-
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <div style={{ display: 'flex', gap: '12px', paddingLeft: '12px' }}>
-                                                {' '}
-                                                <div style={{ color: '#727CF5' }}>
-                                                    {product.discountRate > 0 &&
-                                                        product.discountRate + '%' + ' 할인 적용'}
-                                                </div>
-                                                <div style={{ color: '#727CF5' }}>
-                                                    {product.adjustedPrice !== product.discountPrice &&
-                                                        (
-                                                            product.discountPrice - product.adjustedPrice
-                                                        ).toLocaleString() + '원 조정'}
-                                                </div>
-                                            </div>
-
-                                            <div style={{ color: '#727CF5' }}>
-                                                {product.adjustedPrice && product.adjustedPrice.toLocaleString() + '원'}
-                                            </div>
-                                        </div>
                                     </div>
                                 ))}
+                        </div>
+                        <div
+                            className="mt-3"
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'space-between',
+
+                                padding: '0px 4px 4px 4px',
+                            }}>
+                            <div style={{ fontSize: '16px', fontWeight: '700' }}>환불액</div>
+                            <span style={{ color: '#FA5C7C', fontWeight: '700', fontSize: '16px' }}>
+                                {paymentData.totalPaymentPrice &&
+                                    '-' + paymentData.totalPaymentPrice.toLocaleString() + '원'}
+                            </span>
                         </div>
                     </div>
                 </div>
