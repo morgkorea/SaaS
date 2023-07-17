@@ -26,14 +26,13 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                 <div className="container mb-2" style={{ padding: '0' }}>
                     <h4 className="modal-title mb-2">결제 영수증</h4>
                     <div
-                        className="mb-4"
+                        className="mb-2"
                         style={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             paddingBottom: '24px',
                             borderBottom: '1px solid #EEF2F7',
                         }}>
-                        {' '}
                         <div style={{ width: '240px', height: '68px', alignItems: 'flex-start' }}>
                             <div className="mb-1">결제일, 결제시간</div>
                             <div style={{ width: '100%', padding: '10px 16px', border: '1px solid #DEE2E6' }}>
@@ -48,22 +47,73 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                         </div>
                     </div>
 
-                    <div className="mb-3">
-                        <h4 className="modal-title mb-2">결제 상세</h4>
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '60%', marginBottom: '16px' }}>적용상품</div>
-                            <div style={{ width: '40%', display: 'flex', justifyContent: 'space-between' }}>
-                                <div style={{ minWidth: '100px', textAlign: 'right' }}>조정금액</div>
-                                <div>상품금액</div>
+                    <div className="paymentDelete-receipt-detail mb-3">
+                        <h4 className="paymentDelete-receipt-detail modal-title">결제 상세</h4>
+
+                        <div
+                            className="paymentDelete-receipt-detail-body p-2"
+                            style={{ height: '180px', overflowY: 'scroll' }}>
+                            <div className="mb-2">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                        <div>1. 타석권 12개월</div>
+                                        <div>옵션 주간권/23.07.06 ~ 24.07.06</div>
+                                    </div>
+
+                                    <div>170000원</div>
+                                </div>
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', gap: '12px', paddingLeft: '12px' }}>
+                                        {' '}
+                                        <div style={{ color: '#727CF5' }}>10프로할인</div>
+                                        <div style={{ color: '#727CF5' }}>20,000원 조정</div>
+                                    </div>
+
+                                    <div style={{ color: '#727CF5' }}>170,000원</div>
+                                </div>
+                            </div>
+                            <div className="mb-2">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                        <div>1. 타석권 12개월</div>
+                                        <div>옵션 주간권/23.07.06 ~ 24.07.06</div>
+                                    </div>
+
+                                    <div>170000원</div>
+                                </div>
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', gap: '12px', paddingLeft: '12px' }}>
+                                        {' '}
+                                        <div style={{ color: '#727CF5' }}>10프로할인</div>
+                                        <div style={{ color: '#727CF5' }}>20,000원 조정</div>
+                                    </div>
+
+                                    <div style={{ color: '#727CF5' }}>170,000원</div>
+                                </div>
+                            </div>
+                            <div className="mb-2">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                        <div>1. 타석권 12개월</div>
+                                        <div>옵션 주간권/23.07.06 ~ 24.07.06</div>
+                                    </div>
+
+                                    <div>170000원</div>
+                                </div>
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', gap: '12px', paddingLeft: '12px' }}>
+                                        {' '}
+                                        <div style={{ color: '#727CF5' }}>10프로할인</div>
+                                        <div style={{ color: '#727CF5' }}>20,000원 조정</div>
+                                    </div>
+
+                                    <div style={{ color: '#727CF5' }}>170,000원</div>
+                                </div>
                             </div>
                         </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                            <div>1. 타석권 12개월 옵션 주간권/23.07.06 ~ 24.07.06</div>
-                            <div>170000원</div>
-                        </div>
-
-                        <div style={{ padding: '4px' }}>10프로할인 20,000원 조정</div>
                     </div>
                     <div
                         className="mb-2"
@@ -72,27 +122,26 @@ const PaymentDeleteModal = ({ modal, setModal, deletePaymentData }) => {
                             width: '100%',
                             justifyContent: 'space-between',
                             borderBottom: '1px solid #EEF2F7',
+                            padding: '0px 4px 4px 4px',
                         }}>
                         <div style={{ fontSize: '16px', fontWeight: '700' }}>최종 결제 금액</div>
-                        <span style={{ color: '#03C780', fontSzie: '16px', paddingBottom: '24px' }}>200000</span>
+                        <span style={{ color: '#727CF5', fontWeight: '700', fontSize: '16px' }}>200000원</span>
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <h4 className="modal-title mb-2">결제 정보</h4>
-                        <div className="mb-2" style={{ display: 'flex' }}>
-                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                                <div style={{ minWidth: '100px', textAlign: 'right' }}>카드결제 -- 0010002</div>
-                                <div>상품금액</div>
-                            </div>
-                        </div>
-                        <div className=" mb-2" style={{ display: 'flex' }}>
-                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                                <div style={{ minWidth: '100px', textAlign: 'right' }}>카드결제 -- 0010002</div>
-                                <div>상품금액</div>
-                            </div>
-                        </div>
-                        <div className=" mb-2" style={{ display: 'flex' }}>
-                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                                <div style={{ minWidth: '100px', textAlign: 'right' }}>카드결제 -- 0010002</div>
+                        <div className="mb-1" style={{ padding: '0px 12px 0px 12px' }}>
+                            <div
+                                style={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginBottom: '4px',
+                                }}>
+                                <div style={{ display: 'flex', gap: '26px' }}>
+                                    <div>카드결제 </div>
+                                    <div>0010002</div>
+                                </div>
+
                                 <div>상품금액</div>
                             </div>
                         </div>
