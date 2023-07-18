@@ -323,9 +323,9 @@ body[data-layout-color='dark'] {
     --#{$variable-prefix}bg-leftbar: #3a444e;
 
     // Menu
-    --#{$variable-prefix}menu-item: #cedce4;
-    --#{$variable-prefix}menu-item-hover: #{$white};
-    --#{$variable-prefix}menu-item-active: #{$white};
+    --#{$variable-prefix}menu-item: #ffffff;
+    --#{$variable-prefix}menu-item-hover: #0e7b00;
+    --#{$variable-prefix}menu-item-active: #0e7b00;
 
     // Topbar
     --#{$variable-prefix}bg-topbar: #3a444e;
