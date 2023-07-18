@@ -26,10 +26,14 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
+    console.log(currentRefundPrice, previousRefundPrice);
+
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr.refund === true ? acc + Number(curr.totalPaymentPrice) : acc;
+                if (curr.refundPrice !== undefined) {
+                    return curr.refund ? acc + Number(curr.refundPrice) : acc;
+                }
             }, 0);
             setCurrentRefundPrice(currentRefund);
         }
@@ -37,12 +41,16 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const getPreviousPeriodRefund = () => {
         if (beforePeriodSalesData) {
             const previosRefund = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr.refund === true ? acc + Number(curr.totalPaymentPrice) : acc;
+                if (curr.refundPrice !== undefined) {
+                    return curr.refund ? acc + Number(curr.refundPrice) : acc;
+                }
             }, 0);
             setPreviousRefundPrice(previosRefund);
         }
     };
     const comparedWithPreviousRefund = (previous, current) => {
+        setComparedRefundPrice(0);
+
         const percentage = (((current - previous) / previous) * 100).toFixed(2);
         if (previous === 0 && current === 0) {
             return 0;
@@ -63,7 +71,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return [...acc, ...curr.salesProducts];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {
@@ -93,7 +101,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (beforePeriodSalesData) {
             [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return [...acc, ...curr.salesProducts];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {

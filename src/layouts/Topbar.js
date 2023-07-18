@@ -102,11 +102,11 @@ const ProfileMenus = [
     //     icon: 'mdi mdi-lifebuoy',
     //     redirectTo: '#',
     // },
-    {
-        label: 'Lock Screen',
-        icon: 'mdi mdi-lock-outline',
-        redirectTo: '/account/lock-screen2',
-    },
+    // {
+    //     label: 'Lock Screen',
+    //     icon: 'mdi mdi-lock-outline',
+    //     redirectTo: '/account/lock-screen2',
+    // },
     {
         label: 'Logout',
         icon: 'mdi mdi-logout',
