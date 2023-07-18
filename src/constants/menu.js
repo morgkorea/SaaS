@@ -9,7 +9,7 @@ const MENU_ITEMS = [
         children: [
             {
                 key: 'ds-sales-status',
-                label: '매출',
+                label: '매출 현황',
                 url: '/dashboard/sales-status',
                 parentKey: 'dashboards',
             },

@@ -176,7 +176,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
             <Row>
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-account-multiple"
+                        icon="mdi mdi mdi-golf-tee"
                         description="Number of Customers"
                         title="타석"
                         stats={amountProductsSales.batterBox.toLocaleString() + '원'}
@@ -200,7 +200,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
 
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-cart-plus"
+                        icon="mdi mdi-school"
                         description="Number of Orders"
                         title="레슨"
                         stats={amountProductsSales.lesson.toLocaleString() + '원'}
@@ -223,7 +223,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
 
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-currency-usd"
+                        icon="mdi mdi-locker-multiple"
                         description="Revenue"
                         title="락커"
                         stats={amountProductsSales.locker.toLocaleString() + '원'}
@@ -245,7 +245,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
 
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-currency-usd"
+                        icon="mdi mdi-sack"
                         description="Revenue"
                         title="기타"
                         stats={amountProductsSales.etc.toLocaleString() + '원'}
@@ -267,7 +267,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                 </Col>
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-pulse bg-danger bg-opacity-50 text-danger"
+                        icon="mdi mdi-cash-refund bg-danger bg-opacity-50 text-danger"
                         border="danger"
                         description="Refund"
                         title="환불"
