@@ -1,11 +1,11 @@
 const MENU_ITEMS = [
-    { key: 'navigation', label: 'Navigation', isTitle: true },
+    { key: 'dashboards', label: '대시보드', isTitle: true },
     {
         key: 'dashboards',
         label: '대시보드',
         isTitle: false,
-        icon: 'uil-home-alt',
-        badge: { variant: 'success', text: '4' },
+        icon: 'uil-chart-line',
+        badge: { variant: 'success' },
         children: [
             {
                 key: 'ds-sales-status',
@@ -20,6 +20,18 @@ const MENU_ITEMS = [
                 url: '/dashboard/members',
                 parentKey: 'dashboards',
             },
+            {
+                key: 'members-db',
+                label: '회원DB',
+                url: '/dashboard/members-db',
+                parentKey: 'dashboards',
+            },
+            // {
+            //     key: 'ds-counsel',
+            //     label: '상담',
+            //     url: '/dashboard/counsel',
+            //     parentKey: 'dashboards',
+            // },
             // {
             //     key: 'ds-marketing',
             //     label: 'Dashboard_마케팅',
@@ -33,30 +45,27 @@ const MENU_ITEMS = [
             //     url: '/dashboard/marketing2',
             //     parentKey: 'dashboards',
             // },
-            {
-                key: 'ds-counsel',
-                label: '상담',
-                url: '/dashboard/counsel',
-                parentKey: 'dashboards',
-            },
-
+        ],
+    },
+    { key: 'database', label: 'DB', isTitle: true },
+    {
+        key: 'database',
+        label: 'DB',
+        isTitle: false,
+        icon: 'uil-database-alt',
+        badge: { variant: 'success' },
+        children: [
             {
                 key: 'sales-db',
-                label: '매출DB',
-                url: '/dashboard/sales-db',
-                parentKey: 'dashboards',
+                label: '매출 DB',
+                url: '/database/sales-db',
+                parentKey: 'database',
             },
             {
                 key: 'product-db',
-                label: '상품DB',
-                url: '/dashboard/product-db',
-                parentKey: 'dashboards',
-            },
-            {
-                key: 'members-db',
-                label: '회원DB',
-                url: '/dashboard/members-db',
-                parentKey: 'dashboards',
+                label: '상품 DB',
+                url: '/database/product-db',
+                parentKey: 'database',
             },
         ],
     },
