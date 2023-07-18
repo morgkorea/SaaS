@@ -8,7 +8,7 @@ const MENU_ITEMS = [
         badge: { variant: 'success' },
         children: [
             {
-                key: 'ds-sales-status',
+                key: 'sales-status',
                 label: '매출 현황',
                 url: '/dashboard/sales-status',
                 parentKey: 'dashboards',

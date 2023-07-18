@@ -18,7 +18,7 @@ const SalesChart = ({ sortedByPeriodSalesData, selectedPeriod, datePickDate }) =
         if (sortedByPeriodSalesData.length) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return [...acc, ...curr.salesProducts];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {
