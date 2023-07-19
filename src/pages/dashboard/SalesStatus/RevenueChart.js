@@ -34,7 +34,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
     const getPreviousPeriodTotalSales = (beforePeriodSalesData) => {
         if (beforePeriodSalesData.length) {
             const totalSales = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? acc + curr.totalPaymentPrice : acc;
+                if (curr.refundPrice !== undefined) {
+                    return !curr.refund
+                        ? acc + curr.totalPaymentPrice
+                        : acc + curr.totalPaymentPrice - curr.refundPrice;
+                }
             }, 0);
 
             setPreviousPeriodTotalSales(totalSales);
@@ -46,7 +50,11 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
     const getCurrentPeriodTotalSales = (sortedByPeriodSalesData) => {
         if (sortedByPeriodSalesData.length) {
             const totalSales = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? acc + curr.totalPaymentPrice : acc;
+                if (curr.refundPrice !== undefined) {
+                    return !curr.refund
+                        ? acc + curr.totalPaymentPrice
+                        : acc + curr.totalPaymentPrice - curr.refundPrice;
+                }
             }, 0);
             setCurrentPeriodTotalSales(totalSales);
         } else {

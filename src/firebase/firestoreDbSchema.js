@@ -39,7 +39,6 @@ export const firestoreSalesFieldSchema = {
     paymentDate: '', //type: string (yyyy-MM-dd) 결제일
     paymentTime: '', //type: string (hh:mm:ss) //결제시간
     registrationType: '', //등록구분
-    memberNumber: '', //type: string 회원번호
     name: '', //type: string 이름
     phone: '', //type string 전화번호 010xxxxyyyy
     salesProducts: [
@@ -52,9 +51,9 @@ export const firestoreSalesFieldSchema = {
     paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
     paymentMemo: '', //type: string결제메모
     refund: false, // type: boolean 환불여부
-    refundRequest_date: '', //type: string yyyy-MM-dd 환불요청일
     refundDate: '', //type: string yyyy-MM-dd 환불일
     refundPrice: 0, //type: number 환불액
+    refundPenaltyPrice: 0,
     refundReason: '', //type: string 환불사유
 };
 
@@ -72,7 +71,6 @@ export const firestoreProductsFieldSchema = {
 export const firestoreMemebersFieldSchema = {
     ownerId: '',
     typeFormToken: '',
-    memberNumber: '', //회원번호
     createdDate: new Date().toISOString().split('T')[0], //date 생성날짜 2023-04-23
     createdTime: new Date().toISOString().split('T')[1].split('.')[0], //time 생성시간 04:10:42
     name: '', //이름
@@ -93,7 +91,7 @@ export const firestoreMemebersFieldSchema = {
     amountPaymentAverage: '', //평균결제금액
     audience: '', //오디언스
     activation: false, //활성여부 false || true
-
+    memo: [],
     //이용가능상품
     availableProducts: [
         // { ...firestoreSalesProductSchema }
@@ -142,8 +140,7 @@ export const firestoreConsultingFieldSchema = [
     {
         consultingDate: '', //상담날짜 2023-4-14
         consultingTime: '', //상담시간 T04:10:42.000Z
-        consultant: '', //상담자
-        memberNumber: '', //회원번호
+        consultant: '', //상담
         name: '', //이름
         phone: '', //전화번호
         sex: '', //성별

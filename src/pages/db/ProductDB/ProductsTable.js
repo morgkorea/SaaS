@@ -27,7 +27,7 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
     ];
     return (
         <>
-            <PageTitle title={'상품리스트'} />
+            <PageTitle title={'상품 DB'} />
 
             <Row>
                 <Col>

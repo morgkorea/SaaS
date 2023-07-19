@@ -31,6 +31,7 @@ import checkImg from '../../../assets/images/icons/png/check-img.png';
 import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
+    const [size, setSize] = useState('lg');
     const [registrationStep, setRegistrationStep] = useState(1);
 
     const [registrationSalesProducts, setRegistrationSalesProducts] = useState(Array.from({ length: 5 }, () => ({})));
@@ -85,7 +86,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [paymentTime, setPaymentTime] = useState('00:00');
 
-    console.log(productsList);
     const remainingPrice =
         registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
@@ -108,7 +108,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     paymentTime: paymentTime,
                 };
             });
-        console.log(salesProducts);
+
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
@@ -144,8 +144,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     // 미결제 금액, 잔여 금액
-
-    const [size, setSize] = useState('lg');
 
     const getPaymentType = (event, index) => {
         const method = event.target.value;
@@ -793,8 +791,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         placeholder="-"
                                         containerClass={''}
                                         key="productsNumber"
-                                        min={0}
-                                        max={100}
                                         onChange={getProductDiscountRate}
                                         value={productDiscountRate}
                                     />
