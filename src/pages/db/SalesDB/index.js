@@ -247,7 +247,7 @@ const SalesDB = () => {
 
             <SalesTable data={salesData} columns={tableColumns} />
 
-            <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
+            <div className="circle-btn edit-btn-area avatar-md" onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />
                 </span>
