@@ -21,7 +21,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
 
     useEffect(() => {
         let refundPrices = refundEachProducts.reduce((acc, curr) => acc + curr, 0);
-        let totalRefund = refundPrices + penaltyPrice;
+        let totalRefund = refundPrices - penaltyPrice;
         setTotalRefundPrice(totalRefund);
 
         return () => {
@@ -73,6 +73,8 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
+
+    console.log(refundEachProducts, paymentData.totalPaymentPrice, totalRefundPrice, penaltyPrice);
     return (
         <>
             {!refundConfirmModal ? (
@@ -316,13 +318,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                     <div style={{ fontSize: '16px', fontWeight: '700' }}>환불액</div>
                                     <span style={{ color: '#FA5C7C', fontWeight: '700', fontSize: '16px' }}>
                                         {!paymentData.refund && paymentData.totalPaymentPrice
-                                            ? (
-                                                  paymentData.totalPaymentPrice -
-                                                  (refundEachProducts.reduce((acc, curr) => {
-                                                      return acc + curr;
-                                                  }, 0) +
-                                                      penaltyPrice)
-                                              ).toLocaleString() + '원'
+                                            ? totalRefundPrice.toLocaleString() + '원'
                                             : paymentData.refundPrice.toLocaleString() + '원'}
                                     </span>
                                 </div>
