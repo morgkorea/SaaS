@@ -242,7 +242,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                         <div style={{ display: 'flex', gap: '26px', alignItems: 'center' }}>
                                             <div style={{ color: '#FA5C7C' }}>위약금 설정</div>
                                             {paymentData.refund ? (
-                                                <div style={{ color: '#727CF5' }}>
+                                                <div style={{ color: '#FA5C7C' }}>
                                                     {paymentData.refundPenaltyPrice.toLocaleString() + '원'}
                                                 </div>
                                             ) : (
@@ -323,7 +323,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                   }, 0) +
                                                       penaltyPrice)
                                               ).toLocaleString() + '원'
-                                            : '- 원'}
+                                            : paymentData.refundPrice.toLocaleString() + '원'}
                                     </span>
                                 </div>
                             </div>
