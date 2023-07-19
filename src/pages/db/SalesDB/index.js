@@ -53,6 +53,10 @@ const SalesDB = () => {
 
     useEffect(() => {
         getFirestoreSalesData();
+
+        return () => {
+            getFirestoreSalesData();
+        };
     }, []);
 
     const toggle = () => {

@@ -10,13 +10,6 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
         const snapshot = await get(
             child(dbRef, `members/${email?.toLowerCase().replace('@', 'ATSIGN').replace('.', 'DOT')}`)
         );
-        // const firestoreMembersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
-        // const firestoreMembersSnapshot = await getDocs(firestoreMembersCollectionRef);
-
-        // const firestoreMembersArray = [];
-        // firestoreMembersSnapshot.forEach((member) => {
-        //     firestoreMembersArray.push(member.data());
-        // });
 
         let realtimeDbMembers;
         if (snapshot.exists()) {
@@ -68,16 +61,10 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
             try {
                 const membersCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
                 await setDoc(membersCollectionRef, newMember);
-                console.log('update newMember docs successfully');
             } catch (error) {
                 console.log('update newMember docs : failed', error);
             }
         });
-
-        console.log(realtimeDbMembers);
-
-        console.log('Firestore DB synchronized with Realtime DB');
-        console.log(newMembers);
     } catch (error) {
         console.error('reatimeDB sync error', error);
     }

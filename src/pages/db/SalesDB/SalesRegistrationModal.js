@@ -84,7 +84,15 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentInfo3, setPaymentInfo3] = useState({ ...firestorePaymentInfoFieldSchema });
 
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
-    const [paymentTime, setPaymentTime] = useState('00:00');
+    const [paymentTime, setPaymentTime] = useState(getCurrentTime());
+
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const currentTime = `${hours}:${minutes}`;
+        return currentTime;
+    }
 
     const remainingPrice =
         registrationSalesProducts.reduce((acc, curr) => {
@@ -273,7 +281,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 break;
 
             default:
-                return salesRegistrationStep1;
+                return '';
         }
     };
 
@@ -466,7 +474,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             return searchedMembersList.map((member, idx) => {
                 return (
                     <div
-                        key={member.memberNumber + idx}
+                        key={idx}
                         className="mb-2 "
                         style={{
                             display: 'flex',
@@ -576,6 +584,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
                 return (
                     <div
+                        key={productName ? product + idx : idx}
                         style={{
                             display: registrationStep === 3 && !productName ? 'none' : 'flex',
                             justifyContent: 'space-between',

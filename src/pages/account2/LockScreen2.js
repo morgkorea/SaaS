@@ -45,9 +45,7 @@ const LockScreen2 = (): React$Element<any> => {
     /*
      * handle form submission
      */
-    const onSubmit = (formData) => {
-        console.log(formData);
-    };
+    const onSubmit = (formData) => {};
 
     return (
         <>

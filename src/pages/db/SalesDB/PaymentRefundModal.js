@@ -74,7 +74,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
         }
     };
 
-    console.log(refundEachProducts, paymentData.totalPaymentPrice, totalRefundPrice, penaltyPrice);
     return (
         <>
             {!refundConfirmModal ? (

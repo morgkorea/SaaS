@@ -63,19 +63,6 @@ const ProductDB = () => {
     }, []);
 
     useEffect(() => {
-        // if (!modal) {
-        //     console.log('modal closed and fetching start');
-        //     const fetchData = async () => {
-        //         setIsLoading(true);
-        //         const fetchedProductsData = await getFirestoreProductsColletionData();
-        //         const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
-        //         console.log(mergedProductsData);
-        //         setProductsData(mergedProductsData);
-        //     };
-        //     fetchData();
-        //     setIsLoading(false);
-        // }
-
         const porductsCollectionRef = query(collection(firestoreDB, 'Users', email, 'Products'));
         onSnapshot(porductsCollectionRef, (querySnapshot) => {
             const productsArray = [];
@@ -83,7 +70,6 @@ const ProductDB = () => {
                 productsArray.push({ ...product.data(), uid: product.id });
             });
 
-            console.log(productsArray);
             setProductsData(productsArray);
         });
     }, [modal]);
@@ -127,15 +113,11 @@ const ProductDB = () => {
     };
 
     const productsActivationHandler = async (event, idx) => {
-        // console.log(idx);
-        // const products = [...productsData];
-        // products[idx].activation = event.target.checked;
-
         try {
             await putFirestoreProductFieldData(event.target.checked, idx);
             const fetchedProductsData = await getFirestoreProductsColletionData();
             const mergedProductsData = mergeProductsDataWithFirestore(productsData, fetchedProductsData);
-            console.log(mergedProductsData, 'updated');
+
             setProductsData(mergedProductsData);
         } catch (error) {
             console.log(error);

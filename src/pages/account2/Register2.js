@@ -103,7 +103,6 @@ const Register2 = (): React$Element<React$FragmentType> => {
     const getUserphone = (event) => {
         let phoneNumber = event.target.value.replace(/\D/g, '');
         setUserPhone(phoneNumber);
-        console.log(userPhone);
     };
 
     const getVerfiedUserFromFirebase = () => {
