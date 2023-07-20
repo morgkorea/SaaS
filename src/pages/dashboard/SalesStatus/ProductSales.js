@@ -36,7 +36,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
         let mergedSalesData = [];
         if (sortedByPeriodSalesData) {
             mergedSalesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                return [...acc, ...curr.salesProducts];
             }, []);
         }
 
@@ -92,7 +92,7 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
                                     <Col xs="auto">
                                         <Form.Group as={Row}>
                                             <Form.Label htmlFor="" column>
-                                                상품별 판매상황
+                                                상품별 판매현황
                                             </Form.Label>
                                         </Form.Group>
                                     </Col>

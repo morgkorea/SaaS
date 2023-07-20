@@ -10,6 +10,8 @@ import DefaultPagination from '../../../components/DefaultPagination.js';
 import SalesTable from './SalesTable.js';
 
 import SalesRegistrationModal from './SalesRegistrationModal.js';
+import PaymentDeleteModal from './PaymentDeleteModal.js';
+import PaymentRefundModal from './PaymentRefundModal.js';
 
 import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 
@@ -18,8 +20,11 @@ import { useSelector } from 'react-redux';
 import { firestoreDB } from '../../../firebase/firebase.js';
 
 const SalesDB = () => {
-    const [modal, setModal] = useState(false);
     const [salesData, setSalesData] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [paymentData, setPaymentData] = useState(false);
+    const [refundModal, setRefundModal] = useState(false);
 
     // 페이지네이션
     const [page, setPage] = useState(1);
@@ -48,6 +53,10 @@ const SalesDB = () => {
 
     useEffect(() => {
         getFirestoreSalesData();
+
+        return () => {
+            getFirestoreSalesData();
+        };
     }, []);
 
     const toggle = () => {
@@ -85,7 +94,11 @@ const SalesDB = () => {
             Header: '결제총액',
             sort: true,
             Cell: ({ value, raw }) => {
-                return <div style={{ width: '100%', textAlign: 'right' }}>{value.toLocaleString() + '원'}</div>;
+                return (
+                    <div style={{ width: '100%', textAlign: 'right' }} onClick={() => {}}>
+                        {value.toLocaleString() + '원'}
+                    </div>
+                );
             },
         },
         {
@@ -154,14 +167,91 @@ const SalesDB = () => {
                 return value ? value : '-';
             },
         },
+        {
+            id: '11',
+            accessor: 'uid',
+            Header: '환불',
+            sort: true,
+            Cell: ({ value, raw }) => {
+                const refund = salesData.filter((payment) => payment.uid === value)[0]?.refund;
+                return (
+                    <div
+                        onClick={() => {
+                            const data = salesData.filter((payment) => payment.uid === value);
+                            setPaymentData(data[0]);
+                            setRefundModal(!refundModal);
+                        }}
+                        onMouseEnter={(event) => {
+                            if (!refund) {
+                                event.target.style.cursor = 'pointer';
+                                event.target.style.color = '#03C780';
+                            } else {
+                                event.target.style.cursor = 'pointer';
+                                event.target.style.color = '#03C780';
+                            }
+
+                            console.log(event.target);
+                        }}
+                        onMouseLeave={(event) => {
+                            if (!refund) {
+                                event.target.style.color = '#FFBC00';
+                            } else {
+                                event.target.style.color = '#FA5C7C';
+                            }
+                        }}
+                        style={{
+                            color: refund ? '#FA5C7C' : '#FFBC00',
+                            textDecoration: 'underline',
+                        }}>
+                        {refund ? '환불완료' : '환불등록'}
+                    </div>
+                );
+            },
+        },
+        {
+            id: '12',
+            accessor: 'uid',
+            Header: '삭제',
+            sort: true,
+            Cell: ({ value, raw }) => {
+                return (
+                    <div
+                        onClick={() => {
+                            const data = salesData.filter((payment) => payment.uid === value);
+                            setPaymentData(data[0]);
+                            setDeleteModal(!deleteModal);
+                        }}>
+                        <i
+                            onMouseEnter={(event) => {
+                                event.target.style.cursor = 'pointer';
+                                event.target.style.color = '#FA5C7C';
+                                console.log(event.target);
+                            }}
+                            onMouseLeave={(event) => {
+                                event.target.style.color = '#6c757d';
+                            }}
+                            className="mdi mdi-delete-outline"
+                            style={{ fontSize: '20px' }}
+                        />
+                    </div>
+                );
+            },
+        },
     ];
 
     return (
         <>
             {modal && <SalesRegistrationModal modal={modal} setModal={setModal} />}
+            {deleteModal && paymentData ? (
+                <PaymentDeleteModal paymentData={paymentData} modal={deleteModal} setModal={setDeleteModal} />
+            ) : null}
+            {refundModal && paymentData ? (
+                <PaymentRefundModal paymentData={paymentData} modal={refundModal} setModal={setRefundModal} />
+            ) : null}
+
             <SalesTable data={salesData} columns={tableColumns} />
 
-            <div className="edit-btn-area avatar-md" style={{ zIndex: '100' }} onClick={toggle}>
+            <div className="circle-btn edit-btn-area avatar-md" onClick={toggle}>
                 <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
                     <i className="mdi mdi-plus" />
                 </span>

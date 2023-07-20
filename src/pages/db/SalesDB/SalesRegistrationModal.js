@@ -31,6 +31,7 @@ import checkImg from '../../../assets/images/icons/png/check-img.png';
 import Spinner from '../../../components/Spinner';
 
 const SalesRegistrationModal = ({ modal, setModal }) => {
+    const [size, setSize] = useState('lg');
     const [registrationStep, setRegistrationStep] = useState(1);
 
     const [registrationSalesProducts, setRegistrationSalesProducts] = useState(Array.from({ length: 5 }, () => ({})));
@@ -83,9 +84,16 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     const [paymentInfo3, setPaymentInfo3] = useState({ ...firestorePaymentInfoFieldSchema });
 
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
-    const [paymentTime, setPaymentTime] = useState('00:00');
+    const [paymentTime, setPaymentTime] = useState(getCurrentTime());
 
-    console.log(productsList);
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const currentTime = `${hours}:${minutes}`;
+        return currentTime;
+    }
+
     const remainingPrice =
         registrationSalesProducts.reduce((acc, curr) => {
             return curr.discountPrice ? acc + curr.discountPrice : acc;
@@ -108,7 +116,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                     paymentTime: paymentTime,
                 };
             });
-        console.log(salesProducts);
+
         const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
@@ -144,8 +152,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     };
 
     // 미결제 금액, 잔여 금액
-
-    const [size, setSize] = useState('lg');
 
     const getPaymentType = (event, index) => {
         const method = event.target.value;
@@ -275,7 +281,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 break;
 
             default:
-                return salesRegistrationStep1;
+                return '';
         }
     };
 
@@ -468,7 +474,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             return searchedMembersList.map((member, idx) => {
                 return (
                     <div
-                        key={member.memberNumber + idx}
+                        key={idx}
                         className="mb-2 "
                         style={{
                             display: 'flex',
@@ -578,6 +584,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
 
                 return (
                     <div
+                        key={productName ? product + idx : idx}
                         style={{
                             display: registrationStep === 3 && !productName ? 'none' : 'flex',
                             justifyContent: 'space-between',
@@ -793,8 +800,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         placeholder="-"
                                         containerClass={''}
                                         key="productsNumber"
-                                        min={0}
-                                        max={100}
                                         onChange={getProductDiscountRate}
                                         value={productDiscountRate}
                                     />

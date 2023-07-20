@@ -20,7 +20,7 @@ const RightSideBar = (props: RightSideBarProps): React$Element<React$FragmentTyp
     const rightBarNodeRef: any = useRef(null);
 
     RightSideBar.defaultProps = {
-        title: 'Settings',
+        title: '설정',
     };
 
     const title = props.title;

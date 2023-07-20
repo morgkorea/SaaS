@@ -24,7 +24,7 @@ const AddCell = forwardRef((props, ref) => {
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
     const audienceValue = '잠재';
-    const teeActive = '비활성';
+    const taSeokActive = '비활성';
     const lessonActive = '비활성';
 
     const [isChecked, setChecked] = React.useState(true);
@@ -63,109 +63,54 @@ const AddCell = forwardRef((props, ref) => {
             inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
-            teeActive: teeActive,
+            taSeokActive: taSeokActive,
             lessonActive: lessonActive,
             // amountPayments: '',
             // lifetimeValue: '',
             // amountPaymentAverage: '',
 
             // 임시 데이터 !! 추후 삭제
-            // availableProducts: [
-            //     {
-            //         adjustedPrice: 250000,
-            //         discountPrice: 250000,
-            //         discountRate: 0,
-            //         startDate: '2022-07-17', //시작일
-            //         endDate: '2022-10-17', //종료일
-            //         paymentDate: "2022-07-17",
-            //         paymentTime: "15:00",
-            //         product: "레슨",
-            //         productCode: "",
-            //         productType: "",
-            //         regularPrice: 500000,
-            //     },
-            // {
-            //     adjustedPrice: 200000,
-            //     discountPrice: 200000,
-            //     discountRate: 50,
-            //     startDate: '2023-04-13', //시작일
-            //     endDate: '2023-07-13', //종료일
-            //     paymentDate: "2023-04-13",
-            //     paymentTime: "14:02",
-            //     product: "레슨",
-            //     productCode: "KO0001_LO_12000_014",
-            //     productType: "locker",
-            //     regularPrice: 400000,
-            // },
-            // {
-            //     adjustedPrice: 60000,
-            //     discountPrice: 60000,
-            //     discountRate: 50,
-            //     startDate: '2023-07-13', //시작일
-            //     endDate: '2023-08-13', //종료일
-            //     paymentDate: "2023-07-13",
-            //     paymentTime: "14:02",
-            //     product: "락커",
-            //     productCode: "KO0001_LO_12000_014",
-            //     productType: "locker",
-            //     regularPrice: 120000,
-            // },
-            // {
-            //     adjustedPrice: 150000,
-            //     discountPrice: 150000,
-            //     discountRate: 50,
-            //     startDate: '2023-02-13', //시작일
-            //     endDate: '2023-06-13', //종료일
-            //     paymentDate: "2023-02-13",
-            //     paymentTime: "14:02",
-            //     product: "타석",
-            //     productCode: "KO0001_LO_12000_014",
-            //     productType: "locker",
-            //     regularPrice: 300000,
-            // },
-            // {
-            //     adjustedPrice: 60000,
-            //     discountPrice: 60000,
-            //     discountRate: 50,
-            //     startDate: '2023-01-13', //시작일
-            //     endDate: '2023-12-13', //종료일
-            //     paymentDate: "2023-01-13",
-            //     paymentTime: "15:02",
-            //     product: "락커",
-            //     productCode: "KO0001_LO_12000_014",
-            //     productType: "locker",
-            //     regularPrice: 120000,
-            // },
-            // {
-            //     adjustedPrice: 60000,
-            //     discountPrice: 60000,
-            //     discountRate: 50,
-            //     startDate: '2023-07-14', //시작일
-            //     endDate: '2023-08-01', //종료일
-            //     paymentDate: "2023-07-14",
-            //     paymentTime: "15:02",
-            //     product: "타석",
-            //     productCode: "KO0001_LO_12000_014",
-            //     productType: "locker",
-            //     regularPrice: 120000,
-            // },
-            // ],
-
-            // unavailableProducts: [
-            //     {
-            //         adjustedPrice: 60000,
-            //         discountPrice: 60000,
-            //         discountRate: 50,
-            //         startDate: '2023-02-19', //시작일
-            //         endDate: '2023-03-19', //종료일
-            //         paymentDate: "2023-02-19",
-            //         paymentTime: "14:02",
-            //         product: "락커 12개월",
-            //         productCode: "KO0001_LO_12000_014",
-            //         productType: "locker",
-            //         regularPrice: 120000,
-            //     },
-            // ],
+            availableProducts: [
+                {
+                    adjustedPrice: 250000,
+                    discountPrice: 250000,
+                    discountRate: 50,
+                    startDate: '2023-07-20', //시작일
+                    endDate: '2023-08-10', //종료일
+                    paymentDate: '2023-07-20',
+                    paymentTime: '15:00',
+                    product: '레슨',
+                    productCode: '',
+                    productType: '',
+                    regularPrice: 500000,
+                },
+                // {
+                //     adjustedPrice: 60000,
+                //     discountPrice: 60000,
+                //     discountRate: 50,
+                //     startDate: '2023-04-20', //시작일
+                //     endDate: '2023-06-20', //종료일
+                //     paymentDate: '2023-04-20',
+                //     paymentTime: '15:00',
+                //     product: '타석',
+                //     productCode: '',
+                //     productType: '',
+                //     regularPrice: 120000,
+                // },
+                // {
+                //     adjustedPrice: 150000,
+                //     discountPrice: 150000,
+                //     discountRate: 50,
+                //     startDate: '2023-02-13', //시작일
+                //     endDate: '2023-06-13', //종료일
+                //     paymentDate: '2023-02-13',
+                //     paymentTime: '14:02',
+                //     product: '타석',
+                //     productCode: 'KO0001_LO_12000_014',
+                //     productType: 'locker',
+                //     regularPrice: 300000,
+                // },
+            ],
         };
 
         await addDoc(memberRef, newMemberData);
@@ -259,7 +204,7 @@ const AddCell = forwardRef((props, ref) => {
                         className="editInput"
                         type="text"
                         name="region"
-                        style={{minWidth: '60px'}}
+                        style={{ minWidth: '60px' }}
                         placeholder="지역"
                         value={regionValue}
                         onChange={(e) => setRegionValue(e.target.value)}

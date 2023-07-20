@@ -18,7 +18,6 @@ const MemberDashboard = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
 
     const email = useSelector((state) => state.Auth?.user.email);
-
     const memberRef = collection(firestoreDB, "Users", email, "Members")
 
     const getMembers = async () => {
@@ -46,7 +45,6 @@ const MemberDashboard = () => {
         getMembers();
     }, []);
 
-    // console.log(activeMembers, currentMembers)
     const [show, setShow] = useState(true);
     const [index, setIndex] = useState(1);
 
@@ -97,10 +95,9 @@ const MemberDashboard = () => {
                         ) : null}
                     </Row>
 
-                    {/* 타석활성 / 레슨활성 */}
                     <Row>
                         <Col xxl={3} xl={4}>
-                            <Statistics members={activeMembers} index={index} />
+                            <Statistics members={currentMembers} index={index} />
                         </Col>
                         <Col xxl={9} xl={8}>
                             <SessionsChart members={activeMembers} index={index} />

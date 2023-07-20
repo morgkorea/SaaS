@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import PerformanceChart from '../Sales/PerformanceChart';
+import PerformanceChart from './PerformanceChart';
 import BarChart from './BarChart';
 import { collection, getDocs } from 'firebase/firestore';
 import { useSelector } from 'react-redux';

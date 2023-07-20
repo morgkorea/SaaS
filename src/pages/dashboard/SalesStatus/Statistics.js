@@ -26,11 +26,12 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
-    console.log(amountBeforeProductsSales, amountProductsSales, amountCompareWithPreviousSales);
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr.refund === true ? acc + Number(curr.totalPaymentPrice) : acc;
+                if (curr.refundPrice !== undefined) {
+                    return curr.refund ? acc + Number(curr.refundPrice) : acc;
+                }
             }, 0);
             setCurrentRefundPrice(currentRefund);
         }
@@ -38,12 +39,16 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const getPreviousPeriodRefund = () => {
         if (beforePeriodSalesData) {
             const previosRefund = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr.refund === true ? acc + Number(curr.totalPaymentPrice) : acc;
+                if (curr.refundPrice !== undefined) {
+                    return curr.refund ? acc + Number(curr.refundPrice) : acc;
+                }
             }, 0);
             setPreviousRefundPrice(previosRefund);
         }
     };
     const comparedWithPreviousRefund = (previous, current) => {
+        setComparedRefundPrice(0);
+
         const percentage = (((current - previous) / previous) * 100).toFixed(2);
         if (previous === 0 && current === 0) {
             return 0;
@@ -64,7 +69,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return [...acc, ...curr.salesProducts];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {
@@ -94,7 +99,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         if (beforePeriodSalesData) {
             [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund ? [...acc, ...curr.salesProducts] : [...acc];
+                    return [...acc, ...curr.salesProducts];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {
@@ -169,7 +174,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
             <Row>
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-account-multiple"
+                        icon="mdi mdi mdi-golf-tee"
                         description="Number of Customers"
                         title="타석"
                         stats={amountProductsSales.batterBox.toLocaleString() + '원'}
@@ -193,7 +198,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
 
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-cart-plus"
+                        icon="mdi mdi-school"
                         description="Number of Orders"
                         title="레슨"
                         stats={amountProductsSales.lesson.toLocaleString() + '원'}
@@ -216,7 +221,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
 
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-currency-usd"
+                        icon="mdi mdi-locker-multiple"
                         description="Revenue"
                         title="락커"
                         stats={amountProductsSales.locker.toLocaleString() + '원'}
@@ -238,7 +243,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
 
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-currency-usd"
+                        icon="mdi mdi-sack"
                         description="Revenue"
                         title="기타"
                         stats={amountProductsSales.etc.toLocaleString() + '원'}
@@ -260,7 +265,7 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
                 </Col>
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-pulse bg-danger bg-opacity-50 text-danger"
+                        icon="mdi mdi-cash-refund bg-danger bg-opacity-50 text-danger"
                         border="danger"
                         description="Refund"
                         title="환불"

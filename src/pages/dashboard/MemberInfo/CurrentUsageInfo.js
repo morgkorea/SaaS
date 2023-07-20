@@ -12,7 +12,7 @@ const findKeywordInProducts = (availableProducts, keyword) => {
 
 const CurrentUsageInfo = ({ member }) => {
     const availableProducts = member.availableProducts;
-    const teeActive = findKeywordInProducts(availableProducts, '타석') ? '활성' : '비활성';
+    const taSeokActive = findKeywordInProducts(availableProducts, '타석') ? '활성' : '비활성';
     const lessonActive = findKeywordInProducts(availableProducts, '레슨') ? '활성' : '비활성';
     const lockerActive = findKeywordInProducts(availableProducts, '락커') ? '활성' : '비활성';
 
@@ -25,9 +25,9 @@ const CurrentUsageInfo = ({ member }) => {
                         <div className='d-flex'>
                             <div>
                                 <h4 className="me-2">타석</h4>
-                                <p>{teeActive}
+                                <p>{taSeokActive}
                                     {
-                                        teeActive === '활성' ? <i className="dripicons-media-record text-primary ms-1" /> : <i className="dripicons-cross text-danger ms-1" />
+                                        taSeokActive === '활성' ? <i className="dripicons-media-record text-primary ms-1" /> : <i className="dripicons-cross text-danger ms-1" />
                                     }
                                 </p>
                             </div>

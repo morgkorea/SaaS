@@ -52,10 +52,9 @@ const PhoneColumn = ({ row }) => {
 };
 
 const CumulativePayCount = ({ row }) => {
-    const availableProducts = row.original.availableProducts;
-    const unavailableProducts = row.original.unavailableProducts;
-
     const [allProducts, setAllProducts] = useState(0);
+    const availableProducts = row.original?.availableProducts;
+    const unavailableProducts = row.original?.unavailableProducts;
 
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
@@ -64,14 +63,13 @@ const CumulativePayCount = ({ row }) => {
         }
     }, [availableProducts, unavailableProducts]);
 
-    return <>{String(allProducts)}</>;
+    return <>{allProducts !== 0 ? allProducts.toLocaleString() : ''}</>;
 };
 
 const CumulativePayAmount = ({ row }) => {
-    const availableProducts = row.original.availableProducts;
-    const unavailableProducts = row.original.unavailableProducts;
-
     const [totalValue, setTotalValue] = useState(0);
+    const availableProducts = row.original?.availableProducts;
+    const unavailableProducts = row.original?.unavailableProducts;
 
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
@@ -90,14 +88,14 @@ const CumulativePayAmount = ({ row }) => {
         }
     }, [availableProducts, unavailableProducts]);
 
-    return <>{String(totalValue)}</>;
+    return <>{totalValue !== 0 ? totalValue.toLocaleString() : ''}</>;
 };
 
 const AveragePayAmount = ({ row }) => {
-    const availableProducts = row.original.availableProducts;
-    const unavailableProducts = row.original.unavailableProducts;
-
     const [averageValue, setAverageValue] = useState(0);
+
+    const availableProducts = row.original?.availableProducts;
+    const unavailableProducts = row.original?.unavailableProducts;
 
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
@@ -117,7 +115,7 @@ const AveragePayAmount = ({ row }) => {
         }
     }, [availableProducts, unavailableProducts]);
 
-    return <>{String(averageValue)}</>;
+    return <>{!isNaN(averageValue) && averageValue !== 0 ? averageValue.toLocaleString() : ''}</>;
 };
 
 const columns = [
@@ -238,7 +236,7 @@ const columns = [
     },
     {
         Header: '타석 활성여부',
-        accessor: 'teeActive',
+        accessor: 'taSeokActive',
         sort: true,
     },
     {

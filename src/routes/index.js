@@ -37,10 +37,10 @@ const MarketingDashboard = React.lazy(() => import('../pages/dashboard/Marketing
 const MarketingDashboard2 = React.lazy(() => import('../pages/dashboard/Marketing2'));
 const Counsel = React.lazy(() => import('../pages/dashboard/Counsel'));
 const Crm = React.lazy(() => import('../pages/dashboard/CRM'));
-const SalesDB = React.lazy(() => import('../pages/dashboard/SalesDB'));
+const SalesDB = React.lazy(() => import('../pages/db/SalesDB'));
 const MemberInfo = React.lazy(() => import('../pages/dashboard/MemberInfo'));
 const MembersDB = React.lazy(() => import('../pages/dashboard/MembersDB'));
-const ProductDB = React.lazy(() => import('../pages/dashboard/ProductDB'));
+const ProductDB = React.lazy(() => import('../pages/db/ProductDB'));
 
 // apps
 const CalendarApp = React.lazy(() => import('../pages/apps/Calendar'));
@@ -274,10 +274,7 @@ const AllRoutes = () => {
                             path: 'crm',
                             element: <LoadComponent component={Crm} />,
                         },
-                        {
-                            path: 'sales-db',
-                            element: <LoadComponent component={SalesDB} />,
-                        },
+
                         {
                             path: 'members-db',
                             element: <LoadComponent component={MembersDB} />,
@@ -286,6 +283,16 @@ const AllRoutes = () => {
                             path: 'member-info',
                             element: <LoadComponent component={MemberInfo} />,
                         },
+                    ],
+                },
+                {
+                    path: 'database',
+                    children: [
+                        {
+                            path: 'sales-db',
+                            element: <LoadComponent component={SalesDB} />,
+                        },
+
                         {
                             path: 'product-db',
                             element: <LoadComponent component={ProductDB} />,

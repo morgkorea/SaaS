@@ -57,8 +57,6 @@ const SalesStatus = () => {
 
     const onDateChange = (date) => {
         if (date) {
-            console.log(date);
-
             setDatePickDate(date);
         }
     };
@@ -154,8 +152,6 @@ const SalesStatus = () => {
         setSortedByPeriodSalesData(sortedPeriodData);
         setBeforePeriodSalesData(beforePeriodData);
     }, [salesData, startDate, datePickDate, selectedPeriod]);
-
-    console.log(sortedByPeriodSalesData, beforePeriodSalesData);
 
     const [index, setIndex] = useState(1);
     const tabContents = [

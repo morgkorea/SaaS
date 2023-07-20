@@ -83,6 +83,13 @@ const AgeChart = ({ members }) => {
         grid: {
             borderColor: '#f1f3fa',
         },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + '명';
+                },
+            },
+        },
     };
 
     const apexBarChartData = sexes.map((sex) => ({
@@ -95,7 +102,6 @@ const AgeChart = ({ members }) => {
             <Card.Body>
                 <div className="d-flex">
                     <h4 className="header-title mb-3">성별/연령별 추이</h4>
-                    {/* span - 가변 데이터 */}
                     <h5 className="text-muted fw-normal mt-0 m-2 text-truncate">
                         우리 매장은 <span className="text-primary">{maxCountObject}</span>이 제일 많네요
                     </h5>

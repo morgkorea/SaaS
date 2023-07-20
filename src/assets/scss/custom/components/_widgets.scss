@@ -37,7 +37,7 @@
 .widget-icon {
     color: $primary;
     font-size: 20px;
-    background-color: rgba($primary, 0.25);
+    background-color: rgba($primary, 0.15);
     height: 40px;
     width: 40px;
     text-align: center;
@@ -45,7 +45,10 @@
     border-radius: 3px;
     display: inline-block;
 }
-
+.widget-icon.danger {
+    color: $danger;
+    background-color: rgba($danger, 0.15);
+}
 .widget-icon2 {
     color: $primary;
     font-size: 20px;

@@ -35,15 +35,15 @@ const MembersDB = () => {
                 ];
 
                 // 활성 여부
-                const hasTeeProduct = availableProducts.some((product) => {
-                    return product && product.product === '타석';
+                const hasTaSeokProduct = (availableProducts || []).some((product) => {
+                    return product && product.product && product.product.includes('타석');
                 });
-    
-                const hasLessonProduct = availableProducts.some((product) => {
-                    return product && product.product === '레슨';
+                
+                const hasLessonProduct = (availableProducts || []).some((product) => {
+                    return product && product.product && product.product.includes('레슨');
                 });
-    
-                updatedMember.teeActive = hasTeeProduct ? '활성' : '비활성';
+                
+                updatedMember.taSeokActive = hasTaSeokProduct ? '활성' : '비활성';
                 updatedMember.lessonActive = hasLessonProduct ? '활성' : '비활성';
 
                 // 나이
