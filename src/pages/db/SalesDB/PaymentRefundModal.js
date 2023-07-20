@@ -48,7 +48,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
         try {
             const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
             await updateDoc(firstoreSalesDocRef, refundFields);
-            console.log(refundFields);
         } catch (error) {
             console.log(error);
         }

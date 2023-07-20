@@ -49,15 +49,10 @@ export const testStateUpdate = (): AuthAction => ({
 });
 
 export const emailVerified = () => {
-    console.log('emailvierfied excueteeddfdsf');
     return { type: AuthActionTypes.EMAIL_VERIFIED, payload: {} };
 };
 
 export const sendVerifyingEmail = (email) => {
-    console.log({
-        type: AuthActionTypes.SEND_VERIFYING_EMAIL,
-        payload: { email },
-    });
     return {
         type: AuthActionTypes.SEND_VERIFYING_EMAIL,
         payload: { email },

@@ -59,13 +59,11 @@ function* login({ payload: { email, password } }) {
             // proviersDAta : response.user.providerData
         };
 
-        console.log('firebaseUser', response);
-
         api.setLoggedInUser(firebaseAuthSession);
 
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, firebaseAuthSession));
     } catch (error) {
-        console.log('login error message: ' + error.message);
+        console.log('login error: ' + error.message);
         yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, errorConverter(error.code)));
         api.setLoggedInUser(null);
         setAuthorization(null);
@@ -125,8 +123,6 @@ function* signup({ payload: { username, phone, email, password } }) {
             operationType: response.operationType,
         };
 
-        console.log('firebaseDBSchema', firestoreDbSchema({ username, email }));
-
         //Firestore DB init setup , signup과 함께 DB 구조 생성
         yield setDoc(doc(firestoreDB, 'Users', email), firestoreDbSchema({ username, phone, email, userCode }));
 
@@ -173,22 +169,19 @@ function* fakeSignupForEmailVerification({ payload: { email } }) {
         yield put(authApiResponseError(AuthActionTypes.SEND_VERIFYING_EMAIL, errorConverter(error.code)));
 
         yield put(authApiResponseError(AuthActionTypes.EMAIL_VERIFIED, errorConverter(error.code)));
-
-        console.log('fakeSignupForEmailVerification', error);
     }
 }
 
 function* forgotPassword({ payload: { email } }) {
     try {
         const response = yield call(firebaseForgotPasswordSendPasswordResetEmailApi, { email });
-        console.log('firebaseForgotPasswordSendPasswordResetEmailApi', response);
+
         yield put(
             authApiResponseSuccess(AuthActionTypes.FORGOT_PASSWORD, {
                 data: '발송된 E-mail을 확인하고 비밀번호를 변경해주세요.',
             })
         );
     } catch (error) {
-        console.log('firebaseForgotPasswordSendPasswordResetEmailApi ERROR ocurred!!!');
         yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, errorConverter(error.code)));
 
         console.log(error);
