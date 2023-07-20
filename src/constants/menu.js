@@ -15,13 +15,13 @@ const MENU_ITEMS = [
             },
 
             {
-                key: 'ds-members',
+                key: 'members',
                 label: '회원',
                 url: '/dashboard/members',
                 parentKey: 'dashboards',
             },
             {
-                key: 'ds-members',
+                key: 'counsel',
                 label: '상담',
                 url: '/dashboard/counsel',
                 parentKey: 'dashboards',
