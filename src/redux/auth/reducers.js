@@ -26,6 +26,7 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                         user: action.payload.data,
                         userLoggedIn: true,
                         loading: false,
+                        error: false,
                     };
                 }
                 case AuthActionTypes.SIGNUP_USER: {
