@@ -9,7 +9,7 @@ const MENU_ITEMS = [
         children: [
             {
                 key: 'sales-status',
-                label: '매출 현황',
+                label: '매출',
                 url: '/dashboard/sales-status',
                 parentKey: 'dashboards',
             },
@@ -57,19 +57,19 @@ const MENU_ITEMS = [
         children: [
             {
                 key: 'sales-db',
-                label: '매출 DB',
+                label: '매출',
                 url: '/database/sales-db',
                 parentKey: 'database',
             },
             {
                 key: 'members-db',
-                label: '회원 DB',
+                label: '회원',
                 url: '/database/members-db',
                 parentKey: 'database',
             },
             {
                 key: 'product-db',
-                label: '상품 DB',
+                label: '상품',
                 url: '/database/product-db',
                 parentKey: 'database',
             },
