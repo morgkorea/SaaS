@@ -11,7 +11,7 @@ const StripedRowsTable = ({ offset, limit, currentMembers }) => {
                         <tr>
                             <th>이름</th>
                             <th>성별</th>
-                            <th>휴대전화번호</th>
+                            <th>전화번호</th>
                             <th>이메일</th>
                             <th>업체</th>
                             <th>멤버쉽</th>

@@ -1,28 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Col, Row } from 'react-bootstrap';
-import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { firestoreDB } from '../../../firebase/firebase';
+import { getDoc, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
-const MemberMemo = ({ email, id, handleTabChange }) => {
+const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
     const [memoContent, setMemoContent] = useState('');
-    const [memberData, setMemberData] = useState(null);
-
-    const memberRef = doc(firestoreDB, 'Users', email, 'Members', id);
-
     const notify = (message) => toast(message);
-
-    useEffect(() => {
-        const unsubscribe = onSnapshot(memberRef, (snapshot) => {
-            const data = snapshot.data();
-            setMemberData(data);
-        });
-        
-        return () => unsubscribe();
-    }, []);
 
     const updateMemo = async () => {
         const newMemo = {
@@ -77,11 +63,10 @@ const MemberMemo = ({ email, id, handleTabChange }) => {
     return (
         <>
             <Card style={{ height: '740px' }}>
-                <Card.Body className="memo-wrap centralized-parents">
+                <Card.Body className="centralized-parents">
                     <div className="d-flex justify-content-between align-content-center">
                         <h4 className="mb-4">회원 메모</h4>
-                        <p
-                            onClick={() => handleTabChange('payment')}
+                        <p onClick={() => handleTabChange('payment')}
                             className="btn btn-link text-decoration-underline">
                             결제 정보
                         </p>
@@ -105,11 +90,11 @@ const MemberMemo = ({ email, id, handleTabChange }) => {
                         </Row>
                     </div>
 
-                    <div className="member-info-list">
+                    <div className="member-info-list memo">
                         {memberData.memo && memberData.memo.length > 0 ? (
                             <>
                                 {memberData.memo.map((memo, index) => (
-                                    <div className="member-info-card memo" key={index}>
+                                    <div className="member-info-card" key={index}>
                                         <Row className="d-flex justify-content-between">
                                             <Col xxl={10} xl={8}>
                                                 <p>{memo.contents}</p>

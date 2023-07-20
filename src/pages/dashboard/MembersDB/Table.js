@@ -30,7 +30,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder="회원명 등 검색"
+                    placeholder="회원찾기"
                     className="form-control w-auto ms-1"
                 />
             </span>
@@ -174,7 +174,7 @@ const Table = (props: TableProps) => {
                     )}
                 </div>
             </div>
-            <div className="table-responsive member-table">
+            <div className="table-responsive member-table" style={{minHeight: '800px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>

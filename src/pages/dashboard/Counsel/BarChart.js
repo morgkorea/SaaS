@@ -2,7 +2,24 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card } from 'react-bootstrap';
 
-const BarChart = () => {
+const BarChart = ({ members }) => {
+    const groupedData = members.reduce((acc, member) => {
+        const { inflowPath } = member;
+
+        if (inflowPath) {
+            if (!acc[inflowPath]) {
+                acc[inflowPath] = 0;
+            }
+            acc[inflowPath]++;
+        }
+
+        return acc;
+    }, {});
+
+    // console.log('groupedData', groupedData)
+
+    const groups = Object.keys(groupedData);
+
     const chartOpts = {
         chart: {
             type: 'bar',
@@ -35,22 +52,7 @@ const BarChart = () => {
             colors: ['#fff'],
         },
         xaxis: {
-            categories: [
-                '네이버',
-                '건물방문',
-                '지인추천',
-                '제휴',
-                '인스타그램',
-                '전단지',
-                '김캐디',
-                '카카오채널',
-                '현수막',
-                '간판',
-                '기타',
-                '프로소개',
-                '홈페이지',
-                '베스티파이',
-            ],
+            categories: groups,
             axisBorder: { show: false },
             axisTicks: { show: false },
         },
@@ -68,9 +70,7 @@ const BarChart = () => {
     const chartData = [
         {
             name: '',
-            data: [4, 18, 15, 22, 28, 20, 33, 2, 26, 19, 14, 5, 30, 20],
-            // api로 data 가져오기 예시
-            // data: historyData?.map((price) => price.close)as number[],
+            data: Object.values(groupedData),
         },
     ];
 
