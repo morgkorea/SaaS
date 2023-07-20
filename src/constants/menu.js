@@ -21,9 +21,9 @@ const MENU_ITEMS = [
                 parentKey: 'dashboards',
             },
             {
-                key: 'members-db',
-                label: '회원DB',
-                url: '/dashboard/members-db',
+                key: 'ds-members',
+                label: '상담',
+                url: '/dashboard/counsel',
                 parentKey: 'dashboards',
             },
             // {
@@ -59,6 +59,12 @@ const MENU_ITEMS = [
                 key: 'sales-db',
                 label: '매출 DB',
                 url: '/database/sales-db',
+                parentKey: 'database',
+            },
+            {
+                key: 'members-db',
+                label: '회원 DB',
+                url: '/database/members-db',
                 parentKey: 'database',
             },
             {
