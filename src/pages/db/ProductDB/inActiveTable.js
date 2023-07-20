@@ -3,8 +3,6 @@ import { Container, Card, Table } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 const ProductsTable = ({ productsData, productsActivationHandler, offset, limit }) => {
-    console.log('rerender');
-
     const productTypeTextHandler = (type) => {
         switch (type) {
             case 'batterBox':

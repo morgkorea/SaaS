@@ -52,7 +52,7 @@ axios.interceptors.response.use(
     }
 );
 
-const AUTH_SESSION_KEY = 'Besitfy_Auth';
+const AUTH_SESSION_KEY = 'Morg_Auth';
 
 /**
  * Sets the default authorization
@@ -295,17 +295,7 @@ class APICore {
         const user = this.getLoggedInUser();
         if (!user || (user && !user.token)) {
             return false;
-        }
-        // const decoded = jwtDecode(user.token);
-        // const currentTime = Date.now() / 1000;
-        // if (decoded.exp < currentTime) {
-        //     // const auth = getAuth();
-        //     console.warn('access token expired');
-        //     // sessionStorage.removeItem(AUTH_SESSION_KEY);
-        //     // signOut(auth);
-        //     return false;
-        // }
-        else {
+        } else {
             return true;
         }
     };
@@ -321,7 +311,6 @@ class APICore {
      * Returns the logged in user
      */
     getLoggedInUser = () => {
-        // firebaseOnAuthStateChanged();
         return getUserFromSession();
     };
 
@@ -337,13 +326,13 @@ class APICore {
 /*
 Check if token available in session
 */
-let user = getUserFromSession();
-if (user) {
-    const { token } = user;
+// let user = getUserFromSession();
+// if (user) {
+//     const { token } = user;
 
-    if (token && user?.emailVerified) {
-        setAuthorization(token);
-    }
-}
+//     if (token && user?.emailVerified) {
+//         setAuthorization(token);
+//     }
+// }
 
 export { APICore, setAuthorization };
