@@ -110,16 +110,9 @@ function* signup({ payload: { username, phone, email, password } }) {
         // 회원 Firebase RealtimeDB Init 스키마 생성 & 연동
 
         const firebaseAuthSession = {
-            id: response.user.uid,
             email: response.user.email,
             username: response.user.displayName || username,
-            lastName: 'user', //optional
-            password: 'test', //optional
             role: 'Admin',
-            token: response.user.accessToken,
-            refreshToken: response.refreshToken,
-            providerData: response.user.providerData,
-            operationType: response.operationType,
         };
 
         //Firestore DB init setup , signup과 함께 DB 구조 생성
