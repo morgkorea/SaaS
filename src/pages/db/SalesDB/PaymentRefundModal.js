@@ -21,7 +21,8 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
 
     useEffect(() => {
         let refundPrices = refundEachProducts.reduce((acc, curr) => acc + curr, 0);
-        let totalRefund = refundPrices - penaltyPrice;
+        let totalPayment = paymentData.totalPaymentPrice ? paymentData.totalPaymentPrice : 0;
+        let totalRefund = totalPayment - (refundPrices + penaltyPrice);
         setTotalRefundPrice(totalRefund);
 
         return () => {
