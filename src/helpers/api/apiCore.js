@@ -126,7 +126,6 @@ class APICore {
     //firebase auth func api
 
     firebaseLogin = (params) => {
-        console.log(params);
         const auth = getAuth();
         return signInWithEmailAndPassword(auth, params.email, params.password);
     };
@@ -148,21 +147,16 @@ class APICore {
     };
 
     firebaseDeleteFakeUser = () => {
-        console.log('firebaseDeleteFakeUser');
         return new Promise((resolve, reject) => {
-            console.log('firebaseDeleteFakeUser');
             const auth = getAuth();
             const user = auth.currentUser;
-            console.log(user);
+
             if (user && user.emailVerified === false) {
-                console.log(user);
                 deleteUser(user)
                     .then(() => {
-                        console.log('deleter fake user');
                         resolve();
                     })
                     .catch((error) => {
-                        console.log('deleter fake failed', error);
                         reject(error);
                     });
             } else {
@@ -187,8 +181,6 @@ class APICore {
                 const user = auth.currentUser;
                 user?.reload();
 
-                console.log('fakeSignupForEmailVerification:', user?.emailVerified);
-
                 if (user?.emailVerified) {
                     deleteUser(user)
                         .then(() => {
@@ -204,7 +196,7 @@ class APICore {
 
             setTimeout(() => {
                 clearInterval(interval);
-                console.log('setTimeout executed');
+
                 reject(new Error('Timeout')); // 타임아웃이 발생하면 reject 호출
             }, 180000);
         });
@@ -314,7 +306,6 @@ class APICore {
         //     return false;
         // }
         else {
-            console.log('isUserAuthenticated', user);
             return true;
         }
     };
@@ -349,7 +340,7 @@ Check if token available in session
 let user = getUserFromSession();
 if (user) {
     const { token } = user;
-    console.log('getUserFromSession', token);
+
     if (token && user?.emailVerified) {
         setAuthorization(token);
     }

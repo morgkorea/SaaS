@@ -20,18 +20,9 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const [totalRefundPrice, setTotalRefundPrice] = useState(0);
 
     useEffect(() => {
-        if (paymentData.salesProducts?.length) {
-            const refundPrices = paymentData.salesProducts.map((product) => product.adjustedPrice);
-            setRefundEachProducts([...refundPrices]);
-        }
-        return () => {
-            setRefundEachProducts([]);
-        };
-    }, [paymentData]);
-
-    useEffect(() => {
         let refundPrices = refundEachProducts.reduce((acc, curr) => acc + curr, 0);
-        let totalRefund = refundPrices - penaltyPrice;
+        let totalPayment = paymentData.totalPaymentPrice ? paymentData.totalPaymentPrice : 0;
+        let totalRefund = totalPayment - (refundPrices + penaltyPrice);
         setTotalRefundPrice(totalRefund);
 
         return () => {
@@ -83,6 +74,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
+
     return (
         <>
             {!refundConfirmModal ? (
@@ -250,9 +242,9 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '26px', alignItems: 'center' }}>
-                                            <div style={{ color: '#727CF5' }}>위약금 설정</div>
+                                            <div style={{ color: '#FA5C7C' }}>위약금 설정</div>
                                             {paymentData.refund ? (
-                                                <div style={{ color: '#727CF5' }}>
+                                                <div style={{ color: '#FA5C7C' }}>
                                                     {paymentData.refundPenaltyPrice.toLocaleString() + '원'}
                                                 </div>
                                             ) : (
@@ -263,7 +255,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                     containerClass={''}
                                                     onChange={getPenaltyPrice}
                                                     value={penaltyPrice.toLocaleString()}
-                                                    style={{ padding: '2px 8px', textAlign: 'right', color: '#727CF5' }}
+                                                    style={{ padding: '2px 8px', textAlign: 'right', color: '#FA5C7C' }}
                                                 />
                                             )}
                                         </div>
@@ -325,15 +317,9 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                     }}>
                                     <div style={{ fontSize: '16px', fontWeight: '700' }}>환불액</div>
                                     <span style={{ color: '#FA5C7C', fontWeight: '700', fontSize: '16px' }}>
-                                        {paymentData.refund
-                                            ? paymentData.refundPrice.toLocaleString() + '원'
-                                            : refundEachProducts.length
-                                            ? (
-                                                  refundEachProducts.reduce((acc, curr) => {
-                                                      return acc + curr;
-                                                  }, 0) - penaltyPrice
-                                              ).toLocaleString() + '원'
-                                            : '- ' + penaltyPrice.toLocaleString() + '원'}
+                                        {!paymentData.refund && paymentData.totalPaymentPrice
+                                            ? totalRefundPrice.toLocaleString() + '원'
+                                            : paymentData.refundPrice.toLocaleString() + '원'}
                                     </span>
                                 </div>
                             </div>

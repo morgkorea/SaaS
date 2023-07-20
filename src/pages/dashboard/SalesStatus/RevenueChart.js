@@ -250,7 +250,9 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                                 <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'month' ? '달' : '주'}</p>
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                    <span>{currentPeriodTotalSales.toLocaleString()}원</span>
+                                    <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
+                                        {currentPeriodTotalSales.toLocaleString()}원
+                                    </span>
                                 </h2>
                             </Col>
 
@@ -258,7 +260,9 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                                 <p className="text-muted mb-0 mt-3">지난 {selectedPeriod === 'month' ? '달' : '주'}</p>
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                    <span>{previousPeriodTotalSales.toLocaleString()}원</span>
+                                    <span style={{ color: previousPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
+                                        {previousPeriodTotalSales.toLocaleString()}원
+                                    </span>
                                 </h2>
                             </Col>
                         </Row>
@@ -285,7 +289,9 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                                 <p className="text-muted mb-0 mt-3">오늘</p>
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                    <span>{currentPeriodTotalSales.toLocaleString()}원</span>
+                                    <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
+                                        {currentPeriodTotalSales.toLocaleString()}원
+                                    </span>
                                 </h2>
                             </Col>
 
@@ -293,7 +299,9 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
                                 <p className="text-muted mb-0 mt-3">어제</p>
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                    <span>{previousPeriodTotalSales.toLocaleString()}원</span>
+                                    <span style={{ color: previousPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
+                                        {previousPeriodTotalSales.toLocaleString()}원
+                                    </span>
                                 </h2>
                             </Col>
                         </Row>

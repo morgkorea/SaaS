@@ -26,8 +26,6 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
-    console.log(currentRefundPrice, previousRefundPrice);
-
     const getCurrentPeriodRefund = () => {
         if (sortedByPeriodSalesData) {
             const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
