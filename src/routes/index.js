@@ -271,12 +271,6 @@ const AllRoutes = () => {
                             path: 'counsel',
                             element: <LoadComponent component={Counsel} />,
                         },
-                        {
-                            path: 'crm',
-                            element: <LoadComponent component={Crm} />,
-                        },
-
-                        
                     ],
                 },
                 {
@@ -286,7 +280,6 @@ const AllRoutes = () => {
                             path: 'sales-db',
                             element: <LoadComponent component={SalesDB} />,
                         },
-
                         {
                             path: 'product-db',
                             element: <LoadComponent component={ProductDB} />,
