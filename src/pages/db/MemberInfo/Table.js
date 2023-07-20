@@ -32,7 +32,7 @@ const Table = ({ member }) => {
                         <td>
                             {member.birthDate ? (
                                 <>
-                                    {member.birthDate} 만 {member.age}세
+                                    {member.birthDate} / 만 {member.age}세
                                 </>
                             ) : null}
                         </td>
@@ -95,7 +95,7 @@ const Table = ({ member }) => {
                         </td>
                     </tr>
                     <tr>
-                        <th>마케팅수집동의</th>
+                        <th>마케팅활용동의</th>
                         <td>
                             {member?.marketingRecieveAllow === true ? (
                                 <i className="mdi mdi-check widget-icon2" />

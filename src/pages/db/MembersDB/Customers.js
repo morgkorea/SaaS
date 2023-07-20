@@ -63,7 +63,7 @@ const CumulativePayCount = ({ row }) => {
         }
     }, [availableProducts, unavailableProducts]);
 
-    return <>{allProducts !== 0 ? allProducts.toLocaleString() : ''}</>;
+    return <>{allProducts !== 0 ? allProducts.toLocaleString() : '-'}</>;
 };
 
 const CumulativePayAmount = ({ row }) => {
@@ -88,7 +88,7 @@ const CumulativePayAmount = ({ row }) => {
         }
     }, [availableProducts, unavailableProducts]);
 
-    return <>{totalValue !== 0 ? totalValue.toLocaleString() : ''}</>;
+    return <>{totalValue !== 0 ? totalValue.toLocaleString() : '-'}</>;
 };
 
 const AveragePayAmount = ({ row }) => {
@@ -115,7 +115,7 @@ const AveragePayAmount = ({ row }) => {
         }
     }, [availableProducts, unavailableProducts]);
 
-    return <>{!isNaN(averageValue) && averageValue !== 0 ? averageValue.toLocaleString() : ''}</>;
+    return <>{!isNaN(averageValue) && averageValue !== 0 ? averageValue.toLocaleString() : '-'}</>;
 };
 
 const columns = [

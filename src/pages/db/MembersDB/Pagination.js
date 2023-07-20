@@ -59,7 +59,7 @@ const Pagination = ({ tableProps, sizePerPageList }) => {
 
     return (
         <div className="d-lg-flex align-items-center text-center pb-1">
-            {sizePerPageList.length > 0 && (
+            {/* {sizePerPageList.length > 0 && (
                 <div className="d-inline-block me-3">
                     <label className="me-1">Display :</label>
                     <select
@@ -77,7 +77,7 @@ const Pagination = ({ tableProps, sizePerPageList }) => {
                         })}
                     </select>
                 </div>
-            )}
+            )} */}
 
             <ul className="pagination pagination-rounded d-inline-flex ms-auto align-item-center mb-0">
                 <li

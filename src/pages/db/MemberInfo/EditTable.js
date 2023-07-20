@@ -286,7 +286,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         </td>
                     </tr>
                     <tr>
-                        <th>마케팅수집동의</th>
+                        <th>마케팅활용동의</th>
                         <td>
                             <input
                                 type="checkbox"

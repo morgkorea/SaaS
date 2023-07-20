@@ -23,7 +23,6 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
     return (
         <div className={classNames(searchBoxClass)}>
             <span className="d-flex align-items-center">
-                Search{' '}
                 <input
                     value={value || ''}
                     onChange={(e) => {
