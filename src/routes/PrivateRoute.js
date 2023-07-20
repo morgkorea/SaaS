@@ -24,12 +24,13 @@ const PrivateRoute = ({ component: RouteComponent, roles, ...rest }: PrivateRout
     if (api.isUserAuthenticated() === false) {
         return <Navigate to={'/account/login2'} state={{ from: location }} replace />;
     }
-
-    // check if route is restricted by role
-    if (roles && roles.indexOf(loggedInUser?.role) === -1) {
-        // role not authorised so redirect to home page
-        return <Navigate to={{ pathname: '/' }} />;
-    }
+    // <삭제금지>
+    // // check if route is restricted by role
+    // if (roles && roles.indexOf(loggedInUser?.role) === -1) {
+    //     // role not authorised so redirect to home page
+    //     // 관리자 / 매니저 권한 분기 가능 예정,
+    //     return <Navigate to={{ pathname: '/' }} />;
+    // }
 
     return <RouteComponent />;
 };

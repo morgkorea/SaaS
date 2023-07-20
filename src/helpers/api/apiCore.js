@@ -65,7 +65,8 @@ const setAuthorization = (token) => {
 
 const getUserFromSession = () => {
     const user = sessionStorage.getItem(AUTH_SESSION_KEY);
-    return user ? (typeof user == 'object' ? user : JSON.parse(user)) : null;
+
+    return user ? (typeof user == 'object' ? { user } : JSON.parse(user)) : null;
 };
 
 class APICore {
@@ -293,11 +294,16 @@ class APICore {
 
     isUserAuthenticated = () => {
         const user = this.getLoggedInUser();
-        if (!user || (user && !user.token)) {
+        if (!user) {
             return false;
         } else {
             return true;
         }
+        // if (!user || (user && !user.token)) {
+        //     return false;
+        // } else {
+        //     return true;
+        // }
     };
 
     setLoggedInUser = (session) => {

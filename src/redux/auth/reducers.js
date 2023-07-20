@@ -163,7 +163,9 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                 sentVerifyEmail: false,
             };
         default:
-            return { ...state };
+            return {
+                ...state,
+            };
     }
 };
 

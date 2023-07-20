@@ -44,23 +44,21 @@ function* login({ payload: { email, password } }) {
     try {
         const response = yield call(firebaseLoginApi, { email, password });
 
-        console.log(response);
-
         const firebaseAuthSession = {
             email: response.user.email,
-            username: response.user.displayName || '',
+            username: response.user.displayName ? response.user.displayName : '',
             role: 'Admin',
-            token: response.user.accessToken,
-            refreshToken: response.user.refreshToken,
+            // token: response.user.accessToken,
+            // refreshToken: response.user.refreshToken,
         };
 
         const loginUserData = {
             email: response.user.email,
-            username: response.user.displayName || '',
+            username: response.user.displayName ? response.user.displayName : '',
             role: 'Admin',
         };
 
-        api.setLoggedInUser(firebaseAuthSession);
+        yield call(api.setLoggedInUser, firebaseAuthSession);
 
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, loginUserData));
     } catch (error) {
