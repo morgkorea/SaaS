@@ -189,8 +189,6 @@ const SalesDB = () => {
                                 event.target.style.cursor = 'pointer';
                                 event.target.style.color = '#03C780';
                             }
-
-                            console.log(event.target);
                         }}
                         onMouseLeave={(event) => {
                             if (!refund) {
@@ -225,7 +223,6 @@ const SalesDB = () => {
                             onMouseEnter={(event) => {
                                 event.target.style.cursor = 'pointer';
                                 event.target.style.color = '#FA5C7C';
-                                console.log(event.target);
                             }}
                             onMouseLeave={(event) => {
                                 event.target.style.color = '#6c757d';

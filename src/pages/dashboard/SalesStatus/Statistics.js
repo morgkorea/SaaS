@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, startDate }) => {
+const Statistics = ({
+    selectedPeriod,
+    datePickDate,
+    sortedByPeriodSalesData,
+    beforePeriodSalesData,
+    currentPeriodRefundData,
+    previousPeriodRefundData,
+}) => {
     const [amountProductsSales, setAmountProductsSales] = useState({
         batterBox: 0,
         lesson: 0,
@@ -27,8 +34,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
     const [comparedRefundPrice, setComparedRefundPrice] = useState(0);
 
     const getCurrentPeriodRefund = () => {
-        if (sortedByPeriodSalesData) {
-            const currentRefund = [...sortedByPeriodSalesData].reduce((acc, curr) => {
+        if (currentPeriodRefundData) {
+            const currentRefund = [...currentPeriodRefundData].reduce((acc, curr) => {
                 if (curr.refundPrice !== undefined) {
                     return curr.refund ? acc + Number(curr.refundPrice) : acc;
                 }
@@ -37,8 +44,8 @@ const Statistics = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSales
         }
     };
     const getPreviousPeriodRefund = () => {
-        if (beforePeriodSalesData) {
-            const previosRefund = [...beforePeriodSalesData].reduce((acc, curr) => {
+        if (previousPeriodRefundData) {
+            const previosRefund = [...previousPeriodRefundData].reduce((acc, curr) => {
                 if (curr.refundPrice !== undefined) {
                     return curr.refund ? acc + Number(curr.refundPrice) : acc;
                 }

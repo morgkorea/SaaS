@@ -31,8 +31,12 @@ const SalesStatus = () => {
     const [startDate, setStartDate] = useState(todayStart);
     // 현지시간 기준 전 월,주,일 기준 filtered data
     const [sortedByPeriodSalesData, setSortedByPeriodSalesData] = useState([]);
-    // 전월 매출데이터
+    // 전 매출데이터
     const [beforePeriodSalesData, setBeforePeriodSalesData] = useState([]);
+
+    //현,전기간 환불데이터
+    const [currentPeriodRefundData, setCurrentPeriodRefundData] = useState([]);
+    const [previousPeriodRefundData, setPreviousPeriodRefundData] = useState([]);
 
     const [currentMembers, setCurrentMembers] = useState([]);
     const email = useSelector((state) => {
@@ -125,6 +129,37 @@ const SalesStatus = () => {
         }
     }, [datePickDate, selectedPeriod]);
 
+    const getPeriodOfRefundData = () => {
+        const currentRefund = salesData.filter((sales) => {
+            if (sales.refund) {
+                const refundDate = new Date(sales.refundDate + ' 00:00:00');
+
+                return refundDate >= startDate && refundDate <= datePickDate ? true : false;
+            }
+        });
+        const previousRefund = salesData.filter((sales) => {
+            if (sales.refund) {
+                const refundDate = new Date(sales.refundDate + ' 00:00:00');
+
+                switch (selectedPeriod) {
+                    case 'month':
+                        return refundDate.getMonth() === datePickDate.getMonth() - 1;
+                    case 'week':
+                        return (
+                            refundDate.getFullYear() === datePickDate.getFullYear() &&
+                            checkPreviousWeek(refundDate, datePickDate)
+                        );
+                    case 'day':
+                        return checkPreviousDate(refundDate, datePickDate);
+                    default:
+                }
+            }
+        });
+
+        setCurrentPeriodRefundData(currentRefund);
+        setPreviousPeriodRefundData(previousRefund);
+    };
+
     useEffect(() => {
         const sortedPeriodData = salesData.filter((ele) => {
             const paymentDate = new Date(ele.paymentDate + ' 00:00:00');
@@ -151,6 +186,8 @@ const SalesStatus = () => {
 
         setSortedByPeriodSalesData(sortedPeriodData);
         setBeforePeriodSalesData(beforePeriodData);
+
+        getPeriodOfRefundData();
     }, [salesData, startDate, datePickDate, selectedPeriod]);
 
     const [index, setIndex] = useState(1);
@@ -234,10 +271,12 @@ const SalesStatus = () => {
                 <Row>
                     <Col xl={12}>
                         <Statistics
+                            datePickDate={datePickDate}
                             selectedPeriod={selectedPeriod}
                             sortedByPeriodSalesData={sortedByPeriodSalesData}
                             beforePeriodSalesData={beforePeriodSalesData}
-                            datePickDate={datePickDate}
+                            currentPeriodRefundData={currentPeriodRefundData}
+                            previousPeriodRefundData={previousPeriodRefundData}
                         />
                     </Col>
                 </Row>
@@ -245,10 +284,12 @@ const SalesStatus = () => {
                 <Row>
                     <Col lg={12}>
                         <RevenueChart
-                            sortedByPeriodSalesData={sortedByPeriodSalesData}
-                            selectedPeriod={selectedPeriod}
-                            beforePeriodSalesData={beforePeriodSalesData}
                             datePickDate={datePickDate}
+                            selectedPeriod={selectedPeriod}
+                            sortedByPeriodSalesData={sortedByPeriodSalesData}
+                            beforePeriodSalesData={beforePeriodSalesData}
+                            currentPeriodRefundData={currentPeriodRefundData}
+                            previousPeriodRefundData={previousPeriodRefundData}
                         />
                     </Col>
                 </Row>

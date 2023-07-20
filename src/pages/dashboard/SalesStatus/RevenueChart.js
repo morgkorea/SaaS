@@ -3,11 +3,21 @@ import Chart from 'react-apexcharts';
 import { Card, Row, Col } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
-const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSalesData, datePickDate }) => {
+const RevenueChart = ({
+    sortedByPeriodSalesData,
+    selectedPeriod,
+    beforePeriodSalesData,
+    datePickDate,
+    currentPeriodRefundData,
+    previousPeriodRefundData,
+}) => {
     const [currentPeriodOfDate, setCurrentPeriodOfDate] = useState([0]);
 
     const [previousPeriodTotalSales, setPreviousPeriodTotalSales] = useState(0);
     const [currentPeriodTotalSales, setCurrentPeriodTotalSales] = useState(0);
+
+    const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
+    const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
 
     const periodSaelsDataInit =
         selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : [1, 1, 1, 1, 1, 1, 1];
@@ -144,10 +154,33 @@ const RevenueChart = ({ sortedByPeriodSalesData, selectedPeriod, beforePeriodSal
         }
     };
 
+    const getCurrentPeriodRefund = () => {
+        if (currentPeriodRefundData) {
+            const currentRefund = [...currentPeriodRefundData].reduce((acc, curr) => {
+                if (curr.refundPrice !== undefined) {
+                    return curr.refund ? acc + Number(curr.refundPrice) : acc;
+                }
+            }, 0);
+            setCurrentRefundPrice(currentRefund);
+        }
+    };
+    const getPreviousPeriodRefund = () => {
+        if (previousPeriodRefundData) {
+            const previosRefund = [...previousPeriodRefundData].reduce((acc, curr) => {
+                if (curr.refundPrice !== undefined) {
+                    return curr.refund ? acc + Number(curr.refundPrice) : acc;
+                }
+            }, 0);
+            setPreviousRefundPrice(previosRefund);
+        }
+    };
+
     useEffect(() => {
         getCurrentPeriodOfDate(datePickDate);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
+        getCurrentPeriodRefund();
+        getPreviousPeriodRefund();
     }, [datePickDate, selectedPeriod]);
     useEffect(() => {
         getPreviousPeriodTotalSales(beforePeriodSalesData);
