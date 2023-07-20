@@ -46,7 +46,7 @@ const MemberInfo = () => {
         notify();
 
         setTimeout(() => {
-            window.location.replace('/dashboard/members-db'); // 하은 - 주소 변경 시 수정하기
+            window.location.replace('/db/members-db'); // 하은 - 주소 변경 시 수정하기
         }, 1500);
     };
 

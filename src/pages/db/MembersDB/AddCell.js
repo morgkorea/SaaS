@@ -46,7 +46,7 @@ const AddCell = forwardRef((props, ref) => {
         const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
             name: nameValue,
-            createdDate: moment().format('YYYY/MM/DD'),
+            createdDate: moment().format('YYYY-MM-DD'),
             createdTime: moment().format('A hh:mm'),
             sex: sexValue,
             birthDate: birthDateValue,

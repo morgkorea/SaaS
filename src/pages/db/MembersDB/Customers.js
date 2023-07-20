@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 const onClickMemberInfo = ({ row }) => {
     return (
         <>
-            <Link to={`/dashboard/member-info`} state={{ member: row.original }}>
+            <Link to={`/database/member-info`} state={{ member: row.original }}>
                 {row.original.name}
             </Link>
         </>

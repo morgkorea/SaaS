@@ -37,9 +37,10 @@ const MarketingDashboard = React.lazy(() => import('../pages/dashboard/Marketing
 const MarketingDashboard2 = React.lazy(() => import('../pages/dashboard/Marketing2'));
 const Counsel = React.lazy(() => import('../pages/dashboard/Counsel'));
 const Crm = React.lazy(() => import('../pages/dashboard/CRM'));
+
 const SalesDB = React.lazy(() => import('../pages/db/SalesDB'));
-const MemberInfo = React.lazy(() => import('../pages/db/MemberInfo'));
 const MembersDB = React.lazy(() => import('../pages/db/MembersDB'));
+const MemberInfo = React.lazy(() => import('../pages/db/MemberInfo'));
 const ProductDB = React.lazy(() => import('../pages/db/ProductDB'));
 
 // apps
