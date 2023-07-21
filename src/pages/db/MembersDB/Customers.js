@@ -246,25 +246,6 @@ const columns = [
     },
 ];
 
-const sizePerPageList = [
-    {
-        text: '15',
-        value: 15,
-    },
-    {
-        text: '25',
-        value: 25,
-    },
-    {
-        text: '50',
-        value: 50,
-    },
-    {
-        text: '100',
-        value: 100,
-    },
-];
-
 const Customers = ({ currentMembers, addMode, setAddMode }) => {
     const location = useLocation();
 
@@ -277,8 +258,8 @@ const Customers = ({ currentMembers, addMode, setAddMode }) => {
                         data={currentMembers}
                         addMode={addMode}
                         setAddMode={setAddMode}
-                        sizePerPageList={sizePerPageList}
-                        pageSize={sizePerPageList[0].value}
+                        // sizePerPageList={sizePerPageList}
+                        pageSize={20}
                         isSortable={true}
                         pagination={true}
                         isSelectable={false}

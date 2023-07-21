@@ -84,7 +84,6 @@ const Table = (props: TableProps) => {
 
     const childComponentRef = useRef(null);
 
-
     const onClickAdd = () => {
         if (!addMode) {
             setAddMode((prev) => !prev); // add 모드로 변경

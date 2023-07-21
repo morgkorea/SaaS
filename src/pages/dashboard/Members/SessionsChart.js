@@ -5,16 +5,7 @@ import { Card } from 'react-bootstrap';
 
 const SessionsChart = ({ members, index }) => {
     const [isMonthlyView, setIsMonthlyView] = useState(true); // 월간 데이터 보기 설정
-
     const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
-    const taSeokMembers = members.filter((member) =>
-        member.availableProducts?.some((product) => 
-        product && product.product && product.product.includes('타석'))
-    );
-    const lessonMembers = members.filter((member) =>
-        member.availableProducts?.some((product) => 
-        product && product.product && product.product.includes('레슨'))
-    );
 
     const getDaysInMonth = (month, year) => {
         var startDate = new Date(year, month, 1);
@@ -42,7 +33,8 @@ const SessionsChart = ({ members, index }) => {
               .fill('')
               .map((_, idx) => idx + 1 + '월');
 
-    function calculateDailyAndMonthlyData(members, product) {
+    // 전체회원 추이
+    function calculateDailyAndMonthlyData(members) {
         const dailyData = new Array(labels.length).fill(0);
         const monthlyData = new Array(12).fill(0);
 
@@ -63,9 +55,70 @@ const SessionsChart = ({ members, index }) => {
         return isMonthlyView ? dailyData : monthlyData;
     }
 
+    // 타석 추이
+    function calculateDailyAndMonthlyData2(members) {
+        const dailyData = new Array(labels.length).fill(0);
+        const monthlyData = new Array(12).fill(0);
+
+        const product = '타석';
+
+        for (const member of members) {
+            const availableProductsFiltered = member.availableProducts.filter(
+                (productInfo) =>
+                    productInfo &&
+                    productInfo.product &&
+                    productInfo.product.includes(product) &&
+                    new Date(productInfo.startDate) <= new Date() &&
+                    new Date(productInfo.endDate) >= new Date()
+            );
+
+            const unavailableProductsFiltered = member.unavailableProducts.filter(
+                (productInfo) =>
+                    productInfo &&
+                    productInfo.product &&
+                    productInfo.product.includes(product) &&
+                    new Date(productInfo.startDate) <= new Date() &&
+                    new Date(productInfo.endDate) >= new Date()
+            );
+
+
+            const intersection = [...availableProductsFiltered, ...unavailableProductsFiltered]
+
+            console.log(intersection);
+
+            // if (intersection.length > 0) {
+            //     intersection.forEach((productInfo) => {
+            //         const productStartDate = new Date(productInfo.startDate);
+            //         const productEndDate = new Date(productInfo.endDate);
+
+            //         let currentDate = new Date(productStartDate);
+
+            //         while (currentDate <= productEndDate) {
+            //             if (
+            //                 (!isMonthlyView && currentDate.getMonth() === currentMonth) ||
+            //                 (isMonthlyView &&
+            //                     currentDate.getMonth() === currentMonth &&
+            //                     currentDate.getDate() >= productStartDate.getDate())
+            //             ) {
+            //                 if (isMonthlyView) {
+            //                     monthlyData[currentDate.getDate() - 1]++;
+            //                 } else {
+            //                     dailyData[currentDate.getDate() - 1]++;
+            //                 }
+            //             }
+
+            //             currentDate.setDate(currentDate.getDate() + 1);
+            //         }
+            //     });
+            // }
+        }
+
+        return isMonthlyView ? dailyData : monthlyData;
+    }
+
     const chartData = calculateDailyAndMonthlyData(sortedMembers, '전체');
-    const chartData2 = calculateDailyAndMonthlyData(taSeokMembers, '타석');
-    const chartData3 = calculateDailyAndMonthlyData(lessonMembers, '레슨');
+    const chartData2 = calculateDailyAndMonthlyData2(members);
+    // const chartData3 = calculateDailyAndMonthlyData(lessonMembers, '레슨');
 
     const apexBarChartData = [
         {
@@ -84,7 +137,7 @@ const SessionsChart = ({ members, index }) => {
     const apexBarChartData3 = [
         {
             name: '',
-            data: chartData3,
+            // data: chartData3,
         },
     ];
 
