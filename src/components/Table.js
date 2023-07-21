@@ -169,7 +169,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 />
             )}
 
-            <div className="table-responsive mt-4">
+            <div className="table-responsive mt-4" style={{ minHeight: '800px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
