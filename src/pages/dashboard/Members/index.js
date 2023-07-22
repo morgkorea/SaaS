@@ -19,6 +19,7 @@ const MemberDashboard = () => {
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
+    const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
@@ -95,6 +96,60 @@ const MemberDashboard = () => {
         };
         currentActivateBatterBoxMembers();
 
+        const currentActivateLessonMembers = () => {
+            const activateLessonArray = [];
+            for (let day = 0; day < currentMonthOfDays; day++) {
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth();
+
+                let memberNumber = 0;
+
+                const activateLessonProduct = data.docs
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                    .map((member, idx) => {
+                        let minDate;
+                        let maxDate;
+
+                        member.availableProducts
+                            .filter((product) => product.productType === 'lesson')
+                            .forEach((product, idx) => {
+                                const startDate = new Date(
+                                    new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                const endDate = new Date(
+                                    new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                if (idx === 0) {
+                                    minDate = startDate;
+                                    maxDate = endDate;
+                                } else {
+                                    if (minDate > startDate) {
+                                        minDate = startDate;
+                                    }
+                                    if (maxDate < endDate) {
+                                        maxDate = endDate;
+                                    }
+                                }
+                            });
+
+                        if (
+                            minDate <= new Date(currentYear, currentMonth, day + 1) &&
+                            maxDate >= new Date(currentYear, currentMonth, day + 1)
+                        ) {
+                            memberNumber = memberNumber + 1;
+                        }
+                    });
+                activateLessonArray.push(memberNumber);
+            }
+
+            setActiveLessonMembers(activateLessonArray);
+        };
+
+        currentActivateLessonMembers();
+
         setCurrentMembers(
             data.docs.map((doc) => ({
                 id: doc.id,
@@ -163,7 +218,12 @@ const MemberDashboard = () => {
                             <Statistics members={currentMembers} index={index} />
                         </Col>
                         <Col xxl={9} xl={8}>
-                            <SessionsChart members={activateBatterboxMembers} index={index} />
+                            <SessionsChart
+                                members={activeMembers}
+                                activateBatterboxMembers={activateBatterboxMembers}
+                                activateLessonMembers={activateLessonMembers}
+                                index={index}
+                            />
                         </Col>
                     </Row>
 
