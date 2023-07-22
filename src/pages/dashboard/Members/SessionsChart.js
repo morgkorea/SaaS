@@ -8,12 +8,10 @@ const SessionsChart = ({ members, index }) => {
 
     const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
     const taSeokMembers = members.filter((member) =>
-        member.availableProducts?.some((product) => 
-        product && product.product && product.product.includes('타석'))
+        member.availableProducts?.some((product) => product && product.product && product.product.includes('타석'))
     );
     const lessonMembers = members.filter((member) =>
-        member.availableProducts?.some((product) => 
-        product && product.product && product.product.includes('레슨'))
+        member.availableProducts?.some((product) => product && product.product && product.product.includes('레슨'))
     );
 
     const getDaysInMonth = (month, year) => {
@@ -77,7 +75,7 @@ const SessionsChart = ({ members, index }) => {
     const apexBarChartData2 = [
         {
             name: '',
-            data: chartData2,
+            data: members,
         },
     ];
 

@@ -14,31 +14,89 @@ import { collection, getDocs } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const MemberDashboard = () => {
+    const currentMonthOfDays = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
+    const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
 
     const email = useSelector((state) => state.Auth?.user.email);
-    const memberRef = collection(firestoreDB, "Users", email, "Members")
+    const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
     const getMembers = async () => {
         const data = await getDocs(memberRef);
 
         setActiveMembers(
-            data.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-            })).filter((member) => {
-                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                    return member.availableProducts.some((product) => Object.keys(product).length > 0 && product !== null);
-                }
-                return false;
-            })
+            data.docs
+                .map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+                .filter((member) => {
+                    if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                        return member.availableProducts.some(
+                            (product) => Object.keys(product).length > 0 && product !== null
+                        );
+                    }
+                    return false;
+                })
         );
 
-        setCurrentMembers(data.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        })));
+        const currentActivateBatterBoxMembers = () => {
+            const activateBatterboxMembersArray = [];
+            for (let day = 0; day < currentMonthOfDays; day++) {
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth();
+
+                let memberNumber = 0;
+
+                const activateBatterboxProduct = data.docs
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                    .map((member, idx) => {
+                        let minDate;
+                        let maxDate;
+
+                        member.availableProducts
+                            .filter((product) => product.productType === 'batterBox')
+                            .forEach((product, idx) => {
+                                const startDate = new Date(product.startDate);
+                                const endDate = new Date(product.endDate);
+                                if (idx === 0) {
+                                    minDate = startDate;
+                                    maxDate = endDate;
+                                } else {
+                                    if (minDate > startDate) {
+                                        minDate = startDate;
+                                    }
+                                    if (maxDate < endDate) {
+                                        maxDate = endDate;
+                                    }
+                                }
+                            });
+
+                        if (
+                            minDate <= new Date(currentYear, currentMonth, day + 1) &&
+                            maxDate >= new Date(currentYear, currentMonth, day + 1)
+                        ) {
+                            memberNumber = memberNumber + 1;
+                        }
+                    });
+                activateBatterboxMembersArray.push(memberNumber);
+            }
+
+            setActiveBatterboxMembers(activateBatterboxMembersArray);
+        };
+        currentActivateBatterBoxMembers();
+
+        setCurrentMembers(
+            data.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }))
+        );
     };
 
     useEffect(() => {
@@ -89,8 +147,9 @@ const MemberDashboard = () => {
                     <Row>
                         {show ? (
                             <Alert variant="info" onClose={() => setShow(false)} dismissible className="mb-3">
-                                <span className="fw-bold">활성회원 Tap</span> - 아래 데이터는 현재 이용중인 회원님의 데이터에요.
-                                지금까지 등록하셨던 회원님들의 데이터를 확인하시려면 우측상단 전체탭을 이용해주세요.
+                                <span className="fw-bold">활성회원 Tap</span> - 아래 데이터는 현재 이용중인 회원님의
+                                데이터에요. 지금까지 등록하셨던 회원님들의 데이터를 확인하시려면 우측상단 전체탭을
+                                이용해주세요.
                             </Alert>
                         ) : null}
                     </Row>
@@ -100,7 +159,7 @@ const MemberDashboard = () => {
                             <Statistics members={currentMembers} index={index} />
                         </Col>
                         <Col xxl={9} xl={8}>
-                            <SessionsChart members={activeMembers} index={index} />
+                            <SessionsChart members={activateBatterboxMembers} index={index} />
                         </Col>
                     </Row>
 
