@@ -62,8 +62,12 @@ const MemberDashboard = () => {
                         member.availableProducts
                             .filter((product) => product.productType === 'batterBox')
                             .forEach((product, idx) => {
-                                const startDate = new Date(product.startDate);
-                                const endDate = new Date(product.endDate);
+                                const startDate = new Date(
+                                    new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                const endDate = new Date(
+                                    new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
                                 if (idx === 0) {
                                     minDate = startDate;
                                     maxDate = endDate;
