@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-const Pagination = ({ tableProps, sizePerPageList }) => {
-
+const Pagination = ({ tableProps, sizePerPageList, styleCenter }) => {
     const [pageCount, setPageCount] = useState(tableProps.pageCount);
     const [pageIndex, setPageIndex] = useState(tableProps.state.pageIndex);
 
@@ -58,28 +57,14 @@ const Pagination = ({ tableProps, sizePerPageList }) => {
     const activePage = pageIndex + 1;
 
     return (
-        <div className="d-lg-flex align-items-center text-center pb-1">
-            {sizePerPageList.length > 0 && (
-                <div className="d-inline-block me-3">
-                    <label className="me-1">Display :</label>
-                    <select
-                        value={tableProps.state.pageSize}
-                        onChange={(e) => {
-                            tableProps.setPageSize(Number(e.target.value));
-                        }}
-                        className="form-select d-inline-block w-auto">
-                        {(sizePerPageList || []).map((pageSize, index) => {
-                            return (
-                                <option key={index} value={pageSize.value}>
-                                    {pageSize.text}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-            )}
+        <div className="align-items-center text-center pb-1"
+            style={styleCenter ? { display: 'flex', justifyContent: 'center' } : null}>
 
-            <ul className="pagination pagination-rounded d-inline-flex ms-auto align-item-center mb-0">
+            <ul className={
+                    styleCenter
+                        ? 'pagination align-item-center mb-0'
+                        : 'pagination d-inline-flex ms-auto align-item-center mb-0'
+                }>
                 <li
                     key="prevpage"
                     className={classNames('page-item', 'paginate_button', 'previous', {

@@ -23,7 +23,6 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
     return (
         <div className={classNames(searchBoxClass)}>
             <span className="d-flex align-items-center">
-                Search{' '}
                 <input
                     value={value || ''}
                     onChange={(e) => {
@@ -84,7 +83,6 @@ const Table = (props: TableProps) => {
     const setAddMode = props['setAddMode'] || false;
 
     const childComponentRef = useRef(null);
-
 
     const onClickAdd = () => {
         if (!addMode) {
