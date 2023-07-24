@@ -12,7 +12,7 @@ const AddCell = forwardRef((props, ref) => {
     const email = useSelector((state) => state.Auth?.user.email);
     const [nameValue, setNameValue] = useState('');
     const [sexValue, setSexValue] = useState('');
-    const [birthDateValue, setBirthDateValue] = useState('');
+    const [birthDateValue, setBirthDateValue] = useState('1980-01-01');
     const [phoneValue, setPhoneValue] = useState('');
     const [locationValue, setLocationValue] = useState('');
     const [regionValue, setRegionValue] = useState('');

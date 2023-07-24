@@ -117,7 +117,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 };
             });
 
-        // const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
         const totalPaymentPrice = salesProducts.reduce((acc, curr) => {
             return curr.adjustedPrice ? acc + curr.adjustedPrice : acc;
         }, 0);
