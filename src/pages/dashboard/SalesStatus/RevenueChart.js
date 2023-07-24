@@ -28,7 +28,7 @@ const RevenueChart = ({
     const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
 
     const apexLineInitData =
-        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 1) : Array(7).fill(1);
+        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 1) : Array(7).fill(0);
 
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
