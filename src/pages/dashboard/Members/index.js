@@ -73,13 +73,12 @@ const MemberDashboard = () => {
                                             startDate <= new Date(currentYear, currentMonth, day + 1) &&
                                             endDate >= new Date(currentYear, currentMonth, day + 1)
                                         ) {
-                                            // memberNumber = memberNumber + 1;
                                             dayOfActivateMembers.push(member.id);
                                         }
                                     });
                             }
                         });
-                    // activateBatterboxMembersArray.push(memberNumber);
+
                     const distinctMembers = new Set(dayOfActivateMembers);
                     activateMembersArray.push(distinctMembers.size);
                 })();
@@ -119,13 +118,12 @@ const MemberDashboard = () => {
                                             startDate <= new Date(currentYear, currentMonth, day + 1) &&
                                             endDate >= new Date(currentYear, currentMonth, day + 1)
                                         ) {
-                                            // memberNumber = memberNumber + 1;
                                             dayOfActivateMembers.push(member.id);
                                         }
                                     });
                             }
                         });
-                    // activateBatterboxMembersArray.push(memberNumber);
+
                     const distinctMembers = new Set(dayOfActivateMembers);
                     activateMembersArray.push(distinctMembers.size);
                 })();

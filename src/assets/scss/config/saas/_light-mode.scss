@@ -343,15 +343,15 @@ body[data-leftbar-theme='dark'] {
 
     // Menu
     --#{$variable-prefix}dark-menu-item: #cedce4;
-    --#{$variable-prefix}dark-menu-item-hover: #bccee4;
+    --#{$variable-prefix}dark-menu-item-hover: #{$white};
     --#{$variable-prefix}dark-menu-item-active: #{$white};
 }
 
 body[data-leftbar-theme='default'] {
     // Menu
-    --#{$variable-prefix}menu-item: #ffffff;
-    --#{$variable-prefix}menu-item-hover: #0e7b00;
-    --#{$variable-prefix}menu-item-active: #0e7b00;
+    --#{$variable-prefix}menu-item: #dee6eb;
+    --#{$variable-prefix}menu-item-hover: #{$white};
+    --#{$variable-prefix}menu-item-active: #{$white};
     // --#{$variable-prefix}menu-item-hover: #{$white};
     // --#{$variable-prefix}menu-item-active: #{$white};
 }
