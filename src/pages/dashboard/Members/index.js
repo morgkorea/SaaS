@@ -44,87 +44,94 @@ const MemberDashboard = () => {
         );
 
         const currentActivateBatterBoxMembers = () => {
-            const activateBatterboxMembersArray = [];
+            const activateMembersArray = [];
             for (let day = 0; day < currentMonthOfDays; day++) {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
 
-                let memberNumber = 0;
+                (() => {
+                    const dayOfActivateMembers = [];
+                    const activateBatterboxProduct = data.docs
+                        .map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                        }))
+                        .map((member, idx) => {
+                            if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                                const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
+                                allOfProducts
+                                    .filter((product) => product.productType === 'batterBox')
+                                    .forEach((product, idx) => {
+                                        const startDate = new Date(
+                                            new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                        );
+                                        const endDate = new Date(
+                                            new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                        );
 
-                const activateBatterboxProduct = data.docs
-                    .map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }))
-                    .map((member, idx) => {
-                        if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                            const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
-                            allOfProducts
-                                .filter((product) => product.productType === 'batterBox')
-                                .forEach((product, idx) => {
-                                    const startDate = new Date(
-                                        new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-                                    const endDate = new Date(
-                                        new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-
-                                    if (
-                                        startDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                        endDate >= new Date(currentYear, currentMonth, day + 1)
-                                    ) {
-                                        memberNumber = memberNumber + 1;
-                                    }
-                                });
-                        }
-                    });
-                activateBatterboxMembersArray.push(memberNumber);
+                                        if (
+                                            startDate <= new Date(currentYear, currentMonth, day + 1) &&
+                                            endDate >= new Date(currentYear, currentMonth, day + 1)
+                                        ) {
+                                            // memberNumber = memberNumber + 1;
+                                            dayOfActivateMembers.push(member.id);
+                                        }
+                                    });
+                            }
+                        });
+                    // activateBatterboxMembersArray.push(memberNumber);
+                    const distinctMembers = new Set(dayOfActivateMembers);
+                    activateMembersArray.push(distinctMembers.size);
+                })();
             }
 
-            setActiveBatterboxMembers(activateBatterboxMembersArray);
+            setActiveBatterboxMembers(activateMembersArray);
         };
         currentActivateBatterBoxMembers();
 
         const currentActivateLessonMembers = () => {
-            const activateLessonArray = [];
+            const activateMembersArray = [];
             for (let day = 0; day < currentMonthOfDays; day++) {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
 
-                let memberNumber = 0;
+                (() => {
+                    const dayOfActivateMembers = [];
+                    const activateLessonProducts = data.docs
+                        .map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                        }))
+                        .map((member, idx) => {
+                            if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                                const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
+                                allOfProducts
+                                    .filter((product) => product.productType === 'lesson')
+                                    .forEach((product, idx) => {
+                                        const startDate = new Date(
+                                            new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                        );
+                                        const endDate = new Date(
+                                            new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                        );
 
-                const activateLessonProduct = data.docs
-                    .map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }))
-                    .map((member, idx) => {
-                        if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                            const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
-
-                            allOfProducts
-                                .filter((product) => product.productType === 'lesson')
-                                .forEach((product, idx) => {
-                                    const startDate = new Date(
-                                        new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-                                    const endDate = new Date(
-                                        new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-
-                                    if (
-                                        startDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                        endDate >= new Date(currentYear, currentMonth, day + 1)
-                                    ) {
-                                        memberNumber = memberNumber + 1;
-                                    }
-                                });
-                        }
-                    });
-                activateLessonArray.push(memberNumber);
+                                        if (
+                                            startDate <= new Date(currentYear, currentMonth, day + 1) &&
+                                            endDate >= new Date(currentYear, currentMonth, day + 1)
+                                        ) {
+                                            // memberNumber = memberNumber + 1;
+                                            dayOfActivateMembers.push(member.id);
+                                        }
+                                    });
+                            }
+                        });
+                    // activateBatterboxMembersArray.push(memberNumber);
+                    const distinctMembers = new Set(dayOfActivateMembers);
+                    activateMembersArray.push(distinctMembers.size);
+                })();
             }
 
-            setActiveLessonMembers(activateLessonArray);
+            setActiveLessonMembers(activateMembersArray);
         };
 
         currentActivateLessonMembers();
