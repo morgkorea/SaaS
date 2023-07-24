@@ -18,6 +18,7 @@ import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase
 import { firestoreDB } from '../../../firebase/firebase';
 
 const SalesStatus = () => {
+    const [isLoading, setIsLoading] = useState(true);
     const todayStart = new Date(new Date().toISOString().split('T')[0] + ' 00:00:00');
 
     const [salesData, setSalesData] = useState([]);
@@ -44,6 +45,7 @@ const SalesStatus = () => {
     });
 
     const getFirestoreSalesData = async () => {
+        setIsLoading(true);
         const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
 
         onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
@@ -54,6 +56,7 @@ const SalesStatus = () => {
 
             setSalesData(salesArray);
         });
+        setIsLoading(false);
     };
     useEffect(() => {
         getFirestoreSalesData();
@@ -208,110 +211,102 @@ const SalesStatus = () => {
 
     return (
         <>
-            <div>
-                {/* <div class="spinner-grow text-primary" role="status"></div> */}
-                <Row>
-                    <Col xs={12}>
-                        <div className="page-title-box">
-                            <div className="page-title-right d-flex">
-                                <Tab.Container defaultActiveKey="월간">
-                                    <Nav variant="pills" justify className="bg-nav-pills">
-                                        {tabContents.map((tab, index) => {
-                                            return (
-                                                <Nav.Item
-                                                    key={index}
-                                                    onClick={() => {
-                                                        if (index === 0) {
-                                                            setSelectedPeriod('month');
-                                                        } else if (index === 1) {
-                                                            setSelectedPeriod('week');
-                                                        } else if (index === 2) {
-                                                            setSelectedPeriod('day');
-                                                        }
-                                                        setIndex(tab.id);
-                                                    }}>
-                                                    <Nav.Link as={Link} to="#" eventKey={tab.title}>
-                                                        <span className="d-none d-md-block">{tab.title}</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                            );
-                                        })}
-                                    </Nav>
-                                </Tab.Container>
-                                <form className="d-flex ms-2">
-                                    {/* <div className="btn-group">
-                                        <ButtonsGroup
-                                            selectedPeriod={selectedPeriod}
-                                            setSelectedPeriod={setSelectedPeriod}
-                                        />
-                                    </div> */}
-                                    <div className="input-group">
-                                        <HyperDatepicker
-                                            value={datePickDate}
-                                            maxDate={new Date()}
-                                            inputClass="form-control-light"
-                                            onChange={(date) => {
-                                                onDateChange(date);
-                                            }}
-                                        />
-                                    </div>
-
-                                    {/* <Link to="#" className="btn btn-primary ms-2">
-                                        <i className="mdi mdi-autorenew"></i>
-                                    </Link>
-                                    <Link to="#" className="btn btn-primary ms-1">
-                                        <i className="mdi mdi-filter-variant"></i>
-                                    </Link> */}
-                                </form>
+            {isLoading ? (
+                <div style={{ display: 'grid', placeItems: 'center', height: '85vh' }}>
+                    <div class="spinner-grow text-primary" role="status"></div>
+                </div>
+            ) : (
+                <div>
+                    <Row>
+                        <Col xs={12}>
+                            <div className="page-title-box">
+                                <div className="page-title-right d-flex">
+                                    <Tab.Container defaultActiveKey="월간">
+                                        <Nav variant="pills" justify className="bg-nav-pills">
+                                            {tabContents.map((tab, index) => {
+                                                return (
+                                                    <Nav.Item
+                                                        key={index}
+                                                        onClick={() => {
+                                                            if (index === 0) {
+                                                                setSelectedPeriod('month');
+                                                            } else if (index === 1) {
+                                                                setSelectedPeriod('week');
+                                                            } else if (index === 2) {
+                                                                setSelectedPeriod('day');
+                                                            }
+                                                            setIndex(tab.id);
+                                                        }}>
+                                                        <Nav.Link as={Link} to="#" eventKey={tab.title}>
+                                                            <span className="d-none d-md-block">{tab.title}</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                );
+                                            })}
+                                        </Nav>
+                                    </Tab.Container>
+                                    <form className="d-flex ms-2">
+                                        <div className="input-group">
+                                            <HyperDatepicker
+                                                value={datePickDate}
+                                                maxDate={new Date()}
+                                                inputClass="form-control-light"
+                                                onChange={(date) => {
+                                                    onDateChange(date);
+                                                }}
+                                            />
+                                        </div>
+                                    </form>
+                                </div>
+                                <h4 className="page-title">매출현황</h4>
                             </div>
-                            <h4 className="page-title">매출현황</h4>
-                        </div>
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
 
-                <Row>
-                    <Col xl={12}>
-                        <Statistics
-                            datePickDate={datePickDate}
-                            selectedPeriod={selectedPeriod}
-                            sortedByPeriodSalesData={sortedByPeriodSalesData}
-                            beforePeriodSalesData={beforePeriodSalesData}
-                            currentPeriodRefundData={currentPeriodRefundData}
-                            previousPeriodRefundData={previousPeriodRefundData}
-                        />
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col xl={12}>
+                            <Statistics
+                                datePickDate={datePickDate}
+                                selectedPeriod={selectedPeriod}
+                                sortedByPeriodSalesData={sortedByPeriodSalesData}
+                                beforePeriodSalesData={beforePeriodSalesData}
+                                currentPeriodRefundData={currentPeriodRefundData}
+                                previousPeriodRefundData={previousPeriodRefundData}
+                            />
+                        </Col>
+                    </Row>
 
-                <Row>
-                    <Col lg={12}>
-                        <RevenueChart
-                            datePickDate={datePickDate}
-                            selectedPeriod={selectedPeriod}
-                            sortedByPeriodSalesData={sortedByPeriodSalesData}
-                            beforePeriodSalesData={beforePeriodSalesData}
-                            currentPeriodRefundData={currentPeriodRefundData}
-                            previousPeriodRefundData={previousPeriodRefundData}
-                        />
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col lg={12}>
+                            <RevenueChart
+                                datePickDate={datePickDate}
+                                selectedPeriod={selectedPeriod}
+                                sortedByPeriodSalesData={sortedByPeriodSalesData}
+                                beforePeriodSalesData={beforePeriodSalesData}
+                                currentPeriodRefundData={currentPeriodRefundData}
+                                previousPeriodRefundData={previousPeriodRefundData}
+                            />
+                        </Col>
+                    </Row>
 
-                <Row>
-                    <Col lg={4}>
-                        <SalesChart
-                            sortedByPeriodSalesData={sortedByPeriodSalesData}
-                            selectedPeriod={selectedPeriod}
-                            datePickDate={datePickDate}
-                        />
-                    </Col>
-                    <Col lg={8}>
-                        <ProductSales
-                            sortedByPeriodSalesData={sortedByPeriodSalesData}
-                            selectedPeriod={selectedPeriod}
-                            datePickDate={datePickDate}
-                        />
-                    </Col>
-                </Row>
-            </div>
+                    <Row>
+                        <Col lg={4}>
+                            <SalesChart
+                                sortedByPeriodSalesData={sortedByPeriodSalesData}
+                                selectedPeriod={selectedPeriod}
+                                datePickDate={datePickDate}
+                            />
+                        </Col>
+                        <Col lg={8}>
+                            <ProductSales
+                                sortedByPeriodSalesData={sortedByPeriodSalesData}
+                                selectedPeriod={selectedPeriod}
+                                datePickDate={datePickDate}
+                            />
+                        </Col>
+                    </Row>
+                </div>
+            )}
         </>
     );
 };
