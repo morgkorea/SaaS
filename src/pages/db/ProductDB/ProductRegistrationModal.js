@@ -140,7 +140,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                 createdDate: new Date().toISOString().split('T')[0],
                 modifiedDate: new Date().toISOString().split('T')[0],
             };
-            console.log('통과');
 
             await setDoc(productsCollectionRef, productData);
             setModal(!modal);

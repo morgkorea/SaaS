@@ -19,11 +19,7 @@ const RevenueChart = ({
     const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
 
-    console.log(previousPeriodTotalSales, currentPeriodTotalSales);
-    console.log(previousPeriodRefundData, sortedByPeriodSalesData);
-
-    const periodSaelsDataInit =
-        selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : [1, 1, 1, 1, 1, 1, 1];
+    const periodSaelsDataInit = selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : Array(7).fill(1);
 
     // const periodSaelsDataInit = Array.from({ length: 31 }, () => 1);
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
@@ -32,9 +28,7 @@ const RevenueChart = ({
     const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
 
     const apexLineInitData =
-        selectedPeriod === 'month'
-            ? Array.from({ length: currentPeriodOfDate.length }, () => 0)
-            : [0, 0, 0, 0, 0, 0, 0];
+        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 1) : Array(7).fill(1);
 
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
@@ -73,12 +67,11 @@ const RevenueChart = ({
 
     const getCurrentPeriodSalesData = (sortedByPeriodSalesData, datePickDate) => {
         const currentDate = datePickDate?.getDate();
-        // const lastDate = new Date(year, month, 0).getDate();
 
         if (sortedByPeriodSalesData.length && selectedPeriod === 'month') {
             const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? [...acc, curr] : [...acc];
+                return curr ? [...acc, curr] : [...acc];
             }, []);
 
             for (let date = 1; date <= currentDate; date++) {
@@ -95,7 +88,7 @@ const RevenueChart = ({
         } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
             const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? [...acc, curr] : [...acc];
+                return curr ? [...acc, curr] : [...acc];
             }, []);
 
             for (let day = 0; day < 7; day++) {
@@ -119,7 +112,7 @@ const RevenueChart = ({
         if (beforePeriodSalesData.length && selectedPeriod === 'month') {
             const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? [...acc, curr] : [...acc];
+                return curr ? [...acc, curr] : [...acc];
             }, []);
 
             for (let date = 1; date <= previousMonthLastDate; date++) {
@@ -136,7 +129,7 @@ const RevenueChart = ({
         } else if (beforePeriodSalesData.length && selectedPeriod === 'week') {
             const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return !curr.refund ? [...acc, curr] : [...acc];
+                return curr ? [...acc, curr] : [...acc];
             }, []);
 
             for (let day = 0; day < 7; day++) {
