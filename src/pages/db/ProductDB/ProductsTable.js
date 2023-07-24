@@ -41,7 +41,7 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
                                 isSortable={true}
                                 pagination={true}
                                 isSearchable={true}
-                                tablePurpose={'productsDB'}
+                                tablePurpose={{ id: '7', desc: true }}
                                 productTablePlaceholder={'상품명 / 코드 검색'}
                                 paginationStyleCenter={true}
                             />

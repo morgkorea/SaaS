@@ -108,13 +108,9 @@ const SalesChart = ({ sortedByPeriodSalesData, selectedPeriod, datePickDate }) =
     };
 
     return (
-        <Card style={{ height: '100%' }}>
+        <Card style={{ height: `calc(100% - 24px)` }}>
             <Card.Body>
-                <CardTitle
-                    containerClass="d-flex align-items-center justify-content-between"
-                    title="비중"
-                    // menuItems={[{ label: 'Sales Report' }]}
-                />
+                <CardTitle containerClass="d-flex align-items-center justify-content-between" title="비중" />
 
                 <Chart
                     options={apexDonutOpts}

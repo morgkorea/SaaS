@@ -7,24 +7,7 @@ import PageTitle from '../../../components/PageTitle';
 import Table from '../../../components/Table';
 
 const SalesTable = ({ data, columns }): React$Element<any> => {
-    const sizePerPageList = [
-        // {
-        //     text: '30',
-        //     value: 30,
-        // },
-        // {
-        //     text: '60',
-        //     value: 60,
-        // },
-        // {
-        //     text: '90',
-        //     value: 90,
-        // },
-        // {
-        //     text: 'All',
-        //     value: data.length,
-        // },
-    ];
+    const sizePerPageList = [];
     return (
         <>
             <PageTitle title={'매출 DB'} />
@@ -41,7 +24,7 @@ const SalesTable = ({ data, columns }): React$Element<any> => {
                                 isSortable={true}
                                 pagination={true}
                                 isSearchable={true}
-                                tablePurpose={'salesDB'}
+                                tablePurpose={{ id: '1', desc: true }}
                                 productTablePlaceholder={'검색'}
                                 paginationStyleCenter={true}
                             />
