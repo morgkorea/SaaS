@@ -60,19 +60,18 @@ const MemberDashboard = () => {
                     .map((member, idx) => {
                         let minDate;
                         let maxDate;
-
+                        console.log(member.refund);
                         if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
                             member.availableProducts
                                 .filter((product) => product.productType === 'batterBox')
                                 .forEach((product, idx) => {
-                                    console.log(idx);
                                     const startDate = new Date(
                                         new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
                                     );
                                     const endDate = new Date(
                                         new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
                                     );
-                                    console.log(startDate, endDate, idx);
+
                                     if (idx === 0) {
                                         minDate = startDate;
                                         maxDate = endDate;
@@ -118,7 +117,11 @@ const MemberDashboard = () => {
                         let minDate;
                         let maxDate;
 
-                        if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                        if (
+                            !member.refund &&
+                            Array.isArray(member.availableProducts) &&
+                            member.availableProducts.length > 0
+                        ) {
                             member.availableProducts
                                 .filter((product) => product.productType === 'lesson')
                                 .forEach((product, idx) => {
