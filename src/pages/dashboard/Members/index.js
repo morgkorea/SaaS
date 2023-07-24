@@ -20,8 +20,7 @@ const MemberDashboard = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
-    console.log(activateBatterboxMembers, activateLessonMembers);
-    console.log(currentMonthOfDays);
+
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
