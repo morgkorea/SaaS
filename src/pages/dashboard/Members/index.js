@@ -57,11 +57,9 @@ const MemberDashboard = () => {
                         ...doc.data(),
                     }))
                     .map((member, idx) => {
-                        let minDate;
-                        let maxDate;
-                        console.log(member.refund);
                         if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                            member.availableProducts
+                            const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
+                            allOfProducts
                                 .filter((product) => product.productType === 'batterBox')
                                 .forEach((product, idx) => {
                                     const startDate = new Date(
@@ -71,25 +69,13 @@ const MemberDashboard = () => {
                                         new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
                                     );
 
-                                    if (idx === 0) {
-                                        minDate = startDate;
-                                        maxDate = endDate;
-                                    } else {
-                                        if (minDate > startDate) {
-                                            minDate = startDate;
-                                        }
-                                        if (maxDate < endDate) {
-                                            maxDate = endDate;
-                                        }
+                                    if (
+                                        startDate <= new Date(currentYear, currentMonth, day + 1) &&
+                                        endDate >= new Date(currentYear, currentMonth, day + 1)
+                                    ) {
+                                        memberNumber = memberNumber + 1;
                                     }
                                 });
-
-                            if (
-                                minDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                maxDate >= new Date(currentYear, currentMonth, day + 1)
-                            ) {
-                                memberNumber = memberNumber + 1;
-                            }
                         }
                     });
                 activateBatterboxMembersArray.push(memberNumber);
@@ -113,15 +99,10 @@ const MemberDashboard = () => {
                         ...doc.data(),
                     }))
                     .map((member, idx) => {
-                        let minDate;
-                        let maxDate;
+                        if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                            const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
 
-                        if (
-                            !member.refund &&
-                            Array.isArray(member.availableProducts) &&
-                            member.availableProducts.length > 0
-                        ) {
-                            member.availableProducts
+                            allOfProducts
                                 .filter((product) => product.productType === 'lesson')
                                 .forEach((product, idx) => {
                                     const startDate = new Date(
@@ -130,25 +111,14 @@ const MemberDashboard = () => {
                                     const endDate = new Date(
                                         new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
                                     );
-                                    if (idx === 0) {
-                                        minDate = startDate;
-                                        maxDate = endDate;
-                                    } else {
-                                        if (minDate > startDate) {
-                                            minDate = startDate;
-                                        }
-                                        if (maxDate < endDate) {
-                                            maxDate = endDate;
-                                        }
+
+                                    if (
+                                        startDate <= new Date(currentYear, currentMonth, day + 1) &&
+                                        endDate >= new Date(currentYear, currentMonth, day + 1)
+                                    ) {
+                                        memberNumber = memberNumber + 1;
                                     }
                                 });
-
-                            if (
-                                minDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                maxDate >= new Date(currentYear, currentMonth, day + 1)
-                            ) {
-                                memberNumber = memberNumber + 1;
-                            }
                         }
                     });
                 activateLessonArray.push(memberNumber);
