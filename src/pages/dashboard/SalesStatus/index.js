@@ -209,6 +209,7 @@ const SalesStatus = () => {
     return (
         <>
             <div>
+                {/* <div class="spinner-grow text-primary" role="status"></div> */}
                 <Row>
                     <Col xs={12}>
                         <div className="page-title-box">
