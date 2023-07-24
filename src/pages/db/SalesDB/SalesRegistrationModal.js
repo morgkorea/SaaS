@@ -117,13 +117,17 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 };
             });
 
-        const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
+        // const totalPaymentPrice = paymentInfo1.paymentPrice + paymentInfo2.paymentPrice + paymentInfo3.paymentPrice;
+        const totalPaymentPrice = salesProducts.reduce((acc, curr) => {
+            return curr.adjustedPrice ? acc + curr.adjustedPrice : acc;
+        }, 0);
         const paymentMethod = [paymentInfo1, paymentInfo2, paymentInfo3]
             .map((paymentInfo) => paymentInfo.paymentMethod)
             .join(',');
         const paymentInfo = [paymentInfo1, paymentInfo2, paymentInfo3].filter(
             (paymentInfo) => paymentInfo.paymentMethod.length
         );
+
         const salesData = {
             ...firestoreSalesFieldSchema,
             paymentDate: paymentDate,

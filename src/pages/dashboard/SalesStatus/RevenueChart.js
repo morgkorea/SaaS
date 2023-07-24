@@ -19,6 +19,9 @@ const RevenueChart = ({
     const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
 
+    console.log(previousPeriodTotalSales, currentPeriodTotalSales);
+    console.log(previousPeriodRefundData, sortedByPeriodSalesData);
+
     const periodSaelsDataInit =
         selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : [1, 1, 1, 1, 1, 1, 1];
 
@@ -45,9 +48,7 @@ const RevenueChart = ({
         if (beforePeriodSalesData.length) {
             const totalSales = [...beforePeriodSalesData].reduce((acc, curr) => {
                 if (curr.refundPrice !== undefined) {
-                    return !curr.refund
-                        ? acc + curr.totalPaymentPrice
-                        : acc + curr.totalPaymentPrice - curr.refundPrice;
+                    return acc + curr.totalPaymentPrice;
                 }
             }, 0);
 
@@ -61,9 +62,7 @@ const RevenueChart = ({
         if (sortedByPeriodSalesData.length) {
             const totalSales = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 if (curr.refundPrice !== undefined) {
-                    return !curr.refund
-                        ? acc + curr.totalPaymentPrice
-                        : acc + curr.totalPaymentPrice - curr.refundPrice;
+                    return acc + curr.totalPaymentPrice;
                 }
             }, 0);
             setCurrentPeriodTotalSales(totalSales);
