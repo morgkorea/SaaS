@@ -34,6 +34,14 @@ const MembersDB = () => {
                     ...unavailableProducts,
                 ];
 
+                // D-day
+                for (const product of availableProducts) {
+                    const endDate = new Date(product?.endDate);
+                    const timeDiff = endDate.getTime() - today.getTime();
+                    const dDay = Math.floor(timeDiff / (1000 * 3600 * 24)); // 밀리초를 일(day)로 변환
+                    product.dDay = dDay;
+                }
+
                 // 활성 여부
                 const hasTaSeokProduct = (availableProducts || []).some((product) => {
                     return product && product.product && product.product.includes('타석');
@@ -43,8 +51,13 @@ const MembersDB = () => {
                     return product && product.product && product.product.includes('레슨');
                 });
                 
-                updatedMember.taSeokActive = hasTaSeokProduct ? '활성' : '비활성';
-                updatedMember.lessonActive = hasLessonProduct ? '활성' : '비활성';
+                const hasLockerProduct = (availableProducts || []).some((product) => {
+                    return product && product.product && product.product.includes('락커');
+                });
+
+                updatedMember.taSeokActive = hasTaSeokProduct ? true : false;
+                updatedMember.lessonActive = hasLessonProduct ? true : false;
+                updatedMember.lockerActive = hasLockerProduct ? true : false;
 
                 // 나이
                 const birthDate = updatedMember.birthDate || null;

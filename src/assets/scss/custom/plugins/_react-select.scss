@@ -23,7 +23,7 @@
   > div {
     border-radius: 0;
     border: none;
-    border-bottom: 1px solid #727CF5;
+    border-bottom: 1px solid var(--ct-primary);
     box-sizing: border-box;
     background-color: transparent;
     padding: 0;
@@ -40,9 +40,12 @@ input.editInput {
   padding: 0;
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid #727CF5;
+  border-bottom: 1px solid  var(--ct-primary);
   background-color: transparent;
   box-sizing: border-box; 
+}
+input.editInput:focus {
+  outline: none !important;
 }
 /* placeholder text style */
 .editInput[type="date"]::-webkit-datetime-edit-text,

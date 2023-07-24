@@ -118,6 +118,47 @@ const AveragePayAmount = ({ row }) => {
     return <>{!isNaN(averageValue) && averageValue !== 0 ? averageValue.toLocaleString() : '-'}</>;
 };
 
+const cumulativePayAccessor = (row) => {
+    const availableProducts = row.original?.availableProducts;
+    const unavailableProducts = row.original?.unavailableProducts;
+
+    if (availableProducts && unavailableProducts) {
+        const products = [...availableProducts, ...unavailableProducts];
+        const amounts = products.map((data) => {
+            const regularPrice = data.regularPrice || 0;
+            const discountPrice = data.discountPrice || 0;
+            return regularPrice - discountPrice;
+        });
+
+        const totalValue = Math.floor(amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+
+        return totalValue;
+    }
+
+    return 0;
+};
+
+const averagePayAccessor = (row) => {
+    const availableProducts = row.original?.availableProducts;
+    const unavailableProducts = row.original?.unavailableProducts;
+
+    if (availableProducts && unavailableProducts) {
+        const products = [...availableProducts, ...unavailableProducts];
+        const amounts = products.map((data) => {
+            const regularPrice = data.regularPrice || 0;
+            const discountPrice = data.discountPrice || 0;
+            return regularPrice - discountPrice;
+        });
+
+        const totalValue = Math.floor(amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+        const averageValue = Math.floor(totalValue / amounts.length);
+
+        return averageValue;
+    }
+
+    return 0;
+};
+
 const columns = [
     {
         Header: '성함',
@@ -226,22 +267,30 @@ const columns = [
     },
     {
         Header: 'LTV(누적결제금액)',
+        accessor: cumulativePayAccessor,
         Cell: CumulativePayAmount,
+        sortType: 'basic',
         sort: true,
     },
     {
         Header: '평균결제금액',
+        accessor: averagePayAccessor,
         Cell: AveragePayAmount,
+        sortType: 'basic',
         sort: true,
     },
     {
         Header: '타석 활성여부',
         accessor: 'taSeokActive',
+        Cell: ({ value }) => (value ? '활성' : '비활성'),
+        sortType: 'basic',
         sort: true,
     },
     {
         Header: '레슨 활성여부',
         accessor: 'lessonActive',
+        Cell: ({ value }) => (value ? '활성' : '비활성'),
+        sortType: 'basic',
         sort: true,
     },
 ];

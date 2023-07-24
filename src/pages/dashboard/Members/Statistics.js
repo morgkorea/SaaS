@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
 const Statistics = ({ members, index }) => {
-    const allMember = members.length;
+    const allMember = members.length; // 전체회원
     const [expiredMembers, setExpiredMembers] = useState(0); // 기간 만료회원
-    const [taSeokActiveMembers, setTaSeokActiveMembers] = useState(0);
-    const [lessonActiveMembers, setLessonActiveMembers] = useState(0);
-    const [taSeokExpires, setTaSeokExpires] = useState(0);
-    const [lessonExpires, setLessonExpires] = useState(0);
+    const [taSeokActiveMembers, setTaSeokActiveMembers] = useState(0); // 타석 활성회원 
+    const [lessonActiveMembers, setLessonActiveMembers] = useState(0); // 레슨 활성회원
+    const [taSeokExpires, setTaSeokExpires] = useState(0); // 타석 만료예정
+    const [lessonExpires, setLessonExpires] = useState(0); // 레슨 만료예정
 
     const [membersLastMonth, setMembersLastMonth] = useState(0);
     const [membersThisMonth, setMembersThisMonth] = useState(0);
@@ -19,94 +19,43 @@ const Statistics = ({ members, index }) => {
     const [taseokChangeRate, setTaseokChangeRate] = useState(0);
     const [lessonChangeRate, setLessonChangeRate] = useState(0);
 
-    // 타석/레슨, 회원 수, 만료예정 수
+    // 타석/레슨 회원 수, 만료예정 수
     useEffect(() => {
         const countMembersWithTaSeokProduct = () => {
-            const count = members.filter((member) => {
-                return (
-                    Array.isArray(member.availableProducts) &&
-                    member.availableProducts.some(
-                        (product) => product && product.product && product.product.includes('타석')
-                    )
-                );
-            }).length;
-
+            const taSeokMembers = members.filter((member) => member.taSeokActive === true);
+        
+            const count = taSeokMembers.length;
             setTaSeokActiveMembers(count);
-        };
+        
+            const countExpiresSoon = taSeokMembers.filter((member) => {
+              if (Array.isArray(member.availableProducts)) {
+                return member.availableProducts.some((product) => product.dDay <= 30);
+              }
+              return false;
+            }).length;
+        
+            setTaSeokExpires(countExpiresSoon);
+          };
 
         const countMembersWithLessonProduct = () => {
-            const count = members.filter((member) => {
-                return (
-                    Array.isArray(member.availableProducts) &&
-                    member.availableProducts.some(
-                        (product) => product && product.product && product.product.includes('레슨')
-                    )
-                );
-            }).length;
-
+            const lessonMembers = members.filter((member) => member.lessonActive === true);
+        
+            const count = lessonMembers.length;
             setLessonActiveMembers(count);
-        };
-
-        const filterDataWithin30Days = () => {
-            const today = new Date();
-            const thirtyDaysFromNow = new Date();
-            thirtyDaysFromNow.setDate(today.getDate() + 30);
-
-            let taSeokCount = 0;
-            let lessonCount = 0;
-
-            const filteredMembers = members.filter((member) => {
-                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                    const hasTaSeokProductWithin30Days = member.availableProducts.some((product) => {
-                        if (
-                            product &&
-                            product.product &&
-                            product.product.includes('타석') &&
-                            product.endDate &&
-                            typeof product.endDate === 'string'
-                        ) {
-                            const endDate = new Date(product.endDate);
-                            return endDate >= today && endDate <= thirtyDaysFromNow;
-                        }
-                        return false;
-                    });
-
-                    const hasLessonProductWithin30Days = member.availableProducts.some((product) => {
-                        if (
-                            product &&
-                            product.product &&
-                            product.product.includes('레슨') &&
-                            product.endDate &&
-                            typeof product.endDate === 'string'
-                        ) {
-                            const endDate = new Date(product.endDate);
-                            return endDate >= today && endDate <= thirtyDaysFromNow;
-                        }
-                        return false;
-                    });
-
-                    if (hasTaSeokProductWithin30Days) {
-                        taSeokCount++;
-                    }
-
-                    if (hasLessonProductWithin30Days) {
-                        lessonCount++;
-                    }
-
-                    return hasTaSeokProductWithin30Days || hasLessonProductWithin30Days;
-                }
-                return false;
-            });
-
-            setTaSeokExpires(taSeokCount);
-            setLessonExpires(lessonCount);
-        };
+        
+            const countExpiresSoon = lessonMembers.filter((member) => {
+              if (Array.isArray(member.availableProducts)) {
+                return member.availableProducts.some((product) => product.dDay <= 30);
+              }
+              return false;
+            }).length;
+        
+            setLessonExpires(countExpiresSoon);
+          };
 
         countMembersWithTaSeokProduct();
         countMembersWithLessonProduct();
-        filterDataWithin30Days();
     }, [members]);
-
 
     // 전체회원 전달 대비
     useEffect(() => {
@@ -143,7 +92,7 @@ const Statistics = ({ members, index }) => {
         const increase = membersThisMonth - membersLastMonth;
         const percentage = (increase / allMember) * 100;
         setPercentageIncrease(percentage);
-        
+
         // console.log(percentageIncrease)
     }, [members, allMember, membersLastMonth, percentageIncrease, membersThisMonth]);
 
