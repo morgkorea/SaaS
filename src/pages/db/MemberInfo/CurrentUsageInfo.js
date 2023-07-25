@@ -15,7 +15,7 @@ const CurrentUsageInfo = ({ member }) => {
                         <div className='d-flex'>
                             <div>
                                 <h4 className="me-2">타석</h4>
-                                <p>{taSeokActive}
+                                <p>
                                     {taSeokActive ? (
                                         <>
                                             활성 <i className="dripicons-media-record text-primary ms-1" />
@@ -29,7 +29,7 @@ const CurrentUsageInfo = ({ member }) => {
                             </div>
                             <div>
                                 <h4 className="me-2">레슨</h4>
-                                <p>{lessonActive}
+                                <p>
                                     {lessonActive ? (
                                         <>
                                             활성 <i className="dripicons-media-record text-primary ms-1" />
@@ -43,7 +43,7 @@ const CurrentUsageInfo = ({ member }) => {
                             </div>
                             <div>
                                 <h4 className="me-2">락커</h4>
-                                <p>{lockerActive}
+                                <p>
                                     {lockerActive ? (
                                         <>
                                             활성 <i className="dripicons-media-record text-primary ms-1" />

@@ -20,7 +20,7 @@ const SortableTable = ({ columns, data }) => {
               <th {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}>
                 <span {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
-                  {column.isSorted ? (column.isSortedDesc ? '🔽' : '🔼') : ''}
+                  {column.isSorted ? (column.isSortedDesc ? '' : '') : ''}
                 </span>
               </th>
             ))}

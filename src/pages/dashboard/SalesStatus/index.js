@@ -14,7 +14,7 @@ import { ButtonsGroup } from './ButtonsGroup.js';
 
 import { subWeeks, subDays } from 'date-fns';
 
-import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, doc, getDocs, updateDoc, onSnapshot, arrayUnion } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const SalesStatus = () => {
@@ -43,7 +43,7 @@ const SalesStatus = () => {
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
-
+    
     const getFirestoreSalesData = async () => {
         setIsLoading(true);
         const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
@@ -58,6 +58,7 @@ const SalesStatus = () => {
         });
         setIsLoading(false);
     };
+
     useEffect(() => {
         getFirestoreSalesData();
     }, []);
