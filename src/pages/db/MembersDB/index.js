@@ -13,7 +13,7 @@ const MembersDB = () => {
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
     const updateMembersDB = (data) => {
-        const today = new Date();
+        const today = new Date(new Date().toISOString().split('T')[0] + ' 00:00:00');
 
         const newData = data.map((member) => {
             const updatedMember = { ...member };
@@ -44,11 +44,13 @@ const MembersDB = () => {
             if (Array.isArray(updatedMember.availableProducts)) {
                 // 상품 필터링
                 const availableProducts = updatedMember.availableProducts.filter((product) => {
-                    const endDate = new Date(product?.endDate);
+                    // const endDate = new Date(product?.endDate);
+                    const endDate = new Date(new Date(product?.endDate).toISOString().split('T')[0] + ' 00:00:00');
                     return endDate >= today;
                 });
                 const unavailableProducts = updatedMember.availableProducts.filter((product) => {
-                    const endDate = new Date(product?.endDate);
+                    // const endDate = new Date(product?.endDate);
+                    const endDate = new Date(new Date(product?.endDate).toISOString().split('T')[0] + ' 00:00:00');
                     return endDate < today;
                 });
                 updatedMember.availableProducts = availableProducts;

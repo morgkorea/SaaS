@@ -26,6 +26,13 @@ const MemberDashboard = () => {
     const getMembers = async () => {
         const data = await getDocs(memberRef);
 
+        setCurrentMembers(
+            data.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }))
+        );
+
         setActiveMembers(
             data.docs
                 .map((doc) => ({
@@ -60,6 +67,7 @@ const MemberDashboard = () => {
                             ...member.availableProducts,
                             ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
                         ];
+
                         allOfProducts
                             .filter((product) => product.productType === productType)
                             .forEach((product) => {
@@ -99,13 +107,6 @@ const MemberDashboard = () => {
 
         currentActivateBatterBoxMembers();
         currentActivateLessonMembers();
-
-        setCurrentMembers(
-            data.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }))
-        );
     };
 
     useEffect(() => {
