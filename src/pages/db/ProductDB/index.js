@@ -142,29 +142,26 @@ const ProductDB = () => {
             accessor: 'productCode', // 해당 열에 표시할 데이터 필드
             Header: '상품번호', // 열 헤더 텍스트
             sort: true,
-            // ... 추가적인 열 설정
         },
         {
-            id: '2', // 열 ID
-            accessor: 'product', // 해당 열에 표시할 데이터 필드
-            Header: '상품명', // 열 헤더 텍스트
+            id: '2',
+            accessor: 'product',
+            Header: '상품명',
             sort: true,
-            // ... 추가적인 열 설정
         },
         {
-            id: '3', // 열 ID
-            accessor: 'type', // 해당 열에 표시할 데이터 필드
-            Header: '상품종류', // 열 헤더 텍스트
+            id: '3',
+            accessor: 'type',
+            Header: '상품종류',
             sort: true,
             Cell: ({ value }) => {
                 return productTypeTextHandler(value);
             },
-            // ... 추가적인 열 설정
         },
         {
-            id: '4', // 열 ID
-            accessor: 'expirationPeriod', // 해당 열에 표시할 데이터 필드
-            Header: '유효기간', // 열 헤더 텍스트
+            id: '4',
+            accessor: 'expirationPeriod',
+            Header: '유효기간',
             sort: true,
             Cell: ({ value }) => {
                 const period = parseInt(value);
@@ -185,8 +182,6 @@ const ProductDB = () => {
                     return valueA - valueB;
                 }
             },
-
-            // ... 추가적인 열 설정
         },
         {
             id: '5',
@@ -207,6 +202,7 @@ const ProductDB = () => {
             id: '7',
             accessor: 'activation',
             Header: '상태',
+            sort: true,
             Cell: ({ value, row }) => (
                 <Container className="d-flex p-0">
                     {
@@ -222,6 +218,18 @@ const ProductDB = () => {
                     }
                 </Container>
             ),
+            sortType: (rowA, rowB, columnId) => {
+                const valueA = rowA.values[columnId];
+                const valueB = rowB.values[columnId];
+
+                console.log(rowA, rowB, columnId);
+
+                if (valueA === true && valueB !== true) {
+                    return 1;
+                } else if (valueA !== true && valueB === true) {
+                    return -1;
+                }
+            },
         },
         {
             id: '8',

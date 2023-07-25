@@ -32,7 +32,7 @@ const AddCell = forwardRef((props, ref) => {
     const [isChecked2, setChecked2] = React.useState(true);
 
     const handleFocus = (e) => {
-        const { name, value } = e.target;
+        const { value } = e.target;
         if (!value) {
             e.target.placeholder = '';
         }
@@ -154,6 +154,7 @@ const AddCell = forwardRef((props, ref) => {
                 <td>
                     <input
                         className="editInput"
+                        style={{ minWidth: '110px'}}
                         type="text"
                         name="phone"
                         placeholder="연락처"

@@ -3,6 +3,7 @@ import Chart from 'react-apexcharts';
 import { Card } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
 
+// 삭제페이지
 const PerformanceChart = () => {
     const apexBarChartOpts = {
         chart: {
@@ -100,7 +101,7 @@ const PerformanceChart = () => {
                                 <span className="text-primary">08시</span>엔 한가해요
                             </h5>
                         </div>
-                    }ㄴ
+                    }
                 />
                 <div dir="ltr">
                     <Chart

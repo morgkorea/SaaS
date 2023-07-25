@@ -159,7 +159,11 @@ const Widgets = React.lazy(() => import('../pages/uikit/Widgets'));
 const GoogleMaps = React.lazy(() => import('../pages/maps/GoogleMaps'));
 const VectorMaps = React.lazy(() => import('../pages/maps/VectorMaps'));
 
-const loading = () => <div className="">...Loading</div>;
+const loading = () => (
+    <div style={{ display: 'grid', placeItems: 'center', height: '85vh' }}>
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+);
 
 type LoadComponentProps = {
     component: React.LazyExoticComponent<() => JSX.Element>,

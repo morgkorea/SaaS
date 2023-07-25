@@ -11,7 +11,7 @@ const Statistics = ({ members, index }) => {
 
     const [membersLastMonth, setMembersLastMonth] = useState(0);
     const [membersThisMonth, setMembersThisMonth] = useState(0);
-    const [percentageIncrease, setPercentageIncrease] = useState(0);
+    const [percentageIncrease, setPercentageIncrease] = useState(0); // 전체회원 전달대비ㄴ율
 
     const [lastMonthTaseok, setLastMonthTaseok] = useState(0);
     const [lastMonthLesson, setLastMonthLesson] = useState(0);
@@ -64,6 +64,7 @@ const Statistics = ({ members, index }) => {
         const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
         const firstDayOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
+        console.log('today',today)
         let lastMonthCount = 0;
         let thisMonthCount = 0;
 
@@ -85,13 +86,10 @@ const Statistics = ({ members, index }) => {
         if (membersLastMonth === 0) {
             setPercentageIncrease(membersThisMonth === 0 ? 0 : 100);
         } else {
-            const percentage = ((membersThisMonth - membersLastMonth) / membersLastMonth) * 100;
+            const increase = membersThisMonth - membersLastMonth;
+            const percentage = (increase / membersLastMonth) * 100;
             setPercentageIncrease(percentage);
         }
-
-        const increase = membersThisMonth - membersLastMonth;
-        const percentage = (increase / allMember) * 100;
-        setPercentageIncrease(percentage);
 
         // console.log(percentageIncrease)
     }, [members, allMember, membersLastMonth, percentageIncrease, membersThisMonth]);

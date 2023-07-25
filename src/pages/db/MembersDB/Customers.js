@@ -74,15 +74,8 @@ const CumulativePayAmount = ({ row }) => {
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
-            const amounts = products.map((data) => {
-                const regularPrice = data.regularPrice || 0;
-                const discountPrice = data.discountPrice || 0;
-                return regularPrice - discountPrice;
-            });
-
-            const totalValue = Math.floor(
-                amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-            );
+            const amounts = products.map((data) => data.adjustedPrice);
+            const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
             setTotalValue(totalValue);
         }
@@ -93,22 +86,14 @@ const CumulativePayAmount = ({ row }) => {
 
 const AveragePayAmount = ({ row }) => {
     const [averageValue, setAverageValue] = useState(0);
-
     const availableProducts = row.original?.availableProducts;
     const unavailableProducts = row.original?.unavailableProducts;
 
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
-            const amounts = products.map((data) => {
-                const regularPrice = data.regularPrice || 0;
-                const discountPrice = data.discountPrice || 0;
-                return regularPrice - discountPrice;
-            });
-
-            const totalValue = Math.floor(
-                amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-            );
+            const amounts = products.map((data) => data.adjustedPrice);
+            const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
 
             setAverageValue(averageValue);
@@ -124,13 +109,8 @@ const cumulativePayAccessor = (row) => {
 
     if (availableProducts && unavailableProducts) {
         const products = [...availableProducts, ...unavailableProducts];
-        const amounts = products.map((data) => {
-            const regularPrice = data.regularPrice || 0;
-            const discountPrice = data.discountPrice || 0;
-            return regularPrice - discountPrice;
-        });
-
-        const totalValue = Math.floor(amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+        const amounts = products.map((data) => data.adjustedPrice);
+        const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
         return totalValue;
     }
@@ -144,13 +124,8 @@ const averagePayAccessor = (row) => {
 
     if (availableProducts && unavailableProducts) {
         const products = [...availableProducts, ...unavailableProducts];
-        const amounts = products.map((data) => {
-            const regularPrice = data.regularPrice || 0;
-            const discountPrice = data.discountPrice || 0;
-            return regularPrice - discountPrice;
-        });
-
-        const totalValue = Math.floor(amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+        const amounts = products.map((data) => data.adjustedPrice);
+        const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
         const averageValue = Math.floor(totalValue / amounts.length);
 
         return averageValue;

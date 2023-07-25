@@ -78,13 +78,13 @@ type TableProps = {
     }[],
     paginationPageVisible?: boolean,
     paginationStyleCenter?: boolean,
+    minHeight?: number,
 };
 
 const Table = (props: TableProps): React$Element<React$FragmentType> => {
     const [currentSortBy, setCurrentSortBy] = useState([
         {
-            id: '1',
-            desc: true,
+            ...props.tablePurpose,
         },
     ]);
     const isSearchable = props['isSearchable'] || false;
@@ -92,7 +92,6 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
-
     const dataTable = useTable(
         {
             columns: props['columns'],
@@ -169,7 +168,9 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 />
             )}
 
-            <div className="table-responsive mt-4" style={{ minHeight: '800px' }}>
+            <div
+                className="table-responsive mt-4"
+                style={{ minHeight: props.minHeight ? `${props.minHeight}px` : '800px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>

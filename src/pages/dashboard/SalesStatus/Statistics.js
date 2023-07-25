@@ -272,7 +272,7 @@ const Statistics = ({
                 </Col>
                 <Col>
                     <StatisticsWidget
-                        icon="mdi mdi-cash-refund bg-danger bg-opacity-50 text-danger"
+                        icon="mdi mdi-cash-refund danger"
                         border="danger"
                         description="Refund"
                         title="환불"

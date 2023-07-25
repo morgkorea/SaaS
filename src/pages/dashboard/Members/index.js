@@ -18,6 +18,7 @@ const MemberDashboard = () => {
 
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
+
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
@@ -43,120 +44,62 @@ const MemberDashboard = () => {
                 })
         );
 
-        const currentActivateBatterBoxMembers = () => {
-            const activateBatterboxMembersArray = [];
+        const getCurrentActivateMembers = (productType) => {
+            const activateMembersArray = [];
             for (let day = 0; day < currentMonthOfDays; day++) {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
+                const dayOfActivateMembers = [];
 
-                let memberNumber = 0;
-
-                const activateBatterboxProduct = data.docs
-                    .map((doc) => ({
+                data.docs.forEach((doc) => {
+                    const member = {
                         id: doc.id,
                         ...doc.data(),
-                    }))
-                    .map((member, idx) => {
-                        let minDate;
-                        let maxDate;
-                        console.log(member.refund);
-                        if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                            member.availableProducts
-                                .filter((product) => product.productType === 'batterBox')
-                                .forEach((product, idx) => {
-                                    const startDate = new Date(
-                                        new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-                                    const endDate = new Date(
-                                        new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
+                    };
 
-                                    if (idx === 0) {
-                                        minDate = startDate;
-                                        maxDate = endDate;
-                                    } else {
-                                        if (minDate > startDate) {
-                                            minDate = startDate;
-                                        }
-                                        if (maxDate < endDate) {
-                                            maxDate = endDate;
-                                        }
-                                    }
-                                });
+                    if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                        const allOfProducts = [
+                            ...member.availableProducts,
+                            ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
+                        ];
+                        allOfProducts
+                            .filter((product) => product.productType === productType)
+                            .forEach((product) => {
+                                const startDate = new Date(
+                                    new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                const endDate = new Date(
+                                    new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
 
-                            if (
-                                minDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                maxDate >= new Date(currentYear, currentMonth, day + 1)
-                            ) {
-                                memberNumber = memberNumber + 1;
-                            }
-                        }
-                    });
-                activateBatterboxMembersArray.push(memberNumber);
+                                if (
+                                    startDate <= new Date(currentYear, currentMonth, day + 1) &&
+                                    endDate >= new Date(currentYear, currentMonth, day + 1)
+                                ) {
+                                    dayOfActivateMembers.push(member.id);
+                                }
+                            });
+                    }
+                });
+
+                const distinctMembers = new Set(dayOfActivateMembers);
+                activateMembersArray.push(distinctMembers.size);
             }
 
-            setActiveBatterboxMembers(activateBatterboxMembersArray);
+            return activateMembersArray;
         };
-        currentActivateBatterBoxMembers();
+
+        const currentActivateBatterBoxMembers = () => {
+            const activateMembersArray = getCurrentActivateMembers('batterBox');
+            setActiveBatterboxMembers(activateMembersArray);
+        };
 
         const currentActivateLessonMembers = () => {
-            const activateLessonArray = [];
-            for (let day = 0; day < currentMonthOfDays; day++) {
-                const currentYear = new Date().getFullYear();
-                const currentMonth = new Date().getMonth();
-
-                let memberNumber = 0;
-
-                const activateLessonProduct = data.docs
-                    .map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }))
-                    .map((member, idx) => {
-                        let minDate;
-                        let maxDate;
-
-                        if (
-                            !member.refund &&
-                            Array.isArray(member.availableProducts) &&
-                            member.availableProducts.length > 0
-                        ) {
-                            member.availableProducts
-                                .filter((product) => product.productType === 'lesson')
-                                .forEach((product, idx) => {
-                                    const startDate = new Date(
-                                        new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-                                    const endDate = new Date(
-                                        new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                    );
-                                    if (idx === 0) {
-                                        minDate = startDate;
-                                        maxDate = endDate;
-                                    } else {
-                                        if (minDate > startDate) {
-                                            minDate = startDate;
-                                        }
-                                        if (maxDate < endDate) {
-                                            maxDate = endDate;
-                                        }
-                                    }
-                                });
-
-                            if (
-                                minDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                maxDate >= new Date(currentYear, currentMonth, day + 1)
-                            ) {
-                                memberNumber = memberNumber + 1;
-                            }
-                        }
-                    });
-                activateLessonArray.push(memberNumber);
-            }
-
-            setActiveLessonMembers(activateLessonArray);
+            const activateMembersArray = getCurrentActivateMembers('lesson');
+            setActiveLessonMembers(activateMembersArray);
         };
 
+        currentActivateBatterBoxMembers();
         currentActivateLessonMembers();
 
         setCurrentMembers(
