@@ -64,7 +64,7 @@ const Statistics = ({ members, index }) => {
         const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
         const firstDayOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-        console.log('today',today)
+        // console.log('today',today)
         let lastMonthCount = 0;
         let thisMonthCount = 0;
 

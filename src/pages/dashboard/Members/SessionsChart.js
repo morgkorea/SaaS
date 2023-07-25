@@ -180,6 +180,9 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
             labels: {
                 offsetX: 0,
                 // offsetX: -50, // hide
+                formatter(value) {
+                    return value.toFixed(0);
+                },
             },
         },
         tooltip: {

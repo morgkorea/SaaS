@@ -15,10 +15,8 @@ import { firestoreDB } from '../../../firebase/firebase';
 
 const MemberDashboard = () => {
     const currentMonthOfDays = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
-
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
@@ -127,7 +125,7 @@ const MemberDashboard = () => {
             title: '전체',
         },
     ];
-
+    
     return (
         <>
             <Row>

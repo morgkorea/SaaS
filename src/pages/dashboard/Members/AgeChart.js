@@ -71,6 +71,11 @@ const AgeChart = ({ members }) => {
         },
         yaxis: {
             stepSize: 1,
+            labels: {
+                formatter(value) {
+                    return value.toFixed(0);
+                },
+            },
         },
         legend: {
             show: false,

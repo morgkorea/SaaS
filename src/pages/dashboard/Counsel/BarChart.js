@@ -56,13 +56,27 @@ const BarChart = ({ members }) => {
             axisBorder: { show: false },
             axisTicks: { show: false },
         },
-        yaxis: { show: false },
+        yaxis: { 
+            show: false,
+            labels: {
+                formatter(value) {
+                    return value.toFixed(0);
+                },
+            },
+        },
         legend: {
             offsetY: -10,
         },
         states: {
             hover: {
                 filter: 'none',
+            },
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + '명';
+                },
             },
         },
     };
