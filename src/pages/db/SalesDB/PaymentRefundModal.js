@@ -4,7 +4,7 @@ import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, collection } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 import { FormInput } from '../../../components/';
@@ -18,12 +18,38 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const [penaltyPrice, setPenaltyPrice] = useState(0);
     const [refundEachProducts, setRefundEachProducts] = useState([0, 0, 0, 0, 0]);
     const [totalRefundPrice, setTotalRefundPrice] = useState(0);
+    const [paymentMemberId, setPaymentMemberId] = useState(false);
 
+    //환불  => 회원 이용가능상품(availableProducts), 불가능상품 (unavailableProducts) 분기
+    const updataFirestoreMembersSalesProduct = async () => {
+        try {
+            if (paymentMemberId) {
+                const memberRef = doc(firestoreDB, 'Users', email, 'Members', paymentMemberId);
+                const memberDoc = await getDoc(memberRef);
+
+                if (memberDoc.data() && paymentData?.salesProducts) {
+                    const memberAvailableProducts = memberDoc.data().availableProducts;
+                    const memeberUnAvailableProducts = memberDoc.data().unavailableProducts;
+                    const paymentSalesProducts = paymentData.salesProducts;
+
+                    memberAvailableProducts.filter((availableProduct) => {});
+
+                    console.log(memberAvailableProducts, memeberUnAvailableProducts);
+                    console.log(paymentData);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    console.log(paymentData.memberId);
     useEffect(() => {
         let refundPrices = refundEachProducts.reduce((acc, curr) => acc + curr, 0);
         let totalPayment = paymentData.totalPaymentPrice ? paymentData.totalPaymentPrice : 0;
         let totalRefund = totalPayment - (refundPrices + penaltyPrice);
+        let memberId = paymentData?.memberId ? paymentData.memberId : false;
         setTotalRefundPrice(totalRefund);
+        setPaymentMemberId(memberId);
 
         return () => {
             setTotalRefundPrice(0);
@@ -73,7 +99,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
-
+    updataFirestoreMembersSalesProduct();
     return (
         <>
             {!refundConfirmModal ? (
@@ -84,7 +110,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                         style={{ margin: '12px 0px', paddingLeft: '60px' }}
                         closeButton>
                         {' '}
-                        <h3 className="modal-title">결제 삭제</h3>
+                        <h3 className="modal-title">환불 요청</h3>
                     </Modal.Header>
                     <Modal.Body style={{ width: '100%', height: '850px', padding: '0px 60px' }}>
                         <div className="container mb-2" style={{ padding: '0' }}>

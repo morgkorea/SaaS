@@ -138,6 +138,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
             remainingPaymentPrice: remainingPrice,
             paymentMethod: paymentMethod,
             paymentInfo: paymentInfo,
+            memberId: isSelectedMember.memberId,
         };
 
         const salesCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Sales'));

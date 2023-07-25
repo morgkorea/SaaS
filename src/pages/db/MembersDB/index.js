@@ -122,8 +122,6 @@ const MembersDB = () => {
         getMembers();
     }, []);
 
-    console.log('member:', currentMembers);
-
     return (
         <>
             <Row>
