@@ -4,7 +4,7 @@ import StatisticsWidget from '../../../components/StatisticsWidget';
 const Statistics = ({ members, index }) => {
     const allMember = members.length; // 전체회원
     const [expiredMembers, setExpiredMembers] = useState(0); // 기간 만료회원
-    const [taSeokActiveMembers, setTaSeokActiveMembers] = useState(0); // 타석 활성회원 
+    const [taSeokActiveMembers, setTaSeokActiveMembers] = useState(0); // 타석 활성회원
     const [lessonActiveMembers, setLessonActiveMembers] = useState(0); // 레슨 활성회원
     const [taSeokExpires, setTaSeokExpires] = useState(0); // 타석 만료예정
     const [lessonExpires, setLessonExpires] = useState(0); // 레슨 만료예정
@@ -23,35 +23,35 @@ const Statistics = ({ members, index }) => {
     useEffect(() => {
         const countMembersWithTaSeokProduct = () => {
             const taSeokMembers = members.filter((member) => member.taSeokActive === true);
-        
+
             const count = taSeokMembers.length;
             setTaSeokActiveMembers(count);
-        
+
             const countExpiresSoon = taSeokMembers.filter((member) => {
-              if (Array.isArray(member.availableProducts)) {
-                return member.availableProducts.some((product) => product.dDay <= 30);
-              }
-              return false;
+                if (Array.isArray(member.availableProducts)) {
+                    return member.availableProducts.some((product) => product.dDay <= 30);
+                }
+                return false;
             }).length;
-        
+
             setTaSeokExpires(countExpiresSoon);
-          };
+        };
 
         const countMembersWithLessonProduct = () => {
             const lessonMembers = members.filter((member) => member.lessonActive === true);
-        
+
             const count = lessonMembers.length;
             setLessonActiveMembers(count);
-        
+
             const countExpiresSoon = lessonMembers.filter((member) => {
-              if (Array.isArray(member.availableProducts)) {
-                return member.availableProducts.some((product) => product.dDay <= 30);
-              }
-              return false;
+                if (Array.isArray(member.availableProducts)) {
+                    return member.availableProducts.some((product) => product.dDay <= 30);
+                }
+                return false;
             }).length;
-        
+
             setLessonExpires(countExpiresSoon);
-          };
+        };
 
         countMembersWithTaSeokProduct();
         countMembersWithLessonProduct();
@@ -64,7 +64,6 @@ const Statistics = ({ members, index }) => {
         const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
         const firstDayOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-        console.log('today',today)
         let lastMonthCount = 0;
         let thisMonthCount = 0;
 
@@ -175,7 +174,15 @@ const Statistics = ({ members, index }) => {
         setLessonChangeRate(calculatePercentageChange(lastMonthLesson, lessonActiveMembers));
 
         // console.log(`전달 대비 이번달 상승 또는 하락 비율: ${taseokChangeRate}%, ${lessonChangeRate}%`);
-    }, [members, lastMonthLesson, lastMonthTaseok, lessonActiveMembers, taSeokActiveMembers, lessonChangeRate, taseokChangeRate]);
+    }, [
+        members,
+        lastMonthLesson,
+        lastMonthTaseok,
+        lessonActiveMembers,
+        taSeokActiveMembers,
+        lessonChangeRate,
+        taseokChangeRate,
+    ]);
 
     return (
         <>

@@ -1229,6 +1229,8 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             variant="primary"
                             onClick={(event) => {
                                 handleRegistrationStep(event);
+                                setPaymentDate(new Date().toISOString().split('T')[0]);
+                                setPaymentTime(getCurrentTime());
                             }}
                             style={{ width: '200px' }}
                             disabled={priceEditMode}>
