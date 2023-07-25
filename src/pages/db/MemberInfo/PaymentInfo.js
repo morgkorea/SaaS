@@ -3,11 +3,10 @@ import { Card } from 'react-bootstrap';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const PaymentInfo = ({ member, handleTabChange }) => {
-    const [amounts, setAmounts] = useState([]);
-    const [totalValue, setTotalValue] = useState(0);
-    const [averageValue, setAverageValue] = useState(0);
     const [allProducts, setAllProducts] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
+    const [totalValue, setTotalValue] = useState(0);
+    const [averageValue, setAverageValue] = useState(0);
 
     const sortProductsByDate = () => {
         const sortedProducts = [...allProducts].sort((a, b) => {
@@ -21,19 +20,13 @@ const PaymentInfo = ({ member, handleTabChange }) => {
     useEffect(() => {
         if (member.availableProducts && member.unavailableProducts) {
             const products = [...member.availableProducts, ...member.unavailableProducts];
-            const amounts = products.map((data) => {
-                const regularPrice = data.regularPrice || 0;
-                const discountPrice = data.discountPrice || 0;
-                return regularPrice - discountPrice;
-            });
-
-            const totalValue = Math.floor(amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+            const amounts = products.map((data) => data.adjustedPrice);
+            const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
-
-            setAmounts(amounts);
+            
+            setAllProducts(products);
             setTotalValue(totalValue);
             setAverageValue(averageValue);
-            setAllProducts(products);
         }
     }, [member.availableProducts, member.unavailableProducts]);
 
@@ -91,11 +84,7 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                                                 </div>
                                                 <div>
                                                     <h4>
-                                                        {data.regularPrice && data.discountPrice
-                                                            ? (
-                                                                data.regularPrice - data.discountPrice
-                                                            ).toLocaleString() + '원'
-                                                            : '0원'}
+                                                        {data.adjustedPrice.toLocaleString()}원
                                                     </h4>
                                                 </div>
                                             </div>

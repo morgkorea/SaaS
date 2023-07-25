@@ -9,7 +9,7 @@ File: Main Css File
 //Core files
 input[type='checkbox'],
 progress {
-    accent-color: #727cf5;
+    accent-color: var(--ct-primary);
 }
 input[type='checkbox']:before {
     border: 2px solid #d8daf2;

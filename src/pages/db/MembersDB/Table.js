@@ -94,7 +94,7 @@ const Table = (props: TableProps) => {
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { pageSize: props['pageSize'] || 10 },
+            // initialState: { pageSize: props['pageSize'] || 10 },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,

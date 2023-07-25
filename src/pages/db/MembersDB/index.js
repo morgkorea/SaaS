@@ -18,6 +18,29 @@ const MembersDB = () => {
         const newData = data.map((member) => {
             const updatedMember = { ...member };
 
+            // 나이 구하기
+            const birthDate = updatedMember.birthDate || null;
+            const todayDate = moment();
+            const birthday = birthDate ? moment(birthDate, 'YYYY-MM-DD') : null;
+            const age = birthDate ? todayDate.diff(birthday, 'years') : null;
+            const ageGroup =
+                age !== null
+                    ? age < 20
+                        ? '10대'
+                        : age < 30
+                        ? '20대'
+                        : age < 40
+                        ? '30대'
+                        : age < 50
+                        ? '40대'
+                        : age < 60
+                        ? '50대'
+                        : '60대 이상'
+                    : '';
+
+            updatedMember.age = age;
+            updatedMember.ageGroup = ageGroup;
+
             if (Array.isArray(updatedMember.availableProducts)) {
                 // 상품 필터링
                 const availableProducts = updatedMember.availableProducts.filter((product) => {
@@ -36,25 +59,28 @@ const MembersDB = () => {
 
                 // 활성 여부
                 const hasTaSeokProduct = (availableProducts || []).some((product) => {
-                    return product && product.product && product.product.includes('타석');
+                    return product && product.product && product.productType === 'batterBox';
                 });
-                
+
                 const hasLessonProduct = (availableProducts || []).some((product) => {
-                    return product && product.product && product.product.includes('레슨');
+                    return product && product.product && product.productType === 'lesson';
                 });
-                
-                updatedMember.taSeokActive = hasTaSeokProduct ? '활성' : '비활성';
-                updatedMember.lessonActive = hasLessonProduct ? '활성' : '비활성';
 
-                // 나이
-                const birthDate = updatedMember.birthDate || null;
-                const todayDate = moment();
-                const birthday = birthDate ? moment(birthDate, 'YYYY-MM-DD') : null;
-                const age = birthDate ? todayDate.diff(birthday, 'years') : null;
-                const ageGroup = age !== null ? (age < 20 ? '10대' : age < 30 ? '20대' : age < 40 ? '30대' : age < 50 ? '40대' : age < 60 ? '50대' : '60대 이상') : '';
+                const hasLockerProduct = (availableProducts || []).some((product) => {
+                    return product && product.product && product.productType === 'locker';
+                });
 
-                updatedMember.age = age;
-                updatedMember.ageGroup = ageGroup;
+                updatedMember.taSeokActive = hasTaSeokProduct ? true : false;
+                updatedMember.lessonActive = hasLessonProduct ? true : false;
+                updatedMember.lockerActive = hasLockerProduct ? true : false;
+
+                // 활성상품 D-day
+                for (const product of availableProducts) {
+                    const endDate = new Date(product?.endDate);
+                    const timeDiff = endDate.getTime() - today.getTime();
+                    const dDay = Math.floor(timeDiff / (1000 * 3600 * 24)); // 밀리초를 일(day)로 변환
+                    product.dDay = dDay;
+                }
 
                 // 유형
                 let audience = updatedMember.audience || '';
@@ -93,7 +119,6 @@ const MembersDB = () => {
     useEffect(() => {
         getMembers();
     }, []);
-
 
     console.log('member:', currentMembers);
 

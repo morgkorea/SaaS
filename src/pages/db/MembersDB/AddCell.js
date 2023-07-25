@@ -24,11 +24,32 @@ const AddCell = forwardRef((props, ref) => {
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
     const audienceValue = '잠재';
-    const taSeokActive = '비활성';
-    const lessonActive = '비활성';
+    const taSeokActive = false;
+    const lessonActive = false;
+    const lockerActive = false;
 
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
+
+    const handleFocus = (e) => {
+        const { value } = e.target;
+        if (!value) {
+            e.target.placeholder = '';
+        }
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        if (!value) {
+            if (name === 'name') {
+                e.target.placeholder = '성함';
+            } else if (name === 'phone') {
+                e.target.placeholder = '연락처';
+            } else if (name === 'region') {
+                e.target.placeholder = '지역';
+            }
+        }
+    };
 
     function handleChange(event) {
         setChecked(event.target.checked);
@@ -38,8 +59,8 @@ const AddCell = forwardRef((props, ref) => {
     }
 
     const updateFirestoreAddMember = async () => {
-        if (!nameValue) {
-            alert('이름을 입력해주세요.');
+        if (!nameValue || !phoneValue) {
+            alert(!nameValue ? '이름을 입력해주세요.' : '연락처를 입력해주세요.');
             return;
         }
 
@@ -65,52 +86,7 @@ const AddCell = forwardRef((props, ref) => {
             privateInfoAllow: isChecked2,
             taSeokActive: taSeokActive,
             lessonActive: lessonActive,
-            // amountPayments: '',
-            // lifetimeValue: '',
-            // amountPaymentAverage: '',
-
-            // 임시 데이터 !! 추후 삭제
-            availableProducts: [
-                {
-                    adjustedPrice: 250000,
-                    discountPrice: 250000,
-                    discountRate: 50,
-                    startDate: '2023-07-20', //시작일
-                    endDate: '2023-08-10', //종료일
-                    paymentDate: '2023-07-20',
-                    paymentTime: '15:00',
-                    product: '레슨',
-                    productCode: '',
-                    productType: '',
-                    regularPrice: 500000,
-                },
-                // {
-                //     adjustedPrice: 60000,
-                //     discountPrice: 60000,
-                //     discountRate: 50,
-                //     startDate: '2023-04-20', //시작일
-                //     endDate: '2023-06-20', //종료일
-                //     paymentDate: '2023-04-20',
-                //     paymentTime: '15:00',
-                //     product: '타석',
-                //     productCode: '',
-                //     productType: '',
-                //     regularPrice: 120000,
-                // },
-                // {
-                //     adjustedPrice: 150000,
-                //     discountPrice: 150000,
-                //     discountRate: 50,
-                //     startDate: '2023-02-13', //시작일
-                //     endDate: '2023-06-13', //종료일
-                //     paymentDate: '2023-02-13',
-                //     paymentTime: '14:02',
-                //     product: '타석',
-                //     productCode: 'KO0001_LO_12000_014',
-                //     productType: 'locker',
-                //     regularPrice: 300000,
-                // },
-            ],
+            lockerActive: lockerActive,
         };
 
         await addDoc(memberRef, newMemberData);
@@ -146,6 +122,8 @@ const AddCell = forwardRef((props, ref) => {
                         placeholder="성함"
                         value={nameValue}
                         onChange={(e) => setNameValue(e.target.value)}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
                 </td>
                 <td></td>
@@ -176,6 +154,7 @@ const AddCell = forwardRef((props, ref) => {
                 <td>
                     <input
                         className="editInput"
+                        style={{ minWidth: '110px'}}
                         type="text"
                         name="phone"
                         placeholder="연락처"
@@ -184,6 +163,8 @@ const AddCell = forwardRef((props, ref) => {
                             const onlyNumbersAndHyphen = e.target.value.replace(/[^0-9-]/g, '');
                             setPhoneValue(onlyNumbersAndHyphen);
                         }}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
                 </td>
                 <td></td>
@@ -208,6 +189,8 @@ const AddCell = forwardRef((props, ref) => {
                         placeholder="지역"
                         value={regionValue}
                         onChange={(e) => setRegionValue(e.target.value)}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
                 </td>
                 <td>

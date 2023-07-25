@@ -18,6 +18,7 @@ const MemberDashboard = () => {
 
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
+
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
@@ -43,95 +44,62 @@ const MemberDashboard = () => {
                 })
         );
 
-        const currentActivateBatterBoxMembers = () => {
+        const getCurrentActivateMembers = (productType) => {
             const activateMembersArray = [];
             for (let day = 0; day < currentMonthOfDays; day++) {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
+                const dayOfActivateMembers = [];
 
-                (() => {
-                    const dayOfActivateMembers = [];
-                    const activateBatterboxProduct = data.docs
-                        .map((doc) => ({
-                            id: doc.id,
-                            ...doc.data(),
-                        }))
-                        .map((member, idx) => {
-                            if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                                const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
-                                allOfProducts
-                                    .filter((product) => product.productType === 'batterBox')
-                                    .forEach((product, idx) => {
-                                        const startDate = new Date(
-                                            new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                        );
-                                        const endDate = new Date(
-                                            new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                        );
+                data.docs.forEach((doc) => {
+                    const member = {
+                        id: doc.id,
+                        ...doc.data(),
+                    };
 
-                                        if (
-                                            startDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                            endDate >= new Date(currentYear, currentMonth, day + 1)
-                                        ) {
-                                            dayOfActivateMembers.push(member.id);
-                                        }
-                                    });
-                            }
-                        });
+                    if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                        const allOfProducts = [
+                            ...member.availableProducts,
+                            ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
+                        ];
+                        allOfProducts
+                            .filter((product) => product.productType === productType)
+                            .forEach((product) => {
+                                const startDate = new Date(
+                                    new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                const endDate = new Date(
+                                    new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
 
-                    const distinctMembers = new Set(dayOfActivateMembers);
-                    activateMembersArray.push(distinctMembers.size);
-                })();
+                                if (
+                                    startDate <= new Date(currentYear, currentMonth, day + 1) &&
+                                    endDate >= new Date(currentYear, currentMonth, day + 1)
+                                ) {
+                                    dayOfActivateMembers.push(member.id);
+                                }
+                            });
+                    }
+                });
+
+                const distinctMembers = new Set(dayOfActivateMembers);
+                activateMembersArray.push(distinctMembers.size);
             }
 
+            return activateMembersArray;
+        };
+
+        const currentActivateBatterBoxMembers = () => {
+            const activateMembersArray = getCurrentActivateMembers('batterBox');
             setActiveBatterboxMembers(activateMembersArray);
         };
-        currentActivateBatterBoxMembers();
 
         const currentActivateLessonMembers = () => {
-            const activateMembersArray = [];
-            for (let day = 0; day < currentMonthOfDays; day++) {
-                const currentYear = new Date().getFullYear();
-                const currentMonth = new Date().getMonth();
-
-                (() => {
-                    const dayOfActivateMembers = [];
-                    const activateLessonProducts = data.docs
-                        .map((doc) => ({
-                            id: doc.id,
-                            ...doc.data(),
-                        }))
-                        .map((member, idx) => {
-                            if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                                const allOfProducts = [...member.availableProducts, ...member.unavailableProducts];
-                                allOfProducts
-                                    .filter((product) => product.productType === 'lesson')
-                                    .forEach((product, idx) => {
-                                        const startDate = new Date(
-                                            new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                        );
-                                        const endDate = new Date(
-                                            new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                        );
-
-                                        if (
-                                            startDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                            endDate >= new Date(currentYear, currentMonth, day + 1)
-                                        ) {
-                                            dayOfActivateMembers.push(member.id);
-                                        }
-                                    });
-                            }
-                        });
-
-                    const distinctMembers = new Set(dayOfActivateMembers);
-                    activateMembersArray.push(distinctMembers.size);
-                })();
-            }
-
+            const activateMembersArray = getCurrentActivateMembers('lesson');
             setActiveLessonMembers(activateMembersArray);
         };
 
+        currentActivateBatterBoxMembers();
         currentActivateLessonMembers();
 
         setCurrentMembers(
