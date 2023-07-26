@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
-const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, members, index }) => {
+const SessionsChart = ({ members, index }) => {
     const [isMonthlyView, setIsMonthlyView] = useState(true); // 월간 데이터 보기 설정
-
     const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
-    const taSeokMembers = members.filter((member) => member.taSeokActive === true);
-    const lessonMembers = members.filter((member) => member.lessonActive === true);
 
-    // console.log(taSeokMembers)
     const getDaysInMonth = (month, year) => {
         var startDate = new Date(year, month, 1);
         var endDate = new Date(year, month + 1, 0);
@@ -49,8 +45,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
             const day = createdDate.getDate();
 
             if (year === currentYear && month === currentMonth) {
-                dailyData[day - 1]++;
+                const currentDate = new Date();
+                const currentDay = currentDate.getDate();
+
+                for (let i = day; i <= currentDay; i++) {
+                    dailyData[i - 1]++;
+                }
             }
+
             if (year === currentYear) {
                 monthlyData[month]++;
             }
@@ -59,88 +61,112 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         return isMonthlyView ? dailyData : monthlyData;
     }
 
-    // // 타석 추이
-    // function calculateDailyAndMonthlyData2(members) {
-    //     const dailyData = new Array(labels.length).fill(0);
-    //     const monthlyData = new Array(12).fill(0);
+    // 타석/레슨 추이
 
-    //     const product = '타석';
+function calculateMonthlyData(dataArray) {
+    const dailyData = new Array(labels.length).fill(0);
+    const monthlyData = new Array(12).fill(0);
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
 
-    //     for (const member of members) {
-    //         const availableProductsFiltered = member.availableProducts.filter(
-    //             (productInfo) =>
-    //                 productInfo &&
-    //                 productInfo.product &&
-    //                 productInfo.product.includes(product) &&
-    //                 new Date(productInfo.startDate) <= new Date() &&
-    //                 new Date(productInfo.endDate) >= new Date()
-    //         );
+    const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // 현재 월의 마지막 날
 
-    //         const unavailableProductsFiltered = member.unavailableProducts.filter(
-    //             (productInfo) =>
-    //                 productInfo &&
-    //                 productInfo.product &&
-    //                 productInfo.product.includes(product) &&
-    //                 new Date(productInfo.startDate) <= new Date() &&
-    //                 new Date(productInfo.endDate) >= new Date()
-    //         );
+    dataArray.forEach((data) => {
+        const { startDate, endDate } = data;
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const startYear = start.getFullYear();
+        const endYear = end.getFullYear();
+        const startMonth = start.getMonth();
+        const endMonth = end.getMonth();
 
-    //         const intersection = [...availableProductsFiltered, ...unavailableProductsFiltered];
+        // dailyData 구하기
+        if (startYear <= currentYear && currentYear <= endYear) {
+            const isStartMonthInRange = startMonth === currentMonth;
+            const isEndMonthInRange = endMonth === currentMonth;
 
-    //         console.log(intersection);
+            if (isStartMonthInRange || isEndMonthInRange || (start <= lastDayOfCurrentMonth && end >= 1)) {
+                const startDay = isStartMonthInRange ? start.getDate() : 1;
+                const endDay = isEndMonthInRange ? end.getDate() : lastDayOfCurrentMonth;
 
-    //         // if (intersection.length > 0) {
-    //         //     intersection.forEach((productInfo) => {
-    //         //         const productStartDate = new Date(productInfo.startDate);
-    //         //         const productEndDate = new Date(productInfo.endDate);
+                for (let day = startDay; day <= endDay; day++) {
+                    const index = day - 1; // 인덱스는 월이 0부터 시작하므로 1을 빼줌
+                    dailyData[index]++;
+                }
+            }
+        }
 
-    //         //         let currentDate = new Date(productStartDate);
+        // monthlyData 구하기
+        if (startYear === currentYear && endYear === currentYear) {
+            for (let i = startMonth; i <= endMonth; i++) {
+                monthlyData[i]++;
+            }
+        } else if (startYear === currentYear && endYear !== currentYear) {
+            for (let i = startMonth; i < 12; i++) {
+                monthlyData[i]++;
+            }
+        } else if (startYear !== currentYear && endYear === currentYear) {
+            for (let i = 0; i <= endMonth; i++) {
+                monthlyData[i]++;
+            }
+        } else if (startYear < currentYear && endYear > currentYear) {
+            for (let i = 0; i < 12; i++) {
+                monthlyData[i]++;
+            }
+        }
+    });
 
-    //         //         while (currentDate <= productEndDate) {
-    //         //             if (
-    //         //                 (!isMonthlyView && currentDate.getMonth() === currentMonth) ||
-    //         //                 (isMonthlyView &&
-    //         //                     currentDate.getMonth() === currentMonth &&
-    //         //                     currentDate.getDate() >= productStartDate.getDate())
-    //         //             ) {
-    //         //                 if (isMonthlyView) {
-    //         //                     monthlyData[currentDate.getDate() - 1]++;
-    //         //                 } else {
-    //         //                     dailyData[currentDate.getDate() - 1]++;
-    //         //                 }
-    //         //             }
+    console.log('dailyData', dailyData);
+    console.log('monthlyData', monthlyData);
 
-    //         //             currentDate.setDate(currentDate.getDate() + 1);
-    //         //         }
-    //         //     });
-    //         // }
-    //     }
+    return isMonthlyView ? dailyData : monthlyData;
+}
 
-    //     return isMonthlyView ? dailyData : monthlyData;
-    // }
 
-    const chartData = calculateDailyAndMonthlyData(sortedMembers, '전체');
-    // const chartData2 = calculateDailyAndMonthlyData2(members);
-    // const chartData3 = calculateDailyAndMonthlyData(lessonMembers, '레슨');
+    const calculateAnnualActivateBatterboxData = () => {
+        const activateBatterboxMembers = sortedMembers.flatMap((member) =>
+            (member.availableProducts || []).filter((product) => product.productType === 'batterBox')
+        );
+        const filteredBatterboxMembers = activateBatterboxMembers.filter((product) => {
+            const endDate = new Date(product.endDate);
+            return endDate >= now;
+        });
+        console.log('filteredBatterboxMembers', filteredBatterboxMembers)
+        return calculateMonthlyData(filteredBatterboxMembers);
+    };
+
+    const calculateAnnualActivateLessonData = () => {
+        const activateLessonMembers = sortedMembers.flatMap((member) =>
+            (member.availableProducts || []).filter((product) => product.productType === 'lesson')
+        );
+
+        const filteredLessonMembers = activateLessonMembers.filter((product) => {
+            const endDate = new Date(product.endDate);
+            return endDate >= now;
+        });
+
+        console.log('filteredLessonMembers',filteredLessonMembers)
+        return calculateMonthlyData(filteredLessonMembers);
+    };
 
     const apexBarChartData = [
         {
-            name: '',
-            data: chartData,
+            name: '전체회원 추이',
+            data: calculateDailyAndMonthlyData(sortedMembers),
         },
     ];
 
     const apexBarChartData2 = [
         {
-            name: '',
-            data: activateBatterboxMembers,
+            name: '타석활성 회원 추이',
+            data: calculateAnnualActivateBatterboxData(),
         },
     ];
 
     const apexBarChartData3 = [
         {
-            name: '',
-            data: activateLessonMembers,
+            name: '레슨활성 회원 추이',
+            data: calculateAnnualActivateLessonData(),
         },
     ];
 
