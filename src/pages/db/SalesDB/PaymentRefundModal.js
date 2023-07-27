@@ -28,21 +28,42 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                 const memberDoc = await getDoc(memberRef);
 
                 if (memberDoc.data() && paymentData?.salesProducts) {
+                    let isUpdated = false;
                     const memberAvailableProducts = memberDoc.data().availableProducts;
-                    const memeberUnAvailableProducts = memberDoc.data().unavailableProducts;
+                    const memberUnAvailableProducts = memberDoc.data().unavailableProducts;
                     const paymentSalesProducts = paymentData.salesProducts;
 
-                    memberAvailableProducts.filter((availableProduct) => {});
+                    console.log(memberAvailableProducts);
+                    console.log(memberUnAvailableProducts);
+                    memberAvailableProducts.filter((product, idx) => {
+                        paymentSalesProducts.forEach((salesProduct) => {
+                            if (
+                                salesProduct.product === product.product &&
+                                salesProduct.adjustedPrice === product.adjustedPrice &&
+                                salesProduct.startDate === product.startDate &&
+                                salesProduct.endDate === product.endDate &&
+                                salesProduct.paymentDate === product.paymentDate
+                            ) {
+                                memberAvailableProducts.splice(idx, 1);
+                                memberUnAvailableProducts.push(salesProduct);
+                                isUpdated = true;
+                            }
+                        });
+                    });
 
-                    console.log(memberAvailableProducts, memeberUnAvailableProducts);
-                    console.log(paymentData);
+                    if (isUpdated) {
+                        await updateDoc(memberRef, {
+                            availableProducts: memberAvailableProducts,
+                            unavailableProducts: memberUnAvailableProducts,
+                        });
+                    }
                 }
             }
         } catch (error) {
             console.log(error);
         }
     };
-    console.log(paymentData.memberId);
+
     useEffect(() => {
         let refundPrices = refundEachProducts.reduce((acc, curr) => acc + curr, 0);
         let totalPayment = paymentData.totalPaymentPrice ? paymentData.totalPaymentPrice : 0;
@@ -99,7 +120,16 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
-    updataFirestoreMembersSalesProduct();
+    const handleRefundButtonClick = async () => {
+        try {
+            await updateFirestoreSalesData();
+            await updataFirestoreMembersSalesProduct();
+            await setRefundConfirmModal(!refundConfirmModal);
+            await toggle();
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <>
             {!refundConfirmModal ? (
@@ -425,11 +455,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                     onMouseLeave={(event) => {
                                         event.target.style.backgroundColor = '#FFFFFF';
                                     }}
-                                    onClick={() => {
-                                        updateFirestoreSalesData();
-                                        setRefundConfirmModal(!refundConfirmModal);
-                                        toggle();
-                                    }}
+                                    onClick={handleRefundButtonClick}
                                     style={{
                                         width: '150px',
                                         border: '1px solid #FA5C7C',

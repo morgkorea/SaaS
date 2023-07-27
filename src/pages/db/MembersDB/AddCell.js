@@ -1,10 +1,14 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
+
 import { firestoreDB } from '../../../firebase/firebase';
+import { firestoreMemebersFieldSchema } from '../../../firebase/firestoreDbSchema';
+
 import { addDoc, collection } from 'firebase/firestore';
 import moment from 'moment';
 import Select from 'react-select';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddCell = forwardRef((props, ref) => {
@@ -66,6 +70,7 @@ const AddCell = forwardRef((props, ref) => {
 
         const memberRef = collection(firestoreDB, 'Users', email, 'Members');
         const newMemberData = {
+            ...firestoreMemebersFieldSchema,
             name: nameValue,
             createdDate: moment().format('YYYY-MM-DD'),
             createdTime: moment().format('A hh:mm'),
@@ -88,6 +93,7 @@ const AddCell = forwardRef((props, ref) => {
             lessonActive: lessonActive,
             lockerActive: lockerActive,
         };
+        console.log(newMemberData);
 
         await addDoc(memberRef, newMemberData);
 
@@ -154,7 +160,7 @@ const AddCell = forwardRef((props, ref) => {
                 <td>
                     <input
                         className="editInput"
-                        style={{ minWidth: '110px'}}
+                        style={{ minWidth: '110px' }}
                         type="text"
                         name="phone"
                         placeholder="연락처"
