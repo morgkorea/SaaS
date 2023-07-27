@@ -10,19 +10,24 @@ const Statistics = ({ members, index }) => {
     const [lessonExpires, setLessonExpires] = useState(0); // 레슨 만료예정
 
     const [membersLastMonth, setMembersLastMonth] = useState(0);
-    const [membersThisMonth, setMembersThisMonth] = useState(0);
-    const [percentageIncrease, setPercentageIncrease] = useState(0); // 전체회원 전달대비ㄴ율
-
     const [lastMonthTaseok, setLastMonthTaseok] = useState(0);
     const [lastMonthLesson, setLastMonthLesson] = useState(0);
 
+    const [membersChangeRate, setMembersChangeRate] = useState(0);
     const [taseokChangeRate, setTaseokChangeRate] = useState(0);
     const [lessonChangeRate, setLessonChangeRate] = useState(0);
 
     // 타석/레슨 회원 수, 만료예정 수
     useEffect(() => {
         const countMembersWithTaSeokProduct = () => {
-            const taSeokMembers = members.filter((member) => member.taSeokActive === true);
+            // const taSeokMembers = members.filter((member) => member.taSeokActive === true);
+            const taSeokMembers = members.filter((member) => {
+                if (member.availableProducts && Array.isArray(member.availableProducts)) {
+                    return member.availableProducts.some((product) => product.productType === 'batterBox');
+                }
+
+                return false;
+            });
 
             const count = taSeokMembers.length;
             setTaSeokActiveMembers(count);
@@ -38,7 +43,14 @@ const Statistics = ({ members, index }) => {
         };
 
         const countMembersWithLessonProduct = () => {
-            const lessonMembers = members.filter((member) => member.lessonActive === true);
+            // const lessonMembers = members.filter((member) => member.lessonActive === true);
+            const lessonMembers = members.filter((member) => {
+                if (member.availableProducts && Array.isArray(member.availableProducts)) {
+                    return member.availableProducts.some((product) => product.productType === 'lesson');
+                }
+
+                return false;
+            });
 
             const count = lessonMembers.length;
             setLessonActiveMembers(count);
@@ -80,18 +92,19 @@ const Statistics = ({ members, index }) => {
         });
 
         setMembersLastMonth(lastMonthCount);
-        setMembersThisMonth(thisMonthCount);
+
+        let membersThisMonthValue = thisMonthCount;
 
         if (membersLastMonth === 0) {
-            setPercentageIncrease(membersThisMonth === 0 ? 0 : 100);
+            setMembersChangeRate(membersThisMonthValue === 0 ? 0 : 100);
         } else {
-            const increase = membersThisMonth - membersLastMonth;
+            const increase = membersThisMonthValue - membersLastMonth;
             const percentage = (increase / membersLastMonth) * 100;
-            setPercentageIncrease(percentage);
+            setMembersChangeRate(percentage);
         }
 
-        // console.log(percentageIncrease)
-    }, [members, allMember, membersLastMonth, percentageIncrease, membersThisMonth]);
+        // console.log(membersChangeRate)
+    }, [members, allMember, membersLastMonth, membersChangeRate]);
 
     // 기간만료 회원
     useEffect(() => {
@@ -131,7 +144,7 @@ const Statistics = ({ members, index }) => {
 
                 const hasTargetProduct = (products) =>
                     Array.isArray(products) &&
-                    products.some((product) => product.product && product.product.includes(targetProduct));
+                    products.some((product) => product.product && product.product.productType === targetProduct);
 
                 const isWithinTargetMonths = (startDate, endDate) => {
                     const startMonth = new Date(startDate).getMonth() + 1;
@@ -152,8 +165,8 @@ const Statistics = ({ members, index }) => {
             });
         };
 
-        const lastMonthMembersForTaseok = getLastMonthMembers(members, '타석');
-        const lastMonthMembersForLesson = getLastMonthMembers(members, '레슨');
+        const lastMonthMembersForTaseok = getLastMonthMembers(members, 'batterBox');
+        const lastMonthMembersForLesson = getLastMonthMembers(members, 'lesson');
 
         setLastMonthTaseok(lastMonthMembersForTaseok.length);
         setLastMonthLesson(lastMonthMembersForLesson.length);
@@ -167,7 +180,10 @@ const Statistics = ({ members, index }) => {
                 return thisMonthValue === 0 ? 0 : 100;
             }
 
-            return ((thisMonthValue - lastMonthValue) / lastMonthValue) * 100;
+            const rawChange = ((thisMonthValue - lastMonthValue) / lastMonthValue) * 100;
+            const cappedChange = Math.min(rawChange, 100);
+
+            return cappedChange;
         };
 
         setTaseokChangeRate(calculatePercentageChange(lastMonthTaseok, taSeokActiveMembers));
@@ -241,8 +257,8 @@ const Statistics = ({ members, index }) => {
                         stats={allMember + '명'}
                         trend={{
                             textClass: 'text-success',
-                            icon: `mdi mdi-arrow-${percentageIncrease >= 0 ? 'up' : 'down'}-bold`,
-                            value: `${Math.abs(percentageIncrease.toFixed(2))}%`,
+                            icon: `mdi mdi-arrow-${membersChangeRate >= 0 ? 'up' : 'down'}-bold`,
+                            value: `${Math.abs(membersChangeRate.toFixed(2))}%`,
                             time: '전달 대비',
                         }}
                     />

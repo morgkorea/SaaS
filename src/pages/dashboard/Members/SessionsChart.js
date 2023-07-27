@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
@@ -62,66 +62,62 @@ const SessionsChart = ({ members, index }) => {
     }
 
     // 타석/레슨 추이
+    function calculateData(dataArray) {
+        const dailyData = new Array(labels.length).fill(0);
+        const monthlyData = new Array(12).fill(0);
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth();
+        const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // 현재 월의 마지막 날
 
-function calculateMonthlyData(dataArray) {
-    const dailyData = new Array(labels.length).fill(0);
-    const monthlyData = new Array(12).fill(0);
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth();
+        dataArray.forEach((data) => {
+            const { startDate, endDate } = data;
+            const start = new Date(new Date(startDate).toISOString().split('T')[0] + ' 00:00:00');
+            const end = new Date(new Date(endDate).toISOString().split('T')[0] + ' 00:00:00');
+            const startYear = start.getFullYear();
+            const endYear = end.getFullYear();
+            const startMonth = start.getMonth();
+            const endMonth = end.getMonth();
+            const startDay = start.getDate();
+            const endDay = end.getDate();
 
-    const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // 현재 월의 마지막 날
-
-    dataArray.forEach((data) => {
-        const { startDate, endDate } = data;
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const startYear = start.getFullYear();
-        const endYear = end.getFullYear();
-        const startMonth = start.getMonth();
-        const endMonth = end.getMonth();
-
-        // dailyData 구하기
-        if (startYear <= currentYear && currentYear <= endYear) {
-            const isStartMonthInRange = startMonth === currentMonth;
-            const isEndMonthInRange = endMonth === currentMonth;
-
-            if (isStartMonthInRange || isEndMonthInRange || (start <= lastDayOfCurrentMonth && end >= 1)) {
-                const startDay = isStartMonthInRange ? start.getDate() : 1;
-                const endDay = isEndMonthInRange ? end.getDate() : lastDayOfCurrentMonth;
-
-                for (let day = startDay; day <= endDay; day++) {
-                    const index = day - 1; // 인덱스는 월이 0부터 시작하므로 1을 빼줌
-                    dailyData[index]++;
+            // dailyData
+            if (startYear === endYear && startMonth === endMonth) {
+                if (startYear === currentYear && startMonth === currentMonth) {
+                    for (let day = startDay; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
+                        dailyData[day - 1]++;
+                    }
+                }
+            } else if (startYear === currentYear && startMonth === currentMonth) {
+                for (let day = startDay; day <= lastDayOfCurrentMonth; day++) {
+                    dailyData[day - 1]++;
+                }
+            } else if (endYear === currentYear && endMonth === currentMonth) {
+                for (let day = 1; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
+                    dailyData[day - 1]++;
+                }
+            } else if (startYear < currentYear && currentYear < endYear) {
+                for (let day = 1; day <= lastDayOfCurrentMonth; day++) {
+                    dailyData[day - 1]++;
                 }
             }
-        }
 
-        // monthlyData 구하기
-        if (startYear === currentYear && endYear === currentYear) {
-            for (let i = startMonth; i <= endMonth; i++) {
-                monthlyData[i]++;
-            }
-        } else if (startYear === currentYear && endYear !== currentYear) {
-            for (let i = startMonth; i < 12; i++) {
-                monthlyData[i]++;
-            }
-        } else if (startYear !== currentYear && endYear === currentYear) {
-            for (let i = 0; i <= endMonth; i++) {
-                monthlyData[i]++;
-            }
-        } else if (startYear < currentYear && endYear > currentYear) {
-            for (let i = 0; i < 12; i++) {
-                monthlyData[i]++;
-            }
-        }
-    });
+            // monthlyData
+            if (startYear <= currentYear && currentYear <= endYear) {
+                for (let month = 0; month < 12; month++) {
+                    const firstDayOfMonth = new Date(currentYear, month, 1);
+                    const lastDayOfMonth = new Date(currentYear, month + 1, 0);
 
-    console.log('dailyData', dailyData);
-    console.log('monthlyData', monthlyData);
+                    if (start <= lastDayOfMonth && end >= firstDayOfMonth) {
+                        monthlyData[month]++;
+                    }
+                }
+            }
+        });
 
-    return isMonthlyView ? dailyData : monthlyData;
-}
-
+        // console.log('dailyData', dailyData);
+        // console.log('monthlyData', monthlyData);
+        return isMonthlyView ? dailyData : monthlyData;
+    }
 
     const calculateAnnualActivateBatterboxData = () => {
         const activateBatterboxMembers = sortedMembers.flatMap((member) =>
@@ -131,8 +127,8 @@ function calculateMonthlyData(dataArray) {
             const endDate = new Date(product.endDate);
             return endDate >= now;
         });
-        console.log('filteredBatterboxMembers', filteredBatterboxMembers)
-        return calculateMonthlyData(filteredBatterboxMembers);
+
+        return calculateData(filteredBatterboxMembers);
     };
 
     const calculateAnnualActivateLessonData = () => {
@@ -145,8 +141,7 @@ function calculateMonthlyData(dataArray) {
             return endDate >= now;
         });
 
-        console.log('filteredLessonMembers',filteredLessonMembers)
-        return calculateMonthlyData(filteredLessonMembers);
+        return calculateData(filteredLessonMembers);
     };
 
     const apexBarChartData = [

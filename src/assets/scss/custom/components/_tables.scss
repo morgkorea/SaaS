@@ -307,7 +307,7 @@ input[type=date]:invalid,
 }
 
 .member-info-list.memo {
-    height: 490px;
+    height: 250px;
 }
 
 .member-info-list::after {
@@ -354,7 +354,6 @@ input[type=date]:invalid,
         color: #6C757D;
     }
 }
-
 
 .payment-info {
     display: flex;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
-const PaymentInfo = ({ member, handleTabChange }) => {
+const PaymentInfo = ({ member }) => {
     const [allProducts, setAllProducts] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
     const [totalValue, setTotalValue] = useState(0);
@@ -47,9 +47,6 @@ const PaymentInfo = ({ member, handleTabChange }) => {
                 <Card.Body className="payment-wrap centralized-parents">
                     <div className="d-flex justify-content-between">
                         <h4 className="mb-4">결제 정보</h4>
-                        <p onClick={() => handleTabChange('memo')} className="btn btn-link text-decoration-underline">
-                            회원 메모
-                        </p>
                     </div>
                     {(!member.availableProducts || member.availableProducts.length) === 0 &&
                         (!member.unavailableProducts || member.unavailableProducts.length === 0) ? (

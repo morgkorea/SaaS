@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const AddCell = forwardRef((props, ref) => {
     const notify = () => toast('저장되었습니다.');
     const email = useSelector((state) => state.Auth?.user.email);
+    const [isValid, setIsValid] = useState(true);
+
     const [nameValue, setNameValue] = useState('');
     const [sexValue, setSexValue] = useState('');
     const [birthDateValue, setBirthDateValue] = useState('1980-01-01');
@@ -44,7 +46,7 @@ const AddCell = forwardRef((props, ref) => {
             if (name === 'name') {
                 e.target.placeholder = '성함';
             } else if (name === 'phone') {
-                e.target.placeholder = '연락처';
+                e.target.placeholder = '010-0000-0000';
             } else if (name === 'region') {
                 e.target.placeholder = '지역';
             }
@@ -57,6 +59,14 @@ const AddCell = forwardRef((props, ref) => {
     function handleChange2(event) {
         setChecked2(event.target.checked);
     }
+    const handleChange3 = (event) => {
+        const inputPhoneNumber = event.target.value;
+        setPhoneValue(inputPhoneNumber);
+
+        const phoneRegex = /^\d{3}-\d{4}-\d{4}$/;
+
+        setIsValid(phoneRegex.test(inputPhoneNumber));
+    };
 
     const updateFirestoreAddMember = async () => {
         if (!nameValue || !phoneValue) {
@@ -137,7 +147,6 @@ const AddCell = forwardRef((props, ref) => {
                         options={[
                             { value: '남성', label: '남성' },
                             { value: '여성', label: '여성' },
-                            { value: '기타', label: '기타' },
                         ]}></Select>
                 </td>
                 <td>
@@ -154,10 +163,10 @@ const AddCell = forwardRef((props, ref) => {
                 <td>
                     <input
                         className="editInput"
-                        style={{ minWidth: '110px'}}
+                        style={{ Width: '110px' }}
                         type="text"
                         name="phone"
-                        placeholder="연락처"
+                        placeholder="010-0000-0000"
                         value={phoneValue}
                         onInput={(e) => {
                             const onlyNumbersAndHyphen = e.target.value.replace(/[^0-9-]/g, '');
@@ -165,7 +174,9 @@ const AddCell = forwardRef((props, ref) => {
                         }}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
+                        onChange={handleChange3}
                     />
+                    {isValid ? null :  <i className="uil uil-exclamation-triangle text-danger ms-1"></i>}
                 </td>
                 <td></td>
                 <td>

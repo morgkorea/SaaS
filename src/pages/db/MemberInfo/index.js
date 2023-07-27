@@ -1,8 +1,7 @@
-import React, { useEffect,useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
@@ -10,34 +9,35 @@ import EditTable from './EditTable';
 import Table from './Table';
 import MemberMemo from './MemberMemo';
 import PaymentInfo from './PaymentInfo';
-import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 import CurrentUsageInfo from './CurrentUsageInfo';
+import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MemberInfo = () => {
     const [editMode, setEditMode] = useState(false);
     const [modal, setModal] = useState(false);
     const [className, setClassName] = useState(null);
-    const [activeTab, setActiveTab] = useState('payment');
     const [memberData, setMemberData] = useState(null);
 
     const location = useLocation();
-    const member = location.state && location.state.member;
-    const id = member && member.id;
     const childRef = useRef();
+
+    const member = location.state && location.state.member;
+    const id = location.state?.member?.id;
+
     const email = useSelector((state) => state.Auth?.user.email);
-    const memberRef = doc(firestoreDB, 'Users', email, 'Members', id);
+    const memberRef = id ? doc(firestoreDB, 'Users', email, 'Members', id) : null;
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(memberRef, (snapshot) => {
-            const data = snapshot.data();
-            setMemberData(data);
-        });
-        
-        return () => unsubscribe();
-    }, []);
+        if (memberRef) {
+            const unsubscribe = onSnapshot(memberRef, (snapshot) => {
+                const data = snapshot.data();
+                setMemberData(data || {});
+            });
 
-    // console.log('member:', member);
-    console.log('memberData', memberData)
+            return () => unsubscribe();
+        }
+    }, []);
 
     const deleteUser = async () => {
         await deleteDoc(memberRef);
@@ -53,9 +53,6 @@ const MemberInfo = () => {
     const notify = () => toast('삭제되었습니다.');
     const toggle = () => setModal(!modal);
 
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
-    };
     const openModalWithClass = (className) => {
         setClassName(className);
         toggle();
@@ -107,11 +104,11 @@ const MemberInfo = () => {
     if (!memberData) {
         return (
             <>
-            <p>Loading...</p>
+                <p>Loading...</p>
             </>
         );
     }
-    
+
     return (
         <>
             <Row className="justify-content-md-center mt-4">
@@ -140,7 +137,7 @@ const MemberInfo = () => {
                                             삭제하기
                                         </Button>
                                         <Button
-                                            className='px-5'
+                                            className="px-5"
                                             onClick={() => {
                                                 childRef.current.modifyMember();
                                             }}>
@@ -158,17 +155,17 @@ const MemberInfo = () => {
                             <CurrentUsageInfo member={memberData} />
                         </Col>
                         <Col>
-                            {activeTab === 'memo' && (
-                                <MemberMemo memberData={memberData} memberRef={memberRef} handleTabChange={handleTabChange} />
-                            )}
-                            {activeTab === 'payment' && (
-                                <PaymentInfo member={memberData} handleTabChange={handleTabChange} />
-                            )}
+                            <PaymentInfo member={memberData} />
                         </Col>
                     </Row>
                 </Col>
             </Row>
-
+            <Row>
+                <Col>
+                    <MemberMemo memberData={memberData} memberRef={memberRef} />
+                </Col>
+            </Row>
+            
             <ToastContainer
                 position="top-right"
                 autoClose={1500}
