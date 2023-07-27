@@ -15,10 +15,21 @@ import { firestoreDB } from '../../../firebase/firebase';
 
 const MemberDashboard = () => {
     const currentMonthOfDays = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const previousMonthOfDays = new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate();
+
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
+    //현월 일자별 타석,레슨 활성화 회원 수 배열
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
+
+    //전월 일자별 타석,레슨 활성화 회원 수 배열
+    const [previousActivateBatterboxMembers, setPreviousActiveBatterboxMembers] = useState(
+        Array(previousMonthOfDays).fill(0)
+    );
+    const [previousActivateLessonMembers, setPreviousActiveLessonMembers] = useState(
+        Array(previousMonthOfDays).fill(0)
+    );
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
@@ -33,14 +44,14 @@ const MemberDashboard = () => {
         setCurrentMembers(data);
         setActiveMembers(
             data.filter((member) => {
-                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                    return member.availableProducts.some(
-                        (product) => Object.keys(product).length > 0 && product !== null
-                    );
+                if (Array.isArray(member.availableProducts)) {
+                    return member.availableProducts.some((product) => product !== null);
                 }
                 return false;
             })
         );
+
+        console.log(activeMembers);
 
         const getCurrentActivateMembers = (productType) => {
             const activateMembersArray = [];
@@ -49,7 +60,7 @@ const MemberDashboard = () => {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
                 const dayOfActivateMembers = [];
-                console.log(data);
+
                 data?.forEach((doc) => {
                     const member = {
                         id: doc.id,
@@ -78,7 +89,6 @@ const MemberDashboard = () => {
                                         : false;
 
                                     const currentDate = new Date(currentYear, currentMonth, day + 1);
-                                    console.log(currentDate);
 
                                     if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
                                         dayOfActivateMembers.push(member.id);
@@ -100,6 +110,65 @@ const MemberDashboard = () => {
 
         setActiveBatterboxMembers(getCurrentActivateMembers('batterBox'));
         setActiveLessonMembers(getCurrentActivateMembers('lesson'));
+
+        const getPreviousActivateMembers = (productType) => {
+            const activateMembersArray = [];
+
+            for (let day = 0; day < previousMonthOfDays; day++) {
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth() - 1;
+
+                const dayOfActivateMembers = [];
+
+                data?.forEach((doc) => {
+                    const member = {
+                        id: doc.id,
+                        ...doc,
+                    };
+
+                    if (Array.isArray(member.availableProducts)) {
+                        const allOfProducts = [
+                            ...member.availableProducts,
+                            ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
+                        ];
+                        if (allOfProducts.length > 0) {
+                            allOfProducts
+                                .filter((product) => product.productType === productType)
+                                .forEach((product) => {
+                                    const startDate = new Date(
+                                        new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                    );
+                                    const endDate = new Date(
+                                        new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                    );
+                                    const refundDate = product.refundDate
+                                        ? new Date(
+                                              new Date(product.refundDate).toISOString().split('T')[0] + ' 00:00:00'
+                                          )
+                                        : false;
+
+                                    const currentDate = new Date(currentYear, currentMonth, day + 1);
+
+                                    if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
+                                        dayOfActivateMembers.push(member.id);
+                                    }
+                                    if (product.refund && startDate <= currentDate && currentDate <= refundDate) {
+                                        dayOfActivateMembers.push(member.id);
+                                    }
+                                });
+                        }
+                    }
+                });
+
+                const distinctMembers = new Set(dayOfActivateMembers);
+                activateMembersArray.push(distinctMembers.size);
+            }
+
+            return activateMembersArray;
+        };
+
+        setPreviousActiveBatterboxMembers(getPreviousActivateMembers('batterBox'));
+        setPreviousActiveLessonMembers(getPreviousActivateMembers('lesson'));
     };
 
     useEffect(() => {
@@ -108,8 +177,7 @@ const MemberDashboard = () => {
 
     const [show, setShow] = useState(true);
     const [index, setIndex] = useState(1);
-    console.log(activeMembers);
-    console.log(currentMembers);
+
     const tabContents = [
         {
             id: 1,
@@ -160,7 +228,14 @@ const MemberDashboard = () => {
 
                     <Row>
                         <Col xxl={3} xl={4}>
-                            <Statistics members={currentMembers} index={index} />
+                            <Statistics
+                                previousActivateBatterboxMembers={previousActivateBatterboxMembers}
+                                previousActivateLessonMembers={previousActivateLessonMembers}
+                                activateBatterboxMembers={activateBatterboxMembers}
+                                activateLessonMembers={activateLessonMembers}
+                                members={currentMembers}
+                                index={index}
+                            />
                         </Col>
                         <Col xxl={9} xl={8}>
                             <SessionsChart

@@ -38,13 +38,13 @@ const SalesDB = () => {
         return state.Auth?.user.email;
     });
 
-    const getFirestoreSalesData = async () => {
+    useEffect(() => {
         const firestoreSalesCollectionRef = query(
             collection(firestoreDB, 'Users', email, 'Sales'),
             where('deleted_at', '==', false)
         );
 
-        onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
+        const unsubscribe = onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
             const salesArray = [];
             querySnapshot.forEach((sale) => {
                 salesArray.push({ ...sale.data(), uid: sale.id });
@@ -52,13 +52,9 @@ const SalesDB = () => {
 
             setSalesData(salesArray);
         });
-    };
-
-    useEffect(() => {
-        getFirestoreSalesData();
 
         return () => {
-            getFirestoreSalesData();
+            unsubscribe();
         };
     }, []);
 

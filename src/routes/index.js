@@ -161,7 +161,7 @@ const VectorMaps = React.lazy(() => import('../pages/maps/VectorMaps'));
 
 const loading = () => (
     <div style={{ display: 'grid', placeItems: 'center', height: '85vh' }}>
-        <div class="spinner-grow text-primary" role="status"></div>
+        <div className="spinner-grow text-primary" role="status"></div>
     </div>
 );
 

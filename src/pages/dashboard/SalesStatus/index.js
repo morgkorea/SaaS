@@ -43,7 +43,7 @@ const SalesStatus = () => {
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
-    
+
     const getFirestoreSalesData = async () => {
         setIsLoading(true);
         const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
@@ -214,7 +214,7 @@ const SalesStatus = () => {
         <>
             {isLoading ? (
                 <div style={{ display: 'grid', placeItems: 'center', height: '85vh' }}>
-                    <div class="spinner-grow text-primary" role="status"></div>
+                    <div className="spinner-grow text-primary" role="status"></div>
                 </div>
             ) : (
                 <div>

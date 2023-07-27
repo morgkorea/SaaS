@@ -320,7 +320,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         getExpirationCount(e);
                                     }}
                                     type="text"
-                                    defaultValue="0"
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
@@ -340,7 +339,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     </div>
                                     <input
                                         type="text"
-                                        // defaultValue={0}
                                         className="w-100 p-1"
                                         onChange={(e) => {
                                             getRegularPrice(e);

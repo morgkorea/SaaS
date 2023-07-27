@@ -23,7 +23,7 @@ const PaymentInfo = ({ member }) => {
             const amounts = products.map((data) => data.adjustedPrice);
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
-            
+
             setAllProducts(products);
             setTotalValue(totalValue);
             setAverageValue(averageValue);
@@ -38,9 +38,6 @@ const PaymentInfo = ({ member }) => {
         return <div>Loading...</div>;
     }
 
-    // console.log('member', member);
-    // console.log('allProducts', allProducts);
-    // console.log('sortedProducts', sortedProducts);
     return (
         <>
             <Card style={{ height: '740px' }}>
@@ -49,7 +46,7 @@ const PaymentInfo = ({ member }) => {
                         <h4 className="mb-4">결제 정보</h4>
                     </div>
                     {(!member.availableProducts || member.availableProducts.length) === 0 &&
-                        (!member.unavailableProducts || member.unavailableProducts.length === 0) ? (
+                    (!member.unavailableProducts || member.unavailableProducts.length === 0) ? (
                         <>
                             <div className="centralized">
                                 <h5>결제 정보가 없습니다.</h5>
@@ -69,20 +66,28 @@ const PaymentInfo = ({ member }) => {
                                                 <div className="d-flex">
                                                     <h4 className="number">{reversedIndex}회차</h4>
                                                     <div className="payment-info">
-                                                        <div className='d-flex'>
-                                                            <div><p>{data.product}</p></div>
-                                                            {!data.expirationPeriod ? ( null ) : (<div>
-                                                                <p>{data.expirationPeriod}</p>
-                                                            </div>)}
-                                                            <div><p>{data.discountRate}% 할인</p></div>
-                                                            <div><p>{data.startDate} ~ {data.endDate}</p></div>
+                                                        <div className="d-flex">
+                                                            <div>
+                                                                <p>{data.product}</p>
+                                                            </div>
+                                                            {!data.expirationPeriod ? null : (
+                                                                <div>
+                                                                    <p>{data.expirationPeriod}</p>
+                                                                </div>
+                                                            )}
+                                                            <div>
+                                                                <p>{data.discountRate}% 할인</p>
+                                                            </div>
+                                                            <div>
+                                                                <p>
+                                                                    {data.startDate} ~ {data.endDate}
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <h4>
-                                                        {data.adjustedPrice.toLocaleString()}원
-                                                    </h4>
+                                                    <h4>{data.adjustedPrice.toLocaleString()}원</h4>
                                                 </div>
                                             </div>
                                         </div>

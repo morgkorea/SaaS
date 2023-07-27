@@ -222,8 +222,6 @@ const ProductDB = () => {
                 const valueA = rowA.values[columnId];
                 const valueB = rowB.values[columnId];
 
-                console.log(rowA, rowB, columnId);
-
                 if (valueA === true && valueB !== true) {
                     return 1;
                 } else if (valueA !== true && valueB === true) {

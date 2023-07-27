@@ -1,8 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
-const Statistics = ({ members, index }) => {
-    const allMember = members.length; // 전체회원
+const Statistics = ({
+    previousActivateBatterboxMembers,
+    previousActivateLessonMembers,
+    activateBatterboxMembers,
+    activateLessonMembers,
+    members,
+    index,
+}) => {
+    const allMember = members.length || 0; // 전체회원
+
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+
+    const currentBatterboxMembers = activateBatterboxMembers ? activateBatterboxMembers[currentDay - 1] : 0;
+    const currentLessonMembers = activateLessonMembers ? activateLessonMembers[currentDay - 1] : 0;
+    const previousBatterboxMembers = previousActivateBatterboxMembers
+        ? previousActivateBatterboxMembers[currentDay - 1]
+        : 0;
+    const previouslessonMembers = previousActivateBatterboxMembers ? previousActivateLessonMembers[currentDay - 1] : 0;
+
     const [expiredMembers, setExpiredMembers] = useState(0); // 기간 만료회원
     const [taSeokActiveMembers, setTaSeokActiveMembers] = useState(0); // 타석 활성회원
     const [lessonActiveMembers, setLessonActiveMembers] = useState(0); // 레슨 활성회원
@@ -169,8 +187,8 @@ const Statistics = ({ members, index }) => {
         const lastMonthMembersForTaseok = getLastMonthMembers(members, 'batterBox');
         const lastMonthMembersForLesson = getLastMonthMembers(members, 'lesson');
 
-        setLastMonthTaseok(lastMonthMembersForTaseok.length);
-        setLastMonthLesson(lastMonthMembersForLesson.length);
+        // setLastMonthTaseok(lastMonthMembersForTaseok.length);
+        // setLastMonthLesson(lastMonthMembersForLesson.length);
 
         // console.log('지난달 타석 활성 회원:', lastMonthMembersForTaseok, lastMonthTaseok);
         // console.log('지난달 레슨 활성 회원:', lastMonthMembersForLesson, lastMonthLesson);
@@ -201,6 +219,17 @@ const Statistics = ({ members, index }) => {
         taseokChangeRate,
     ]);
 
+    const calculatePercentageChange = (lastMonthValue, thisMonthValue) => {
+        if (lastMonthValue === 0) {
+            return thisMonthValue === 0 ? 0 : 100;
+        }
+
+        const rawChange = ((thisMonthValue - lastMonthValue) / lastMonthValue) * 100;
+        const cappedChange = Math.min(rawChange, 100);
+
+        return cappedChange;
+    };
+
     return (
         <>
             {index === 1 ? (
@@ -210,14 +239,25 @@ const Statistics = ({ members, index }) => {
                         icon="uil uil-users-alt float-end"
                         description="Revenue"
                         title="타석 활성 회원"
-                        stats={taSeokActiveMembers + '명'}
+                        stats={currentBatterboxMembers + '명'}
                         trend={{
-                            textClass: `text-${taseokChangeRate >= 0 ? 'success' : 'danger'}`,
-                            icon: `mdi mdi-arrow-${taseokChangeRate >= 0 ? 'up' : 'down'}-bold`,
-                            value: `${Math.abs(taseokChangeRate.toFixed(2))}%`,
+                            textClass: `text-${
+                                calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers) >= 0
+                                    ? 'success'
+                                    : 'danger'
+                            }`,
+                            icon: `mdi mdi-arrow-${
+                                calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers) >= 0
+                                    ? 'up'
+                                    : 'down'
+                            }-bold`,
+                            value: `${Math.abs(
+                                calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers).toFixed(2)
+                            )}%`,
                             time: '전달 대비',
                         }}
                     />
+
                     <StatisticsWidget
                         height={186}
                         icon="uil uil-stopwatch float-end danger"
@@ -231,11 +271,21 @@ const Statistics = ({ members, index }) => {
                         icon="uil uil-users-alt float-end"
                         description="Refund"
                         title="레슨 활성 회원"
-                        stats={lessonActiveMembers + '명'}
+                        stats={currentLessonMembers + '명'}
                         trend={{
-                            textClass: `text-${lessonChangeRate >= 0 ? 'success' : 'danger'}`,
-                            icon: `mdi mdi-arrow-${lessonChangeRate >= 0 ? 'up' : 'down'}-bold`,
-                            value: `${Math.abs(lessonChangeRate.toFixed(2))}%`,
+                            textClass: `text-${
+                                calculatePercentageChange(previouslessonMembers, currentLessonMembers) >= 0
+                                    ? 'success'
+                                    : 'danger'
+                            }`,
+                            icon: `mdi mdi-arrow-${
+                                calculatePercentageChange(previouslessonMembers, currentLessonMembers) >= 0
+                                    ? 'up'
+                                    : 'down'
+                            }-bold`,
+                            value: `${Math.abs(
+                                calculatePercentageChange(previouslessonMembers, currentLessonMembers).toFixed(2)
+                            )}%`,
                             time: '전달 대비',
                         }}
                     />

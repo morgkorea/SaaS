@@ -395,38 +395,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
         setProductStartDate(event.target.value);
     };
 
-    const getFirestoreMembersList = async () => {
-        try {
-            const memebersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
-            onSnapshot(memebersCollectionRef, (querySnapshot) => {
-                const membersArray = [];
-                querySnapshot.forEach((member) => {
-                    membersArray.push({ memberId: member.id, ...member.data() });
-                });
-
-                setMembersList(membersArray);
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const getFiresotreProductsList = async () => {
-        try {
-            const productsCollectionRef = collection(firestoreDB, 'Users', email, 'Products');
-            onSnapshot(productsCollectionRef, (querySnapshot) => {
-                const productArray = [];
-                querySnapshot.forEach((product) => {
-                    productArray.push(product.data());
-                });
-
-                setProductsList(productArray);
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     const createSearchedMembersCard = (searchedMembersList, isSelectedMember) => {
         const handleMouseEnter = (e, idx) => {
             e.preventDefault();
@@ -1278,8 +1246,30 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
     }, [searchingName, searchingPhone]);
 
     useEffect(() => {
-        getFirestoreMembersList();
-        getFiresotreProductsList();
+        const memebersCollectionRef = collection(firestoreDB, 'Users', email, 'Members');
+        const unsubscribeMembers = onSnapshot(memebersCollectionRef, (querySnapshot) => {
+            const membersArray = [];
+            querySnapshot.forEach((member) => {
+                membersArray.push({ memberId: member.id, ...member.data() });
+            });
+
+            setMembersList(membersArray);
+        });
+
+        const productsCollectionRef = collection(firestoreDB, 'Users', email, 'Products');
+        const unsubscribeProducts = onSnapshot(productsCollectionRef, (querySnapshot) => {
+            const productArray = [];
+            querySnapshot.forEach((product) => {
+                productArray.push(product.data());
+            });
+
+            setProductsList(productArray);
+        });
+
+        return () => {
+            unsubscribeMembers();
+            unsubscribeProducts();
+        };
     }, []);
 
     useEffect(() => {
