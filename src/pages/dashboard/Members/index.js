@@ -51,6 +51,7 @@ const MemberDashboard = () => {
 
         const getCurrentActivateMembers = (productType) => {
             const activateMembersArray = [];
+
             for (let day = 0; day < currentMonthOfDays; day++) {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
@@ -62,12 +63,12 @@ const MemberDashboard = () => {
                         ...doc.data(),
                     };
 
-                    if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                    if (Array.isArray(member.availableProducts)) {
                         const allOfProducts = [
                             ...member.availableProducts,
                             ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
                         ];
-
+                        console.log(allOfProducts);
                         allOfProducts
                             .filter((product) => product.productType === productType)
                             .forEach((product) => {
@@ -77,10 +78,21 @@ const MemberDashboard = () => {
                                 const endDate = new Date(
                                     new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
                                 );
+                                const refundDate = product.refundDate
+                                    ? new Date(new Date(product.refundDate).toISOString().split('T')[0] + ' 00:00:00')
+                                    : false;
 
+                                const currentDate = new Date(currentYear, currentMonth, day + 1);
+
+                                console.log(refundDate);
+                                if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
+                                    dayOfActivateMembers.push(member.id);
+                                }
                                 if (
-                                    startDate <= new Date(currentYear, currentMonth, day + 1) &&
-                                    endDate >= new Date(currentYear, currentMonth, day + 1)
+                                    product.refund &&
+                                    refundDate &&
+                                    startDate <= currentDate &&
+                                    currentDate <= refundDate
                                 ) {
                                     dayOfActivateMembers.push(member.id);
                                 }
@@ -99,7 +111,7 @@ const MemberDashboard = () => {
             const activateMembersArray = getCurrentActivateMembers('batterBox');
             setActiveBatterboxMembers(activateMembersArray);
         };
-
+        console.log(activateBatterboxMembers);
         const currentActivateLessonMembers = () => {
             const activateMembersArray = getCurrentActivateMembers('lesson');
             setActiveLessonMembers(activateMembersArray);
@@ -126,7 +138,7 @@ const MemberDashboard = () => {
             title: '전체',
         },
     ];
-    
+
     return (
         <>
             <Row>

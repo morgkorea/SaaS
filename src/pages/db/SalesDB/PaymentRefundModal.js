@@ -45,7 +45,11 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                 salesProduct.paymentDate === product.paymentDate
                             ) {
                                 memberAvailableProducts.splice(idx, 1);
-                                memberUnAvailableProducts.push(salesProduct);
+                                memberUnAvailableProducts.push({
+                                    ...salesProduct,
+                                    refund: true,
+                                    refundDate: new Date().toISOString().split('T')[0],
+                                });
                                 isUpdated = true;
                             }
                         });

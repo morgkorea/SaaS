@@ -93,7 +93,6 @@ const AddCell = forwardRef((props, ref) => {
             lessonActive: lessonActive,
             lockerActive: lockerActive,
         };
-        console.log(newMemberData);
 
         await addDoc(memberRef, newMemberData);
 
