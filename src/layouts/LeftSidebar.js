@@ -12,8 +12,9 @@ import AppMenu from './Menu';
 // images
 import logoSm from '../assets/images/icons/png/Morg-white.png';
 import logoDark from '../assets/images/icons/png/Morg-white.png';
-import logoDarkSm from '../assets/images/icons/png/Morg-white.png';
+import logoDarkSm from '../assets/images/icons/png/Morg-white-sm.png';
 import logo from '../assets/images/icons/png/Morg-white.png';
+
 import helpBoxImage from '../assets/images/help-icon.svg';
 import profileImg from '../assets/images/users/avatar-1.jpg';
 

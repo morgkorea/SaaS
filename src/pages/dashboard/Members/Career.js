@@ -4,49 +4,61 @@ import CardTitle from '../../../components/CardTitle';
 import SortableTable from './SortableTable';
 
 const Career = ({ members }) => {
+    const totalNumber = members.length;
+
     const periodMap = members.reduce((acc, member) => {
         const golfPeriod = member.golfPeriod.toLowerCase().trim();
-        acc[golfPeriod] = (acc[golfPeriod] || 0) + 1;
+
+        if (golfPeriod === '') {
+            acc['기타'] = (acc['기타'] || 0) + 1;
+        } else {
+            acc[golfPeriod] = (acc[golfPeriod] || 0) + 1;
+        }
+
         return acc;
     }, {});
 
     const period = Object.keys(periodMap)
-        .filter((key) => key
-        .trim() !== '').map((periodKey) => ({
-            name: periodKey,
-            number: periodMap[periodKey],
-            rate: periodMap[periodKey],
-    }));
+        .filter((key) => key.trim() !== '')
+        .map((key) => ({
+            name: key,
+            count: periodMap[key],
+            rate: Math.floor((periodMap[key] / totalNumber) * 100),
+        }));
 
-    const totalNumber = period.reduce((sum, value) => sum + value.number, 0);
 
     const columns = React.useMemo(
         () => [
             {
                 Header: '경력기간',
                 accessor: 'name',
+                width: '30%',
             },
             {
                 Header: '인원',
-                accessor: 'number',
+                accessor: 'count',
+                width: '25%',
                 Cell: ({ value }) => <>{value.toLocaleString()}명</>,
             },
             {
                 Header: '비율',
                 accessor: 'rate',
+                width: '45%',
                 Cell: ({ value }) => (
-                    <>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {value}%
                         <ProgressBar
-                            now={Math.floor((value / totalNumber) * 100)}
-                            style={{ height: '3px', width: '100%' }}
+                            now={value}
+                            style={{ height: '3px', width: '100%', marginLeft: '10px' }}
                             variant=""
                         />
-                    </>
+                    </div>
                 ),
             },
         ],
         []
     );
+
     return (
         <Card>
             <Card.Body style={{ height: '450px' }}>

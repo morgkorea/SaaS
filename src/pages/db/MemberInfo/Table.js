@@ -28,6 +28,12 @@ const Table = ({ member }) => {
                         </td>
                     </tr>
                     <tr>
+                        <th>성별</th>
+                        <td>
+                            {member?.sex}
+                        </td>
+                    </tr>
+                    <tr>
                         <th>생년월일</th>
                         <td>
                             {member.birthDate ? (
@@ -44,13 +50,13 @@ const Table = ({ member }) => {
                     <tr>
                         <th>위치</th>
                         <td>
-                            {member?.region} / {member?.location}
+                            {member?.region} {member?.location ? '/' : null} {member?.location}
                         </td>
                     </tr>
                     <tr>
                         <th>생성일자</th>
                         <td>
-                            {member?.createdDate} / {member?.createdTime}
+                            {member?.createdDate} {member?.createdTime ? '/' : null} {member?.createdTime}
                         </td>
                     </tr>
                     <tr>
@@ -80,8 +86,7 @@ const Table = ({ member }) => {
                     <tr>
                         <th>부상 전적</th>
                         <td>
-                            {member?.injuries}
-                            {member.injuries === '무' ? null : ` / ${member?.injuriedPart}`}
+                            {member?.injuries} {member?.injuriedPart ? '/' : null} {member?.injuriedPart}
                         </td>
                     </tr>
                     <tr>

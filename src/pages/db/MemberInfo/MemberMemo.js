@@ -6,18 +6,18 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
-const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
+const MemberMemo = ({ memberRef, memberData  }) => {
     const [memoContent, setMemoContent] = useState('');
     const notify = (message) => toast(message);
 
     const updateMemo = async () => {
-        const newMemo = {
-            created: moment().format('YY/MM/DD kk:mm'),
-            contents: memoContent,
-        };
-
         const memberDoc = await getDoc(memberRef);
         const memberData = memberDoc.data();
+
+        const newMemo = {
+            created: moment().format('YYYY.MM.DD kk:mm'),
+            contents: memoContent,
+        };
 
         let memos = (memberData && memberData.memo) || [];
         memos.push(newMemo);
@@ -62,14 +62,10 @@ const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
 
     return (
         <>
-            <Card style={{ height: '740px' }}>
-                <Card.Body className="centralized-parents">
+            <Card style={{ height: '500px', }}>
+                <Card.Body>
                     <div className="d-flex justify-content-between align-content-center">
                         <h4 className="mb-4">회원 메모</h4>
-                        <p onClick={() => handleTabChange('payment')}
-                            className="btn btn-link text-decoration-underline">
-                            결제 정보
-                        </p>
                     </div>
 
                     <div className="member-info-card mb-4">
@@ -97,13 +93,13 @@ const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
                                     <div className="member-info-card" key={index}>
                                         <Row className="d-flex justify-content-between">
                                             <Col xxl={10} xl={8}>
-                                                <p>{memo.contents}</p>
+                                                <p className='mb-0'>{memo.contents}</p>
                                             </Col>
                                             <Col
                                                 xxl={2}
                                                 xl={4}
                                                 className="d-flex align-items-start justify-content-end">
-                                                <p>{memo.created}</p>
+                                                <p className='mb-0'>{memo.created}</p>
                                                 <button className="basic-icon ms-2" onClick={() => deleteMemo(index)}>
                                                     <i className="dripicons-trash"></i>
                                                 </button>
@@ -114,11 +110,8 @@ const MemberMemo = ({ handleTabChange, memberRef, memberData  }) => {
                             </>
                         ) : (
                             <>
-                                <div className="centralized">
-                                    <h5>회원 메모가 없습니다. 메모를 등록 해주세요.</h5>
-                                    <div className="mt-3">
-                                        <Warning />
-                                    </div>
+                                <div className="text-center pt-4">
+                                    <h5>회원메모가 없습니다. 회원 메모를 등록해주세요.</h5>
                                 </div>
                             </>
                         )}

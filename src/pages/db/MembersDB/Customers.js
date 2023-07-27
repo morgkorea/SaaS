@@ -18,7 +18,7 @@ const onClickMemberInfo = ({ row }) => {
 const MarketingInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.marketingRecieveAllow} />
+            <input type="checkbox" checked={row.original.marketingRecieveAllow} readOnly />
         </div>
     );
 };
@@ -26,7 +26,7 @@ const MarketingInputColumn = ({ row }) => {
 const PrivateInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.privateInfoAllow} />
+            <input type="checkbox" checked={row.original.privateInfoAllow} readOnly />
         </div>
     );
 };
@@ -104,34 +104,41 @@ const AveragePayAmount = ({ row }) => {
 };
 
 const cumulativePayAccessor = (row) => {
-    const availableProducts = row.original?.availableProducts;
-    const unavailableProducts = row.original?.unavailableProducts;
+    const availableProducts = row.availableProducts;
+    const unavailableProducts = row.unavailableProducts;
 
-    if (availableProducts && unavailableProducts) {
+    let totalValue = 0;
+
+    if (
+        availableProducts && Array.isArray(availableProducts) &&
+        unavailableProducts && Array.isArray(unavailableProducts)
+    ) {
         const products = [...availableProducts, ...unavailableProducts];
         const amounts = products.map((data) => data.adjustedPrice);
-        const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-        return totalValue;
+        totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     }
 
-    return 0;
+    return totalValue;
 };
 
 const averagePayAccessor = (row) => {
-    const availableProducts = row.original?.availableProducts;
-    const unavailableProducts = row.original?.unavailableProducts;
+    const availableProducts = row.availableProducts;
+    const unavailableProducts = row.unavailableProducts;
 
-    if (availableProducts && unavailableProducts) {
+    let averageValue = 0;
+
+    if (
+        availableProducts && Array.isArray(availableProducts) &&
+        unavailableProducts && Array.isArray(unavailableProducts)
+    ) {
         const products = [...availableProducts, ...unavailableProducts];
         const amounts = products.map((data) => data.adjustedPrice);
         const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        const averageValue = Math.floor(totalValue / amounts.length);
 
-        return averageValue;
+        averageValue = Math.floor(totalValue / amounts.length);
     }
 
-    return 0;
+    return averageValue;
 };
 
 const columns = [

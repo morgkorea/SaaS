@@ -14,40 +14,31 @@ import { collection, getDocs } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const MemberDashboard = () => {
-    const currentMonthOfDays = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
-    const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
-    const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
     const getMembers = async () => {
-        const data = await getDocs(memberRef);
-
-        setCurrentMembers(
-            data.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }))
-        );
-
+        const querySnapshot = await getDocs(memberRef);
+        const data = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        
+        setCurrentMembers(data);
         setActiveMembers(
-            data.docs
-                .map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }))
-                .filter((member) => {
-                    if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
-                        return member.availableProducts.some(
-                            (product) => Object.keys(product).length > 0 && product !== null
-                        );
-                    }
-                    return false;
-                })
+            data.filter((member) => {
+                if (Array.isArray(member.availableProducts) && member.availableProducts.length > 0) {
+                    return member.availableProducts.some(
+                        (product) => Object.keys(product).length > 0 && product !== null
+                    );
+                }
+                return false;
+            })
         );
+
 
         const getCurrentActivateMembers = (productType) => {
             const activateMembersArray = [];
@@ -68,7 +59,7 @@ const MemberDashboard = () => {
                             ...member.availableProducts,
                             ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
                         ];
-                        console.log(allOfProducts);
+                       
                         allOfProducts
                             .filter((product) => product.productType === productType)
                             .forEach((product) => {
@@ -84,7 +75,7 @@ const MemberDashboard = () => {
 
                                 const currentDate = new Date(currentYear, currentMonth, day + 1);
 
-                                console.log(refundDate);
+                               
                                 if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
                                     dayOfActivateMembers.push(member.id);
                                 }
@@ -119,6 +110,7 @@ const MemberDashboard = () => {
 
         currentActivateBatterBoxMembers();
         currentActivateLessonMembers();
+
     };
 
     useEffect(() => {
@@ -183,8 +175,6 @@ const MemberDashboard = () => {
                         <Col xxl={9} xl={8}>
                             <SessionsChart
                                 members={activeMembers}
-                                activateBatterboxMembers={activateBatterboxMembers}
-                                activateLessonMembers={activateLessonMembers}
                                 index={index}
                             />
                         </Col>

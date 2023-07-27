@@ -6,7 +6,7 @@ import moment from 'moment';
 
 const PerformanceChart = ({ members }) => {
     const timeSlots = [
-        '06:00',
+        // '06:00',
         '07:00',
         '08:00',
         '09:00',
@@ -24,7 +24,7 @@ const PerformanceChart = ({ members }) => {
         '21:00',
         '22:00',
         '23:00',
-        '00:00',
+        // '00:00',
     ];
 
     // 각 시간대별로 member를 그룹화 & 카운트
@@ -132,6 +132,7 @@ const PerformanceChart = ({ members }) => {
             },
         },
         yaxis: {
+            show: false,
             labels: {
                 formatter: function (val) {
                     return val;
@@ -162,8 +163,8 @@ const PerformanceChart = ({ members }) => {
                                 {maxCountTimeSlot && (
                                     <h5 className="text-muted fw-normal mt-0 m-2 text-truncate" title="">
                                         우리 매장은
-                                        <span className="text-primary">{maxCountTimeSlot.slice(0, 2)}시</span>에 바쁘고
-                                        <span className="text-primary">{minCountTimeSlot.slice(0, 2)}시</span>엔 한가해요
+                                        <span className="text-primary"> {maxCountTimeSlot.slice(0, 2)}시</span>에 바쁘고
+                                        <span className="text-primary"> {minCountTimeSlot.slice(0, 2)}시</span>엔 한가해요
                                     </h5>
                                 )}
                             </h5>

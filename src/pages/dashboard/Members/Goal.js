@@ -4,19 +4,24 @@ import CardTitle from '../../../components/CardTitle';
 import SortableTable from './SortableTable';
 
 const Goal = ({ members }) => {
+    const totalNumber = members.length;
     const purposeMap = members.reduce((acc, member) => {
         const golfPurpose = member.golfPurpose.toLowerCase().trim();
-        acc[golfPurpose] = (acc[golfPurpose] || 0) + 1;
+
+        if (golfPurpose === '') {
+            acc['기타'] = (acc['기타'] || 0) + 1;
+        } else {
+            acc[golfPurpose] = (acc[golfPurpose] || 0) + 1;
+        }
+
         return acc;
     }, {});
-
-    const totalNumber = Object.values(purposeMap).reduce((sum, value) => sum + value, 0);
 
     const purpose = Object.keys(purposeMap)
         .filter((key) => key.trim() !== '')
         .map((key) => ({
             name: key,
-            number: purposeMap[key],
+            count: purposeMap[key],
             rate: Math.floor((purposeMap[key] / totalNumber) * 100),
         }));
 
@@ -25,16 +30,28 @@ const Goal = ({ members }) => {
             {
                 Header: '목적',
                 accessor: 'name',
+                width: '30%',
             },
             {
                 Header: '인원',
-                accessor: 'number',
+                accessor: 'count',
+                width: '25%',
                 Cell: ({ value }) => <>{value.toLocaleString()}명</>,
             },
             {
                 Header: '비율',
                 accessor: 'rate',
-                Cell: ({ value }) => <ProgressBar now={value} style={{ height: '3px' }} variant="" />,
+                width: '45%',
+                Cell: ({ value }) => (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {value}%
+                        <ProgressBar
+                            now={value}
+                            style={{ height: '3px', width: '100%', marginLeft: '10px' }}
+                            variant=""
+                        />
+                    </div>
+                ),
             },
         ],
         []

@@ -3,6 +3,19 @@ import Chart from 'react-apexcharts';
 import { Card } from 'react-bootstrap';
 
 const BarChart = ({ members }) => {
+    const inflowPathList = [
+        '네이버',
+        '지인추천',
+        '인스타그램',
+        '입주사',
+        '제휴사',
+        '카카오톡 채널',
+        '당근마켓',
+        '전단지',
+        '외부간판 및 현수막',
+        '기타',
+    ];
+
     const groupedData = members.reduce((acc, member) => {
         const { inflowPath } = member;
 
@@ -11,6 +24,11 @@ const BarChart = ({ members }) => {
                 acc[inflowPath] = 0;
             }
             acc[inflowPath]++;
+        } else {
+            const defaultInflowPath = '기타';
+            if (!acc[defaultInflowPath]) {
+                acc[defaultInflowPath] = 0;
+            }
         }
 
         return acc;
@@ -18,7 +36,7 @@ const BarChart = ({ members }) => {
 
     // console.log('groupedData', groupedData)
 
-    const groups = Object.keys(groupedData);
+    const groups = inflowPathList.map((path) => (groupedData[path] ? path : '기타'));
 
     const chartOpts = {
         chart: {
@@ -56,7 +74,7 @@ const BarChart = ({ members }) => {
             axisBorder: { show: false },
             axisTicks: { show: false },
         },
-        yaxis: { 
+        yaxis: {
             show: false,
             labels: {
                 formatter(value) {
@@ -84,7 +102,7 @@ const BarChart = ({ members }) => {
     const chartData = [
         {
             name: '',
-            data: Object.values(groupedData),
+            data: groups.map((path) => groupedData[path] || 0),
         },
     ];
 
@@ -92,13 +110,7 @@ const BarChart = ({ members }) => {
         <Card>
             <Card.Body>
                 <h4 className="header-title mb-3">유입경로</h4>
-                <Chart
-                    options={chartOpts}
-                    series={chartData}
-                    type="bar"
-                    className="apex-charts"
-                    height={340}
-                />
+                <Chart options={chartOpts} series={chartData} type="bar" className="apex-charts" height={340} />
             </Card.Body>
         </Card>
     );

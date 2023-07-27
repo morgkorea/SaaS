@@ -7,9 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditTable = forwardRef(({ member, email, id }, ref) => {
     const notify = () => toast('개인정보가 수정되었습니다.');
-    console.log(member);
 
     const [nameValue, setNameValue] = useState(member.name);
+    const [sexValue, setSexValue] = useState('');
     const [birthDateValue, setBirthDateValue] = useState(member.birthDate);
     const [phoneValue, setPhoneValue] = useState(member.phone);
     const [locationValue, setLocationValue] = useState(member.location);
@@ -24,6 +24,26 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
 
+    const handleFocus = (e) => {
+        const { value } = e.target;
+        if (!value) {
+            e.target.placeholder = '';
+        }
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        if (!value) {
+            if (name === 'name') {
+                e.target.placeholder = '성함';
+            } else if (name === 'phone') {
+                e.target.placeholder = '연락처';
+            } else if (name === 'region') {
+                e.target.placeholder = '지역';
+            }
+        }
+    };
+
     function privateInfoChange(event) {
         setPrivateInfoChecked(event.target.checked);
     }
@@ -35,6 +55,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
         const memberRef = doc(firestoreDB, 'Users', email, 'Members', id);
         const editData = {
             name: nameValue,
+            sex: sexValue,
             birthDate: birthDateValue,
             phone: phoneValue,
             location: locationValue,
@@ -53,7 +74,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
         await updateDoc(memberRef, editData);
 
         notify();
-
         setTimeout(() => {
             window.location.reload();
         }, 1000);
@@ -78,8 +98,24 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 type="text"
                                 value={nameValue}
                                 onChange={(e) => setNameValue(e.target.value)}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
                             />
                             회원님
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>성별</th>
+                        <td>
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.sex ? member.sex : '선택'}
+                                onChange={(e) => setSexValue(e.value)}
+                                options={[
+                                    { value: '남성', label: '남성' },
+                                    { value: '여성', label: '여성' },
+                                ]}></Select>
                         </td>
                     </tr>
                     <tr>
@@ -103,6 +139,8 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 pattern="[0-9]*"
                                 value={phoneValue}
                                 onChange={(e) => setPhoneValue(e.target.value)}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
                             />
                         </td>
                     </tr>
@@ -116,6 +154,8 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 placeholder="지역"
                                 value={regionValue}
                                 onChange={(e) => setRegionValue(e.target.value)}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
                             />
                         </td>
                     </tr>

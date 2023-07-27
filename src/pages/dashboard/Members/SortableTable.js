@@ -17,7 +17,9 @@ const SortableTable = ({ columns, data }) => {
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}>
+              <th {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
+                style={{ width: column.width }}
+              >
                 <span {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
                   {column.isSorted ? (column.isSortedDesc ? '' : '') : ''}
@@ -33,7 +35,7 @@ const SortableTable = ({ columns, data }) => {
           return (
             <tr {...row.getRowProps()}>
               {row.cells.map((cell) => (
-                <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                <td {...cell.getCellProps()} style={{ width: cell.column.width }}>{cell.render('Cell')}</td>
               ))}
             </tr>
           );

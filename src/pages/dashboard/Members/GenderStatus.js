@@ -20,7 +20,7 @@ const GenderStatus = ({ members }) => {
 
     const colors = ['#727cf5', '#fa5c7c', '#0acf97'];
     const donutChartData = {
-        labels: ['남성', '여성', '주니어'],
+        labels: ['남성', '여성', '기타'],
         datasets: [
             {
                 data: [man, woman, junior],
@@ -82,7 +82,7 @@ const GenderStatus = ({ members }) => {
                             <h3 className="fw-normal">
                                 <span>{junior}명</span>
                             </h3>
-                            <p className="text-muted mb-0">주니어</p>
+                            <p className="text-muted mb-0">기타</p>
                         </div>
                     </Col>
                 </Row>
