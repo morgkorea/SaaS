@@ -51,8 +51,6 @@ const MemberDashboard = () => {
             })
         );
 
-        console.log(activeMembers);
-
         const getCurrentActivateMembers = (productType) => {
             const activateMembersArray = [];
 

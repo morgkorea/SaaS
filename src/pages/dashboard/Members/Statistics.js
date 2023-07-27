@@ -47,7 +47,6 @@ const Statistics = ({
                 return false;
             });
 
-            console.log(taSeokMembers);
             const count = taSeokMembers.length;
             setTaSeokActiveMembers(count);
 
@@ -121,8 +120,6 @@ const Statistics = ({
             const percentage = (increase / membersLastMonth) * 100;
             setMembersChangeRate(percentage);
         }
-
-        // console.log(membersChangeRate)
     }, [members, allMember, membersLastMonth, membersChangeRate]);
 
     // 기간만료 회원
@@ -137,7 +134,6 @@ const Statistics = ({
                     member.unavailableProducts.length > 0
                 ) {
                     count++;
-                    // console.log('기간만료 회원:', member.name)
                 }
             });
             setExpiredMembers(count);
@@ -187,12 +183,6 @@ const Statistics = ({
         const lastMonthMembersForTaseok = getLastMonthMembers(members, 'batterBox');
         const lastMonthMembersForLesson = getLastMonthMembers(members, 'lesson');
 
-        // setLastMonthTaseok(lastMonthMembersForTaseok.length);
-        // setLastMonthLesson(lastMonthMembersForLesson.length);
-
-        // console.log('지난달 타석 활성 회원:', lastMonthMembersForTaseok, lastMonthTaseok);
-        // console.log('지난달 레슨 활성 회원:', lastMonthMembersForLesson, lastMonthLesson);
-
         // 상승률 계산
         const calculatePercentageChange = (lastMonthValue, thisMonthValue) => {
             if (lastMonthValue === 0) {
@@ -207,8 +197,6 @@ const Statistics = ({
 
         setTaseokChangeRate(calculatePercentageChange(lastMonthTaseok, taSeokActiveMembers));
         setLessonChangeRate(calculatePercentageChange(lastMonthLesson, lessonActiveMembers));
-
-        // console.log(`전달 대비 이번달 상승 또는 하락 비율: ${taseokChangeRate}%, ${lessonChangeRate}%`);
     }, [
         members,
         lastMonthLesson,
