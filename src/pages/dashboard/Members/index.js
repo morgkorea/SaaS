@@ -14,8 +14,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const MemberDashboard = () => {
+    const currentMonthOfDays = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
+    const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
+    const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
@@ -26,7 +29,7 @@ const MemberDashboard = () => {
             id: doc.id,
             ...doc.data(),
         }));
-        
+
         setCurrentMembers(data);
         setActiveMembers(
             data.filter((member) => {
@@ -38,7 +41,6 @@ const MemberDashboard = () => {
                 return false;
             })
         );
-
 
         const getCurrentActivateMembers = (productType) => {
             const activateMembersArray = [];
@@ -59,7 +61,7 @@ const MemberDashboard = () => {
                             ...member.availableProducts,
                             ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
                         ];
-                       
+
                         allOfProducts
                             .filter((product) => product.productType === productType)
                             .forEach((product) => {
@@ -75,7 +77,6 @@ const MemberDashboard = () => {
 
                                 const currentDate = new Date(currentYear, currentMonth, day + 1);
 
-                               
                                 if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
                                     dayOfActivateMembers.push(member.id);
                                 }
@@ -110,7 +111,6 @@ const MemberDashboard = () => {
 
         currentActivateBatterBoxMembers();
         currentActivateLessonMembers();
-
     };
 
     useEffect(() => {
@@ -173,10 +173,7 @@ const MemberDashboard = () => {
                             <Statistics members={currentMembers} index={index} />
                         </Col>
                         <Col xxl={9} xl={8}>
-                            <SessionsChart
-                                members={activeMembers}
-                                index={index}
-                            />
+                            <SessionsChart members={activeMembers} index={index} />
                         </Col>
                     </Row>
 
