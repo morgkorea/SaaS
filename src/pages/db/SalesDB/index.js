@@ -13,7 +13,7 @@ import SalesRegistrationModal from './SalesRegistrationModal.js';
 import PaymentDeleteModal from './PaymentDeleteModal.js';
 import PaymentRefundModal from './PaymentRefundModal.js';
 
-import { collection, query, doc, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, doc, getDocs, updateDoc, onSnapshot, where } from 'firebase/firestore';
 
 import { useSelector } from 'react-redux';
 
@@ -39,7 +39,10 @@ const SalesDB = () => {
     });
 
     const getFirestoreSalesData = async () => {
-        const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
+        const firestoreSalesCollectionRef = query(
+            collection(firestoreDB, 'Users', email, 'Sales'),
+            where('deleted_at', '==', false)
+        );
 
         onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
             const salesArray = [];

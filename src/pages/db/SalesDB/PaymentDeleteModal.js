@@ -4,7 +4,7 @@ import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
@@ -23,7 +23,8 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
         const currentDocId = paymentData?.uid;
         try {
             const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
-            await deleteDoc(firstoreSalesDocRef);
+            await updateDoc(firstoreSalesDocRef, { ...paymentData, deleted_at: new Date().toISOString() });
+            // await deleteDoc(firstoreSalesDocRef);
         } catch (error) {
             console.log(error);
         }

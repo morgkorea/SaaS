@@ -59,6 +59,7 @@ const RevenueChart = ({
                     return acc + curr.totalPaymentPrice;
                 }
             }, 0);
+
             setCurrentPeriodTotalSales(totalSales);
         } else {
             setCurrentPeriodTotalSales(0);

@@ -55,6 +55,7 @@ export const firestoreSalesFieldSchema = {
     refundPrice: 0, //type: number 환불액
     refundPenaltyPrice: 0,
     refundReason: '', //type: string 환불사유
+    deleted_at: false,
 };
 
 export const firestoreProductsFieldSchema = {

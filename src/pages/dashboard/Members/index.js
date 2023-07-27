@@ -38,6 +38,79 @@ const MemberDashboard = () => {
                 return false;
             })
         );
+
+
+        const getCurrentActivateMembers = (productType) => {
+            const activateMembersArray = [];
+
+            for (let day = 0; day < currentMonthOfDays; day++) {
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth();
+                const dayOfActivateMembers = [];
+
+                data.docs.forEach((doc) => {
+                    const member = {
+                        id: doc.id,
+                        ...doc.data(),
+                    };
+
+                    if (Array.isArray(member.availableProducts)) {
+                        const allOfProducts = [
+                            ...member.availableProducts,
+                            ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
+                        ];
+                       
+                        allOfProducts
+                            .filter((product) => product.productType === productType)
+                            .forEach((product) => {
+                                const startDate = new Date(
+                                    new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                const endDate = new Date(
+                                    new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                );
+                                const refundDate = product.refundDate
+                                    ? new Date(new Date(product.refundDate).toISOString().split('T')[0] + ' 00:00:00')
+                                    : false;
+
+                                const currentDate = new Date(currentYear, currentMonth, day + 1);
+
+                               
+                                if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
+                                    dayOfActivateMembers.push(member.id);
+                                }
+                                if (
+                                    product.refund &&
+                                    refundDate &&
+                                    startDate <= currentDate &&
+                                    currentDate <= refundDate
+                                ) {
+                                    dayOfActivateMembers.push(member.id);
+                                }
+                            });
+                    }
+                });
+
+                const distinctMembers = new Set(dayOfActivateMembers);
+                activateMembersArray.push(distinctMembers.size);
+            }
+
+            return activateMembersArray;
+        };
+
+        const currentActivateBatterBoxMembers = () => {
+            const activateMembersArray = getCurrentActivateMembers('batterBox');
+            setActiveBatterboxMembers(activateMembersArray);
+        };
+        console.log(activateBatterboxMembers);
+        const currentActivateLessonMembers = () => {
+            const activateMembersArray = getCurrentActivateMembers('lesson');
+            setActiveLessonMembers(activateMembersArray);
+        };
+
+        currentActivateBatterBoxMembers();
+        currentActivateLessonMembers();
+
     };
 
     useEffect(() => {

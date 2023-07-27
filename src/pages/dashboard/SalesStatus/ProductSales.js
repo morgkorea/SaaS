@@ -32,12 +32,6 @@ const ProductSales = ({ sortedByPeriodSalesData }) => {
     const [limit, setLimit] = useState(10);
     const offset = (page - 1) * limit;
     const [productSalesData, setProductSalesData] = useState([]);
-    console.log(
-        productSalesData.reduce((acc, curr) => {
-            return acc + curr.number;
-        }, 0)
-    );
-    // 상품 종류 관련 필드 추가 필요
 
     const getProductSales = () => {
         let mergedSalesData = [];

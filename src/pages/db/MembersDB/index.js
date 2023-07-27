@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Customers from './Customers.js';
 import { firestoreDB } from '../../../firebase/firebase';
+import { firestoreMemebersFieldSchema } from '../../../firebase/firestoreDbSchema';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 
