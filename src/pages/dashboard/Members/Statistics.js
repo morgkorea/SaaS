@@ -29,6 +29,7 @@ const Statistics = ({ members, index }) => {
                 return false;
             });
 
+            console.log(taSeokMembers);
             const count = taSeokMembers.length;
             setTaSeokActiveMembers(count);
 

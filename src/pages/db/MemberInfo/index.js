@@ -165,7 +165,7 @@ const MemberInfo = () => {
                     <MemberMemo memberData={memberData} memberRef={memberRef} />
                 </Col>
             </Row>
-            
+
             <ToastContainer
                 position="top-right"
                 autoClose={1500}

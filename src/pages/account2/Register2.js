@@ -111,7 +111,7 @@ const Register2 = (): React$Element<React$FragmentType> => {
 
     return (
         <>
-            {userSignUp ? <Navigate to={'/dashboard/ecommerce'} /> : null}
+            {userSignUp ? <Navigate to={'/dashboard/sales-status'} /> : null}
 
             <AccountLayout bottomLinks={<BottomLink />}>
                 <h4 className="mt-6">{t('Morg 회원가입')}</h4>

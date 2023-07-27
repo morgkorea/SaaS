@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
-const SessionsChart = ({ members, index }) => {
+const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, members, index }) => {
     const [isMonthlyView, setIsMonthlyView] = useState(true); // 월간 데이터 보기 설정
     const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
 
@@ -154,14 +154,14 @@ const SessionsChart = ({ members, index }) => {
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data: calculateAnnualActivateBatterboxData(),
+            data: activateBatterboxMembers,
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: calculateAnnualActivateLessonData(),
+            data: activateLessonMembers,
         },
     ];
 

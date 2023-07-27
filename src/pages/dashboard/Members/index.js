@@ -49,11 +49,11 @@ const MemberDashboard = () => {
                 const currentYear = new Date().getFullYear();
                 const currentMonth = new Date().getMonth();
                 const dayOfActivateMembers = [];
-
-                data.docs.forEach((doc) => {
+                console.log(data);
+                data?.forEach((doc) => {
                     const member = {
                         id: doc.id,
-                        ...doc.data(),
+                        ...doc,
                     };
 
                     if (Array.isArray(member.availableProducts)) {
@@ -61,34 +61,33 @@ const MemberDashboard = () => {
                             ...member.availableProducts,
                             ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
                         ];
+                        if (allOfProducts.length > 0) {
+                            allOfProducts
+                                .filter((product) => product.productType === productType)
+                                .forEach((product) => {
+                                    const startDate = new Date(
+                                        new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
+                                    );
+                                    const endDate = new Date(
+                                        new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
+                                    );
+                                    const refundDate = product.refundDate
+                                        ? new Date(
+                                              new Date(product.refundDate).toISOString().split('T')[0] + ' 00:00:00'
+                                          )
+                                        : false;
 
-                        allOfProducts
-                            .filter((product) => product.productType === productType)
-                            .forEach((product) => {
-                                const startDate = new Date(
-                                    new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'
-                                );
-                                const endDate = new Date(
-                                    new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00'
-                                );
-                                const refundDate = product.refundDate
-                                    ? new Date(new Date(product.refundDate).toISOString().split('T')[0] + ' 00:00:00')
-                                    : false;
+                                    const currentDate = new Date(currentYear, currentMonth, day + 1);
+                                    console.log(currentDate);
 
-                                const currentDate = new Date(currentYear, currentMonth, day + 1);
-
-                                if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
-                                    dayOfActivateMembers.push(member.id);
-                                }
-                                if (
-                                    product.refund &&
-                                    refundDate &&
-                                    startDate <= currentDate &&
-                                    currentDate <= refundDate
-                                ) {
-                                    dayOfActivateMembers.push(member.id);
-                                }
-                            });
+                                    if (startDate <= currentDate && endDate >= currentDate && !product.refund) {
+                                        dayOfActivateMembers.push(member.id);
+                                    }
+                                    if (product.refund && startDate <= currentDate && currentDate <= refundDate) {
+                                        dayOfActivateMembers.push(member.id);
+                                    }
+                                });
+                        }
                     }
                 });
 
@@ -99,18 +98,8 @@ const MemberDashboard = () => {
             return activateMembersArray;
         };
 
-        const currentActivateBatterBoxMembers = () => {
-            const activateMembersArray = getCurrentActivateMembers('batterBox');
-            setActiveBatterboxMembers(activateMembersArray);
-        };
-        console.log(activateBatterboxMembers);
-        const currentActivateLessonMembers = () => {
-            const activateMembersArray = getCurrentActivateMembers('lesson');
-            setActiveLessonMembers(activateMembersArray);
-        };
-
-        currentActivateBatterBoxMembers();
-        currentActivateLessonMembers();
+        setActiveBatterboxMembers(getCurrentActivateMembers('batterBox'));
+        setActiveLessonMembers(getCurrentActivateMembers('lesson'));
     };
 
     useEffect(() => {
@@ -119,7 +108,8 @@ const MemberDashboard = () => {
 
     const [show, setShow] = useState(true);
     const [index, setIndex] = useState(1);
-
+    console.log(activeMembers);
+    console.log(currentMembers);
     const tabContents = [
         {
             id: 1,
@@ -173,7 +163,12 @@ const MemberDashboard = () => {
                             <Statistics members={currentMembers} index={index} />
                         </Col>
                         <Col xxl={9} xl={8}>
-                            <SessionsChart members={activeMembers} index={index} />
+                            <SessionsChart
+                                activateBatterboxMembers={activateBatterboxMembers}
+                                activateLessonMembers={activateLessonMembers}
+                                members={activeMembers}
+                                index={index}
+                            />
                         </Col>
                     </Row>
 
