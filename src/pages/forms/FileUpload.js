@@ -28,11 +28,7 @@ const FileUpload = (): React$Element<React$FragmentType> => {
                                 previews.
                             </p>
 
-                            <FileUploader
-                                onFileUpload={(files) => {
-                                    console.log(files);
-                                }}
-                            />
+                            <FileUploader onFileUpload={(files) => {}} />
                         </Card.Body>
                     </Card>
                 </Col>

@@ -114,8 +114,6 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
             }
         });
 
-        // console.log('dailyData', dailyData);
-        // console.log('monthlyData', monthlyData);
         return isMonthlyView ? dailyData : monthlyData;
     }
 

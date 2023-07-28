@@ -57,12 +57,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                         });
                     }
 
-                    console.log({
-                        availableProducts: memberAvailableProducts,
-                        unavailableProducts: memberUnAvailableProducts,
-                        salesProduct: paymentData.salesProducts,
-                    });
-
                     if (isUpdated) {
                         await updateDoc(memberRef, {
                             availableProducts: memberAvailableProducts,

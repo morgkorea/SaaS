@@ -35,8 +35,6 @@ const AgeChart = ({ members }) => {
         }
     }
 
-    // console.log('가장 큰 값:', maxCountObject);
-
     const apexBarChartOpts = {
         chart: {
             height: 100,
@@ -108,9 +106,11 @@ const AgeChart = ({ members }) => {
                 <div className="d-flex">
                     <h4 className="header-title mb-3">성별/연령별 추이</h4>
                     <h5 className="text-muted fw-normal mt-0 m-2 text-truncate">
-                        {
-                            maxCountObject && <>우리 매장은 <span className="text-primary">{maxCountObject}</span>이 제일 많네요</>
-                        }
+                        {maxCountObject && (
+                            <>
+                                우리 매장은 <span className="text-primary">{maxCountObject}</span>이 제일 많네요
+                            </>
+                        )}
                     </h5>
                 </div>
 

@@ -21,7 +21,6 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
                         const dateTime = new Date(member[key]);
 
                         if (isNaN(dateTime.getTime())) {
-                            console.log('Invalid time value:', member[key]);
                             continue; // 잘못된 시간 값이면 다음 요소로 넘어감
                         }
 
@@ -62,7 +61,7 @@ export const firestoreMembersDataSyncWithRealtime = async (email) => {
                 const membersCollectionRef = doc(collection(firestoreDB, 'Users', email, 'Members'));
                 await setDoc(membersCollectionRef, newMember);
             } catch (error) {
-                console.log('update newMember docs : failed', error);
+                console.log(error);
             }
         });
     } catch (error) {

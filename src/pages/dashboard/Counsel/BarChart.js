@@ -34,8 +34,6 @@ const BarChart = ({ members }) => {
         return acc;
     }, {});
 
-    // console.log('groupedData', groupedData)
-
     const groups = inflowPathList.map((path) => (groupedData[path] ? path : '기타'));
 
     const chartOpts = {

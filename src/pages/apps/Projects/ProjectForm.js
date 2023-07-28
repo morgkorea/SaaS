@@ -77,9 +77,7 @@ const ProjectForm = (): React$Element<React$FragmentType> => {
     /**
      * Handle the form submission
      */
-    const handleValidSubmit = (e, values) => {
-        console.log({ ...values });
-    };
+    const handleValidSubmit = (e, values) => {};
 
     return (
         <>

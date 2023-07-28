@@ -71,12 +71,6 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                     });
                 }
 
-                console.log({
-                    availableProducts: memberAvailableProducts,
-                    unavailableProducts: memberUnAvailableProducts,
-                    salesProduct: paymentData.salesProducts,
-                });
-
                 if (isUpdated) {
                     await updateDoc(firestoreMemberDocRef, {
                         availableProducts: memberAvailableProducts,

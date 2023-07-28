@@ -30,7 +30,6 @@ const Crm = () => {
     const getMembers = async () => {
         const data = await getDocs(memberRef);
 
-        console.log(data);
         setCurrentMembers(
             data.map((doc) => ({
                 id: doc.id,
@@ -102,16 +101,14 @@ const Crm = () => {
                 await updateDoc(washingtonRef, {
                     members: [...currentMembers, newMember],
                 });
-                console.log('update member succeed');
             } catch (error) {
-                console.log('update member error', error);
+                console.log(error);
             }
         }
         // Set the "capital" field of the city 'DC'
     };
 
     const updateAddMembers = () => {
-        console.log('updating member');
         updateFirestoreAddMember();
     };
 
@@ -126,21 +123,18 @@ const Crm = () => {
                     return member;
                 }
             });
-            console.log(modifyingMembers);
+
             try {
                 await updateDoc(washingtonRef, {
                     members: [...modifyingMembers],
                 });
-
-                console.log('modifying member suecced');
             } catch (error) {
-                console.log('modifying member error', error);
+                console.log(error);
             }
         }
     };
 
     const modifyMember = () => {
-        console.log('modifying member');
         modifyingFirestoreMember();
     };
 
