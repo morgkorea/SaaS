@@ -242,14 +242,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                                         월간
                                     </Link>
                                 </li>
-                                <li className="nav-item">
+                                {/* <li className="nav-item">
                                     <Link
                                         to="#"
                                         className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
                                         onClick={() => setIsMonthlyView(false)}>
                                         년간
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>
                             <h4 className="header-title mb-3">타석 활성 회원 추이</h4>
                             <Chart
