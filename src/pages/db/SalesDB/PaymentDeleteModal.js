@@ -47,30 +47,37 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                 const memberUnAvailableProducts = currentMemeberData.unavailableProducts;
                 const paymentSalesProducts = paymentData.salesProducts;
 
-                memberAvailableProducts.filter((product, idx) => {
+                for (let idx = 0; memberAvailableProducts.length; idx++) {
                     paymentSalesProducts.forEach((salesProduct) => {
                         if (
-                            salesProduct.product === product.product &&
-                            salesProduct.adjustedPrice === product.adjustedPrice &&
-                            salesProduct.startDate === product.startDate &&
-                            salesProduct.endDate === product.endDate &&
-                            salesProduct.paymentDate === product.paymentDate &&
-                            salesProduct.paymentTime === product.paymentTime &&
-                            salesProduct.productType === product.productType &&
-                            salesProduct.product === product.product
+                            salesProduct.product === memberAvailableProducts[idx].product &&
+                            salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
+                            salesProduct.startDate === memberAvailableProducts[idx].startDate &&
+                            salesProduct.endDate === memberAvailableProducts[idx].endDate &&
+                            salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
+                            salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
+                            salesProduct.productType === memberAvailableProducts[idx].productType &&
+                            salesProduct.product === memberAvailableProducts[idx].product &&
+                            memberAvailableProducts[idx].deleted_at === false
                         ) {
                             memberAvailableProducts.splice(idx, 1);
                             memberUnAvailableProducts.push({
                                 ...salesProduct,
                                 deleted_at: new Date().toISOString(),
                             });
+                            idx = 0;
                             isUpdated = true;
                         }
                     });
+                }
+
+                console.log({
+                    availableProducts: memberAvailableProducts,
+                    unavailableProducts: memberUnAvailableProducts,
+                    salesProduct: paymentData.salesProducts,
                 });
 
                 if (isUpdated) {
-                    console.log(isUpdated);
                     await updateDoc(firestoreMemberDocRef, {
                         availableProducts: memberAvailableProducts,
                         unavailableProducts: memberUnAvailableProducts,

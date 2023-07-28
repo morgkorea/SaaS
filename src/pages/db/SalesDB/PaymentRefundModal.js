@@ -26,24 +26,24 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             if (paymentMemberId) {
                 const memberRef = doc(firestoreDB, 'Users', email, 'Members', paymentMemberId);
                 const memberDoc = await getDoc(memberRef);
-
                 if (memberDoc.data() && paymentData?.salesProducts) {
                     let isUpdated = false;
                     const memberAvailableProducts = memberDoc.data().availableProducts;
                     const memberUnAvailableProducts = memberDoc.data().unavailableProducts;
                     const paymentSalesProducts = paymentData.salesProducts;
 
-                    memberAvailableProducts.filter((product, idx) => {
+                    for (let idx = 0; memberAvailableProducts.length; idx++) {
                         paymentSalesProducts.forEach((salesProduct) => {
                             if (
-                                salesProduct.product === product.product &&
-                                salesProduct.adjustedPrice === product.adjustedPrice &&
-                                salesProduct.startDate === product.startDate &&
-                                salesProduct.endDate === product.endDate &&
-                                salesProduct.paymentDate === product.paymentDate &&
-                                salesProduct.paymentTime === product.paymentTime &&
-                                salesProduct.productType === product.productType &&
-                                salesProduct.product === product.product
+                                salesProduct.product === memberAvailableProducts[idx].product &&
+                                salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
+                                salesProduct.startDate === memberAvailableProducts[idx].startDate &&
+                                salesProduct.endDate === memberAvailableProducts[idx].endDate &&
+                                salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
+                                salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
+                                salesProduct.productType === memberAvailableProducts[idx].productType &&
+                                salesProduct.product === memberAvailableProducts[idx].product &&
+                                memberAvailableProducts[idx].deleted_at === false
                             ) {
                                 memberAvailableProducts.splice(idx, 1);
                                 memberUnAvailableProducts.push({
@@ -51,9 +51,16 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                     refund: true,
                                     refundDate: new Date().toISOString().split('T')[0],
                                 });
+                                idx = 0;
                                 isUpdated = true;
                             }
                         });
+                    }
+
+                    console.log({
+                        availableProducts: memberAvailableProducts,
+                        unavailableProducts: memberUnAvailableProducts,
+                        salesProduct: paymentData.salesProducts,
                     });
 
                     if (isUpdated) {

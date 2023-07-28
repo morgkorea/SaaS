@@ -20,12 +20,10 @@ const PaymentInfo = ({ member }) => {
     useEffect(() => {
         if (member.availableProducts && member.unavailableProducts) {
             const products = [...member.availableProducts, ...member.unavailableProducts].filter((product) => {
-                if (product.deleted_at === false) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return product.deleted_at === false;
             });
+
+            console.log(products);
             const amounts = products.map((data) => data.adjustedPrice);
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
