@@ -1,7 +1,11 @@
 // @flow
 import React, { useState } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
+import { Form, InputGroup, Button } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import classNames from 'classnames';
+
+//loading spinner
+import Spinner from './Spinner';
 
 /* Password Input */
 const PasswordInput = ({ name, placeholder, refCallback, errors, register, className }) => {
@@ -24,6 +28,7 @@ const PasswordInput = ({ name, placeholder, refCallback, errors, register, class
                     {...(register ? register(name) : {})}
                     autoComplete={name}
                 />
+
                 <div
                     className={classNames('input-group-text', 'input-group-password', {
                         'show-password': showPassword,
@@ -52,6 +57,12 @@ type FormInputProps = {
     containerClass?: string,
     refCallback?: any,
     children?: any,
+    containerStyle?: any,
+    emailVerfication?: Boolean,
+    isEmailVerifying?: Boolean,
+    getVerfiedUserFromFirebase?: any,
+    isEmailVerified?: Boolean,
+    loading?: Boolean,
 };
 
 const FormInput = ({
@@ -66,6 +77,12 @@ const FormInput = ({
     containerClass,
     refCallback,
     children,
+    containerStyle,
+    emailVerfication,
+    isEmailVerifying,
+    getVerfiedUserFromFirebase,
+    isEmailVerified,
+    loading,
     ...otherProps
 }: FormInputProps): React$Element<React$FragmentType> => {
     // handle input type
@@ -93,6 +110,7 @@ const FormInput = ({
                                     errors={errors}
                                     register={register}
                                     className={className}
+                                    disabled={isEmailVerifying}
                                 />
 
                                 {errors && errors[name] ? (
@@ -159,28 +177,58 @@ const FormInput = ({
                                             </Form.Group>
                                         </>
                                     ) : (
-                                        <Form.Group className={containerClass}>
-                                            {label ? <Form.Label className={labelClassName}>{label}</Form.Label> : null}
+                                        <Form.Group className={containerClass} style={containerStyle}>
+                                            <div style={{ width: '100%', marginBottom: '0px' }}>
+                                                {label ? (
+                                                    <Form.Label className={labelClassName}>{label}</Form.Label>
+                                                ) : null}
 
-                                            <Form.Control
-                                                type={type}
-                                                placeholder={placeholder}
-                                                name={name}
-                                                id={name}
-                                                as={comp}
-                                                ref={(r) => {
-                                                    if (refCallback) refCallback(r);
-                                                }}
-                                                className={className}
-                                                isInvalid={errors && errors[name] ? true : false}
-                                                {...(register ? register(name) : {})}
-                                                {...otherProps}
-                                                autoComplete={name}>
-                                                {children ? children : null}
-                                            </Form.Control>
+                                                <div>
+                                                    <div className="d-flex">
+                                                        <Form.Control
+                                                            type={type}
+                                                            placeholder={placeholder}
+                                                            name={name}
+                                                            id={name}
+                                                            as={comp}
+                                                            ref={(r) => {
+                                                                if (refCallback) refCallback(r);
+                                                            }}
+                                                            className={className}
+                                                            isInvalid={errors && errors[name] ? true : false}
+                                                            {...(register ? register(name) : {})}
+                                                            {...otherProps}
+                                                            autoComplete={name}>
+                                                            {children ? children : null}
+                                                        </Form.Control>
+                                                        {emailVerfication && name === 'email' ? (
+                                                            <Button
+                                                                variant="primary"
+                                                                disabled={isEmailVerified || isEmailVerifying}
+                                                                isInvalid={errors && errors[name] ? true : false}
+                                                                style={{
+                                                                    minWidth: '55.71px',
+                                                                    padding: '0.3rem 0.45rem',
+                                                                }}
+                                                                onClick={getVerfiedUserFromFirebase}>
+                                                                {loading ? (
+                                                                    <Spinner
+                                                                        className="me-1"
+                                                                        size="sm"
+                                                                        color="white"
+                                                                        style={{ width: '15px', height: '15px' }}
+                                                                    />
+                                                                ) : (
+                                                                    '인증'
+                                                                )}
+                                                            </Button>
+                                                        ) : null}
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             {errors && errors[name] ? (
-                                                <Form.Control.Feedback type="invalid">
+                                                <Form.Control.Feedback type="invalid" className="d-block">
                                                     {errors[name]['message']}
                                                 </Form.Control.Feedback>
                                             ) : null}

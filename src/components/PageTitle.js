@@ -22,21 +22,23 @@ const PageTitle = (props: PageTitleProps): React$Element<any> => {
             <Col>
                 <div className="page-title-box">
                     <div className="page-title-right">
-                        <Breadcrumb listProps={{ className: 'm-0' }}>
-                            <Breadcrumb.Item href="/">Hyper</Breadcrumb.Item>
+                        {props.breadCrumbItems && (
+                            <Breadcrumb listProps={{ className: 'm-0' }}>
+                                <Breadcrumb.Item href="/">Hyper</Breadcrumb.Item>
 
-                            {props.breadCrumbItems.map((item, index) => {
-                                return item.active ? (
-                                    <Breadcrumb.Item active key={index}>
-                                        {item.label}
-                                    </Breadcrumb.Item>
-                                ) : (
-                                    <Breadcrumb.Item key={index} href={item.path}>
-                                        {item.label}
-                                    </Breadcrumb.Item>
-                                );
-                            })}
-                        </Breadcrumb>
+                                {props.breadCrumbItems.map((item, index) => {
+                                    return item.active ? (
+                                        <Breadcrumb.Item active key={index}>
+                                            {item.label}
+                                        </Breadcrumb.Item>
+                                    ) : (
+                                        <Breadcrumb.Item key={index} href={item.path}>
+                                            {item.label}
+                                        </Breadcrumb.Item>
+                                    );
+                                })}
+                            </Breadcrumb>
+                        )}
                     </div>
                     <h4 className="page-title">{props.title}</h4>
                 </div>

@@ -17,7 +17,6 @@ type AuthAction = {
 type State = { user?: {} | null, loading?: boolean, +value?: boolean };
 
 const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
-    console.log(action);
     switch (action.type) {
         case AuthActionTypes.API_RESPONSE_SUCCESS:
             switch (action.payload.actionType) {
@@ -27,15 +26,32 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                         user: action.payload.data,
                         userLoggedIn: true,
                         loading: false,
+                        error: false,
                     };
                 }
                 case AuthActionTypes.SIGNUP_USER: {
                     return {
                         ...state,
+                        user: action.payload.data,
                         loading: false,
                         userSignUp: true,
                     };
                 }
+                case AuthActionTypes.SEND_VERIFYING_EMAIL: {
+                    return {
+                        ...state,
+                        sentVerifyEmail: true,
+                    };
+                }
+                case AuthActionTypes.EMAIL_VERIFIED: {
+                    return {
+                        ...state,
+                        emailVerified: true,
+                        sentVerifyEmail: false,
+                        loading: false,
+                    };
+                }
+
                 case AuthActionTypes.LOGOUT_USER: {
                     return {
                         ...state,
@@ -59,6 +75,7 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                         passwordChange: true,
                     };
                 }
+
                 default:
                     return { ...state };
             }
@@ -81,6 +98,21 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                         loading: false,
                     };
                 }
+                case AuthActionTypes.SEND_VERIFYING_EMAIL:
+                    return {
+                        ...state,
+                        error: action.payload.error,
+                        sendVerifyingEmail: false,
+                        loading: false,
+                        sentVerifyEmail: false,
+                    };
+                case AuthActionTypes.EMAIL_VERIFIED: {
+                    return {
+                        ...state,
+                        error: action.payload.error,
+                        emailVerified: false,
+                    };
+                }
                 case AuthActionTypes.FORGOT_PASSWORD: {
                     return {
                         ...state,
@@ -97,6 +129,7 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                         passwordChange: false,
                     };
                 }
+
                 default:
                     return { ...state };
             }
@@ -111,6 +144,11 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
             return { ...state, loading: true, passwordReset: false };
         case AuthActionTypes.FORGOT_PASSWORD_CHANGE:
             return { ...state, loading: true, passwordChange: false };
+        case AuthActionTypes.SEND_VERIFYING_EMAIL:
+            return { ...state, sendVerifyingEmail: true, loading: true, error: false };
+        case AuthActionTypes.EMAIL_VERIFIED:
+            return { ...state, emailVerified: true, loading: false };
+
         case AuthActionTypes.RESET:
             return {
                 ...state,
@@ -121,9 +159,14 @@ const Auth = (state: State = INIT_STATE, action: AuthAction): any => {
                 passwordReset: false,
                 passwordChange: false,
                 resetPasswordSuccess: null,
+                sendVerifyingEmail: false,
+                emailVerified: false,
+                sentVerifyEmail: false,
             };
         default:
-            return { ...state };
+            return {
+                ...state,
+            };
     }
 };
 

@@ -15,6 +15,9 @@ import { VerticalForm, FormInput } from '../../components/';
 
 import AccountLayout from './AccountLayout';
 
+//loading spinner
+import Spinner from '../../components/Spinner';
+
 /* bottom link */
 const BottomLink = () => {
     const { t } = useTranslation();
@@ -22,9 +25,15 @@ const BottomLink = () => {
     return (
         <footer className="footer footer-alt">
             <p className="text-muted">
-                {t("Don't have an account?")}{' '}
+                {t('아이디가 없으신가요?')}{' '}
                 <Link to={'/account/register2'} className="text-muted ms-1">
-                    <b>{t('Sign Up')}</b>
+                    <b>{t('회원가입')}</b>
+                </Link>
+            </p>
+            <p className="text-muted">
+                {t('비밀번호 재설정 E-mail 받기')}{' '}
+                <Link to={'/account/forget-password2'} className="text-muted ms-1">
+                    <b>{t('비밀번호 재설정')}</b>
                 </Link>
             </p>
         </footer>
@@ -54,8 +63,8 @@ const Login2 = (): React$Element<React$FragmentType> => {
      */
     const schemaResolver = yupResolver(
         yup.object().shape({
-            username: yup.string().required(t('Please enter Username')),
-            password: yup.string().required(t('Please enter Password')),
+            email: yup.string().required(t('E-mail을 입력해주세요')).email('유효한 E-mail을 입력해주세요'),
+            password: yup.string().required(t('비밀번호를 입력해주세요')).min(8, '비밀번호는 8자리 이상입니다.'),
         })
     );
 
@@ -63,16 +72,17 @@ const Login2 = (): React$Element<React$FragmentType> => {
      * handle form submission
      */
     const onSubmit = (formData) => {
-        dispatch(loginUser(formData['username'], formData['password']));
+        dispatch(loginUser(formData['email'], formData['password']));
     };
 
     return (
         <>
             {(userLoggedIn || user) && <Navigate to={redirectUrl} />}
-
             <AccountLayout bottomLinks={<BottomLink />}>
-                <h4 className="mt-0">{t('Sign In')}</h4>
-                <p className="text-muted mb-4">{t('Enter your email address and password to access account.')}</p>
+                <div className="text-center">
+                    <h4 className="mt-0">{t('안녕하세요 MORG 입니다')}</h4>
+                    <p className="text-muted mb-4">{t('로그인 후 이용하실 수 있어요')}</p>
+                </div>
 
                 {error && (
                     <Alert variant="danger" className="my-2">
@@ -80,36 +90,44 @@ const Login2 = (): React$Element<React$FragmentType> => {
                     </Alert>
                 )}
 
-                <VerticalForm
-                    onSubmit={onSubmit}
-                    resolver={schemaResolver}
-                    defaultValues={{ username: 'test', password: 'test' }}>
+                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{ email: '', password: '' }}>
+                    {/* */}
                     <FormInput
-                        label={t('Username')}
-                        type="text"
-                        name="username"
-                        placeholder={t('Enter your Username')}
+                        label={t('ID (E-Mail)')}
+                        type="input"
+                        name="email"
+                        placeholder={t('E-mail을 입력해주세요.')}
                         containerClass={'mb-3'}
                     />
                     <FormInput
-                        label={t('Password')}
+                        label={t('비밀번호 (Password)')}
                         type="password"
                         name="password"
-                        placeholder={t('Enter your password')}
+                        placeholder={t('비밀번호를 입력해주세요')}
                         containerClass={'mb-3'}>
-                        <Link to="/account/forget-password2" className="text-muted float-end">
+                        {/* <Link to="/account/forget-password2" className="text-muted float-end">
                             <small>{t('Forgot your password?')}</small>
-                        </Link>
+                        </Link> */}
                     </FormInput>
 
                     <div className="d-grid mb-0 text-center">
                         <Button variant="primary" type="submit" disabled={loading}>
-                            <i className="mdi mdi-login"></i> {t('Log In')}
+                            {loading ? (
+                                <Spinner
+                                    className="me-1"
+                                    size="sm"
+                                    color="white"
+                                    style={{ width: '15px', height: '15px' }}
+                                />
+                            ) : (
+                                <i className="mdi mdi-login"> </i>
+                            )}
+                            {t('로그인')}
                         </Button>
                     </div>
 
                     {/* social links */}
-                    <div className="text-center mt-4">
+                    {/* <div className="text-center mt-4">
                         <p className="text-muted font-16">{t('Sign in with')}</p>
                         <ul className="social-list list-inline mt-3">
                             <li className="list-inline-item">
@@ -133,7 +151,7 @@ const Login2 = (): React$Element<React$FragmentType> => {
                                 </Link>
                             </li>
                         </ul>
-                    </div>
+                    </div> */}
                 </VerticalForm>
             </AccountLayout>
         </>

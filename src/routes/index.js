@@ -30,10 +30,18 @@ const ForgetPassword2 = React.lazy(() => import('../pages/account2/ForgetPasswor
 const LockScreen2 = React.lazy(() => import('../pages/account2/LockScreen2'));
 
 // dashboard
-const AnalyticsDashboard = React.lazy(() => import('../pages/dashboard/Analytics'));
-const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Ecommerce'));
-const ProjectDashboard = React.lazy(() => import('../pages/dashboard/Project'));
-const EWalletDashboard = React.lazy(() => import('../pages/dashboard/E-Wallet'));
+const MembersDashboard = React.lazy(() => import('../pages/dashboard/Members'));
+const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Sales'));
+const SalesStatusDashboard = React.lazy(() => import('../pages/dashboard/SalesStatus'));
+const MarketingDashboard = React.lazy(() => import('../pages/dashboard/Marketing'));
+const MarketingDashboard2 = React.lazy(() => import('../pages/dashboard/Marketing2'));
+const Counsel = React.lazy(() => import('../pages/dashboard/Counsel'));
+const Crm = React.lazy(() => import('../pages/dashboard/CRM'));
+
+const SalesDB = React.lazy(() => import('../pages/db/SalesDB'));
+const MembersDB = React.lazy(() => import('../pages/db/MembersDB'));
+const MemberInfo = React.lazy(() => import('../pages/db/MemberInfo'));
+const ProductDB = React.lazy(() => import('../pages/db/ProductDB'));
 
 // apps
 const CalendarApp = React.lazy(() => import('../pages/apps/Calendar'));
@@ -151,7 +159,11 @@ const Widgets = React.lazy(() => import('../pages/uikit/Widgets'));
 const GoogleMaps = React.lazy(() => import('../pages/maps/GoogleMaps'));
 const VectorMaps = React.lazy(() => import('../pages/maps/VectorMaps'));
 
-const loading = () => <div className=""></div>;
+const loading = () => (
+    <div style={{ display: 'grid', placeItems: 'center', height: '85vh' }}>
+        <div className="spinner-grow text-primary" role="status"></div>
+    </div>
+);
 
 type LoadComponentProps = {
     component: React.LazyExoticComponent<() => JSX.Element>,
@@ -240,20 +252,49 @@ const AllRoutes = () => {
                     path: 'dashboard',
                     children: [
                         {
-                            path: 'analytics',
-                            element: <LoadComponent component={AnalyticsDashboard} />,
+                            path: 'members',
+                            element: <LoadComponent component={MembersDashboard} />,
                         },
                         {
                             path: 'ecommerce',
                             element: <LoadComponent component={EcommerceDashboard} />,
                         },
                         {
-                            path: 'project',
-                            element: <LoadComponent component={ProjectDashboard} />,
+                            path: 'sales-status',
+                            element: <LoadComponent component={SalesStatusDashboard} />,
                         },
                         {
-                            path: 'e-wallet',
-                            element: <LoadComponent component={EWalletDashboard} />,
+                            path: 'marketing',
+                            element: <LoadComponent component={MarketingDashboard} />,
+                        },
+                        {
+                            path: 'marketing2',
+                            element: <LoadComponent component={MarketingDashboard2} />,
+                        },
+                        {
+                            path: 'counsel',
+                            element: <LoadComponent component={Counsel} />,
+                        },
+                    ],
+                },
+                {
+                    path: 'database',
+                    children: [
+                        {
+                            path: 'sales-db',
+                            element: <LoadComponent component={SalesDB} />,
+                        },
+                        {
+                            path: 'product-db',
+                            element: <LoadComponent component={ProductDB} />,
+                        },
+                        {
+                            path: 'members-db',
+                            element: <LoadComponent component={MembersDB} />,
+                        },
+                        {
+                            path: 'member-info',
+                            element: <LoadComponent component={MemberInfo} />,
                         },
                     ],
                 },

@@ -7,7 +7,7 @@ const INIT_STATE = {
     layoutColor: layoutConstants.LAYOUT_COLOR_LIGHT,
     layoutType: layoutConstants.LAYOUT_VERTICAL,
     layoutWidth: layoutConstants.LAYOUT_WIDTH_FLUID,
-    leftSideBarTheme: layoutConstants.LEFT_SIDEBAR_THEME_DARK,
+    leftSideBarTheme: layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT,
     leftSideBarType: layoutConstants.LEFT_SIDEBAR_TYPE_FIXED,
     showRightSidebar: false,
 };

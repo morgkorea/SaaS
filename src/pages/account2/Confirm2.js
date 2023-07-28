@@ -28,16 +28,12 @@ const Confirm2 = (): React$Element<React$FragmentType> => {
             <AccountLayout bottomLinks={<BottomLink />}>
                 <div className="text-center m-auto">
                     <img src={mailSent} alt="mail sent" height="64" />
-                    <h4 className="text-dark-50 text-center mt-4 fw-bold">{t('Please check your email')}</h4>
-                    <p className="text-muted mb-4">
-                        {t(
-                            'A email has been send to <b>youremail@domain.com</b>. Please check for an email from company and click on the included link to reset your password.'
-                        )}
-                    </p>
+                    <h4 className="text-dark-50 text-center mt-4 fw-bold">{t('계정생성이 완료되었습니다')}</h4>
+                    <p className="text-muted mb-4">{t('Mrog의 회원이 되신것을 축하드립니다!')}</p>
                     <form>
                         <div className="mb-0 d-grid text-center">
                             <Link to="/account/login2" className="btn btn-primary">
-                                <i className="mdi mdi-home me-1"></i> {t('Back to Home')}{' '}
+                                <i className="mdi mdi-home me-1"></i> {t('로그인하기')}{' '}
                             </Link>
                         </div>
                     </form>

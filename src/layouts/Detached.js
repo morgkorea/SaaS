@@ -23,7 +23,12 @@ const LeftSidebar = React.lazy(() => import('./LeftSidebar'));
 const Footer = React.lazy(() => import('./Footer'));
 const RightSidebar = React.lazy(() => import('./RightSidebar'));
 
-const loading = () => <div className="text-center"></div>;
+// const loading = () => <div className="text-center"></div>;
+const loading = () => (
+    <div style={{ display: 'grid', placeItems: 'center', height: '85vh' }}>
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+);
 
 type VerticalLayoutProps = {
     children?: any,

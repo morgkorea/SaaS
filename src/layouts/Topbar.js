@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import { showRightSidebar, changeSidebarType } from '../redux/actions';
 
 // components
-import LanguageDropdown from '../components/LanguageDropdown';
 import NotificationDropdown from '../components/NotificationDropdown';
 import ProfileDropdown from '../components/ProfileDropdown';
 import SearchDropdown from '../components/SearchDropdown';
@@ -88,30 +87,30 @@ const Notifications = [
 
 // get the profilemenu
 const ProfileMenus = [
-    {
-        label: 'My Account',
-        icon: 'mdi mdi-account-circle',
-        redirectTo: '#',
-    },
-    {
-        label: 'Settings',
-        icon: 'mdi mdi-account-edit',
-        redirectTo: '#',
-    },
-    {
-        label: 'Support',
-        icon: 'mdi mdi-lifebuoy',
-        redirectTo: '#',
-    },
-    {
-        label: 'Lock Screen',
-        icon: 'mdi mdi-lock-outline',
-        redirectTo: '/account/lock-screen',
-    },
+    // {
+    //     label: 'My Account',
+    //     icon: 'mdi mdi-account-circle',
+    //     redirectTo: '#',
+    // },
+    // {
+    //     label: 'Settings',
+    //     icon: 'mdi mdi-account-edit',
+    //     redirectTo: '#',
+    // },
+    // {
+    //     label: 'Support',
+    //     icon: 'mdi mdi-lifebuoy',
+    //     redirectTo: '#',
+    // },
+    // {
+    //     label: 'Lock Screen',
+    //     icon: 'mdi mdi-lock-outline',
+    //     redirectTo: '/account/lock-screen2',
+    // },
     {
         label: 'Logout',
         icon: 'mdi mdi-logout',
-        redirectTo: '/account/logout',
+        redirectTo: '/account/logout2',
     },
 ];
 
@@ -186,18 +185,15 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                     )}
 
                     <ul className="list-unstyled topbar-menu float-end mb-0">
-                        <li className="notification-list topbar-dropdown d-xl-none">
+                        {/* <li className="notification-list topbar-dropdown d-xl-none">
                             <SearchDropdown />
-                        </li>
-                        <li className="dropdown notification-list topbar-dropdown d-none d-lg-block">
-                            <LanguageDropdown />
-                        </li>
-                        <li className="dropdown notification-list">
+                        </li> */}
+                        {/* <li className="dropdown notification-list">
                             <NotificationDropdown notifications={Notifications} />
                         </li>
                         <li className="dropdown notification-list d-none d-sm-inline-block">
                             <AppsDropdown />
-                        </li>
+                        </li> */}
                         <li className="notification-list">
                             <button
                                 className="nav-link dropdown-toggle end-bar-toggle arrow-none btn btn-link shadow-none"
@@ -209,8 +205,8 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                             <ProfileDropdown
                                 profilePic={profilePic}
                                 menuItems={ProfileMenus}
-                                username={'Dominic Keller'}
-                                userTitle={'Founder'}
+                                username={''}
+                                userTitle={'대표'}
                             />
                         </li>
                     </ul>
@@ -246,7 +242,7 @@ const Topbar = ({ hideLogo, navCssClasses, openLeftMenuCallBack, topbarDark }: T
                             </div>
                         </Link>
                     )}
-                    <TopbarSearch />
+                    {/* <TopbarSearch /> */}
                 </div>
             </div>
         </>

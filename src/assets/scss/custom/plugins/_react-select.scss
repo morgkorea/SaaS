@@ -1,17 +1,60 @@
 //
 // react select
 //
+.react-select {
+  position: relative;
+  width: 100%;
+  min-width: 120px;
+  .react-select__control {
+    min-height: auto;
+  }
+  .react-select__indicator {
+    padding: 0;
+    width: 15px;
+    height: 15px;
+  }
+  .react-select__input-container {
+    padding: 0;
+    margin: 0;
+  }
+}
 
 .react-select {
   > div {
-    border: $input-border-width solid $input-border-color;
-    background-color: $input-bg !important;
-
-    &:hover {
-      border: $input-border-width solid $input-border-color;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid var(--ct-primary);
+    box-sizing: border-box;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    > div {
+      padding: 0;
+      margin: 0;
     }
   }
 }
+
+input.editInput {
+  width: 100%;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid  var(--ct-primary);
+  background-color: transparent;
+  box-sizing: border-box; 
+}
+input.editInput:focus {
+  outline: none !important;
+}
+/* placeholder text style */
+.editInput[type="date"]::-webkit-datetime-edit-text,
+.editInput[type="date"]::-webkit-datetime-edit-month-field,
+.editInput[type="date"]::-webkit-datetime-edit-day-field,
+.editInput[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--ct-table-color);
+}
+
 
 .react-select__control--is-focused {
   border-color: $input-focus-border-color !important;
@@ -40,7 +83,7 @@
 }
 
 .react-select__option {
-  padding: $dropdown-item-padding-y $dropdown-item-padding-x !important;
+  // padding: $dropdown-item-padding-y $dropdown-item-padding-x !important;
   color: $dropdown-link-color !important;
 
   &:hover {
@@ -54,9 +97,9 @@
   color: $dropdown-link-hover-color !important;
   background-color: $dropdown-link-hover-bg !important;
 }
-.react-select__single-value {
-  color: #{map-get($grays, "600")} !important;
-}
+// .react-select__single-value {
+//   color: #{map-get($grays, "600")} !important;
+// }
 .react-select__multi-value {
   background-color: rgba($primary, 0.2) !important;
   color: $primary !important;
@@ -104,7 +147,7 @@
 .app-search {
   .react-select__menu-list {
     .react-select__option {
-      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+      // padding: $dropdown-item-padding-y $dropdown-item-padding-x;
       color: #{map-get($grays, "700")};
       background-color: transparent;
       .dropdown-item {

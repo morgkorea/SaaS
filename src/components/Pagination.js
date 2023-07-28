@@ -9,9 +9,11 @@ type PaginationProps = {
         text: string,
         value: number,
     }[],
+    pageVisible: boolean,
+    styleCenter: boolean,
 };
 
-const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Element<any> => {
+const Pagination = ({ tableProps, sizePerPageList, pageVisible, styleCenter }: PaginationProps): React$Element<any> => {
     /**
      * pagination count , index
      */
@@ -80,7 +82,9 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
     const activePage = pageIndex + 1;
 
     return (
-        <div className="d-lg-flex align-items-center text-center pb-1">
+        <div
+            className="d-lg-flex align-items-center text-center pb-1"
+            style={styleCenter ? { display: 'flex', justifyContent: 'center' } : null}>
             {sizePerPageList.length > 0 && (
                 <div className="d-inline-block me-3">
                     <label className="me-1">Display :</label>
@@ -100,30 +104,39 @@ const Pagination = ({ tableProps, sizePerPageList }: PaginationProps): React$Ele
                     </select>
                 </div>
             )}
+            {pageVisible && (
+                <>
+                    <span className="me-3">
+                        Page{' '}
+                        <strong>
+                            {pageIndex + 1} of {tableProps.pageOptions.length}
+                        </strong>{' '}
+                    </span>
 
-            <span className="me-3">
-                Page{' '}
-                <strong>
-                    {pageIndex + 1} of {tableProps.pageOptions.length}
-                </strong>{' '}
-            </span>
+                    <span className="d-inline-block align-items-center text-sm-start text-center my-sm-0 my-2">
+                        <label>Go to page : </label>
+                        <input
+                            type="number"
+                            value={pageIndex + 1}
+                            min="1"
+                            onChange={(e: any) => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                tableProps.gotoPage(page);
+                                setPageIndex(tableProps.state.pageIndex);
+                            }}
+                            className="form-control w-25 ms-1 d-inline-block"
+                        />
+                    </span>
+                </>
+            )}
 
-            <span className="d-inline-block align-items-center text-sm-start text-center my-sm-0 my-2">
-                <label>Go to page : </label>
-                <input
-                    type="number"
-                    value={pageIndex + 1}
-                    min="1"
-                    onChange={(e: any) => {
-                        const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                        tableProps.gotoPage(page);
-                        setPageIndex(tableProps.state.pageIndex);
-                    }}
-                    className="form-control w-25 ms-1 d-inline-block"
-                />
-            </span>
-
-            <ul className="pagination pagination-rounded d-inline-flex ms-auto align-item-center mb-0">
+            {/* if you want rounded pagination => add className  "pagination-rounded" */}
+            <ul
+                className={
+                    styleCenter
+                        ? 'pagination align-item-center mb-0'
+                        : 'pagination d-inline-flex ms-auto align-item-center mb-0'
+                }>
                 <li
                     key="prevpage"
                     className={classNames('page-item', 'paginate_button', 'previous', {

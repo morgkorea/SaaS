@@ -14,9 +14,9 @@ export const authApiResponseError = (actionType: string, error: string): AuthAct
     payload: { actionType, error },
 });
 
-export const loginUser = (username: string, password: string): AuthAction => ({
+export const loginUser = (email: string, password: string): AuthAction => ({
     type: AuthActionTypes.LOGIN_USER,
-    payload: { username, password },
+    payload: { email, password },
 });
 
 export const logoutUser = (): AuthAction => ({
@@ -24,20 +24,40 @@ export const logoutUser = (): AuthAction => ({
     payload: {},
 });
 
-export const signupUser = (fullname: string, email: string, password: string): AuthAction => ({
+export const signupUser = (username: string, phone: string, email: string, password: string): AuthAction => ({
     type: AuthActionTypes.SIGNUP_USER,
-    payload: { fullname, email, password },
+    payload: { username, phone, email, password },
 });
 
-export const forgotPassword = (username: string): AuthAction => ({
+export const forgotPassword = (email: string): AuthAction => ({
     type: AuthActionTypes.FORGOT_PASSWORD,
-    payload: { username },
+    payload: { email },
 });
 
-export const forgotPasswordChange = (username: string): AuthAction => ({
+export const forgotPasswordChange = (email: string): AuthAction => ({
     type: AuthActionTypes.FORGOT_PASSWORD_CHANGE,
-    payload: { username },
+    payload: { email },
 });
+
+// export const watchFirebaseLoginAuth = () => ({
+//     type: AuthActionTypes.WATCH_FIREBASE_LOGIN,
+//     payload: {},
+// });
+export const testStateUpdate = (): AuthAction => ({
+    type: AuthActionTypes.TEXT_STATE_UPDATE,
+    payload: { test: 'test' },
+});
+
+export const emailVerified = () => {
+    return { type: AuthActionTypes.EMAIL_VERIFIED, payload: {} };
+};
+
+export const sendVerifyingEmail = (email) => {
+    return {
+        type: AuthActionTypes.SEND_VERIFYING_EMAIL,
+        payload: { email },
+    };
+};
 
 export const resetAuth = (): AuthAction => ({
     type: AuthActionTypes.RESET,

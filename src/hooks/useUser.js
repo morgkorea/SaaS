@@ -12,7 +12,7 @@ const useUser = (): { user: any | void, ... } => {
         if (api.isUserAuthenticated()) {
             setuser(api.getLoggedInUser());
         }
-    }, [api]);
+    }, []);
 
     return { user };
 };

@@ -3,6 +3,17 @@ import axios from 'axios';
 
 import config from '../../config';
 
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    sendEmailVerification,
+    deleteUser,
+    sendPasswordResetEmail,
+    updateProfile,
+} from 'firebase/auth';
+
 // content type
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.baseURL = config.API_URL;
@@ -41,7 +52,7 @@ axios.interceptors.response.use(
     }
 );
 
-const AUTH_SESSION_KEY = 'hyper_user';
+const AUTH_SESSION_KEY = 'Morg_Auth';
 
 /**
  * Sets the default authorization
@@ -54,8 +65,10 @@ const setAuthorization = (token) => {
 
 const getUserFromSession = () => {
     const user = sessionStorage.getItem(AUTH_SESSION_KEY);
-    return user ? (typeof user == 'object' ? user : JSON.parse(user)) : null;
+
+    return user ? (typeof user == 'object' ? { user } : JSON.parse(user)) : null;
 };
+
 class APICore {
     /**
      * Fetches data from given url
@@ -110,6 +123,114 @@ class APICore {
     /**
      * post given data to url
      */
+
+    //firebase auth func api
+
+    firebaseLogin = (params) => {
+        const auth = getAuth();
+        return signInWithEmailAndPassword(auth, params.email, params.password);
+    };
+
+    firebaseSignup = (params) => {
+        const auth = getAuth();
+        return createUserWithEmailAndPassword(auth, params.email, params.password);
+    };
+
+    firebaseFakeSingupForEmailVerification = (params) => {
+        const auth = getAuth();
+        return createUserWithEmailAndPassword(auth, params.email, params.encryptedPassword);
+    };
+
+    firebaseFakeUpdateProfile = (params) => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        return updateProfile(user, { displayName: params + '회원', appName: params });
+    };
+
+    firebaseDeleteFakeUser = () => {
+        return new Promise((resolve, reject) => {
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (user && user.emailVerified === false) {
+                deleteUser(user)
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } else {
+                resolve();
+            }
+        });
+    };
+    firebaseLogout = () => {
+        const auth = getAuth();
+        return signOut(auth);
+    };
+
+    firebaseSendEmailVerification = () => {
+        const auth = getAuth();
+        return sendEmailVerification(auth.currentUser);
+    };
+
+    firebaseWatchEmailVerification = () => {
+        return new Promise((resolve, reject) => {
+            const interval = setInterval(() => {
+                const auth = getAuth();
+                const user = auth.currentUser;
+                user?.reload();
+
+                if (user?.emailVerified) {
+                    deleteUser(user)
+                        .then(() => {
+                            clearInterval(interval);
+                            resolve(); // 작업이 성공적으로 완료되면 resolve 호출
+                        })
+                        .catch((error) => {
+                            clearInterval(interval);
+                            reject(error); // 작업 중에 에러가 발생하면 reject 호출
+                        });
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(interval);
+
+                reject(new Error('Timeout')); // 타임아웃이 발생하면 reject 호출
+            }, 180000);
+        });
+    };
+
+    firebaseDeleteUser = () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+            return new Promise((resolve, reject) => {
+                deleteUser(user)
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            });
+        }
+    };
+
+    firebaseForgotPasswordSendPasswordResetEmail = (params) => {
+        const auth = getAuth();
+        return sendPasswordResetEmail(auth, params.email);
+    };
+
+    firebaseUpdateProfile = (params) => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        return updateProfile(user, { displayName: params.username });
+    };
+
     create = (url, data) => {
         return axios.post(url, data);
     };
@@ -173,17 +294,16 @@ class APICore {
 
     isUserAuthenticated = () => {
         const user = this.getLoggedInUser();
-        if (!user || (user && !user.token)) {
-            return false;
-        }
-        const decoded = jwtDecode(user.token);
-        const currentTime = Date.now() / 1000;
-        if (decoded.exp < currentTime) {
-            console.warn('access token expired');
+        if (!user) {
             return false;
         } else {
             return true;
         }
+        // if (!user || (user && !user.token)) {
+        //     return false;
+        // } else {
+        //     return true;
+        // }
     };
 
     setLoggedInUser = (session) => {
@@ -212,12 +332,13 @@ class APICore {
 /*
 Check if token available in session
 */
-let user = getUserFromSession();
-if (user) {
-    const { token } = user;
-    if (token) {
-        setAuthorization(token);
-    }
-}
+// let user = getUserFromSession();
+// if (user) {
+//     const { token } = user;
+
+//     if (token && user?.emailVerified) {
+//         setAuthorization(token);
+//     }
+// }
 
 export { APICore, setAuthorization };

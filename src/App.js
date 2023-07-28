@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import Routes from './routes/Routes';
+import { firebaseInit } from './firebase/firebase.js';
 
 // setup fake backend
 import { configureFakeBackend } from './helpers';
@@ -18,6 +19,7 @@ import './assets/scss/Saas.scss';
 
 // configure fake backend
 configureFakeBackend();
+firebaseInit();
 
 type AppProps = {};
 
