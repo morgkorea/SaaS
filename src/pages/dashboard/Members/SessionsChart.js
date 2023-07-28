@@ -23,7 +23,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         return days;
     };
 
-    const now = new Date();
+    const now = new Date(new Date().toISOString().split('T')[0] + ' 00:00:00');
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
 
@@ -32,7 +32,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         : Array(12)
               .fill('')
               .map((_, idx) => idx + 1 + '월');
-
+    console.log(labels);
     // 전체회원 추이
     function calculateDailyAndMonthlyData(members) {
         const dailyData = new Array(labels.length).fill(0);
@@ -154,14 +154,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data: !isMonthlyView ? calculateDailyAndMonthlyData(sortedMembers) : activateBatterboxMembers,
+            data: !isMonthlyView ? calculateAnnualActivateBatterboxData(sortedMembers) : activateBatterboxMembers,
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: !isMonthlyView ? calculateDailyAndMonthlyData(sortedMembers) : activateBatterboxMembers,
+            data: !isMonthlyView ? calculateAnnualActivateLessonData(sortedMembers) : activateLessonMembers,
         },
     ];
 
