@@ -36,6 +36,7 @@ const MemberDashboard = () => {
 
     const getMembers = async () => {
         const querySnapshot = await getDocs(memberRef);
+
         const data = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
@@ -45,7 +46,7 @@ const MemberDashboard = () => {
         setActiveMembers(
             data.filter((member) => {
                 if (Array.isArray(member.availableProducts)) {
-                    return member.availableProducts.some((product) => product !== null);
+                    return member.availableProducts.some((product) => product !== null && !product.deleted_at);
                 }
                 return false;
             })
@@ -72,7 +73,7 @@ const MemberDashboard = () => {
                         ];
                         if (allOfProducts.length > 0) {
                             allOfProducts
-                                .filter((product) => product.productType === productType)
+                                .filter((product) => product.productType === productType && !product.deleted_at)
                                 .forEach((product) => {
                                     const startDate = new Date(
                                         new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00'

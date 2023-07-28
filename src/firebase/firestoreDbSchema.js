@@ -26,6 +26,9 @@ export const firestoreSalesProductSchema = {
     startDate: '', //type: string (yyyy-MM-dd) 시작일
     endDate: '', // type: string (yyyy-MM-dd) 종료일
     expirationPeriod: '', //type string "1개월","150일"
+    refund: false,
+    refundDate: false,
+    deleted_at: false,
 };
 
 export const firestorePaymentInfoFieldSchema = {

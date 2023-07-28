@@ -33,8 +33,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                     const memberUnAvailableProducts = memberDoc.data().unavailableProducts;
                     const paymentSalesProducts = paymentData.salesProducts;
 
-                    console.log(memberAvailableProducts);
-                    console.log(memberUnAvailableProducts);
                     memberAvailableProducts.filter((product, idx) => {
                         paymentSalesProducts.forEach((salesProduct) => {
                             if (
@@ -42,7 +40,10 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                 salesProduct.adjustedPrice === product.adjustedPrice &&
                                 salesProduct.startDate === product.startDate &&
                                 salesProduct.endDate === product.endDate &&
-                                salesProduct.paymentDate === product.paymentDate
+                                salesProduct.paymentDate === product.paymentDate &&
+                                salesProduct.paymentTime === product.paymentTime &&
+                                salesProduct.productType === product.productType &&
+                                salesProduct.product === product.product
                             ) {
                                 memberAvailableProducts.splice(idx, 1);
                                 memberUnAvailableProducts.push({

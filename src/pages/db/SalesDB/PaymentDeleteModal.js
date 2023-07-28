@@ -1,10 +1,10 @@
-import react, { useState } from 'react';
+import react, { useState, useEffect } from 'react';
 
 import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
@@ -12,6 +12,8 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
     const [size, setSize] = useState('lg');
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
+    const [currentMemberId, setCurrentMemberId] = useState(false);
+    const [currentMemeberData, setCurrentMemeberData] = useState(false);
 
     const email = useSelector((state) => state.Auth?.user?.email);
 
@@ -19,11 +21,64 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
         setModal(!modal);
     };
 
+    useEffect(() => {
+        const currentMemberId = paymentData.memberId;
+        const firestoreMemberDocRef = doc(firestoreDB, 'Users', email, 'Members', currentMemberId);
+
+        const unsubscribe = onSnapshot(firestoreMemberDocRef, (doc) => {
+            setCurrentMemeberData({ ...doc.data() });
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [paymentData]);
+
     const deleteFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
+        const currentMemberId = paymentData.memberId;
+        const firestoreMemberDocRef = doc(firestoreDB, 'Users', email, 'Members', currentMemberId);
+        const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
+
         try {
-            const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
+            if (currentMemeberData && paymentData?.salesProducts) {
+                let isUpdated = false;
+                const memberAvailableProducts = currentMemeberData.availableProducts;
+                const memberUnAvailableProducts = currentMemeberData.unavailableProducts;
+                const paymentSalesProducts = paymentData.salesProducts;
+
+                memberAvailableProducts.filter((product, idx) => {
+                    paymentSalesProducts.forEach((salesProduct) => {
+                        if (
+                            salesProduct.product === product.product &&
+                            salesProduct.adjustedPrice === product.adjustedPrice &&
+                            salesProduct.startDate === product.startDate &&
+                            salesProduct.endDate === product.endDate &&
+                            salesProduct.paymentDate === product.paymentDate &&
+                            salesProduct.paymentTime === product.paymentTime &&
+                            salesProduct.productType === product.productType &&
+                            salesProduct.product === product.product
+                        ) {
+                            memberAvailableProducts.splice(idx, 1);
+                            memberUnAvailableProducts.push({
+                                ...salesProduct,
+                                deleted_at: new Date().toISOString(),
+                            });
+                            isUpdated = true;
+                        }
+                    });
+                });
+
+                if (isUpdated) {
+                    console.log(isUpdated);
+                    await updateDoc(firestoreMemberDocRef, {
+                        availableProducts: memberAvailableProducts,
+                        unavailableProducts: memberUnAvailableProducts,
+                    });
+                }
+            }
             await updateDoc(firstoreSalesDocRef, { ...paymentData, deleted_at: new Date().toISOString() });
+
             // await deleteDoc(firstoreSalesDocRef);
         } catch (error) {
             console.log(error);
@@ -82,7 +137,7 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                                     style={{ height: '180px', overflowY: 'scroll' }}>
                                     {paymentData.salesProducts?.length &&
                                         paymentData.salesProducts.map((product, idx) => (
-                                            <div className="mb-2">
+                                            <div key={'reciept_detail_' + idx} className="mb-2">
                                                 <div
                                                     style={{
                                                         display: 'flex',
