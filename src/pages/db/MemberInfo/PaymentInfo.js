@@ -20,7 +20,7 @@ const PaymentInfo = ({ member }) => {
     useEffect(() => {
         if (member.availableProducts && member.unavailableProducts) {
             const products = [...member.availableProducts, ...member.unavailableProducts].filter((product) => {
-                return product.deleted_at === false;
+                return product.deleted_at === false && product.refund === false;
             });
 
             console.log(products);
