@@ -29,6 +29,7 @@
         "easymde": "^2.16.1",
         "firebase": "^9.22.1",
         "firebase-admin": "^11.8.0",
+        "firebase-tools": "^12.4.6",
         "frappe-gantt": "^0.6.0",
         "google-maps-react": "^2.0.6",
         "hangul-js": "^0.2.6",
