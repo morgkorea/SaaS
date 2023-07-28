@@ -154,14 +154,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data: activateBatterboxMembers,
+            data: !isMonthlyView ? calculateDailyAndMonthlyData(sortedMembers) : activateBatterboxMembers,
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: activateLessonMembers,
+            data: !isMonthlyView ? calculateDailyAndMonthlyData(sortedMembers) : activateBatterboxMembers,
         },
     ];
 

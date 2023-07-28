@@ -33,7 +33,7 @@ const MemberDashboard = () => {
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
-
+    console.log(activeMembers);
     const getMembers = async () => {
         const querySnapshot = await getDocs(memberRef);
 
@@ -46,7 +46,9 @@ const MemberDashboard = () => {
         setActiveMembers(
             data.filter((member) => {
                 if (Array.isArray(member.availableProducts)) {
-                    return member.availableProducts.some((product) => product !== null && !product.deleted_at);
+                    return [...member.availableProducts, ...member.unavailableProducts].some(
+                        (product) => product !== null && !product.deleted_at
+                    );
                 }
                 return false;
             })
