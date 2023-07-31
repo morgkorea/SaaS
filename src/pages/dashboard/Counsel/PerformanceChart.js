@@ -1,8 +1,9 @@
 import React from 'react';
+import moment from 'moment';
 import Chart from 'react-apexcharts';
 import { Card } from 'react-bootstrap';
 import CardTitle from '../../../components/CardTitle';
-import moment from 'moment';
+import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const PerformanceChart = ({ members }) => {
     const timeSlots = [
@@ -151,6 +152,8 @@ const PerformanceChart = ({ members }) => {
         },
     };
 
+    const hasData = members.length > 0;
+
     return (
         <Card>
             <Card.Body>
@@ -177,8 +180,23 @@ const PerformanceChart = ({ members }) => {
                         series={apexBarChartData}
                         type="bar"
                         className="apex-charts"
-                        height={255}
+                        height={340}
                     />
+                    {!hasData && (
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                textAlign: 'center',
+                                width: '100%',
+                            }}
+                        >
+                            아직 표기할 데이터가 없어요.
+                            <span className='d-block'><Warning style={{ width: '8rem', height: '8rem', marginTop: '1rem' }} /></span>
+                        </div>
+                    )}
                 </div>
             </Card.Body>
         </Card>

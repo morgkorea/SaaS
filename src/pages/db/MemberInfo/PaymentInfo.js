@@ -23,7 +23,7 @@ const PaymentInfo = ({ member }) => {
                 return product.deleted_at === false && product.refund === false;
             });
 
-            console.log(products);
+            // console.log(products);
             const amounts = products.map((data) => data.adjustedPrice);
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);

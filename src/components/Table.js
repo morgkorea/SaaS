@@ -10,6 +10,7 @@ import {
 } from 'react-table';
 import classNames from 'classnames';
 import Pagination from './Pagination';
+import { ReactComponent as Warning } from '../assets/images/warning.svg';
 
 // Define a default UI for filtering
 const GlobalFilter = ({
@@ -169,8 +170,8 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
             )}
 
             <div
-                className="table-responsive mt-4"
-                style={{ minHeight: props.minHeight ? `${props.minHeight}px` : '800px' }}>
+                className="table-responsive mt-3"
+                style={{ minHeight: props.minHeight ? `${props.minHeight}px` : '700px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
@@ -193,7 +194,17 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {(rows || []).map((row, i) => {
+                    {rows.length === 0 ? (
+                            <tr className='dataless'>
+                                <td colSpan={dataTable.columns.length}>
+                                    등록된 상품이 없습니다. 상품 등록을 해주세요.
+                                    <span className="d-block">
+                                        <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
+                                    </span>
+                                </td>
+                            </tr>
+                        ) : (
+                        (rows || []).map((row, i) => {
                             dataTable.prepareRow(row);
                             return (
                                 <tr {...row.getRowProps()}>
@@ -202,7 +213,8 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                                     })}
                                 </tr>
                             );
-                        })}
+                        })
+                        )}
                     </tbody>
                 </table>
             </div>

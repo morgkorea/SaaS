@@ -24,7 +24,6 @@ const MemberInfo = () => {
 
     const member = location.state && location.state.member;
     const id = location.state?.member?.id;
-
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = id ? doc(firestoreDB, 'Users', email, 'Members', id) : null;
 

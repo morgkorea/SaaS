@@ -32,7 +32,8 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         : Array(12)
               .fill('')
               .map((_, idx) => idx + 1 + '월');
-    console.log(labels);
+    // console.log(labels);
+
     // 전체회원 추이
     function calculateDailyAndMonthlyData(members) {
         const dailyData = new Array(labels.length).fill(0);
@@ -198,6 +199,9 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
             },
         },
         yaxis: {
+            min: 0,
+            max: 5,
+            forceNiceScale: true,
             labels: {
                 offsetX: 0,
                 // offsetX: -50, // hide
@@ -226,6 +230,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         },
     };
 
+    
     return (
         <>
             {index === 1 && (
@@ -272,14 +277,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                                         월간
                                     </Link>
                                 </li>
-                                <li className="nav-item">
+                                {/* <li className="nav-item">
                                     <Link
                                         to="#"
                                         className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
                                         onClick={() => setIsMonthlyView(false)}>
                                         년간
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>
                             <h4 className="header-title mb-3">레슨 활성 회원 추이</h4>
                             <Chart

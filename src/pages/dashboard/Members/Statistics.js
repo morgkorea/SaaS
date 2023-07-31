@@ -211,13 +211,13 @@ const Statistics = ({
         if (lastMonthValue === 0) {
             return thisMonthValue === 0 ? 0 : 100;
         }
-
+    
         const rawChange = ((thisMonthValue - lastMonthValue) / lastMonthValue) * 100;
         const cappedChange = Math.min(rawChange, 100);
-
-        return cappedChange;
+    
+        return isNaN(cappedChange) ? 0 : cappedChange;
     };
-
+    
     return (
         <>
             {index === 1 ? (

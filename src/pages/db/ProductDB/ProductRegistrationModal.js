@@ -188,7 +188,9 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     };
 
     const getRegularPrice = (event) => {
-        let price = event.target.value;
+        // let price = event.target.value;
+        let price = event.target.value.replace(/,/g, '');
+
         if (isNaN(Number(price)) || price < 0) {
             price = 0;
         }
@@ -196,8 +198,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         if (price > 0) {
             setValidationError({ ...validationError, regularPrice: false });
         }
+
         setRegularPrice(Number(price));
-        console.log(regularPrice);
+        // setRegularPrice(Number(price));
+        // console.log(regularPrice);
     };
 
     useEffect(() => {
@@ -217,21 +221,21 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         <>
             <Modal show={modal} onHide={toggle} size={size} centered={true}>
                 <Modal.Header className="border-bottom-0" onHide={toggle} closeButton></Modal.Header>
+
                 <Modal.Body style={{ height: '500px', padding: '0px 60px' }}>
                     <h4 className="modal-title mb-3 ">상품 등록</h4>
-                    <Alert variant="info" className="mb-3" style={{ color: '#1E5B6D' }}>
+                    <Alert variant="primary" className="mb-3">
                         <span className="fw-bold">패키지 상품 관련 안내</span> - 패키지는 각각의 단품상품 등록 후
                         매출등록에서 금액조정을 해주셔야 해요.
                     </Alert>
+
                     <div className="container">
                         <Row className="mb-4">
-                            <Col className="">
+                            <Col>
                                 <div className="mb-1">
-                                    {' '}
                                     <span>상품명</span>
                                     <i className="mdi mdi-help-circle-outline" />
                                 </div>
-
                                 <input
                                     onChange={(e) => {
                                         getProductName(e);
@@ -246,11 +250,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     {validationError.productName}
                                 </div>
                             </Col>
-                            <Col className="">
+                            <Col>
                                 <div className="mb-1">
                                     <span>카테고리</span>
                                 </div>
-
                                 <select
                                     onChange={(e) => {
                                         getProductType(e);
@@ -269,10 +272,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 </select>
                             </Col>
                         </Row>
+
                         <Row className="mb-4">
                             <Col>
                                 <div className="mb-1">
-                                    {' '}
                                     <span>유효기간</span>
                                 </div>
                                 <select
@@ -311,10 +314,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 </select>
                             </Col>
                             <Col>
-                                <div className="mb-1">
-                                    {' '}
-                                    <span>유효횟수</span>
-                                </div>
+                                <div className="mb-1"><span>유효횟수</span></div>
                                 <input
                                     onChange={(e) => {
                                         getExpirationCount(e);
@@ -330,39 +330,31 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     disabled={productType === 'locker' || productType === 'etc'}></input>
                             </Col>
                         </Row>
+
                         <Row className="mb-4">
                             <Col>
                                 <div style={{ position: 'relative' }}>
-                                    <div className="mb-1">
-                                        {' '}
-                                        <span>상품 가격</span>
-                                    </div>
+                                    <div className="mb-1"><span>상품 가격</span></div>
                                     <input
                                         type="text"
                                         className="w-100 p-1"
-                                        onChange={(e) => {
-                                            getRegularPrice(e);
-                                        }}
-                                        value={regularPrice}
+                                        onChange={getRegularPrice}
+                                        value={regularPrice.toLocaleString()}
                                         style={{
                                             height: '40px',
                                             border: `1px solid ${validationError.regularPrice ? '#fa5c7c' : '#DEE2E6'}`,
                                             borderRadius: ' 2px',
-                                        }}></input>
-
+                                        }}/>
                                     <span style={{ position: 'absolute', right: '20px', bottom: '10px' }}>원</span>
                                 </div>
-
                                 <div style={{ color: '#fa5c7c', fontSize: '12px', marginTop: '2px' }}>
                                     {validationError.regularPrice}
                                 </div>
                             </Col>
-
                             <Col>
                                 <div className="mb-1">
                                     <span>판매등록</span>
                                 </div>
-
                                 <div className="d-flex justify-content-between">
                                     <button
                                         onClick={() => {
@@ -371,13 +363,12 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${
-                                                activation ? (productType === 'etc' ? '#DEE2E6' : '#727CF5') : '#DEE2E6'
-                                            }`,
+                                            border: `1px solid ${activation ? (productType === 'etc' ? '#DEE2E6' : '#0acf97') : '#DEE2E6'
+                                                }`,
                                             color: activation
                                                 ? productType === 'etc'
                                                     ? '#DEE2E6'
-                                                    : '#727CF5'
+                                                    : '#0acf97'
                                                 : '#DEE2E6',
 
                                             borderRadius: ' 2px',
@@ -393,17 +384,16 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${
-                                                !activation
+                                            border: `1px solid ${!activation
                                                     ? productType === 'etc'
                                                         ? '#DEE2E6'
-                                                        : '#727CF5'
+                                                        : '#0acf97'
                                                     : '#DEE2E6'
-                                            }`,
+                                                }`,
                                             color: !activation
                                                 ? productType === 'etc'
                                                     ? '#DEE2E6'
-                                                    : '#727CF5'
+                                                    : '#0acf97'
                                                 : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
@@ -416,6 +406,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                         </Row>
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer className="d-flex justify-content-center border-top-0 ">
                     <Button
                         onClick={putFirestoreProductRegistration}

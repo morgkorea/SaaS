@@ -12,6 +12,7 @@ import classNames from 'classnames';
 import Pagination from './Pagination';
 import AddCell from './AddCell';
 import { Button } from 'react-bootstrap';
+import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
@@ -29,7 +30,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
                         setValue(e.target.value);
                         onChange(e.target.value);
                     }}
-                    placeholder="회원찾기"
+                    placeholder="회원 찾기"
                     className="form-control w-auto ms-1"
                 />
             </span>
@@ -148,7 +149,7 @@ const Table = (props: TableProps) => {
 
     return (
         <>
-            <div className="d-flex">
+            <div className="d-flex justify-content-between">
                 <div>
                     {isSearchable && (
                         <GlobalFilter
@@ -159,7 +160,7 @@ const Table = (props: TableProps) => {
                         />
                     )}
                 </div>
-                <div className="ms-2">
+                <div>
                     {!addMode ? (
                         <Button onClick={onClickAdd}>회원 등록하기</Button>
                     ) : (
@@ -167,15 +168,16 @@ const Table = (props: TableProps) => {
                             onClick={() => {
                                 childComponentRef.current.updateFirestoreAddMember();
                             }}>
-                            저장
+                            저장하기
                         </Button>
                     )}
                 </div>
             </div>
-            <div className="table-responsive member-table" style={{minHeight: '800px' }}>
+            <div className="table-responsive member-table" style={{ minHeight: '700px' }}>
                 <table
                     {...dataTable.getTableProps()}
-                    className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
+                    className={classNames('table table-centered react-table', props['tableClass'], 'sales')}
+                >
                     <thead className={props['theadClass']}>
                         {dataTable.headerGroups.map((headerGroup) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -186,7 +188,8 @@ const Table = (props: TableProps) => {
                                             sorting_desc: column.isSortedDesc === true,
                                             sorting_asc: column.isSortedDesc === false,
                                             sortable: column.sort === true,
-                                        })}>
+                                        })}
+                                    >
                                         {column.render('Header')}
                                     </th>
                                 ))}
@@ -195,23 +198,35 @@ const Table = (props: TableProps) => {
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
                         {addMode ? <AddCell ref={childComponentRef} /> : null}
-                        {(rows || []).map((row, i) => {
-                            dataTable.prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()} key={row.original.id}>
-                                    {row.cells.map((cell) => {
-                                        return (
-                                            <td key={cell.id} {...cell.getCellProps()}>
-                                                {cell.render('Cell')}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            );
-                        })}
+                        {rows.length === 0 ? (
+                            <tr className='dataless'>
+                                <td colSpan={dataTable.columns.length}>
+                                    등록된 회원이 없습니다. 회원 등록을 해주세요.
+                                    <span className="d-block">
+                                        <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
+                                    </span>
+                                </td>
+                            </tr>
+                        ) : (
+                            (rows || []).map((row, i) => {
+                                dataTable.prepareRow(row);
+                                return (
+                                    <tr {...row.getRowProps()} key={row.original.id}>
+                                        {row.cells.map((cell) => {
+                                            return (
+                                                <td key={cell.id} {...cell.getCellProps()}>
+                                                    {cell.render('Cell')}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>
+
 
             {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
 

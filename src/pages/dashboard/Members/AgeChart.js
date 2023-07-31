@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import Chart from 'react-apexcharts';
+import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -34,8 +35,6 @@ const AgeChart = ({ members }) => {
             }
         }
     }
-
-    // console.log('가장 큰 값:', maxCountObject);
 
     const apexBarChartOpts = {
         chart: {
@@ -70,13 +69,16 @@ const AgeChart = ({ members }) => {
             categories: ageGroups,
         },
         yaxis: {
-            stepSize: 1,
+            min: 0,
+            max: 5,
+            forceNiceScale: true,
             labels: {
                 formatter(value) {
                     return value.toFixed(0);
                 },
             },
         },
+    
         legend: {
             show: false,
         },
@@ -102,6 +104,8 @@ const AgeChart = ({ members }) => {
         data: ageGroups.map((ageGroup) => countByAgeGroupAndSex[`${ageGroup} ${sex}`] || 0),
     }));
 
+    const hasData = apexBarChartData.some((series) => series.data.some((count) => count > 0));
+
     return (
         <Card>
             <Card.Body>
@@ -121,6 +125,21 @@ const AgeChart = ({ members }) => {
                     className="apex-charts"
                     height={360}
                 />
+                 {!hasData && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            textAlign: 'center',
+                            width: '100%',
+                        }}
+                    >
+                        아직 표기할 데이터가 없어요.
+                        <span className='d-block'><Warning style={{ width: '10rem', height: '10rem', marginTop: '1rem' }} /></span>
+                    </div>
+                )}
             </Card.Body>
         </Card>
     );
