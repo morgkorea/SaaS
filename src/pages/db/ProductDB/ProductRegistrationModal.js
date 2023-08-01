@@ -19,7 +19,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
 
-    const [productName, setProductName] = useState('');
+    const [productName, setProductName] = useState('ex)[타석] - 1개월권');
     const [productType, setProductType] = useState('batterBox');
     const [expirationPeriod, setExpirationPeriod] = useState('1개월');
     const [expirationCount, setExpirationCount] = useState(0);
@@ -153,9 +153,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                 });
 
                 setValidationError(validationErrors);
-                console.log(validationError);
             }
-            console.log(error);
         }
 
         setIsRegistering(false);
@@ -233,14 +231,16 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 </div>
 
                                 <input
+                                    type="text"
                                     onChange={(e) => {
                                         getProductName(e);
                                     }}
+                                    placeholder={'ex) [타석] - 1개월권'}
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
                                         border: `1px solid ${validationError.productName ? '#fa5c7c' : '#DEE2E6'}`,
-                                        borderRadius: ' 2px',
+                                        borderRadius: '2px',
                                     }}></input>
                                 <div style={{ color: '#fa5c7c', fontSize: '12px', marginTop: '2px' }}>
                                     {validationError.productName}
