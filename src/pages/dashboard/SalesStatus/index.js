@@ -10,11 +10,7 @@ import ProductSales from './ProductSales';
 import SalesChart from './SalesChart';
 import RevenueChart from './RevenueChart';
 
-import { ButtonsGroup } from './ButtonsGroup.js';
-
-import { subWeeks, subDays } from 'date-fns';
-
-import { collection, query, doc, getDocs, updateDoc, onSnapshot, arrayUnion, where } from 'firebase/firestore';
+import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const SalesStatus = () => {
@@ -22,8 +18,6 @@ const SalesStatus = () => {
     const todayStart = new Date(new Date().toISOString().split('T')[0] + ' 00:00:00');
 
     const [salesData, setSalesData] = useState([]);
-    const [isFetchingData, setisFethcingData] = useState(true);
-    //
 
     const [datePickDate, setDatePickDate] = useState(todayStart);
     // 월간,주간,일간 선택
@@ -39,7 +33,6 @@ const SalesStatus = () => {
     const [currentPeriodRefundData, setCurrentPeriodRefundData] = useState([]);
     const [previousPeriodRefundData, setPreviousPeriodRefundData] = useState([]);
 
-    const [currentMembers, setCurrentMembers] = useState([]);
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
@@ -63,7 +56,7 @@ const SalesStatus = () => {
         return () => {
             unsubscribe();
         };
-    }, []);
+    }, [email]);
 
     const onDateChange = (date) => {
         if (date) {

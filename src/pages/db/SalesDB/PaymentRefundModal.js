@@ -1,10 +1,10 @@
-import react, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, updateDoc, getDoc, collection } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 import { FormInput } from '../../../components/';
@@ -12,7 +12,6 @@ import { FormInput } from '../../../components/';
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
 const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
-    const [size, setSize] = useState('lg');
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [refundConfirmModal, setRefundConfirmModal] = useState(false);
     const [penaltyPrice, setPenaltyPrice] = useState(0);
@@ -36,7 +35,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
 
                     if (memberAvailableProducts.length) {
                         for (let idx = 0; idx < memberAvailableProducts.length; idx++) {
-                            paymentSalesProducts.forEach((salesProduct) => {
+                            for (const salesProduct of paymentSalesProducts) {
                                 if (
                                     salesProduct.product === memberAvailableProducts[idx].product &&
                                     salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
@@ -56,8 +55,9 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                     });
                                     idx = 0;
                                     isUpdated = true;
+                                    break;
                                 }
-                            });
+                            }
                         }
                     }
 
@@ -154,7 +154,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     return (
         <>
             {!refundConfirmModal ? (
-                <Modal show={modal} onHide={toggle} size={size} centered={true} fullscreen={'xxl-down'}>
+                <Modal show={modal} onHide={toggle} size={'lg'} centered={true} fullscreen={'xxl-down'}>
                     <Modal.Header
                         className="border-bottom-0"
                         onHide={toggle}
@@ -229,7 +229,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                         {' '}
                                                         <div style={{ color: '#727CF5' }}>
                                                             {product.discountRate > 0 &&
-                                                                product.discountRate + '%' + ' 할인 적용'}
+                                                                `${product.discountRate}% 할인적용`}
                                                         </div>
                                                         <div style={{ color: '#727CF5' }}>
                                                             {product.adjustedPrice !== product.discountPrice &&
@@ -449,7 +449,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                 해당결제건을 환불하시겠어요?
                             </div>
                             <div style={{ display: 'grid', placeItems: 'center', marginBottom: '42px' }}>
-                                <img src={WarningIcon} />
+                                <img src={WarningIcon} alt="warning" />
                             </div>
 
                             <div style={{ display: 'flex', gap: '12px' }}>

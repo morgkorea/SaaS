@@ -1,18 +1,16 @@
-import react, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
 const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
-    const [size, setSize] = useState('lg');
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
-    const [currentMemberId, setCurrentMemberId] = useState(false);
     const [currentMemeberData, setCurrentMemeberData] = useState(false);
 
     const email = useSelector((state) => state.Auth?.user?.email);
@@ -32,7 +30,7 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
         return () => {
             unsubscribe();
         };
-    }, [paymentData]);
+    }, [paymentData, email]);
 
     const updateFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
@@ -58,12 +56,14 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
         try {
             if (currentMemeberData && paymentData?.salesProducts) {
                 let isUpdated = false;
+
                 const memberAvailableProducts = currentMemeberData.availableProducts;
                 const memberUnAvailableProducts = currentMemeberData.unavailableProducts;
                 const paymentSalesProducts = paymentData.salesProducts;
+
                 if (memberAvailableProducts.length && paymentSalesProducts) {
                     for (let idx = 0; idx < memberAvailableProducts.length; idx++) {
-                        paymentSalesProducts.forEach((salesProduct) => {
+                        for (const salesProduct of paymentSalesProducts) {
                             if (
                                 salesProduct.product === memberAvailableProducts[idx].product &&
                                 salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
@@ -82,8 +82,9 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                                 });
                                 idx = 0;
                                 isUpdated = true;
+                                break;
                             }
-                        });
+                        }
                     }
                     if (isUpdated) {
                         await updateDoc(firestoreMemberDocRef, {
@@ -115,7 +116,7 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
     return (
         <>
             {!deleteConfirmModal ? (
-                <Modal show={modal} onHide={toggle} size={size} centered={true}>
+                <Modal show={modal} onHide={toggle} size={'lg'} centered={true}>
                     <Modal.Header
                         className="border-bottom-0"
                         onHide={toggle}
@@ -190,7 +191,7 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                                                         {' '}
                                                         <div style={{ color: '#727CF5' }}>
                                                             {product.discountRate > 0 &&
-                                                                product.discountRate + '%' + ' 할인 적용'}
+                                                                `${product.discountRate}% 할인적용`}
                                                         </div>
                                                         <div style={{ color: '#727CF5' }}>
                                                             {product.adjustedPrice !== product.discountPrice &&
@@ -304,7 +305,7 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                                 해당결제건을 삭제하시겠어요?
                             </div>
                             <div style={{ display: 'grid', placeItems: 'center', marginBottom: '42px' }}>
-                                <img src={WarningIcon} />
+                                <img src={WarningIcon} alt="Warning" />
                             </div>
 
                             <div style={{ display: 'flex', gap: '12px' }}>

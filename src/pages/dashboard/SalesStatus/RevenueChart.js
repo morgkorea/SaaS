@@ -24,7 +24,6 @@ const RevenueChart = ({
 
     const periodSaelsDataInit = selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 0) : Array(7).fill(0);
 
-    // const periodSaelsDataInit = Array.from({ length: 31 }, () => 1);
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
     const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState(periodSaelsDataInit);
 
@@ -92,7 +91,6 @@ const RevenueChart = ({
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
-            console.log(salesData, currentRefundPrice);
 
             for (let day = 0; day < 7; day++) {
                 let totalSalesByDay = 0;
@@ -277,7 +275,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
                                     <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {currentPeriodTotalSales.toLocaleString()}원
+                                        {(currentPeriodTotalSales - currentRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
@@ -287,7 +285,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
                                     <span style={{ color: previousPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {previousPeriodTotalSales.toLocaleString()}원
+                                        {(previousPeriodTotalSales - previousRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
@@ -316,7 +314,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
                                     <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {currentPeriodTotalSales.toLocaleString()}원
+                                        {(currentPeriodTotalSales - currentRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
@@ -326,7 +324,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
                                     <span style={{ color: previousPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {previousPeriodTotalSales.toLocaleString()}원
+                                        {(previousPeriodTotalSales - previousRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
