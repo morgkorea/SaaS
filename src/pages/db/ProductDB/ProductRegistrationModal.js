@@ -284,8 +284,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         height: '40px',
                                         border: '1px solid #DEE2E6',
                                         borderRadius: ' 2px',
-                                        cursor: 'pointer',
-                                    }}>
+                                        cursor: productType === 'etc' ? 'default' : 'pointer',
+                                        backgroundColor: productType === 'etc' ? '#FAFAFA' : '',
+                                    }}
+                                    disabled={productType === 'etc'}>
                                     <option>1개월</option>
                                     <option>2개월</option>
                                     <option>3개월</option>
@@ -371,19 +373,11 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${
-                                                activation ? (productType === 'etc' ? '#DEE2E6' : '#727CF5') : '#DEE2E6'
-                                            }`,
-                                            color: activation
-                                                ? productType === 'etc'
-                                                    ? '#DEE2E6'
-                                                    : '#727CF5'
-                                                : '#DEE2E6',
-
+                                            border: `1px solid ${activation ? '#727CF5' : '#DEE2E6'}`,
+                                            color: activation ? '#727CF5' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
-                                        }}
-                                        disabled={productType === 'etc'}>
+                                        }}>
                                         판매등록
                                     </button>
                                     <button
@@ -393,22 +387,11 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${
-                                                !activation
-                                                    ? productType === 'etc'
-                                                        ? '#DEE2E6'
-                                                        : '#727CF5'
-                                                    : '#DEE2E6'
-                                            }`,
-                                            color: !activation
-                                                ? productType === 'etc'
-                                                    ? '#DEE2E6'
-                                                    : '#727CF5'
-                                                : '#DEE2E6',
+                                            border: `1px solid ${!activation ? '#727CF5' : '#DEE2E6'}`,
+                                            color: !activation ? '#727CF5' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
-                                        }}
-                                        disabled={productType === 'etc'}>
+                                        }}>
                                         보류하기
                                     </button>
                                 </div>

@@ -77,7 +77,7 @@ const RevenueChart = ({
 
             for (let date = 1; date <= currentDate; date++) {
                 let totalSalesByDate = 0;
-                salesData.forEach((ele) => {
+                salesData.forEach((ele, idx) => {
                     if (new Date(ele.paymentDate).getDate() === date) {
                         totalSalesByDate += ele.totalPaymentPrice;
                     }
@@ -85,6 +85,7 @@ const RevenueChart = ({
 
                 currentPeriodSalesArray.push(totalSalesByDate);
             }
+            console.log(currentPeriodRefundData);
             setCurrentPeriodSalesData(currentPeriodSalesArray);
         } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
             const currentPeriodSalesArray = [];
@@ -166,6 +167,10 @@ const RevenueChart = ({
             }, 0);
             setPreviousRefundPrice(previosRefund);
         }
+    };
+
+    const adjustSalesDataWithRefunds = () => {
+        const previousData = [];
     };
 
     useEffect(() => {
