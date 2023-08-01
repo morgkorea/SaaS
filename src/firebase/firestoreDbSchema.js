@@ -28,6 +28,8 @@ export const firestoreSalesProductSchema = {
     expirationPeriod: '', //type string "1개월","150일"
     refund: false,
     refundDate: false,
+    adjustedRefundPrice: 0,
+
     deleted_at: false,
 };
 

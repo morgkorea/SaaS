@@ -26,13 +26,16 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             if (paymentMemberId) {
                 const memberRef = doc(firestoreDB, 'Users', email, 'Members', paymentMemberId);
                 const memberDoc = await getDoc(memberRef);
+
                 if (memberDoc.data() && paymentData?.salesProducts) {
                     let isUpdated = false;
+
                     const memberAvailableProducts = memberDoc.data().availableProducts;
                     const memberUnAvailableProducts = memberDoc.data().unavailableProducts;
                     const paymentSalesProducts = paymentData.salesProducts;
+
                     if (memberAvailableProducts.length) {
-                        for (let idx = 0; memberAvailableProducts.length; idx++) {
+                        for (let idx = 0; idx < memberAvailableProducts.length; idx++) {
                             paymentSalesProducts.forEach((salesProduct) => {
                                 if (
                                     salesProduct.product === memberAvailableProducts[idx].product &&
@@ -57,12 +60,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                             });
                         }
                     }
-
-                    console.log({
-                        availableProducts: memberAvailableProducts,
-                        unavailableProducts: memberUnAvailableProducts,
-                        salesProduct: paymentData.salesProducts,
-                    });
 
                     if (isUpdated) {
                         await updateDoc(memberRef, {
@@ -99,11 +96,12 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const updateFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
         const salesProducts =
-            paymentData?.salesProducts?.map((product) => {
+            paymentData?.salesProducts?.map((product, idx) => {
                 return {
                     ...product,
                     refund: true,
                     refundDate: new Date().toISOString().split('T')[0],
+                    adjustedRefundPrice: refundEachProducts[idx],
                 };
             }) || [];
         const refundFields = {
@@ -142,6 +140,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
+    console.log(refundEachProducts);
     const handleRefundButtonClick = async () => {
         try {
             await updateFirestoreSalesData();
@@ -360,7 +359,10 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                     </div>
                                                     {paymentData.refund ? (
                                                         <div style={{ color: paymentData.refund ? '#FA5C7C' : '' }}>
-                                                            환불 완료
+                                                            {product.adjustedRefundPrice
+                                                                ? product.adjustedRefundPrice.toLocaleString()
+                                                                : 0}
+                                                            원
                                                         </div>
                                                     ) : (
                                                         <FormInput
