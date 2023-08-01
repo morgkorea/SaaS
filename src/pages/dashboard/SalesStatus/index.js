@@ -14,7 +14,7 @@ import { ButtonsGroup } from './ButtonsGroup.js';
 
 import { subWeeks, subDays } from 'date-fns';
 
-import { collection, query, doc, getDocs, updateDoc, onSnapshot, arrayUnion } from 'firebase/firestore';
+import { collection, query, doc, getDocs, updateDoc, onSnapshot, arrayUnion, where } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 const SalesStatus = () => {
@@ -39,19 +39,19 @@ const SalesStatus = () => {
     const [currentPeriodRefundData, setCurrentPeriodRefundData] = useState([]);
     const [previousPeriodRefundData, setPreviousPeriodRefundData] = useState([]);
 
-    console.log(sortedByPeriodSalesData, currentPeriodRefundData);
-    console.log(beforePeriodSalesData, previousPeriodRefundData);
-
     const [currentMembers, setCurrentMembers] = useState([]);
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
     });
 
-    const getFirestoreSalesData = async () => {
+    useEffect(() => {
         setIsLoading(true);
-        const firestoreSalesCollectionRef = query(collection(firestoreDB, 'Users', email, 'Sales'));
+        const firestoreSalesCollectionRef = query(
+            collection(firestoreDB, 'Users', email, 'Sales'),
+            where('deleted_at', '==', false)
+        );
 
-        onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
+        const unsubscribe = onSnapshot(firestoreSalesCollectionRef, (querySnapshot) => {
             const salesArray = [];
             querySnapshot.forEach((sale) => {
                 salesArray.push({ ...sale.data(), uid: sale.id });
@@ -60,10 +60,9 @@ const SalesStatus = () => {
             setSalesData(salesArray);
         });
         setIsLoading(false);
-    };
-
-    useEffect(() => {
-        getFirestoreSalesData();
+        return () => {
+            unsubscribe();
+        };
     }, []);
 
     const onDateChange = (date) => {
