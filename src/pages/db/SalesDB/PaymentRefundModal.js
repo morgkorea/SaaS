@@ -31,30 +31,31 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                     const memberAvailableProducts = memberDoc.data().availableProducts;
                     const memberUnAvailableProducts = memberDoc.data().unavailableProducts;
                     const paymentSalesProducts = paymentData.salesProducts;
-
-                    for (let idx = 0; memberAvailableProducts.length; idx++) {
-                        paymentSalesProducts.forEach((salesProduct) => {
-                            if (
-                                salesProduct.product === memberAvailableProducts[idx].product &&
-                                salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
-                                salesProduct.startDate === memberAvailableProducts[idx].startDate &&
-                                salesProduct.endDate === memberAvailableProducts[idx].endDate &&
-                                salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
-                                salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
-                                salesProduct.productType === memberAvailableProducts[idx].productType &&
-                                salesProduct.product === memberAvailableProducts[idx].product &&
-                                memberAvailableProducts[idx].deleted_at === false
-                            ) {
-                                memberAvailableProducts.splice(idx, 1);
-                                memberUnAvailableProducts.push({
-                                    ...salesProduct,
-                                    refund: true,
-                                    refundDate: new Date().toISOString().split('T')[0],
-                                });
-                                idx = 0;
-                                isUpdated = true;
-                            }
-                        });
+                    if (memberAvailableProducts.length) {
+                        for (let idx = 0; memberAvailableProducts.length; idx++) {
+                            paymentSalesProducts.forEach((salesProduct) => {
+                                if (
+                                    salesProduct.product === memberAvailableProducts[idx].product &&
+                                    salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
+                                    salesProduct.startDate === memberAvailableProducts[idx].startDate &&
+                                    salesProduct.endDate === memberAvailableProducts[idx].endDate &&
+                                    salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
+                                    salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
+                                    salesProduct.productType === memberAvailableProducts[idx].productType &&
+                                    salesProduct.product === memberAvailableProducts[idx].product &&
+                                    memberAvailableProducts[idx].deleted_at === false
+                                ) {
+                                    memberAvailableProducts.splice(idx, 1);
+                                    memberUnAvailableProducts.push({
+                                        ...salesProduct,
+                                        refund: true,
+                                        refundDate: new Date().toISOString().split('T')[0],
+                                    });
+                                    idx = 0;
+                                    isUpdated = true;
+                                }
+                            });
+                        }
                     }
 
                     console.log({
@@ -97,11 +98,16 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
 
     const updateFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
+        const salesProducts =
+            paymentData?.salesProducts?.map((product) => {
+                return { ...product, refund: true, refundDate: new Date().toISOString().split('T')[0] };
+            }) || [];
         const refundFields = {
             refund: true,
             refundDate: new Date().toISOString().split('T')[0],
             refundPrice: totalRefundPrice,
             refundPenaltyPrice: penaltyPrice,
+            salesProducts: salesProducts,
         };
 
         try {

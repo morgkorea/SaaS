@@ -34,6 +34,21 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
         };
     }, [paymentData]);
 
+    const updateFirestoreSalesData = async () => {
+        const currentDocId = paymentData?.uid;
+        const salesProducts =
+            paymentData?.salesProducts?.map((product) => {
+                return { ...product, deleted_at: new Date().toISOString() };
+            }) || [];
+
+        try {
+            const firstoreSalesDocRef = doc(firestoreDB, 'Users', email, 'Sales', currentDocId);
+            await updateDoc(firstoreSalesDocRef, { salesProducts: salesProducts });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const deleteFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
         const currentMemberId = paymentData.memberId;
@@ -71,12 +86,6 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                     });
                 }
 
-                console.log({
-                    availableProducts: memberAvailableProducts,
-                    unavailableProducts: memberUnAvailableProducts,
-                    salesProduct: paymentData.salesProducts,
-                });
-
                 if (isUpdated) {
                     await updateDoc(firestoreMemberDocRef, {
                         availableProducts: memberAvailableProducts,
@@ -87,6 +96,17 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
             await updateDoc(firstoreSalesDocRef, { ...paymentData, deleted_at: new Date().toISOString() });
 
             // await deleteDoc(firstoreSalesDocRef);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteButtonClick = async () => {
+        try {
+            await deleteFirestoreSalesData();
+            await updateFirestoreSalesData();
+            await setDeleteConfirmModal(!deleteConfirmModal);
+            await toggle();
         } catch (error) {
             console.log(error);
         }
@@ -314,11 +334,7 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                                     onMouseLeave={(event) => {
                                         event.target.style.backgroundColor = '#FFFFFF';
                                     }}
-                                    onClick={() => {
-                                        deleteFirestoreSalesData();
-                                        setDeleteConfirmModal(!deleteConfirmModal);
-                                        toggle();
-                                    }}
+                                    onClick={handleDeleteButtonClick}
                                     style={{
                                         width: '150px',
                                         border: '1px solid #FA5C7C',

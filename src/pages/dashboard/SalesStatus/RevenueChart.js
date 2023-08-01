@@ -72,20 +72,23 @@ const RevenueChart = ({
         if (sortedByPeriodSalesData.length && selectedPeriod === 'month') {
             const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
-
+            console.log(sortedByPeriodSalesData);
             for (let date = 1; date <= currentDate; date++) {
                 let totalSalesByDate = 0;
                 salesData.forEach((ele, idx) => {
                     if (new Date(ele.paymentDate).getDate() === date) {
                         totalSalesByDate += ele.totalPaymentPrice;
+                        if (ele.refund) {
+                            totalSalesByDate -= ele.refundPrice;
+                        }
                     }
                 });
 
                 currentPeriodSalesArray.push(totalSalesByDate);
             }
-            console.log(currentPeriodRefundData);
+
             setCurrentPeriodSalesData(currentPeriodSalesArray);
         } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
             const currentPeriodSalesArray = [];

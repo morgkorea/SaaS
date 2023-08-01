@@ -39,6 +39,9 @@ const SalesStatus = () => {
     const [currentPeriodRefundData, setCurrentPeriodRefundData] = useState([]);
     const [previousPeriodRefundData, setPreviousPeriodRefundData] = useState([]);
 
+    console.log(sortedByPeriodSalesData, currentPeriodRefundData);
+    console.log(beforePeriodSalesData, previousPeriodRefundData);
+
     const [currentMembers, setCurrentMembers] = useState([]);
     const email = useSelector((state) => {
         return state.Auth?.user?.email;
