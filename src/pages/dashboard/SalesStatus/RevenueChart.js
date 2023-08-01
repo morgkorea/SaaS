@@ -222,6 +222,8 @@ const RevenueChart = ({
         },
 
         yaxis: {
+            tickAmount: Math.max(...currentPeriodSalesData) + Math.max(...previousPeriodSalesData) <= 0 ? 2 : 10,
+            forceNiceScale: true,
             max:
                 Math.max(...currentPeriodSalesData) > Math.max(...previousPeriodSalesData)
                     ? Math.max(...currentPeriodSalesData) * 1.1
