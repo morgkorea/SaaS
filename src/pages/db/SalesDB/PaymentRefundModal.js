@@ -101,7 +101,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                     ...product,
                     refund: true,
                     refundDate: new Date().toISOString().split('T')[0],
-                    adjustedRefundPrice: refundEachProducts[idx],
+                    refundAdjustment: refundEachProducts[idx],
                 };
             }) || [];
         const refundFields = {
@@ -359,8 +359,8 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                     </div>
                                                     {paymentData.refund ? (
                                                         <div style={{ color: paymentData.refund ? '#FA5C7C' : '' }}>
-                                                            {product.adjustedRefundPrice
-                                                                ? product.adjustedRefundPrice.toLocaleString()
+                                                            {product.refundAdjustment
+                                                                ? product.refundAdjustment.toLocaleString()
                                                                 : 0}
                                                             원
                                                         </div>

@@ -28,7 +28,7 @@ export const firestoreSalesProductSchema = {
     expirationPeriod: '', //type string "1개월","150일"
     refund: false,
     refundDate: false,
-    adjustedRefundPrice: 0,
+    refundAdjustment: 0, // type: number 원래 환불 금액과 실제 환불 금액 사이의 차액
 
     deleted_at: false,
 };
