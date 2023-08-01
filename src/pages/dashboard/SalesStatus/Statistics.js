@@ -76,7 +76,7 @@ const Statistics = ({
         if (sortedByPeriodSalesData) {
             [...sortedByPeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund && !curr.deleted_at ? [...acc, ...curr.salesProducts] : [...acc];
+                    return !curr.deleted_at ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {
@@ -106,7 +106,7 @@ const Statistics = ({
         if (beforePeriodSalesData) {
             [...beforePeriodSalesData]
                 .reduce((acc, curr) => {
-                    return !curr.refund && !curr.deleted_at ? [...acc, ...curr.salesProducts] : [...acc];
+                    return !curr.deleted_at ? [...acc, ...curr.salesProducts] : [...acc];
                 }, [])
                 .forEach((ele, idx) => {
                     if (ele.productType === 'batterBox') {

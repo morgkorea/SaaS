@@ -100,7 +100,11 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
         const currentDocId = paymentData?.uid;
         const salesProducts =
             paymentData?.salesProducts?.map((product) => {
-                return { ...product, refund: true, refundDate: new Date().toISOString().split('T')[0] };
+                return {
+                    ...product,
+                    refund: true,
+                    refundDate: new Date().toISOString().split('T')[0],
+                };
             }) || [];
         const refundFields = {
             refund: true,

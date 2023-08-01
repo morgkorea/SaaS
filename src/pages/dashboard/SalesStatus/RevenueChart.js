@@ -74,15 +74,12 @@ const RevenueChart = ({
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
                 return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
-            console.log(sortedByPeriodSalesData);
+
             for (let date = 1; date <= currentDate; date++) {
                 let totalSalesByDate = 0;
-                salesData.forEach((ele, idx) => {
+                salesData.forEach((ele) => {
                     if (new Date(ele.paymentDate).getDate() === date) {
                         totalSalesByDate += ele.totalPaymentPrice;
-                        if (ele.refund) {
-                            totalSalesByDate -= ele.refundPrice;
-                        }
                     }
                 });
 
@@ -93,8 +90,9 @@ const RevenueChart = ({
         } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
             const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
+            console.log(salesData, currentRefundPrice);
 
             for (let day = 0; day < 7; day++) {
                 let totalSalesByDay = 0;
@@ -117,7 +115,7 @@ const RevenueChart = ({
         if (beforePeriodSalesData.length && selectedPeriod === 'month') {
             const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
 
             for (let date = 1; date <= previousMonthLastDate; date++) {
@@ -134,7 +132,7 @@ const RevenueChart = ({
         } else if (beforePeriodSalesData.length && selectedPeriod === 'week') {
             const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
 
             for (let day = 0; day < 7; day++) {
@@ -170,10 +168,6 @@ const RevenueChart = ({
             }, 0);
             setPreviousRefundPrice(previosRefund);
         }
-    };
-
-    const adjustSalesDataWithRefunds = () => {
-        const previousData = [];
     };
 
     useEffect(() => {

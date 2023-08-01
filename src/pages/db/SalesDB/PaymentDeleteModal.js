@@ -61,36 +61,36 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                 const memberAvailableProducts = currentMemeberData.availableProducts;
                 const memberUnAvailableProducts = currentMemeberData.unavailableProducts;
                 const paymentSalesProducts = paymentData.salesProducts;
-
-                for (let idx = 0; memberAvailableProducts.length; idx++) {
-                    paymentSalesProducts.forEach((salesProduct) => {
-                        if (
-                            salesProduct.product === memberAvailableProducts[idx].product &&
-                            salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
-                            salesProduct.startDate === memberAvailableProducts[idx].startDate &&
-                            salesProduct.endDate === memberAvailableProducts[idx].endDate &&
-                            salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
-                            salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
-                            salesProduct.productType === memberAvailableProducts[idx].productType &&
-                            salesProduct.product === memberAvailableProducts[idx].product &&
-                            memberAvailableProducts[idx].deleted_at === false
-                        ) {
-                            memberAvailableProducts.splice(idx, 1);
-                            memberUnAvailableProducts.push({
-                                ...salesProduct,
-                                deleted_at: new Date().toISOString(),
-                            });
-                            idx = 0;
-                            isUpdated = true;
-                        }
-                    });
-                }
-
-                if (isUpdated) {
-                    await updateDoc(firestoreMemberDocRef, {
-                        availableProducts: memberAvailableProducts,
-                        unavailableProducts: memberUnAvailableProducts,
-                    });
+                if (memberAvailableProducts.length && paymentSalesProducts) {
+                    for (let idx = 0; idx < memberAvailableProducts.length; idx++) {
+                        paymentSalesProducts.forEach((salesProduct) => {
+                            if (
+                                salesProduct.product === memberAvailableProducts[idx].product &&
+                                salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
+                                salesProduct.startDate === memberAvailableProducts[idx].startDate &&
+                                salesProduct.endDate === memberAvailableProducts[idx].endDate &&
+                                salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
+                                salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
+                                salesProduct.productType === memberAvailableProducts[idx].productType &&
+                                salesProduct.product === memberAvailableProducts[idx].product &&
+                                memberAvailableProducts[idx].deleted_at === false
+                            ) {
+                                memberAvailableProducts.splice(idx, 1);
+                                memberUnAvailableProducts.push({
+                                    ...salesProduct,
+                                    deleted_at: new Date().toISOString(),
+                                });
+                                idx = 0;
+                                isUpdated = true;
+                            }
+                        });
+                    }
+                    if (isUpdated) {
+                        await updateDoc(firestoreMemberDocRef, {
+                            availableProducts: memberAvailableProducts,
+                            unavailableProducts: memberUnAvailableProducts,
+                        });
+                    }
                 }
             }
             await updateDoc(firstoreSalesDocRef, { ...paymentData, deleted_at: new Date().toISOString() });
