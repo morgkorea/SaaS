@@ -19,16 +19,16 @@ const RevenueChart = ({
     const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
 
-    const periodSaelsDataInit = selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : Array(7).fill(1);
+    const apexLineInitData =
+        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 0) : Array(7).fill(0);
+
+    const periodSaelsDataInit = selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 0) : Array(7).fill(0);
 
     // const periodSaelsDataInit = Array.from({ length: 31 }, () => 1);
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
     const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState(periodSaelsDataInit);
 
     const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
-
-    const apexLineInitData =
-        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 1) : Array(7).fill(1);
 
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
@@ -174,15 +174,11 @@ const RevenueChart = ({
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
         getCurrentPeriodRefund();
         getPreviousPeriodRefund();
-    }, [datePickDate, selectedPeriod]);
-    useEffect(() => {
         getPreviousPeriodTotalSales(beforePeriodSalesData);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
-    }, [beforePeriodSalesData, selectedPeriod, datePickDate]);
-    useEffect(() => {
         getCurrentPeriodTotalSales(sortedByPeriodSalesData);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
-    }, [sortedByPeriodSalesData, selectedPeriod, datePickDate]);
+    }, [datePickDate, selectedPeriod, beforePeriodSalesData, sortedByPeriodSalesData]);
 
     const apexLineChartWithLables = {
         chart: {
