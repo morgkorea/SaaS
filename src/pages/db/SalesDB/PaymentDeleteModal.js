@@ -95,8 +95,6 @@ const PaymentDeleteModal = ({ modal, setModal, paymentData }) => {
                 }
             }
             await updateDoc(firstoreSalesDocRef, { ...paymentData, deleted_at: new Date().toISOString() });
-
-            // await deleteDoc(firstoreSalesDocRef);
         } catch (error) {
             console.log(error);
         }
