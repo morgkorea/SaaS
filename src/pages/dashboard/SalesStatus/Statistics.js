@@ -146,7 +146,7 @@ const Statistics = ({
             locker: percentCalculator(amountBeforeProductsSales.locker, amountProductsSales.locker),
             etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
         };
-
+        //logger.info("
         setAmountCompoareWithPreviousSales(comparedPercentages);
     };
 
@@ -246,17 +246,8 @@ const Statistics = ({
                         amountBeforeProductsSales={amountBeforeProductsSales.etc.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.etc >= 0 ? 'text-success' : 'text-danger',
-
                             icon: getUpDownIcon(amountCompareWithPreviousSales.etc),
-                            // beforePeriodSalesData.length
-                            //     ? amountCompareWithPreviousSales.etc > 0
-                            //         ? 'mdi mdi-arrow-up-bold'
-                            //         : amountCompareWithPreviousSales.etc === 0
-                            //         ? ''
-                            //         : 'mdi mdi-arrow-down-bold'
-                            //     : 'mdi mdi-arrow-up-bold',
                             value: amountCompareWithPreviousSales.etc + '%',
-
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
