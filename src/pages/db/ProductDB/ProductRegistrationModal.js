@@ -192,6 +192,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         if (price > 0) {
             setValidationError({ ...validationError, regularPrice: false });
         }
+        //is update?
 
         setRegularPrice(Number(price));
     };
