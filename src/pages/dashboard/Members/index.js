@@ -33,7 +33,6 @@ const MemberDashboard = () => {
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
-
     const getMembers = async () => {
         const querySnapshot = await getDocs(memberRef);
 
