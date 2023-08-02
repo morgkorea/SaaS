@@ -55,13 +55,15 @@ const Statistics = ({
     };
     const comparedWithPreviousRefund = (previous, current) => {
         setComparedRefundPrice(0);
+        console.log(previousRefundPrice);
 
         const percentage = (((current - previous) / previous) * 100).toFixed(2);
         if (previous === 0 && current === 0) {
-            return 0;
+            return setComparedRefundPrice(0);
         } else if (previous === 0) {
-            return 100;
+            return setComparedRefundPrice(100);
         }
+
         setComparedRefundPrice(percentage % 1 === 0 ? Math.floor(percentage) : percentage);
     };
 
@@ -128,13 +130,14 @@ const Statistics = ({
         setAmountCompoareWithPreviousSales({ batterBox: 0, lesson: 0, locker: 0, etc: 0 });
 
         const percentCalculator = (before, current) => {
-            const percentage = (((current - before) / before) * 100).toFixed(2);
+            const percentage = Number((((current - before) / before) * 100).toFixed(0));
 
-            if (before === 0 && current === 0) {
+            if ((before === 0 && current === 0) || isNaN(percentage)) {
                 return 0;
-            } else if (before === 0) {
+            } else if (before === 0 || percentage === Infinity) {
                 return 100;
             }
+
             return percentage % 1 === 0 ? Math.floor(percentage) : percentage;
         };
 
@@ -145,7 +148,17 @@ const Statistics = ({
             etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
         };
 
+        console.log(comparedPercentages);
+
         setAmountCompoareWithPreviousSales(comparedPercentages);
+    };
+
+    const getUpDownIcon = (value) => {
+        if (beforePeriodSalesData.length) {
+            return value > 0 ? 'mdi mdi-arrow-up-bold' : value === 0 ? '' : 'mdi mdi-arrow-down-bold';
+        } else {
+            return value === 0 ? '' : 'mdi mdi-arrow-up-bold';
+        }
     };
 
     const periodTextHandler = () => {
@@ -174,7 +187,7 @@ const Statistics = ({
     useEffect(() => {
         compareWithPreviousSales();
         comparedWithPreviousRefund(previousRefundPrice, currentRefundPrice);
-    }, [currentRefundPrice, amountBeforeProductsSales]);
+    }, [currentRefundPrice, previousRefundPrice, amountBeforeProductsSales]);
 
     return (
         <>
@@ -188,17 +201,9 @@ const Statistics = ({
                         amountBeforeProductsSales={amountBeforeProductsSales.batterBox.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.batterBox >= 0 ? 'text-success' : 'text-danger',
-
-                            icon: beforePeriodSalesData.length
-                                ? amountCompareWithPreviousSales.batterBox > 0
-                                    ? 'mdi mdi-arrow-up-bold'
-                                    : amountCompareWithPreviousSales.batterBox === 0
-                                    ? ''
-                                    : 'mdi mdi-arrow-down-bold'
-                                : '',
-
+                            icon: getUpDownIcon(amountCompareWithPreviousSales.batterBox),
                             value: amountCompareWithPreviousSales.batterBox + '%',
-                            // beforePeriodSalesData.length ? amountCompareWithPreviousSales.batterBox + '%' : '0%'
+
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -212,13 +217,7 @@ const Statistics = ({
                         amountBeforeProductsSales={amountBeforeProductsSales.lesson.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.lesson >= 0 ? 'text-success' : 'text-danger',
-                            icon: beforePeriodSalesData.length
-                                ? amountCompareWithPreviousSales.lesson > 0
-                                    ? 'mdi mdi-arrow-up-bold'
-                                    : amountCompareWithPreviousSales.lesson === 0
-                                    ? ''
-                                    : 'mdi mdi-arrow-down-bold'
-                                : '',
+                            icon: getUpDownIcon(amountCompareWithPreviousSales.lesson),
                             value: amountCompareWithPreviousSales.lesson + '%',
 
                             // beforePeriodSalesData.length ? amountCompareWithPreviousSales.lesson + '%' : '0%'
@@ -235,15 +234,8 @@ const Statistics = ({
                         amountBeforeProductsSales={amountBeforeProductsSales.locker.toLocaleString() + '원'}
                         trend={{
                             textClass: amountCompareWithPreviousSales.locker >= 0 ? 'text-success' : 'text-danger',
-                            icon: beforePeriodSalesData.length
-                                ? amountCompareWithPreviousSales.locker > 0
-                                    ? 'mdi mdi-arrow-up-bold'
-                                    : amountCompareWithPreviousSales.locker === 0
-                                    ? ''
-                                    : 'mdi mdi-arrow-down-bold'
-                                : '',
+                            icon: getUpDownIcon(amountCompareWithPreviousSales.locker),
                             value: amountCompareWithPreviousSales.locker + '%',
-
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -258,15 +250,16 @@ const Statistics = ({
                         trend={{
                             textClass: amountCompareWithPreviousSales.etc >= 0 ? 'text-success' : 'text-danger',
 
-                            icon: beforePeriodSalesData.length
-                                ? amountCompareWithPreviousSales.etc > 0
-                                    ? 'mdi mdi-arrow-up-bold'
-                                    : amountCompareWithPreviousSales.etc === 0
-                                    ? ''
-                                    : 'mdi mdi-arrow-down-bold'
-                                : '',
+                            icon: getUpDownIcon(amountCompareWithPreviousSales.etc),
+                            // beforePeriodSalesData.length
+                            //     ? amountCompareWithPreviousSales.etc > 0
+                            //         ? 'mdi mdi-arrow-up-bold'
+                            //         : amountCompareWithPreviousSales.etc === 0
+                            //         ? ''
+                            //         : 'mdi mdi-arrow-down-bold'
+                            //     : 'mdi mdi-arrow-up-bold',
                             value: amountCompareWithPreviousSales.etc + '%',
-                            //  beforePeriodSalesData.length ? amountCompareWithPreviousSales.etc + '%' : '0%'
+
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
@@ -280,13 +273,7 @@ const Statistics = ({
                         amountBeforeProductsSales={previousRefundPrice.toLocaleString() + '원'}
                         trend={{
                             textClass: comparedRefundPrice <= 0 ? 'text-success' : 'text-danger',
-                            icon: beforePeriodSalesData.length
-                                ? comparedRefundPrice > 0
-                                    ? 'mdi mdi-arrow-up-bold'
-                                    : comparedRefundPrice === 0
-                                    ? ''
-                                    : 'mdi mdi-arrow-down-bold'
-                                : '',
+                            icon: getUpDownIcon(comparedRefundPrice),
                             value: comparedRefundPrice + '%',
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
