@@ -51,11 +51,32 @@ const PhoneColumn = ({ row }) => {
     return countryCode + formattedPhoneNumber;
 };
 
+const AudienceColumn = ({ row }) => {
+    const [audienceValue, setAudienceValue] = useState(0);
+    const availableProducts = row.original?.availableProducts || [];
+    const unavailableProducts = row.original?.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+
+    useEffect(() => {
+        // allProducts 배열의 길이를 기준으로 '잠재', '신규', '재등록'을 설정
+        if (allProducts.length === 0) {
+            setAudienceValue('잠재');
+        } else if (allProducts.length === 1) {
+            setAudienceValue('신규');
+        } else {
+            setAudienceValue('재등록');
+        }
+    }, [allProducts]);
+
+    return <>{audienceValue}</>;
+};
+
 const CumulativePayCount = ({ row }) => {
     const [allProducts, setAllProducts] = useState(0);
     const availableProducts = row.original?.availableProducts;
     const unavailableProducts = row.original?.unavailableProducts;
 
+    // 환불,삭제 조건 추가
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
@@ -110,8 +131,10 @@ const cumulativePayAccessor = (row) => {
     let totalValue = 0;
 
     if (
-        availableProducts && Array.isArray(availableProducts) &&
-        unavailableProducts && Array.isArray(unavailableProducts)
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        unavailableProducts &&
+        Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
         const amounts = products.map((data) => data.adjustedPrice);
@@ -128,8 +151,10 @@ const averagePayAccessor = (row) => {
     let averageValue = 0;
 
     if (
-        availableProducts && Array.isArray(availableProducts) &&
-        unavailableProducts && Array.isArray(unavailableProducts)
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        unavailableProducts &&
+        Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
         const amounts = products.map((data) => data.adjustedPrice);
@@ -140,6 +165,24 @@ const averagePayAccessor = (row) => {
 
     return averageValue;
 };
+
+const taSeokActive = ({ row }) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
+
+    return <>{isActive ? '활성' : '비활성'}</>;
+}
+
+const lessonActive = ({ row }) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
+
+    return <>{isActive ? '활성' : '비활성'}</>;
+}
+
+
 
 const columns = [
     {
@@ -183,6 +226,7 @@ const columns = [
     {
         Header: '유형',
         accessor: 'audience',
+        Cell: AudienceColumn,
         sort: true,
     },
     {
@@ -263,15 +307,17 @@ const columns = [
     },
     {
         Header: '타석 활성여부',
-        accessor: 'taSeokActive',
-        Cell: ({ value }) => (value ? '활성' : '비활성'),
+        // accessor: 'taSeokActive',
+        // Cell: ({ value }) => (value ? '활성' : '비활성'),
+        Cell: taSeokActive,
         sortType: 'basic',
         sort: true,
     },
     {
         Header: '레슨 활성여부',
-        accessor: 'lessonActive',
-        Cell: ({ value }) => (value ? '활성' : '비활성'),
+        // accessor: 'lessonActive',
+        // Cell: ({ value }) => (value ? '활성' : '비활성'),
+        Cell: lessonActive,
         sortType: 'basic',
         sort: true,
     },

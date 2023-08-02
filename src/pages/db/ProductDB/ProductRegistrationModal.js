@@ -1,6 +1,6 @@
 // @flow
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
@@ -234,7 +234,17 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                             <Col>
                                 <div className="mb-1">
                                     <span>상품명</span>
-                                    <i className="mdi mdi-help-circle-outline" />
+                                    <OverlayTrigger style={{width: '100%'}} overlay={<Tooltip id="tooltip-disabled">
+                                        <div >
+                                            Tip. 상품카테고리-유효기간/횟수로 상품명을 만드시는걸 추천드려요.
+                                        </div>
+                                        </Tooltip>}>
+                                    <span className="d-inline-block">
+                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
+                                            <i className="uil uil-question-circle" />
+                                        </button>
+                                    </span>
+                                </OverlayTrigger>
                                 </div>
                                 <input
                                     onChange={(e) => {

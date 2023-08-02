@@ -65,15 +65,20 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     // 타석/레슨 추이
     function calculateData(dataArray) {
         const dailyData = new Array(labels.length).fill(0);
+
         const monthlyData = new Array(12).fill(0);
         const currentYear = new Date().getFullYear();
+
         const currentMonth = new Date().getMonth();
         const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // 현재 월의 마지막 날
 
         dataArray.forEach((data) => {
-            const { startDate, endDate } = data;
+            const { startDate, endDate, refundDate } = data;
             const start = new Date(new Date(startDate).toISOString().split('T')[0] + ' 00:00:00');
             const end = new Date(new Date(endDate).toISOString().split('T')[0] + ' 00:00:00');
+            const refund = refundDate
+                ? new Date(new Date(refundDate).toISOString().split('T')[0] + ' 00:00:00')
+                : false;
             const startYear = start.getFullYear();
             const endYear = end.getFullYear();
             const startMonth = start.getMonth();
@@ -101,29 +106,28 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                     dailyData[day - 1]++;
                 }
             }
-
             // monthlyData
             if (startYear <= currentYear && currentYear <= endYear) {
                 for (let month = 0; month < 12; month++) {
                     const firstDayOfMonth = new Date(currentYear, month, 1);
                     const lastDayOfMonth = new Date(currentYear, month + 1, 0);
 
-                    if (start <= lastDayOfMonth && end >= firstDayOfMonth) {
+                    if (refund && refund >= firstDayOfMonth && refund <= lastDayOfMonth) {
                         monthlyData[month]++;
                     }
                 }
             }
         });
 
-        // console.log('dailyData', dailyData);
-        // console.log('monthlyData', monthlyData);
         return isMonthlyView ? dailyData : monthlyData;
     }
-
     const calculateAnnualActivateBatterboxData = () => {
         const activateBatterboxMembers = sortedMembers.flatMap((member) =>
-            (member.availableProducts || []).filter((product) => product.productType === 'batterBox')
+            (member.availableProducts || [])
+                .concat(member.unavailableProducts || [])
+                .filter((product) => product.productType === 'batterBox')
         );
+
         const filteredBatterboxMembers = activateBatterboxMembers.filter((product) => {
             const endDate = new Date(product.endDate);
             return endDate >= now;
@@ -134,7 +138,9 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
 
     const calculateAnnualActivateLessonData = () => {
         const activateLessonMembers = sortedMembers.flatMap((member) =>
-            (member.availableProducts || []).filter((product) => product.productType === 'lesson')
+            (member.availableProducts || [])
+                .concat(member.unavailableProducts || [])
+                .filter((product) => product.productType === 'lesson')
         );
 
         const filteredLessonMembers = activateLessonMembers.filter((product) => {
@@ -155,14 +161,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data: !isMonthlyView ? calculateAnnualActivateBatterboxData(sortedMembers) : activateBatterboxMembers,
+            data: calculateAnnualActivateBatterboxData(sortedMembers),
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: !isMonthlyView ? calculateAnnualActivateLessonData(sortedMembers) : activateLessonMembers,
+            data: calculateAnnualActivateLessonData(sortedMembers),
         },
     ];
 
@@ -230,7 +236,6 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         },
     };
 
-    
     return (
         <>
             {index === 1 && (

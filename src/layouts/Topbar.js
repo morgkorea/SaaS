@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,7 +14,7 @@ import TopbarSearch from '../components/TopbarSearch';
 import AppsDropdown from '../components/AppsDropdown/';
 
 // images
-import profilePic from '../assets/images/users/avatar-1.jpg';
+import profilePic from '../assets/images/users/user-profile.png'; // 프로필 이미지 수정
 import avatar1 from '../assets/images/users/avatar-2.jpg';
 import avatar2 from '../assets/images/users/avatar-4.jpg';
 import logoSmDark from '../assets/images/logo_sm_dark.png';

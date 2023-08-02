@@ -2,10 +2,16 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 const CurrentUsageInfo = ({ member }) => {
-    const taSeokActive = member.taSeokActive;
-    const lessonActive = member.lessonActive;
-    const lockerActive = member.lockerActive;
-
+    const hasTaSeokProduct = (member.availableProducts || []).some((product) => {
+        return product && product.product && product.productType === 'batterBox';
+    });
+    const hasLessonProduct = (member.availableProducts || []).some((product) => {
+        return product && product.product && product.productType === 'lesson';
+    });
+    const hasLockerProduct = (member.availableProducts || []).some((product) => {
+        return product && product.product && product.productType === 'locker';
+    });
+    
     return (
         <>
             <Card>
@@ -16,7 +22,7 @@ const CurrentUsageInfo = ({ member }) => {
                             <div>
                                 <h4 className="me-2">타석</h4>
                                 <p>
-                                    {taSeokActive ? (
+                                    {hasTaSeokProduct ? (
                                         <>
                                             활성 <i className="dripicons-media-record text-primary ms-1" />
                                         </>
@@ -30,7 +36,7 @@ const CurrentUsageInfo = ({ member }) => {
                             <div>
                                 <h4 className="me-2">레슨</h4>
                                 <p>
-                                    {lessonActive ? (
+                                    {hasLessonProduct ? (
                                         <>
                                             활성 <i className="dripicons-media-record text-primary ms-1" />
                                         </>
@@ -44,7 +50,7 @@ const CurrentUsageInfo = ({ member }) => {
                             <div>
                                 <h4 className="me-2">락커</h4>
                                 <p>
-                                    {lockerActive ? (
+                                    {hasLockerProduct ? (
                                         <>
                                             활성 <i className="dripicons-media-record text-primary ms-1" />
                                         </>

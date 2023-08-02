@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Statistics = ({
     previousActivateBatterboxMembers,
@@ -38,7 +39,6 @@ const Statistics = ({
     // 타석/레슨 회원 수, 만료예정 수
     useEffect(() => {
         const countMembersWithTaSeokProduct = () => {
-            // const taSeokMembers = members.filter((member) => member.taSeokActive === true);
             const taSeokMembers = members.filter((member) => {
                 if (member.availableProducts && Array.isArray(member.availableProducts)) {
                     return member.availableProducts.some((product) => product.productType === 'batterBox');
@@ -61,7 +61,6 @@ const Statistics = ({
         };
 
         const countMembersWithLessonProduct = () => {
-            // const lessonMembers = members.filter((member) => member.lessonActive === true);
             const lessonMembers = members.filter((member) => {
                 if (member.availableProducts && Array.isArray(member.availableProducts)) {
                     return member.availableProducts.some((product) => product.productType === 'lesson');
@@ -211,13 +210,13 @@ const Statistics = ({
         if (lastMonthValue === 0) {
             return thisMonthValue === 0 ? 0 : 100;
         }
-    
+
         const rawChange = ((thisMonthValue - lastMonthValue) / lastMonthValue) * 100;
         const cappedChange = Math.min(rawChange, 100);
-    
+
         return isNaN(cappedChange) ? 0 : cappedChange;
     };
-    
+
     return (
         <>
             {index === 1 ? (
@@ -225,7 +224,7 @@ const Statistics = ({
                     <StatisticsWidget
                         height={186}
                         icon="uil uil-users-alt float-end"
-                        description="Revenue"
+                        // description="Revenue"
                         title="타석 활성 회원"
                         stats={currentBatterboxMembers + '명'}
                         trend={{
@@ -250,14 +249,25 @@ const Statistics = ({
                         height={186}
                         icon="uil uil-stopwatch float-end danger"
                         border="danger"
-                        description="Refund"
-                        title="타석 만료 예정 회원 (1개월 내)"
+                        // description="Refund"
+                        title={
+                            <>
+                                타석 만료 예정 
+                                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">1개월 내 만료 예정 회원</Tooltip>}>
+                                    <span className="d-inline-block">
+                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
+                                            <i className="uil uil-question-circle" />
+                                        </button>
+                                    </span>
+                                </OverlayTrigger>
+                            </>
+                        }
                         stats={taSeokExpires + '명'}
                     />
                     <StatisticsWidget
                         height={186}
                         icon="uil uil-users-alt float-end"
-                        description="Refund"
+                        // description="Refund"
                         title="레슨 활성 회원"
                         stats={currentLessonMembers + '명'}
                         trend={{
@@ -281,8 +291,19 @@ const Statistics = ({
                         height={186}
                         icon="uil uil-stopwatch float-end danger"
                         border="danger"
-                        description="Refund"
-                        title="레슨 만료 예정 회원 (1개월 내)"
+                        // description="Refund"
+                        title={
+                            <>
+                                레슨 만료 예정 
+                                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">1개월 내 만료 예정 회원</Tooltip>}>
+                                    <span className="d-inline-block">
+                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none'  }}>
+                                            <i className="uil uil-question-circle" />
+                                        </button>
+                                    </span>
+                                </OverlayTrigger>
+                            </>
+                        }
                         stats={lessonExpires + '명'}
                     />
                 </>
@@ -291,7 +312,7 @@ const Statistics = ({
                     <StatisticsWidget
                         height={186}
                         icon="uil uil-users-alt float-end"
-                        description="Revenue"
+                        // description="Revenue"
                         title="전체 회원"
                         stats={allMember + '명'}
                         trend={{
@@ -305,8 +326,20 @@ const Statistics = ({
                         height={186}
                         icon="uil uil-stopwatch float-end danger"
                         border="danger"
-                        description="Refund"
-                        title="기간 만료 회원"
+                        // description="Refund"
+                        // title="기간 만료 회원"
+                        title={
+                            <>
+                                기간 만료 회원
+                                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">상품 이용 기간이 만료된 회원</Tooltip>}>
+                                    <span className="d-inline-block">
+                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none'  }}>
+                                            <i className="uil uil-question-circle" />
+                                        </button>
+                                    </span>
+                                </OverlayTrigger>
+                            </>
+                        }
                         stats={expiredMembers + '명'}
                     />
                 </>

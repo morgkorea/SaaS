@@ -173,7 +173,7 @@ const Table = (props: TableProps) => {
                     )}
                 </div>
             </div>
-            <div className="table-responsive member-table" style={{ minHeight: '700px' }}>
+            <div className="table-responsive member-table" style={{ minHeight: '800px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}

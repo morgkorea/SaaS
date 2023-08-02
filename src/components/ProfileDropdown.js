@@ -46,15 +46,15 @@ const ProfileDropdown = (props: ProfileDropdownProps, state: ProfileDropdownStat
                 as={Link}
                 to="#"
                 onClick={toggleDropdown}
-                className="nav-link dropdown-toggle nav-user arrow-none me-0">
+                className="nav-link dropdown-toggle nav-user arrow-none me-0 d-flex align-items-center"
+            >
                 <span className="account-user-avatar">
                     <img src={profilePic} className="rounded-circle" alt="user" />
                 </span>
-                <span>
-                    <span className="account-user-name">{username}</span>
-                    <span className="account-position">{role}</span>
-                </span>
+                
+                <p className="account-user-name mb-0">{username} 님</p>
             </Dropdown.Toggle>
+            
             <Dropdown.Menu align={'end'} className="dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
                 <div onClick={toggleDropdown}>
                     <div className="dropdown-header noti-title">

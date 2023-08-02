@@ -5,6 +5,21 @@ import { firestoreDB } from '../../../firebase/firebase';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const getAudienceValue = (member) => {
+    const availableProducts = member.availableProducts || [];
+    const unavailableProducts = member.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+  
+    if (allProducts.length === 0) {
+      return '잠재';
+    } else if (allProducts.length === 1) {
+      return '신규';
+    } else {
+      return '재등록';
+    }
+};
+
+
 const EditTable = forwardRef(({ member, email, id }, ref) => {
     const notify = () => toast('개인정보가 수정되었습니다.');
 
@@ -23,6 +38,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [inflowPathValue, setInflowPathValue] = useState(member.inflowPath);
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
+    const audienceValue = getAudienceValue(member);
 
     const handleFocus = (e) => {
         const { value } = e.target;
@@ -84,6 +100,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
             editUser();
         },
     }));
+
 
     return (
         <>
@@ -183,7 +200,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     <tr>
                         <th>유형</th>
                         <td>
-                            {member.audience}
+                            {audienceValue}
                         </td>
                     </tr>
                     <tr>

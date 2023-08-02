@@ -242,7 +242,7 @@ const MemberDashboard = () => {
                             <SessionsChart
                                 activateBatterboxMembers={activateBatterboxMembers}
                                 activateLessonMembers={activateLessonMembers}
-                                members={activeMembers}
+                                members={currentMembers}
                                 index={index}
                             />
                         </Col>

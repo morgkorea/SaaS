@@ -1,14 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-
 import { firestoreDB } from '../../../firebase/firebase';
 import { firestoreMemebersFieldSchema } from '../../../firebase/firestoreDbSchema';
-
 import { addDoc, collection } from 'firebase/firestore';
 import moment from 'moment';
 import Select from 'react-select';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
-
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddCell = forwardRef((props, ref) => {
@@ -29,11 +26,6 @@ const AddCell = forwardRef((props, ref) => {
     const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
-    const audienceValue = '잠재';
-    const taSeokActive = false;
-    const lessonActive = false;
-    const lockerActive = false;
-
     const [isChecked, setChecked] = React.useState(true);
     const [isChecked2, setChecked2] = React.useState(true);
 
@@ -87,7 +79,6 @@ const AddCell = forwardRef((props, ref) => {
             sex: sexValue,
             birthDate: birthDateValue,
             phone: phoneValue,
-            audience: audienceValue,
             location: locationValue,
             region: regionValue,
             golfPeriod: periodValue,
@@ -99,9 +90,6 @@ const AddCell = forwardRef((props, ref) => {
             inflowPath: inflowPathValue,
             marketingRecieveAllow: isChecked,
             privateInfoAllow: isChecked2,
-            taSeokActive: taSeokActive,
-            lessonActive: lessonActive,
-            lockerActive: lockerActive,
         };
 
         await addDoc(memberRef, newMemberData);
@@ -168,9 +156,7 @@ const AddCell = forwardRef((props, ref) => {
                 <td>
                     <input
                         className="editInput"
-
-                        style={{ minWidth: '110px' }}
-
+                        style={{ width: '114px' }}
                         type="text"
                         name="phone"
                         placeholder="010-0000-0000"
@@ -183,7 +169,11 @@ const AddCell = forwardRef((props, ref) => {
                         onBlur={handleBlur}
                         onChange={handleChange3}
                     />
-                    {isValid ? null :  <i className="uil uil-exclamation-triangle text-danger ms-1"></i>}
+                    {isValid ? (
+                        <i className="uil uil-check-circle text-primary ms-1 opacity-0"></i>
+                    ) : (
+                        <i className="uil uil-exclamation-triangle text-danger ms-1"></i>
+                    )}
                 </td>
                 <td></td>
                 <td>
