@@ -1,10 +1,10 @@
-import react, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-import { Row, Col, Button, Modal, Alert, Card, Form } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import { useSelector } from 'react-redux';
 
-import { doc, updateDoc, getDoc, collection } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../../firebase/firebase';
 
 import { FormInput } from '../../../components/';
@@ -12,7 +12,6 @@ import { FormInput } from '../../../components/';
 import WarningIcon from '../../../assets/images/icons/png/warning-icon.png';
 
 const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
-    const [size, setSize] = useState('lg');
     const [isHoverdButton, setIsHoveredButton] = useState(false);
     const [refundConfirmModal, setRefundConfirmModal] = useState(false);
     const [penaltyPrice, setPenaltyPrice] = useState(0);
@@ -26,35 +25,40 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             if (paymentMemberId) {
                 const memberRef = doc(firestoreDB, 'Users', email, 'Members', paymentMemberId);
                 const memberDoc = await getDoc(memberRef);
+
                 if (memberDoc.data() && paymentData?.salesProducts) {
                     let isUpdated = false;
+
                     const memberAvailableProducts = memberDoc.data().availableProducts;
                     const memberUnAvailableProducts = memberDoc.data().unavailableProducts;
                     const paymentSalesProducts = paymentData.salesProducts;
 
-                    for (let idx = 0; memberAvailableProducts.length; idx++) {
-                        paymentSalesProducts.forEach((salesProduct) => {
-                            if (
-                                salesProduct.product === memberAvailableProducts[idx].product &&
-                                salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
-                                salesProduct.startDate === memberAvailableProducts[idx].startDate &&
-                                salesProduct.endDate === memberAvailableProducts[idx].endDate &&
-                                salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
-                                salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
-                                salesProduct.productType === memberAvailableProducts[idx].productType &&
-                                salesProduct.product === memberAvailableProducts[idx].product &&
-                                memberAvailableProducts[idx].deleted_at === false
-                            ) {
-                                memberAvailableProducts.splice(idx, 1);
-                                memberUnAvailableProducts.push({
-                                    ...salesProduct,
-                                    refund: true,
-                                    refundDate: new Date().toISOString().split('T')[0],
-                                });
-                                idx = 0;
-                                isUpdated = true;
+                    if (memberAvailableProducts.length) {
+                        for (let idx = 0; idx < memberAvailableProducts.length; idx++) {
+                            for (const salesProduct of paymentSalesProducts) {
+                                if (
+                                    salesProduct.product === memberAvailableProducts[idx].product &&
+                                    salesProduct.adjustedPrice === memberAvailableProducts[idx].adjustedPrice &&
+                                    salesProduct.startDate === memberAvailableProducts[idx].startDate &&
+                                    salesProduct.endDate === memberAvailableProducts[idx].endDate &&
+                                    salesProduct.paymentDate === memberAvailableProducts[idx].paymentDate &&
+                                    salesProduct.paymentTime === memberAvailableProducts[idx].paymentTime &&
+                                    salesProduct.productType === memberAvailableProducts[idx].productType &&
+                                    salesProduct.product === memberAvailableProducts[idx].product &&
+                                    memberAvailableProducts[idx].deleted_at === false
+                                ) {
+                                    memberAvailableProducts.splice(idx, 1);
+                                    memberUnAvailableProducts.push({
+                                        ...salesProduct,
+                                        refund: true,
+                                        refundDate: new Date().toISOString().split('T')[0],
+                                    });
+                                    idx = 0;
+                                    isUpdated = true;
+                                    break;
+                                }
                             }
-                        });
+                        }
                     }
 
                     if (isUpdated) {
@@ -88,14 +92,24 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const toggle = () => {
         setModal(!modal);
     };
-
+    // console.log(email)
     const updateFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
+        const salesProducts =
+            paymentData?.salesProducts?.map((product, idx) => {
+                return {
+                    ...product,
+                    refund: true,
+                    refundDate: new Date().toISOString().split('T')[0],
+                    refundAdjustment: refundEachProducts[idx],
+                };
+            }) || [];
         const refundFields = {
             refund: true,
             refundDate: new Date().toISOString().split('T')[0],
             refundPrice: totalRefundPrice,
             refundPenaltyPrice: penaltyPrice,
+            salesProducts: salesProducts,
         };
 
         try {
@@ -139,7 +153,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     return (
         <>
             {!refundConfirmModal ? (
-                <Modal show={modal} onHide={toggle} size={size} centered={true} fullscreen={'xxl-down'}>
+                <Modal show={modal} onHide={toggle} size={'lg'} centered={true} fullscreen={'xxl-down'}>
                     <Modal.Header
                         className="border-bottom-0"
                         onHide={toggle}
@@ -214,7 +228,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                         {' '}
                                                         <div style={{ color: '#727CF5' }}>
                                                             {product.discountRate > 0 &&
-                                                                product.discountRate + '%' + ' 할인 적용'}
+                                                                `${product.discountRate}% 할인적용`}
                                                         </div>
                                                         <div style={{ color: '#727CF5' }}>
                                                             {product.adjustedPrice !== product.discountPrice &&
@@ -344,7 +358,10 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                                     </div>
                                                     {paymentData.refund ? (
                                                         <div style={{ color: paymentData.refund ? '#FA5C7C' : '' }}>
-                                                            환불 완료
+                                                            {product.refundAdjustment
+                                                                ? product.refundAdjustment.toLocaleString()
+                                                                : 0}
+                                                            원
                                                         </div>
                                                     ) : (
                                                         <FormInput
@@ -431,7 +448,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
                                 해당결제건을 환불하시겠어요?
                             </div>
                             <div style={{ display: 'grid', placeItems: 'center', marginBottom: '42px' }}>
-                                <img src={WarningIcon} />
+                                <img src={WarningIcon} alt="warning" />
                             </div>
 
                             <div style={{ display: 'flex', gap: '12px' }}>

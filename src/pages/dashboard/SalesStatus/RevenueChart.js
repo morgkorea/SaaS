@@ -19,16 +19,15 @@ const RevenueChart = ({
     const [currentRefundPrice, setCurrentRefundPrice] = useState(0);
     const [previousRefundPrice, setPreviousRefundPrice] = useState(0);
 
-    const periodSaelsDataInit = selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 1) : Array(7).fill(1);
+    const apexLineInitData =
+        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 0) : Array(7).fill(0);
 
-    // const periodSaelsDataInit = Array.from({ length: 31 }, () => 1);
+    const periodSaelsDataInit = selectedPeriod === 'month' ? Array.from({ length: 31 }, () => 0) : Array(7).fill(0);
+
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
     const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState(periodSaelsDataInit);
 
     const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
-
-    const apexLineInitData =
-        selectedPeriod === 'month' ? Array.from({ length: currentPeriodOfDate.length }, () => 1) : Array(7).fill(0);
 
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
@@ -72,7 +71,7 @@ const RevenueChart = ({
         if (sortedByPeriodSalesData.length && selectedPeriod === 'month') {
             const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
 
             for (let date = 1; date <= currentDate; date++) {
@@ -85,11 +84,12 @@ const RevenueChart = ({
 
                 currentPeriodSalesArray.push(totalSalesByDate);
             }
+
             setCurrentPeriodSalesData(currentPeriodSalesArray);
         } else if (sortedByPeriodSalesData.length && selectedPeriod === 'week') {
             const currentPeriodSalesArray = [];
             const salesData = [...sortedByPeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
 
             for (let day = 0; day < 7; day++) {
@@ -113,7 +113,7 @@ const RevenueChart = ({
         if (beforePeriodSalesData.length && selectedPeriod === 'month') {
             const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
 
             for (let date = 1; date <= previousMonthLastDate; date++) {
@@ -130,7 +130,7 @@ const RevenueChart = ({
         } else if (beforePeriodSalesData.length && selectedPeriod === 'week') {
             const previousSalesData = [];
             const salesData = [...beforePeriodSalesData].reduce((acc, curr) => {
-                return curr ? [...acc, curr] : [...acc];
+                return !curr.deleted_at ? [...acc, curr] : [...acc];
             }, []);
 
             for (let day = 0; day < 7; day++) {
@@ -174,15 +174,11 @@ const RevenueChart = ({
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
         getCurrentPeriodRefund();
         getPreviousPeriodRefund();
-    }, [datePickDate, selectedPeriod]);
-    useEffect(() => {
         getPreviousPeriodTotalSales(beforePeriodSalesData);
         getPreviousPeriodSalesData(beforePeriodSalesData, datePickDate);
-    }, [beforePeriodSalesData, selectedPeriod, datePickDate]);
-    useEffect(() => {
         getCurrentPeriodTotalSales(sortedByPeriodSalesData);
         getCurrentPeriodSalesData(sortedByPeriodSalesData, datePickDate);
-    }, [sortedByPeriodSalesData, selectedPeriod, datePickDate]);
+    }, [datePickDate, selectedPeriod, beforePeriodSalesData, sortedByPeriodSalesData]);
 
     const apexLineChartWithLables = {
         chart: {
@@ -226,6 +222,8 @@ const RevenueChart = ({
         },
 
         yaxis: {
+            tickAmount: Math.max(...currentPeriodSalesData) + Math.max(...previousPeriodSalesData) <= 0 ? 2 : 10,
+            forceNiceScale: true,
             max:
                 Math.max(...currentPeriodSalesData) > Math.max(...previousPeriodSalesData)
                     ? Math.max(...currentPeriodSalesData) * 1.1
@@ -277,7 +275,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
                                     <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {currentPeriodTotalSales.toLocaleString()}원
+                                        {(currentPeriodTotalSales - currentRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
@@ -287,7 +285,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
                                     <span style={{ color: previousPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {previousPeriodTotalSales.toLocaleString()}원
+                                        {(previousPeriodTotalSales - previousRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
@@ -316,7 +314,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
                                     <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {currentPeriodTotalSales.toLocaleString()}원
+                                        {(currentPeriodTotalSales - currentRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>
@@ -326,7 +324,7 @@ const RevenueChart = ({
                                 <h2 className="fw-normal mb-3">
                                     <small className="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
                                     <span style={{ color: previousPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
-                                        {previousPeriodTotalSales.toLocaleString()}원
+                                        {(previousPeriodTotalSales - previousRefundPrice).toLocaleString()}원
                                     </span>
                                 </h2>
                             </Col>

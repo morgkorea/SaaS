@@ -19,7 +19,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     const [isRegistering, setIsRegistering] = useState(false);
     const [size, setSize] = useState('lg');
 
-    const [productName, setProductName] = useState('');
+    const [productName, setProductName] = useState('ex)[타석] - 1개월권');
     const [productType, setProductType] = useState('batterBox');
     const [expirationPeriod, setExpirationPeriod] = useState('1개월');
     const [expirationCount, setExpirationCount] = useState(0);
@@ -154,7 +154,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
 
                 setValidationError(validationErrors);
             }
-            console.log(error);
         }
 
         setIsRegistering(false);
@@ -182,18 +181,19 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             count = 0;
         }
         setExpirationCount(Number(count));
-        console.log(expirationCount);
     };
 
     const getRegularPrice = (event) => {
         let price = event.target.value;
+
         if (isNaN(Number(price)) || price < 0) {
             price = 0;
         }
-
         if (price > 0) {
             setValidationError({ ...validationError, regularPrice: false });
         }
+        //is update?
+
         setRegularPrice(Number(price));
     };
 
@@ -230,14 +230,16 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 </div>
 
                                 <input
+                                    type="text"
                                     onChange={(e) => {
                                         getProductName(e);
                                     }}
+                                    placeholder={'ex) [타석] - 1개월권'}
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
                                         border: `1px solid ${validationError.productName ? '#fa5c7c' : '#DEE2E6'}`,
-                                        borderRadius: ' 2px',
+                                        borderRadius: '2px',
                                     }}></input>
                                 <div style={{ color: '#fa5c7c', fontSize: '12px', marginTop: '2px' }}>
                                     {validationError.productName}
@@ -281,8 +283,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         height: '40px',
                                         border: '1px solid #DEE2E6',
                                         borderRadius: ' 2px',
-                                        cursor: 'pointer',
-                                    }}>
+                                        cursor: productType === 'etc' ? 'default' : 'pointer',
+                                        backgroundColor: productType === 'etc' ? '#FAFAFA' : '',
+                                    }}
+                                    disabled={productType === 'etc'}>
                                     <option>1개월</option>
                                     <option>2개월</option>
                                     <option>3개월</option>
@@ -368,19 +372,11 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${
-                                                activation ? (productType === 'etc' ? '#DEE2E6' : '#727CF5') : '#DEE2E6'
-                                            }`,
-                                            color: activation
-                                                ? productType === 'etc'
-                                                    ? '#DEE2E6'
-                                                    : '#727CF5'
-                                                : '#DEE2E6',
-
+                                            border: `1px solid ${activation ? '#727CF5' : '#DEE2E6'}`,
+                                            color: activation ? '#727CF5' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
-                                        }}
-                                        disabled={productType === 'etc'}>
+                                        }}>
                                         판매등록
                                     </button>
                                     <button
@@ -390,22 +386,11 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${
-                                                !activation
-                                                    ? productType === 'etc'
-                                                        ? '#DEE2E6'
-                                                        : '#727CF5'
-                                                    : '#DEE2E6'
-                                            }`,
-                                            color: !activation
-                                                ? productType === 'etc'
-                                                    ? '#DEE2E6'
-                                                    : '#727CF5'
-                                                : '#DEE2E6',
+                                            border: `1px solid ${!activation ? '#727CF5' : '#DEE2E6'}`,
+                                            color: !activation ? '#727CF5' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
-                                        }}
-                                        disabled={productType === 'etc'}>
+                                        }}>
                                         보류하기
                                     </button>
                                 </div>

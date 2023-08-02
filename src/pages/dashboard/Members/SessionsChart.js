@@ -32,7 +32,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         : Array(12)
               .fill('')
               .map((_, idx) => idx + 1 + '월');
-    console.log(labels);
+
     // 전체회원 추이
     function calculateDailyAndMonthlyData(members) {
         const dailyData = new Array(labels.length).fill(0);
