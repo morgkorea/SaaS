@@ -140,7 +140,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
-    console.log(refundEachProducts);
     const handleRefundButtonClick = async () => {
         try {
             await updateFirestoreSalesData();

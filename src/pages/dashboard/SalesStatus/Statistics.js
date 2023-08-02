@@ -55,9 +55,8 @@ const Statistics = ({
     };
     const comparedWithPreviousRefund = (previous, current) => {
         setComparedRefundPrice(0);
-        console.log(previousRefundPrice);
 
-        const percentage = (((current - previous) / previous) * 100).toFixed(2);
+        const percentage = Number((((current - previous) / previous) * 100).toFixed(2));
         if (previous === 0 && current === 0) {
             return setComparedRefundPrice(0);
         } else if (previous === 0) {
@@ -147,8 +146,6 @@ const Statistics = ({
             locker: percentCalculator(amountBeforeProductsSales.locker, amountProductsSales.locker),
             etc: percentCalculator(amountBeforeProductsSales.etc, amountProductsSales.etc),
         };
-
-        console.log(comparedPercentages);
 
         setAmountCompoareWithPreviousSales(comparedPercentages);
     };

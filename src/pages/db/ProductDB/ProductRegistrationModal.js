@@ -174,7 +174,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     };
     const getExpirationPeriod = (event) => {
         setExpirationPeriod(event.target.value);
-        console.log(event.target.value);
     };
     const getExpirationCount = (event) => {
         let count = event.target.value;
@@ -182,7 +181,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             count = 0;
         }
         setExpirationCount(Number(count));
-        console.log(expirationCount);
     };
 
     const getRegularPrice = (event) => {
@@ -195,7 +193,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             setValidationError({ ...validationError, regularPrice: false });
         }
         setRegularPrice(Number(price));
-        console.log(regularPrice);
     };
 
     useEffect(() => {
