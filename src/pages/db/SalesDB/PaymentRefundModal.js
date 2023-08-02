@@ -92,7 +92,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const toggle = () => {
         setModal(!modal);
     };
-
+    // console.log(email)
     const updateFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
         const salesProducts =
