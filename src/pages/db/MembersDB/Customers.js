@@ -76,10 +76,16 @@ const CumulativePayCount = ({ row }) => {
     const availableProducts = row.original?.availableProducts;
     const unavailableProducts = row.original?.unavailableProducts;
 
-    // 환불,삭제 조건 추가
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
-            const products = [...availableProducts, ...unavailableProducts];
+            const filteredAvailableProducts = availableProducts.filter(
+                (product) => !product.deleted_at && !product.refund
+            );
+            const filteredUnavailableProducts = unavailableProducts.filter(
+                (product) => !product.deleted_at && !product.refund
+            );
+
+            const products = [...filteredAvailableProducts, ...filteredUnavailableProducts];
             setAllProducts(products.length);
         }
     }, [availableProducts, unavailableProducts]);
@@ -95,7 +101,11 @@ const CumulativePayAmount = ({ row }) => {
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
-            const amounts = products.map((data) => data.adjustedPrice);
+            const amounts = products
+                .filter((product) => product.deleted_at === false && product.refund === false)
+                .map((data) => data.adjustedPrice)
+                .filter((amount) => !isNaN(amount) && amount !== 0);
+
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
             setTotalValue(totalValue);
@@ -113,7 +123,12 @@ const AveragePayAmount = ({ row }) => {
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
-            const amounts = products.map((data) => data.adjustedPrice);
+
+            const amounts = products
+                .filter((product) => product.deleted_at === false && product.refund === false)
+                .map((data) => data.adjustedPrice)
+                .filter((amount) => !isNaN(amount) && amount !== 0);
+
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
 
@@ -137,7 +152,11 @@ const cumulativePayAccessor = (row) => {
         Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
-        const amounts = products.map((data) => data.adjustedPrice);
+        // const amounts = products.map((data) => data.adjustedPrice);
+        const amounts = products
+                .filter((product) => product.deleted_at === false && product.refund === false)
+                .map((data) => data.adjustedPrice)
+                .filter((amount) => !isNaN(amount) && amount !== 0);
         totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     }
 
@@ -157,7 +176,11 @@ const averagePayAccessor = (row) => {
         Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
-        const amounts = products.map((data) => data.adjustedPrice);
+        // const amounts = products.map((data) => data.adjustedPrice);
+        const amounts = products
+                .filter((product) => product.deleted_at === false && product.refund === false)
+                .map((data) => data.adjustedPrice)
+                .filter((amount) => !isNaN(amount) && amount !== 0);
         const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
         averageValue = Math.floor(totalValue / amounts.length);
@@ -166,7 +189,7 @@ const averagePayAccessor = (row) => {
     return averageValue;
 };
 
-const taSeokActive = ({ row }) => {
+const TaSeokActiveColumn = ({ row }) => {
     const availableProducts = row.original?.availableProducts;
 
     const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
@@ -174,7 +197,7 @@ const taSeokActive = ({ row }) => {
     return <>{isActive ? '활성' : '비활성'}</>;
 }
 
-const lessonActive = ({ row }) => {
+const LessonActiveColumn = ({ row }) => {
     const availableProducts = row.original?.availableProducts;
 
     const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
@@ -182,7 +205,21 @@ const lessonActive = ({ row }) => {
     return <>{isActive ? '활성' : '비활성'}</>;
 }
 
+const taSeokActive = (row) => {
+    const availableProducts = row.original?.availableProducts;
 
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
+
+    return isActive;
+};
+
+const lessonActive = (row) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
+
+    return isActive;
+};
 
 const columns = [
     {
@@ -289,7 +326,7 @@ const columns = [
     {
         Header: '누적결제수',
         Cell: CumulativePayCount,
-        sort: true,
+        sort: false,
     },
     {
         Header: 'LTV(누적결제금액)',
@@ -307,17 +344,15 @@ const columns = [
     },
     {
         Header: '타석 활성여부',
-        // accessor: 'taSeokActive',
-        // Cell: ({ value }) => (value ? '활성' : '비활성'),
-        Cell: taSeokActive,
+        accessor: taSeokActive,
+        Cell: TaSeokActiveColumn,
         sortType: 'basic',
         sort: true,
     },
     {
         Header: '레슨 활성여부',
-        // accessor: 'lessonActive',
-        // Cell: ({ value }) => (value ? '활성' : '비활성'),
-        Cell: lessonActive,
+        accessor: lessonActive,
+        Cell: LessonActiveColumn,
         sortType: 'basic',
         sort: true,
     },
