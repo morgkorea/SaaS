@@ -185,13 +185,14 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
 
     const getRegularPrice = (event) => {
         let price = event.target.value;
+
         if (isNaN(Number(price)) || price < 0) {
             price = 0;
         }
-
         if (price > 0) {
             setValidationError({ ...validationError, regularPrice: false });
         }
+
         setRegularPrice(Number(price));
     };
 
