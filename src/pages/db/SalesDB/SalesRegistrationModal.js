@@ -1263,7 +1263,46 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 productArray.push(product.data());
             });
 
-            setProductsList(productArray);
+            // 상품리스트 정렬 --------------------------------------------------------
+            // 정렬조건
+            // type값 비교 -> 'batterBox', 'lesson', 'locker', 'etc' 순서 로 정렬 후 그룹화
+            // exirationPeriod값 비교 -> 1. "개월", 일순 2. number 비교 오름차순 정렬 후 그룹화
+            // type이 etc인 요소 product값 비교 -> 텍스트 오름차순 정렬
+
+            const typeOrder = ['batterBox', 'lesson', 'locker', 'etc'];
+
+            const sortedData = productArray.sort((a, b) => {
+                const aIndex = typeOrder.indexOf(a.type);
+                const bIndex = typeOrder.indexOf(b.type);
+                if (aIndex !== bIndex) return aIndex - bIndex;
+
+                const isMonth = (expirationPeriod) => expirationPeriod.includes('개월');
+                const isDay = (expirationPeriod) => expirationPeriod.includes('일');
+                if (isMonth(a.expirationPeriod) !== isMonth(b.expirationPeriod)) {
+                    return isMonth(a.expirationPeriod) ? -1 : 1;
+                }
+                if (isDay(a.expirationPeriod) !== isDay(b.expirationPeriod)) {
+                    return isDay(a.expirationPeriod) ? -1 : 1;
+                }
+
+                const getNumber = (expirationPeriod) => Number(expirationPeriod.replace(/[^\d]/g, ''));
+                const aNumber = getNumber(a.expirationPeriod);
+                const bNumber = getNumber(b.expirationPeriod);
+                return aNumber - bNumber;
+            });
+
+            const etcData = sortedData
+                .filter((item) => item.type === 'etc')
+                .sort((a, b) => {
+                    if (/^[가-힣]+$/.test(a.product) && /^[가-힣]+$/.test(b.product)) {
+                        return a.product.localeCompare(b.product, 'ko');
+                    }
+                    return a.product.localeCompare(b.product);
+                });
+
+            const sortedProductArray = [...sortedData.filter((item) => item.type !== 'etc'), ...etcData];
+            // --------------------------------------------------------
+            setProductsList(sortedProductArray);
         });
 
         return () => {

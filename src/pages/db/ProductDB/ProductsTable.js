@@ -25,26 +25,28 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
         //     value: data.length,
         // },
     ];
+
     return (
         <>
             <PageTitle title={'상품 DB'} />
-
             <Row>
                 <Col>
                     <Card>
                         <Card.Body>
-                            <Table
-                                columns={columns}
-                                data={data}
-                                pageSize={20}
-                                sizePerPageList={sizePerPageList}
-                                isSortable={true}
-                                pagination={true}
-                                isSearchable={true}
-                                tablePurpose={{ id: '7', desc: true }}
-                                productTablePlaceholder={'상품명 / 코드 검색'}
-                                paginationStyleCenter={true}
-                            />
+                            <div>
+                                <Table
+                                    columns={columns}
+                                    data={data}
+                                    pageSize={20}
+                                    sizePerPageList={sizePerPageList}
+                                    isSortable={true}
+                                    pagination={true}
+                                    isSearchable={true}
+                                    tablePurpose={{ id: '7', desc: true }}
+                                    productTablePlaceholder={'상품명 / 코드 검색'}
+                                    paginationStyleCenter={true}
+                                />
+                            </div>
                         </Card.Body>
                     </Card>
                 </Col>
