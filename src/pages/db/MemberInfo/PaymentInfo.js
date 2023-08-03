@@ -5,6 +5,7 @@ import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 const PaymentInfo = ({ member }) => {
     const [allProducts, setAllProducts] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
+    const [refundProducts, setRefundProducts] = useState([]);
     const [totalValue, setTotalValue] = useState(0);
     const [averageValue, setAverageValue] = useState(0);
 
@@ -23,7 +24,10 @@ const PaymentInfo = ({ member }) => {
                 return product.deleted_at === false && product.refund === false;
             });
 
-            // console.log(products);
+            const refunds = [...member.availableProducts, ...member.unavailableProducts].filter((product) => {
+                return product.refund === true;
+            });
+
             const amounts = products.map((data) => data.adjustedPrice);
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
@@ -31,6 +35,7 @@ const PaymentInfo = ({ member }) => {
             setAllProducts(products);
             setTotalValue(totalValue);
             setAverageValue(averageValue);
+            setRefundProducts(refunds);
         }
     }, [member.availableProducts, member.unavailableProducts]);
 
@@ -97,6 +102,42 @@ const PaymentInfo = ({ member }) => {
                                         </div>
                                     );
                                 })}
+                                {
+                                    refundProducts.map((data, index) => {
+                                        return (
+                                            <div key={index} className="member-info-card">
+                                                <div className="d-flex align-items-center justify-content-between">
+                                                    <div className="d-flex">
+                                                        <h4 className="number text-warning">환불건</h4>
+                                                        <div className="payment-info">
+                                                            <div className="d-flex" style={{ color: '#ccc'}}>
+                                                                <div>
+                                                                    <p>{data.product}</p>
+                                                                </div>
+                                                                {!data.expirationPeriod ? null : (
+                                                                    <div>
+                                                                        <p>{data.expirationPeriod}</p>
+                                                                    </div>
+                                                                )}
+                                                                <div>
+                                                                    <p>{data.discountRate}% 할인</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p>
+                                                                        {data.startDate} ~ {data.endDate}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h4 style={{ color: '#ccc'}}>{data.adjustedPrice.toLocaleString()}원</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                }
                             </div>
                             <div className="position-absolute bottom-0 end-0 p-4">
                                 <div className="payment-amount">

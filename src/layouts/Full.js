@@ -128,9 +128,9 @@ const FullLayout = ({ children }: VerticalLayoutProps, state: VerticalLayoutStat
                         </Container>
                     </div>
 
-                    <Suspense fallback={loading()}>
+                    {/* <Suspense fallback={loading()}>
                         <Footer />
-                    </Suspense>
+                    </Suspense> */}
                 </div>
             </div>
 

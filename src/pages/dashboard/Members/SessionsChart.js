@@ -242,7 +242,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                     {' '}
                     <Card>
                         <Card.Body>
-                            <ul className="nav float-end d-none d-lg-flex">
+                            <ul className="nav float-end d-lg-flex">
                                 <li className="nav-item">
                                     <Link
                                         to="#"
@@ -272,7 +272,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                     </Card>
                     <Card>
                         <Card.Body>
-                            <ul className="nav float-end d-none d-lg-flex">
+                            <ul className="nav float-end d-lg-flex">
                                 <li className="nav-item">
                                     <Link
                                         to="#"
@@ -306,8 +306,8 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
             {index !== 1 && (
                 <Card>
                     <Card.Body>
-                        <ul className="nav float-end d-none d-lg-flex">
-                            <li className="nav-item">
+                        <ul className="nav float-end d-lg-flex">
+                            <li className="ㅊ">
                                 <Link
                                     to="#"
                                     className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}

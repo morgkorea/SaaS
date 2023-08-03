@@ -1,18 +1,16 @@
 // @flow
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Modal, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
-
 import { useSelector } from 'react-redux';
-
 import { doc, getDoc, setDoc, collection } from 'firebase/firestore';
-
 import { firestoreDB } from '../../../firebase/firebase';
 import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
-
 import * as yup from 'yup';
 
 //loading spinner
 import Spinner from '../../../components/Spinner';
+import Select from 'react-select';
+
 
 const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     // const [modal, setModal] = useState(false);
@@ -275,6 +273,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         borderRadius: ' 2px',
                                         cursor: 'pointer',
                                     }}>
+                                    <option value="" selected disabled>선택</option>
                                     <option value="batterBox">타석</option>
                                     <option value="lesson">레슨</option>
                                     <option value="locker">락커</option>
@@ -292,7 +291,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     onChange={(e) => {
                                         getExpirationPeriod(e);
                                     }}
-                                    className="w-100 p-1"
+                                    className="w-100 p-1"t
                                     style={{
                                         height: '40px',
                                         border: '1px solid #DEE2E6',
@@ -301,6 +300,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         backgroundColor: productType === 'etc' ? '#FAFAFA' : '',
                                     }}
                                     disabled={productType === 'etc'}>
+                                    <option value="" selected disabled>선택</option>
                                     <option>1개월</option>
                                     <option>2개월</option>
                                     <option>3개월</option>
@@ -328,17 +328,16 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                             <Col>
                                 <div className="mb-1"><span>유효횟수</span></div>
                                 <input
-                                    onChange={(e) => {
-                                        getExpirationCount(e);
-                                    }}
+                                    value={expirationCount.toLocaleString()}
+                                    onChange={(e) => getExpirationCount(e)}
                                     type="text"
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
                                         border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
+                                        borderRadius: '2px',
+                                        color: expirationCount === 0 ? '#98A6AD' : '#313A46',
                                     }}
-                                    value={expirationCount}
                                     disabled={productType === 'locker' || productType === 'etc'}></input>
                             </Col>
                         </Row>
@@ -348,14 +347,15 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 <div style={{ position: 'relative' }}>
                                     <div className="mb-1"><span>상품 가격</span></div>
                                     <input
+                                        value={regularPrice.toLocaleString()}
+                                        onChange={(e) => getRegularPrice(e)}
                                         type="text"
                                         className="w-100 p-1"
-                                        onChange={getRegularPrice}
-                                        value={regularPrice.toLocaleString()}
                                         style={{
                                             height: '40px',
                                             border: `1px solid ${validationError.regularPrice ? '#fa5c7c' : '#DEE2E6'}`,
-                                            borderRadius: ' 2px',
+                                            borderRadius: '2px',
+                                            color: regularPrice === 0 ? '#98A6AD' : '#313A46',
                                         }}/>
                                     <span style={{ position: 'absolute', right: '20px', bottom: '10px' }}>원</span>
                                 </div>
@@ -375,8 +375,8 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${activation ? '#727CF5' : '#DEE2E6'}`,
-                                            color: activation ? '#727CF5' : '#DEE2E6',
+                                            border: `1px solid ${activation ? '#0acf97' : '#DEE2E6'}`,
+                                            color: activation ? '#0acf97' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
                                         }}>
@@ -389,8 +389,8 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${!activation ? '#727CF5' : '#DEE2E6'}`,
-                                            color: !activation ? '#727CF5' : '#DEE2E6',
+                                            border: `1px solid ${!activation ? '#0acf97' : '#DEE2E6'}`,
+                                            color: !activation ? '#0acf97' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
                                         }}>

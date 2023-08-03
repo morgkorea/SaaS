@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col } from 'react-bootstrap';
-
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Form from 'react-bootstrap/Form';
-
-import DefaultPagination from '../../../components/DefaultPagination.js';
-
 import SalesTable from './SalesTable.js';
-
 import SalesRegistrationModal from './SalesRegistrationModal.js';
 import PaymentDeleteModal from './PaymentDeleteModal.js';
 import PaymentRefundModal from './PaymentRefundModal.js';
-
-import { collection, query, doc, getDocs, updateDoc, onSnapshot, where } from 'firebase/firestore';
-
+import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
-
 import { firestoreDB } from '../../../firebase/firebase.js';
 
 const SalesDB = () => {
@@ -61,6 +49,7 @@ const SalesDB = () => {
     const toggle = () => {
         setModal(!modal);
     };
+    
     const tableColumns = [
         {
             id: '1', // 열 ID

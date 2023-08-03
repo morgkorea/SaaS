@@ -359,7 +359,6 @@ const columns = [
 ];
 
 const Customers = ({ currentMembers, addMode, setAddMode }) => {
-    const location = useLocation();
 
     return (
         <>
