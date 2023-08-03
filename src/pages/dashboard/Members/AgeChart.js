@@ -69,9 +69,9 @@ const AgeChart = ({ members }) => {
             categories: ageGroups,
         },
         yaxis: {
-            min: 0,
-            max: 5,
-            forceNiceScale: true,
+            // min: 0,
+            // max: 5,
+            // forceNiceScale: true,
             labels: {
                 formatter(value) {
                     return value.toFixed(0);

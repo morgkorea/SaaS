@@ -204,9 +204,9 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
             },
         },
         yaxis: {
-            min: 0,
-            max: 5,
-            forceNiceScale: true,
+            // min: 0,
+            // max: 5,
+            // forceNiceScale: true,
             labels: {
                 offsetX: 0,
                 // offsetX: -50, // hide
