@@ -415,7 +415,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         justifyContent: 'space-between',
                         width: '49%',
                         minWidth: '162px',
-                        height: '80px',
+                        height: '70px',
                         border: '2px solid #03C780',
                         borderRadius: '6px',
                         padding: '9px 15px',
@@ -437,7 +437,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         <div style={{ color: '#6C757D', fontSize: '14px' }}>{isSelectedMember.phone}</div>
                     </div>
 
-                    <div>
+                    <div style={{ display: 'grid', placeItems: 'center' }}>
                         <i className="mdi mdi-radiobox-marked" style={{ color: '#03C780', fontSize: '24px' }}></i>
                     </div>
                 </div>
@@ -453,7 +453,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             justifyContent: 'space-between',
                             width: '49%',
                             minWidth: '162px',
-                            height: '80px',
+                            height: '70px',
                             border: isHoveredCard === idx ? '2px solid #03C780' : '1px solid #EEF2F7',
                             borderRadius: '6px',
                             padding: isHoveredCard === idx ? '9px 15px' : '10px 16px',
@@ -479,7 +479,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div style={{ color: '#6C757D', fontSize: '14px' }}>{member.phone}</div>
                         </div>
 
-                        <div>
+                        <div style={{ display: 'grid', placeItems: 'center' }}>
                             <i
                                 className="mdi mdi-radiobox-blank"
                                 style={{ color: isHoveredCard === idx ? '#03C780' : '#EEF2F7', fontSize: '24px' }}></i>
@@ -722,18 +722,36 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             </select>
                         </div>
                     </div> */}
-                            <div
-                                className="p-2"
-                                style={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    justifyContent: 'space-between',
-                                    overflowY: 'auto',
-                                    maxHeight: '300px',
-                                }}>
-                                {' '}
-                                {createSearchedMembersCard(searchedMembersList, isSelectedMember)}
-                            </div>
+                            {searchedMembersList.length ? (
+                                <div
+                                    className="p-2"
+                                    style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        justifyContent: 'space-between',
+                                        overflowY: 'auto',
+                                        maxHeight: '300px',
+                                    }}>
+                                    {createSearchedMembersCard(searchedMembersList, isSelectedMember)}
+                                </div>
+                            ) : (
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        placeItems: 'center',
+                                        paddingTop: '60px',
+                                        fontSize: '80px',
+                                        color: '#DEE2E6',
+                                    }}>
+                                    <i className="mdi mdi-account-search"></i>
+                                    <div
+                                        style={{
+                                            fontSize: '20px',
+                                        }}>
+                                        회원을 검색해주세요
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 );
@@ -755,7 +773,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         if (product.activation && product.product.length) {
                                             return (
                                                 <option key={product.product + '_' + idx} value={idx}>
-                                                    {product.product}
+                                                    {product.product && product.product}
                                                 </option>
                                             );
                                         }
