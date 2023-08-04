@@ -86,7 +86,7 @@ const PerformanceChart = ({ members }) => {
             minCountTimeSlot = timeSlot;
         }
     }
-
+    
     // chart.js
     const apexBarChartData = [
         {
@@ -162,7 +162,6 @@ const PerformanceChart = ({ members }) => {
                     title={
                         <div className="d-flex">
                             <h4 className="header-title">시간 별 상담</h4>
-                            <h5 className="text-muted fw-normal mt-0 m-2 text-truncate" title="">
                                 {maxCountTimeSlot && (
                                     <h5 className="text-muted fw-normal mt-0 m-2 text-truncate" title="">
                                         우리 매장은
@@ -170,7 +169,6 @@ const PerformanceChart = ({ members }) => {
                                         <span className="text-primary"> {minCountTimeSlot.slice(0, 2)}시</span>엔 한가해요
                                     </h5>
                                 )}
-                            </h5>
                         </div>
                     }
                 />

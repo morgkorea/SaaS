@@ -49,7 +49,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                 const currentDay = currentDate.getDate();
 
                 for (let i = day; i <= currentDay; i++) {
-                    dailyData[i - 1]++;
+                    dailyData[i]++;
                 }
             }
 
@@ -61,95 +61,111 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         return isMonthlyView ? dailyData : monthlyData;
     }
 
-    // 타석/레슨 추이
-    function calculateData(dataArray) {
+    function calculateDailyAndMonthlyData2(members) {
         const dailyData = new Array(labels.length).fill(0);
-
         const monthlyData = new Array(12).fill(0);
-        const currentYear = new Date().getFullYear();
 
-        const currentMonth = new Date().getMonth();
-        const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // 현재 월의 마지막 날
+        // member.availableProducts 배열과 member.unavailableProducts 배열을 합친 allProducts 생성
+        // allProducts의 startDate ~ endDate 검색
+        // refund가 true 라면 endDate 대신 refundDate 사용
+        for (const member of members) {
+            const allProducts = [...member.availableProducts, ...member.unavailableProducts];
+            const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-        dataArray.forEach((data) => {
-            const { startDate, endDate, refundDate } = data;
-            const start = new Date(new Date(startDate).toISOString().split('T')[0] + ' 00:00:00');
-            const end = new Date(new Date(endDate).toISOString().split('T')[0] + ' 00:00:00');
-            const refund = refundDate
-                ? new Date(new Date(refundDate).toISOString().split('T')[0] + ' 00:00:00')
-                : false;
-            const startYear = start.getFullYear();
-            const endYear = end.getFullYear();
-            const startMonth = start.getMonth();
-            const endMonth = end.getMonth();
-            const startDay = start.getDate();
-            const endDay = end.getDate();
+            for (const product of allProducts) {
+                if (!product.deleted_at) {
+                    const { startDate, endDate, refundDate } = product;
+                    const start = new Date(new Date(startDate).toISOString().split('T')[0] + ' 00:00:00');
+                    const end = new Date(new Date(endDate).toISOString().split('T')[0] + ' 00:00:00');
+                    const refund = refundDate
+                        ? new Date(new Date(refundDate).toISOString().split('T')[0] + ' 00:00:00')
+                        : false;
 
-            // dailyData
-            if (startYear === endYear && startMonth === endMonth) {
-                if (startYear === currentYear && startMonth === currentMonth) {
-                    for (let day = startDay; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
-                        dailyData[day - 1]++;
+                    const startYear = start.getFullYear();
+                    const startMonth = start.getMonth();
+                    const startDay = start.getDate();
+    
+                    const endYear = end.getFullYear();
+                    const endMonth = end.getMonth();
+                    const endDay = end.getDate();
+    
+                    // refund가 true 라면 end 말고 refund로 찾기
+                    if (start <= now && now <= end) {
+                        const currentDate = new Date();
+                        const currentDay = currentDate.getDate();
+                        
+                        // startMonth ~ endMonth 사이에 있는 값이
+                        // currentMonth에 포함된다면 dailyData에 데이터가 쌓여야 해
+                        for (let i = ''; i <= currentDay; i++) {
+                            dailyData[i]++;
+                        }
                     }
-                }
-            } else if (startYear === currentYear && startMonth === currentMonth) {
-                for (let day = startDay; day <= lastDayOfCurrentMonth; day++) {
-                    dailyData[day - 1]++;
-                }
-            } else if (endYear === currentYear && endMonth === currentMonth) {
-                for (let day = 1; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
-                    dailyData[day - 1]++;
-                }
-            } else if (startYear < currentYear && currentYear < endYear) {
-                for (let day = 1; day <= lastDayOfCurrentMonth; day++) {
-                    dailyData[day - 1]++;
+
+
+                    // dailyData
+                    // if (start <= now <= end) {
+                    //     if (startYear === currentYear && startMonth === currentMonth) {
+                    //         for (let day = startDay; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
+                    //             dailyData[day]++;
+                    //         }
+                    //     }
+                    //     else if (startYear === currentYear && startMonth === currentMonth) {
+                    //         for (let day = startDay; day <= lastDayOfCurrentMonth; day++) {
+                    //             dailyData[day]++;
+                    //         }
+                    //     }
+                    //     else if (endYear === currentYear && endMonth === currentMonth) {
+                    //         for (let day = 1; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
+                    //             dailyData[day]++;
+                    //         }
+                    //     }
+                    //     else if (startYear < currentYear && currentYear < endYear) {
+                    //         for (let day = 1; day <= lastDayOfCurrentMonth; day++) {
+                    //             dailyData[day]++;
+                    //         }
+                    //     }
+                    // }
+                    // monthlyData
+                    // if (startYear <= currentYear && currentYear <= endYear) {
+                    //     for (let month = 0; month < 12; month++) {
+                    //         const firstDayOfMonth = new Date(currentYear, month, 1);
+                    //         const lastDayOfMonth = new Date(currentYear, month + 1, 0);
+    
+                    //         if (refund && refund >= firstDayOfMonth && refund <= lastDayOfMonth) {
+                    //             monthlyData[month]++;
+                    //         }
+                    //     }
+                    // }
                 }
             }
-            // monthlyData
-            if (startYear <= currentYear && currentYear <= endYear) {
-                for (let month = 0; month < 12; month++) {
-                    const firstDayOfMonth = new Date(currentYear, month, 1);
-                    const lastDayOfMonth = new Date(currentYear, month + 1, 0);
-
-                    if (refund && refund >= firstDayOfMonth && refund <= lastDayOfMonth) {
-                        monthlyData[month]++;
-                    }
-                }
-            }
-        });
+        }
 
         return isMonthlyView ? dailyData : monthlyData;
     }
-    const calculateAnnualActivateBatterboxData = () => {
-        const activateBatterboxMembers = sortedMembers.flatMap((member) =>
-            (member.availableProducts || [])
-                .concat(member.unavailableProducts || [])
-                .filter((product) => product.productType === 'batterBox')
-        );
 
-        const filteredBatterboxMembers = activateBatterboxMembers.filter((product) => {
-            const endDate = new Date(product.endDate);
-            return endDate >= now;
-        });
+    // member.availableProducts 배열과 member.unavailableProducts 배열을 합친 allProducts 생성
+    // allProducts 를 탐색
+    // 1. !allProducts.deleted_at 
+    // 2. allProducts.productType === 'batterBox'
+    // 이면 타석 멤버로 저장
+    
 
-        return calculateData(filteredBatterboxMembers);
+    const filterMembersByProductType = (productType) => {
+        return members.map((member) => {
+            const allProducts = [...member.availableProducts, ...member.unavailableProducts];
+            if (allProducts.some((product) => !product.deleted_at && product.productType === productType)) {
+                return member;
+            }
+            return null;
+        }).filter((member) => member !== null);
     };
-
-    const calculateAnnualActivateLessonData = () => {
-        const activateLessonMembers = sortedMembers.flatMap((member) =>
-            (member.availableProducts || [])
-                .concat(member.unavailableProducts || [])
-                .filter((product) => product.productType === 'lesson')
-        );
-
-        const filteredLessonMembers = activateLessonMembers.filter((product) => {
-            const endDate = new Date(product.endDate);
-            return endDate >= now;
-        });
-
-        return calculateData(filteredLessonMembers);
-    };
-
+    
+    const batterboxMembers = filterMembersByProductType('batterBox');
+    const lessonMembers = filterMembersByProductType('lesson');
+    
+    // console.log('batterboxMembers', batterboxMembers);
+    // console.log('lessonMembers', lessonMembers);
+    
     const apexBarChartData = [
         {
             name: '전체회원 추이',
@@ -160,14 +176,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data: calculateAnnualActivateBatterboxData(sortedMembers),
+            data: activateBatterboxMembers,
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: calculateAnnualActivateLessonData(sortedMembers),
+            data: activateLessonMembers,
         },
     ];
 
@@ -307,7 +323,7 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                 <Card>
                     <Card.Body>
                         <ul className="nav float-end d-lg-flex">
-                            <li className="ㅊ">
+                            <li className="nav-itemㄴ">
                                 <Link
                                     to="#"
                                     className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}

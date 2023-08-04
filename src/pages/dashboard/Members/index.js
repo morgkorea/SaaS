@@ -19,6 +19,7 @@ const MemberDashboard = () => {
 
     const [activeMembers, setActiveMembers] = useState([]);
     const [currentMembers, setCurrentMembers] = useState([]);
+    
     //현월 일자별 타석,레슨 활성화 회원 수 배열
     const [activateBatterboxMembers, setActiveBatterboxMembers] = useState(Array(currentMonthOfDays).fill(0));
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
