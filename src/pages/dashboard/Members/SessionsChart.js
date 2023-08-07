@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
-const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, members, index }) => {
-    const [isMonthlyView, setIsMonthlyView] = useState(true); // 월간 데이터 보기 설정
+const SessionsChart = ({ 
+    activateBatterboxMembers, 
+    activateLessonMembers, 
+    monthlyActivateBatterboxMembers = [], 
+    monthlyActivateLessonMembers = [],
+    members,
+    index 
+}) => {
+    const [isMonthlyView, setIsMonthlyView] = useState(true);
+    const [isMonthlyViewBatterbox, setIsMonthlyViewBatterbox] = useState(true);
+    const [isMonthlyViewLesson, setIsMonthlyViewLesson] = useState(true);
+
     const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
 
     const getDaysInMonth = (month, year) => {
@@ -37,135 +47,42 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     function calculateDailyAndMonthlyData(members) {
         const dailyData = new Array(labels.length).fill(0);
         const monthlyData = new Array(12).fill(0);
-
+    
         for (const member of members) {
             const createdDate = new Date(member.createdDate);
             const year = createdDate.getFullYear();
             const month = createdDate.getMonth();
             const day = createdDate.getDate();
-
-            if (year === currentYear && month === currentMonth) {
-                const currentDate = new Date();
-                const currentDay = currentDate.getDate();
-
-                for (let i = day; i <= currentDay; i++) {
-                    dailyData[i]++;
-                }
-            }
-
+            
             if (year === currentYear) {
                 monthlyData[month]++;
-            }
-        }
-
-        return isMonthlyView ? dailyData : monthlyData;
-    }
-
-    function calculateDailyAndMonthlyData2(members) {
-        const dailyData = new Array(labels.length).fill(0);
-        const monthlyData = new Array(12).fill(0);
-
-        // member.availableProducts 배열과 member.unavailableProducts 배열을 합친 allProducts 생성
-        // allProducts의 startDate ~ endDate 검색
-        // refund가 true 라면 endDate 대신 refundDate 사용
-        for (const member of members) {
-            const allProducts = [...member.availableProducts, ...member.unavailableProducts];
-            const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-            for (const product of allProducts) {
-                if (!product.deleted_at) {
-                    const { startDate, endDate, refundDate } = product;
-                    const start = new Date(new Date(startDate).toISOString().split('T')[0] + ' 00:00:00');
-                    const end = new Date(new Date(endDate).toISOString().split('T')[0] + ' 00:00:00');
-                    const refund = refundDate
-                        ? new Date(new Date(refundDate).toISOString().split('T')[0] + ' 00:00:00')
-                        : false;
-
-                    const startYear = start.getFullYear();
-                    const startMonth = start.getMonth();
-                    const startDay = start.getDate();
-    
-                    const endYear = end.getFullYear();
-                    const endMonth = end.getMonth();
-                    const endDay = end.getDate();
-    
-                    // refund가 true 라면 end 말고 refund로 찾기
-                    if (start <= now && now <= end) {
-                        const currentDate = new Date();
-                        const currentDay = currentDate.getDate();
-                        
-                        // startMonth ~ endMonth 사이에 있는 값이
-                        // currentMonth에 포함된다면 dailyData에 데이터가 쌓여야 해
-                        for (let i = ''; i <= currentDay; i++) {
-                            dailyData[i]++;
-                        }
+                
+                if (month === currentMonth) {
+                    const currentDate = new Date();
+                    const currentDay = currentDate.getDate();
+                    
+                    for (let i = day; i <= currentDay; i++) {
+                        dailyData[i - 1]++;
                     }
-
-
-                    // dailyData
-                    // if (start <= now <= end) {
-                    //     if (startYear === currentYear && startMonth === currentMonth) {
-                    //         for (let day = startDay; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
-                    //             dailyData[day]++;
-                    //         }
-                    //     }
-                    //     else if (startYear === currentYear && startMonth === currentMonth) {
-                    //         for (let day = startDay; day <= lastDayOfCurrentMonth; day++) {
-                    //             dailyData[day]++;
-                    //         }
-                    //     }
-                    //     else if (endYear === currentYear && endMonth === currentMonth) {
-                    //         for (let day = 1; day <= endDay && day <= lastDayOfCurrentMonth; day++) {
-                    //             dailyData[day]++;
-                    //         }
-                    //     }
-                    //     else if (startYear < currentYear && currentYear < endYear) {
-                    //         for (let day = 1; day <= lastDayOfCurrentMonth; day++) {
-                    //             dailyData[day]++;
-                    //         }
-                    //     }
-                    // }
-                    // monthlyData
-                    // if (startYear <= currentYear && currentYear <= endYear) {
-                    //     for (let month = 0; month < 12; month++) {
-                    //         const firstDayOfMonth = new Date(currentYear, month, 1);
-                    //         const lastDayOfMonth = new Date(currentYear, month + 1, 0);
-    
-                    //         if (refund && refund >= firstDayOfMonth && refund <= lastDayOfMonth) {
-                    //             monthlyData[month]++;
-                    //         }
-                    //     }
-                    // }
+                    
+                    for (let i = currentDay + 1; i <= new Date(currentYear, currentMonth + 1, 0).getDate(); i++) {
+                        dailyData[i - 1] = dailyData[currentDay - 1];
+                    }
+                }
+                
+                for (let i = month + 1; i <= currentMonth; i++) {
+                    monthlyData[i] = monthlyData[currentMonth];
+                }
+                
+                for (let i = currentMonth + 1; i < 12; i++) {
+                    monthlyData[i] = monthlyData[currentMonth];
                 }
             }
         }
-
+    
         return isMonthlyView ? dailyData : monthlyData;
     }
 
-    // member.availableProducts 배열과 member.unavailableProducts 배열을 합친 allProducts 생성
-    // allProducts 를 탐색
-    // 1. !allProducts.deleted_at 
-    // 2. allProducts.productType === 'batterBox'
-    // 이면 타석 멤버로 저장
-    
-
-    const filterMembersByProductType = (productType) => {
-        return members.map((member) => {
-            const allProducts = [...member.availableProducts, ...member.unavailableProducts];
-            if (allProducts.some((product) => !product.deleted_at && product.productType === productType)) {
-                return member;
-            }
-            return null;
-        }).filter((member) => member !== null);
-    };
-    
-    const batterboxMembers = filterMembersByProductType('batterBox');
-    const lessonMembers = filterMembersByProductType('lesson');
-    
-    // console.log('batterboxMembers', batterboxMembers);
-    // console.log('lessonMembers', lessonMembers);
-    
     const apexBarChartData = [
         {
             name: '전체회원 추이',
@@ -176,14 +93,14 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data: activateBatterboxMembers,
+            data:  isMonthlyViewBatterbox ? activateBatterboxMembers : monthlyActivateBatterboxMembers
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: activateLessonMembers,
+            data: isMonthlyViewLesson ? activateLessonMembers : monthlyActivateLessonMembers
         },
     ];
 
@@ -251,30 +168,38 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
         },
     };
 
+    const [dataLoaded, setDataLoaded] = useState(false);
+    
+    useEffect(() => {
+        if (monthlyActivateBatterboxMembers.length > 0 && monthlyActivateLessonMembers.length > 0) {
+            setDataLoaded(true);
+        }
+    }, [monthlyActivateBatterboxMembers, monthlyActivateLessonMembers]);
+
+
     return (
         <>
             {index === 1 && (
                 <>
-                    {' '}
                     <Card>
                         <Card.Body>
                             <ul className="nav float-end d-lg-flex">
                                 <li className="nav-item">
                                     <Link
                                         to="#"
-                                        className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}
-                                        onClick={() => setIsMonthlyView(true)}>
+                                        className={`nav-link ${isMonthlyViewBatterbox ? 'active' : 'text-muted'}`}
+                                        onClick={() => setIsMonthlyViewBatterbox(true)}>
                                         월간
                                     </Link>
                                 </li>
-                                {/* <li className="nav-item">
+                                <li className="nav-item">
                                     <Link
                                         to="#"
-                                        className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
-                                        onClick={() => setIsMonthlyView(false)}>
+                                        className={`nav-link ${!isMonthlyViewBatterbox ? 'active' : 'text-muted'}`}
+                                        onClick={() => setIsMonthlyViewBatterbox(false)}>
                                         년간
                                     </Link>
-                                </li> */}
+                                </li>
                             </ul>
                             <h4 className="header-title mb-3">타석 활성 회원 추이</h4>
                             <Chart
@@ -286,25 +211,26 @@ const SessionsChart = ({ activateBatterboxMembers, activateLessonMembers, member
                             />
                         </Card.Body>
                     </Card>
+
                     <Card>
                         <Card.Body>
                             <ul className="nav float-end d-lg-flex">
                                 <li className="nav-item">
                                     <Link
                                         to="#"
-                                        className={`nav-link ${isMonthlyView ? 'active' : 'text-muted'}`}
-                                        onClick={() => setIsMonthlyView(true)}>
+                                        className={`nav-link ${isMonthlyViewLesson ? 'active' : 'text-muted'}`}
+                                        onClick={() => setIsMonthlyViewLesson(true)}>
                                         월간
                                     </Link>
                                 </li>
-                                {/* <li className="nav-item">
+                                <li className="nav-item">
                                     <Link
                                         to="#"
-                                        className={`nav-link ${!isMonthlyView ? 'active' : 'text-muted'}`}
-                                        onClick={() => setIsMonthlyView(false)}>
+                                        className={`nav-link ${!isMonthlyViewLesson ? 'active' : 'text-muted'}`}
+                                        onClick={() => setIsMonthlyViewLesson(false)}>
                                         년간
                                     </Link>
-                                </li> */}
+                                </li>
                             </ul>
                             <h4 className="header-title mb-3">레슨 활성 회원 추이</h4>
                             <Chart

@@ -25,15 +25,16 @@ const MemberDashboard = () => {
     const [activateLessonMembers, setActiveLessonMembers] = useState(Array(currentMonthOfDays).fill(0));
 
     //전월 일자별 타석,레슨 활성화 회원 수 배열
-    const [previousActivateBatterboxMembers, setPreviousActiveBatterboxMembers] = useState(
-        Array(previousMonthOfDays).fill(0)
-    );
-    const [previousActivateLessonMembers, setPreviousActiveLessonMembers] = useState(
-        Array(previousMonthOfDays).fill(0)
-    );
+    const [previousActivateBatterboxMembers, setPreviousActiveBatterboxMembers] = useState(Array(previousMonthOfDays).fill(0));
+    const [previousActivateLessonMembers, setPreviousActiveLessonMembers] = useState(Array(previousMonthOfDays).fill(0));
+
+    // 월별 활성화 회원 수 배열 선언 및 초기화
+    const [monthlyActivateBatterboxMembers, setMonthlyActivateBatterboxMembers] = useState(Array(12).fill(0));
+    const [monthlyActivateLessonMembers, setMonthlyActivateLessonMembers] = useState(Array(12).fill(0));
 
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
+    
     const getMembers = async () => {
         const querySnapshot = await getDocs(memberRef);
 
@@ -170,6 +171,59 @@ const MemberDashboard = () => {
 
         setPreviousActiveBatterboxMembers(getPreviousActivateMembers('batterBox'));
         setPreviousActiveLessonMembers(getPreviousActivateMembers('lesson'));
+
+        // 월별 활성화
+        const getMonthlyActivateMembers = (productType) => {
+            const activateMembersArray = [];
+
+            for (let month = 0; month < 12; month++) {
+                const currentYear = new Date().getFullYear();
+                const dayOfActivateMembers = [];
+
+                data?.forEach((doc) => {
+                    const member = {
+                        id: doc.id,
+                        ...doc,
+                    };
+
+                    if (Array.isArray(member.availableProducts)) {
+                        const allOfProducts = [
+                            ...member.availableProducts,
+                            ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
+                        ];
+
+                        if (allOfProducts.length > 0) {
+                            allOfProducts
+                                .filter((product) => product.productType === productType && !product.deleted_at)
+                                .forEach((product) => {
+                                    const startDate = new Date(new Date(product.startDate).toISOString().split('T')[0] + ' 00:00:00');
+                                    const endDate = new Date(new Date(product.endDate).toISOString().split('T')[0] + ' 00:00:00');
+                                    const refundDate = product.refundDate
+                                        ? new Date(new Date(product.refundDate).toISOString().split('T')[0] + ' 00:00:00')
+                                        : false;
+        
+                                    const firstDayOfMonth = new Date(currentYear, month, 1);
+                                    const lastDayOfMonth = new Date(currentYear, month + 1, 0);
+        
+                                    if ((startDate <= lastDayOfMonth && endDate >= firstDayOfMonth && !product.refund)
+                                        || (product.refund && startDate <= lastDayOfMonth && lastDayOfMonth <= refundDate)) {
+                                        dayOfActivateMembers.push(member.id);
+                                    }
+                                });
+                        }
+
+                    }
+                });
+
+                const distinctMembers = new Set(dayOfActivateMembers);
+                activateMembersArray.push(distinctMembers.size);
+            }
+
+            return activateMembersArray;
+        };
+
+        setMonthlyActivateBatterboxMembers(getMonthlyActivateMembers('batterBox'));
+        setMonthlyActivateLessonMembers(getMonthlyActivateMembers('lesson'));
     };
 
     useEffect(() => {
@@ -242,6 +296,8 @@ const MemberDashboard = () => {
                             <SessionsChart
                                 activateBatterboxMembers={activateBatterboxMembers}
                                 activateLessonMembers={activateLessonMembers}
+                                monthlyActivateBatterboxMembers={monthlyActivateBatterboxMembers}
+                                monthlyActivateLessonMembers={monthlyActivateLessonMembers}
                                 members={currentMembers}
                                 index={index}
                             />
