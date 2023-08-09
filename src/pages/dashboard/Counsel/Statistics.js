@@ -55,7 +55,7 @@ const Statistics = ({ members }) => {
     const counselData = [
         {
             title: '신규등록률',
-            stats: newRegistrationsRate.toFixed(2) + '%',
+            stats: newRegistrationsRate.toFixed(0) + '%',
             value: '?' + '%',
             color: 'text-success',
             icon: 'up',
@@ -63,7 +63,7 @@ const Statistics = ({ members }) => {
         },
         {
             title: '재등록률',
-            stats: reRegistrationsRate.toFixed(2) + '%',
+            stats: reRegistrationsRate.toFixed(0) + '%',
             value: '?'+ '%',
             color: 'text-danger',
             icon: 'down',
@@ -92,7 +92,7 @@ const Statistics = ({ members }) => {
         },
         {
             title: '재등록대상',
-            stats: '1' + '명',
+            stats: '?' + '명',
             value: '?' + '%',
             color: 'text-success',
             icon: 'up',

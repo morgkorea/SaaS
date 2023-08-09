@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 
 const Statistics = ({
     previousActivateBatterboxMembers,
@@ -220,129 +220,152 @@ const Statistics = ({
     return (
         <>
             {index === 1 ? (
-                <>
-                    <StatisticsWidget
-                        height={186}
-                        icon="uil uil-users-alt float-end"
-                        // description="Revenue"
-                        title="타석 활성 회원"
-                        stats={currentBatterboxMembers + '명'}
-                        trend={{
-                            textClass: `text-${
-                                calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers) >= 0
-                                    ? 'success'
-                                    : 'danger'
-                            }`,
-                            icon: `mdi mdi-arrow-${
-                                calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers) >= 0
-                                    ? 'up'
-                                    : 'down'
-                            }-bold`,
-                            value: `${Math.abs(
-                                calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers).toFixed(2)
-                            )}%`,
-                            time: '전달 대비',
-                        }}
-                    />
-
-                    <StatisticsWidget
-                        height={186}
-                        icon="uil uil-stopwatch float-end danger"
-                        border="danger"
-                        // description="Refund"
-                        title={
-                            <>
-                                타석 만료 예정 
-                                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">1개월 내 만료 예정 회원</Tooltip>}>
-                                    <span className="d-inline-block">
-                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
-                                            <i className="uil uil-question-circle" />
-                                        </button>
-                                    </span>
-                                </OverlayTrigger>
-                            </>
-                        }
-                        stats={taSeokExpires + '명'}
-                    />
-                    <StatisticsWidget
-                        height={186}
-                        icon="uil uil-users-alt float-end"
-                        // description="Refund"
-                        title="레슨 활성 회원"
-                        stats={currentLessonMembers + '명'}
-                        trend={{
-                            textClass: `text-${
-                                calculatePercentageChange(previouslessonMembers, currentLessonMembers) >= 0
-                                    ? 'success'
-                                    : 'danger'
-                            }`,
-                            icon: `mdi mdi-arrow-${
-                                calculatePercentageChange(previouslessonMembers, currentLessonMembers) >= 0
-                                    ? 'up'
-                                    : 'down'
-                            }-bold`,
-                            value: `${Math.abs(
-                                calculatePercentageChange(previouslessonMembers, currentLessonMembers).toFixed(2)
-                            )}%`,
-                            time: '전달 대비',
-                        }}
-                    />
-                    <StatisticsWidget
-                        height={186}
-                        icon="uil uil-stopwatch float-end danger"
-                        border="danger"
-                        // description="Refund"
-                        title={
-                            <>
-                                레슨 만료 예정 
-                                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">1개월 내 만료 예정 회원</Tooltip>}>
-                                    <span className="d-inline-block">
-                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none'  }}>
-                                            <i className="uil uil-question-circle" />
-                                        </button>
-                                    </span>
-                                </OverlayTrigger>
-                            </>
-                        }
-                        stats={lessonExpires + '명'}
-                    />
-                </>
+                <Row>
+                    <Col xl={12} xs={6}>
+                        <StatisticsWidget
+                            height={186}
+                            icon="uil uil-users-alt float-end"
+                            // description="Revenue"
+                            title="타석 활성 회원"
+                            stats={currentBatterboxMembers + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousBatterboxMembers, currentBatterboxMembers) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(
+                                        previousBatterboxMembers,
+                                        currentBatterboxMembers
+                                    ).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+                    <Col xl={12} xs={6}>
+                        <StatisticsWidget
+                            height={186}
+                            icon="uil uil-stopwatch float-end danger"
+                            border="danger"
+                            // description="Refund"
+                            title={
+                                <>
+                                    타석 만료 예정
+                                    <OverlayTrigger
+                                        overlay={<Tooltip id="tooltip-disabled">1개월 내 만료 예정 회원</Tooltip>}>
+                                        <span className="d-inline-block">
+                                            <button
+                                                disabled
+                                                style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
+                                                <i className="uil uil-question-circle" />
+                                            </button>
+                                        </span>
+                                    </OverlayTrigger>
+                                </>
+                            }
+                            stats={taSeokExpires + '명'}
+                        />
+                    </Col>
+                    <Col xl={12} xs={6}>
+                        <StatisticsWidget
+                            height={186}
+                            icon="uil uil-users-alt float-end"
+                            // description="Refund"
+                            title="레슨 활성 회원"
+                            stats={currentLessonMembers + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previouslessonMembers, currentLessonMembers) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previouslessonMembers, currentLessonMembers) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previouslessonMembers, currentLessonMembers).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+                    <Col xl={12} xs={6}>
+                        <StatisticsWidget
+                            height={186}
+                            icon="uil uil-stopwatch float-end danger"
+                            border="danger"
+                            // description="Refund"
+                            title={
+                                <>
+                                    레슨 만료 예정
+                                    <OverlayTrigger
+                                        overlay={<Tooltip id="tooltip-disabled">1개월 내 만료 예정 회원</Tooltip>}>
+                                        <span className="d-inline-block">
+                                            <button
+                                                disabled
+                                                style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
+                                                <i className="uil uil-question-circle" />
+                                            </button>
+                                        </span>
+                                    </OverlayTrigger>
+                                </>
+                            }
+                            stats={lessonExpires + '명'}
+                        />
+                    </Col>
+                </Row>
             ) : (
-                <>
-                    <StatisticsWidget
-                        height={186}
-                        icon="uil uil-users-alt float-end"
-                        // description="Revenue"
-                        title="전체 회원"
-                        stats={allMember + '명'}
-                        trend={{
-                            textClass: 'text-success',
-                            icon: `mdi mdi-arrow-${membersChangeRate >= 0 ? 'up' : 'down'}-bold`,
-                            value: `${Math.abs(membersChangeRate.toFixed(2))}%`,
-                            time: '전달 대비',
-                        }}
-                    />
-                    <StatisticsWidget
-                        height={186}
-                        icon="uil uil-stopwatch float-end danger"
-                        border="danger"
-                        // description="Refund"
-                        // title="기간 만료 회원"
-                        title={
-                            <>
-                                기간 만료 회원
-                                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">상품 이용 기간이 만료된 회원</Tooltip>}>
-                                    <span className="d-inline-block">
-                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none'  }}>
-                                            <i className="uil uil-question-circle" />
-                                        </button>
-                                    </span>
-                                </OverlayTrigger>
-                            </>
-                        }
-                        stats={expiredMembers + '명'}
-                    />
-                </>
+                <Row>
+                    <Col xl={12} xs={6}>
+                        <StatisticsWidget
+                            height={186}
+                            icon="uil uil-users-alt float-end"
+                            // description="Revenue"
+                            title="전체 회원"
+                            stats={allMember + '명'}
+                            trend={{
+                                textClass: 'text-success',
+                                icon: `mdi mdi-arrow-${membersChangeRate >= 0 ? 'up' : 'down'}-bold`,
+                                value: `${Math.abs(membersChangeRate.toFixed(2))}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+                    <Col xl={12} xs={6}>
+                        <StatisticsWidget
+                            height={186}
+                            icon="uil uil-stopwatch float-end danger"
+                            border="danger"
+                            // description="Refund"
+                            // title="기간 만료 회원"
+                            title={
+                                <>
+                                    기간 만료 회원
+                                    <OverlayTrigger
+                                        overlay={<Tooltip id="tooltip-disabled">상품 이용 기간이 만료된 회원</Tooltip>}>
+                                        <span className="d-inline-block">
+                                            <button
+                                                disabled
+                                                style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
+                                                <i className="uil uil-question-circle" />
+                                            </button>
+                                        </span>
+                                    </OverlayTrigger>
+                                </>
+                            }
+                            stats={expiredMembers + '명'}
+                        />
+                    </Col>
+                </Row>
             )}
         </>
     );

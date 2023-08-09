@@ -192,7 +192,7 @@ const Statistics = ({
     return (
         <>
             <Row>
-                <Col>
+                <Col xxl={3} xl={6}>
                     <StatisticsWidget
                         icon="mdi mdi mdi-golf-tee"
                         description="Number of Customers"
@@ -207,8 +207,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-
-                <Col>
+                <Col xxl={3} xl={6}>
                     <StatisticsWidget
                         icon="mdi mdi-school"
                         description="Number of Orders"
@@ -224,8 +223,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-
-                <Col>
+                <Col xxl={2} xl={6}>
                     <StatisticsWidget
                         icon="mdi mdi-locker-multiple"
                         description="Revenue"
@@ -239,8 +237,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-
-                <Col>
+                <Col xxl={2} xl={6}>
                     <StatisticsWidget
                         icon="mdi mdi-sack"
                         description="Revenue"
@@ -263,7 +260,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-                <Col>
+                <Col xxl={2} xl={6}>
                     <StatisticsWidget
                         icon="mdi mdi-cash-refund danger"
                         border="danger"
