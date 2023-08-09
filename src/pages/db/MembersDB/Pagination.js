@@ -58,8 +58,27 @@ const Pagination = ({ tableProps, sizePerPageList, styleCenter }) => {
 
     return (
         <div className="align-items-center text-center pb-1"
-            style={styleCenter ? { display: 'flex', justifyContent: 'center' } : null}>
-
+            style={styleCenter ? { display: 'flex', justifyContent: 'center' } : null}
+        >
+             {/* {sizePerPageList.length > 0 && (
+                <div className="d-inline-block me-3">
+                    <label className="me-1">Display :</label>
+                    <select
+                        value={tableProps.state.pageSize}
+                        onChange={(e) => {
+                            tableProps.setPageSize(Number(e.target.value));
+                        }}
+                        className="form-select d-inline-block w-auto">
+                        {(sizePerPageList || []).map((pageSize, index) => {
+                            return (
+                                <option key={index} value={pageSize.value}>
+                                    {pageSize.text}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </div>
+            )} */}
             <ul className={
                     styleCenter
                         ? 'pagination align-item-center mb-0'

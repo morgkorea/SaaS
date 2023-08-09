@@ -358,6 +358,28 @@ const columns = [
     },
 ];
 
+const sizePerPageList = [
+    {
+        text: '5',
+        value: 5,
+    },
+    {
+        text: '10',
+        value: 10,
+    },
+    {
+        text: '15',
+        value: 15,
+    },
+    {
+        text: '25',
+        value: 25,
+    },
+    {
+        text: '50',
+        value: 50,
+    },
+];
 const Customers = ({ currentMembers, addMode, setAddMode }) => {
 
     return (
@@ -369,7 +391,8 @@ const Customers = ({ currentMembers, addMode, setAddMode }) => {
                         data={currentMembers}
                         addMode={addMode}
                         setAddMode={setAddMode}
-                        // sizePerPageList={sizePerPageList}
+                        sizePerPageList={sizePerPageList}
+                        // pageSize={sizePerPageList[2].value}
                         pageSize={20}
                         isSortable={true}
                         pagination={true}

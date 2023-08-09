@@ -173,63 +173,61 @@ const Table = (props: TableProps) => {
                     )}
                 </div>
             </div>
+
             <div className="table-responsive member-table" style={{ minHeight: '600px' }}>
                 <table
-                    {...dataTable.getTableProps()}
-                    className={classNames('table table-centered react-table', props['tableClass'], 'sales')}
-                >
-                    <thead className={props['theadClass']}>
-                        {dataTable.headerGroups.map((headerGroup) => (
-                            <tr {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column) => (
-                                    <th
-                                        {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
-                                        className={classNames({
-                                            sorting_desc: column.isSortedDesc === true,
-                                            sorting_asc: column.isSortedDesc === false,
-                                            sortable: column.sort === true,
-                                        })}
-                                    >
-                                        {column.render('Header')}
-                                    </th>
-                                ))}
-                            </tr>
-                        ))}
-                    </thead>
-                    <tbody {...dataTable.getTableBodyProps()}>
-                        {addMode ? <AddCell ref={childComponentRef} /> : null}
-                        {rows.length === 0 ? (
-                            <tr className='dataless'>
-                                <td colSpan={dataTable.columns.length}>
-                                    등록된 회원이 없습니다. 회원 등록을 해주세요.
-                                    <span className="d-block">
-                                        <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
-                                    </span>
-                                </td>
-                            </tr>
-                        ) : (
-                            (rows || []).map((row, i) => {
-                                dataTable.prepareRow(row);
-                                return (
-                                    <tr {...row.getRowProps()} key={row.original.id}>
-                                        {row.cells.map((cell) => {
-                                            return (
-                                                <td key={cell.id} {...cell.getCellProps()}>
-                                                    {cell.render('Cell')}
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                );
-                            })
-                        )}
-                    </tbody>
+                        {...dataTable.getTableProps()}
+                        className={classNames('table table-centered react-table', props['tableClass'], 'sales')}
+                    >
+                        <thead className={props['theadClass']}>
+                            {dataTable.headerGroups.map((headerGroup) => (
+                                <tr {...headerGroup.getHeaderGroupProps()}>
+                                    {headerGroup.headers.map((column) => (
+                                        <th
+                                            {...column.getHeaderProps(column.sort && column.getSortByToggleProps())}
+                                            className={classNames({
+                                                sorting_desc: column.isSortedDesc === true,
+                                                sorting_asc: column.isSortedDesc === false,
+                                                sortable: column.sort === true,
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ))}
+                                </tr>
+                            ))}
+                        </thead>
+                        <tbody {...dataTable.getTableBodyProps()}>
+                            {addMode ? <AddCell ref={childComponentRef} /> : null}
+                            {rows.length === 0 ? (
+                                <tr className='dataless'>
+                                    <td colSpan={dataTable.columns.length}>
+                                        등록된 회원이 없습니다. 회원 등록을 해주세요.
+                                        <span className="d-block">
+                                            <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
+                                        </span>
+                                    </td>
+                                </tr>
+                            ) : (
+                                (rows || []).map((row, i) => {
+                                    dataTable.prepareRow(row);
+                                    return (
+                                        <tr {...row.getRowProps()} key={row.original.id}>
+                                            {row.cells.map((cell) => {
+                                                return (
+                                                    <td key={cell.id} {...cell.getCellProps()}>
+                                                        {cell.render('Cell')}
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
                 </table>
             </div>
-
-
             {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
-
         </>
     );
 };
