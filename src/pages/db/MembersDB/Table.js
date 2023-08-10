@@ -82,7 +82,6 @@ const Table = (props: TableProps) => {
     const isExpandable = props['isExpandable'] || false;
     const addMode = props['addMode'] || false;
     const setAddMode = props['setAddMode'] || false;
-
     const childComponentRef = useRef(null);
 
     const onClickAdd = () => {
@@ -174,7 +173,8 @@ const Table = (props: TableProps) => {
                 </div>
             </div>
 
-            <div className="table-responsive member-table" style={{ minHeight: '600px' }}>
+            {/* <div className="table-responsive member-table" style={{ minHeight: '600px' }}> */}
+            <div className="table-responsive member-table" style={{ minHeight: '344px' }}>
                 <table
                         {...dataTable.getTableProps()}
                         className={classNames('table table-centered react-table', props['tableClass'], 'sales')}
@@ -200,7 +200,7 @@ const Table = (props: TableProps) => {
                         <tbody {...dataTable.getTableBodyProps()}>
                             {addMode ? <AddCell ref={childComponentRef} /> : null}
                             {rows.length === 0 ? (
-                                <tr className='dataless'>
+                                <tr className='dataless' style={{height: '500px'}}>
                                     <td colSpan={dataTable.columns.length}>
                                         등록된 회원이 없습니다. 회원 등록을 해주세요.
                                         <span className="d-block">

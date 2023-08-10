@@ -223,7 +223,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-                <Col xxl={2} xl={6}>
+                <Col xxl={2} xl={4}>
                     <StatisticsWidget
                         icon="mdi mdi-locker-multiple"
                         description="Revenue"
@@ -237,7 +237,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-                <Col xxl={2} xl={6}>
+                <Col xxl={2} xl={4}>
                     <StatisticsWidget
                         icon="mdi mdi-sack"
                         description="Revenue"
@@ -260,7 +260,7 @@ const Statistics = ({
                             time: periodTextHandler(),
                         }}></StatisticsWidget>
                 </Col>
-                <Col xxl={2} xl={6}>
+                <Col xxl={2} xl={4}>
                     <StatisticsWidget
                         icon="mdi mdi-cash-refund danger"
                         border="danger"

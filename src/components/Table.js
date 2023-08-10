@@ -195,7 +195,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
                     {rows.length === 0 ? (
-                            <tr className='dataless'>
+                            <tr className='dataless' style={{height: '500px'}}>
                                 <td colSpan={dataTable.columns.length}>
                                     등록된 상품이 없습니다. 상품 등록을 해주세요.
                                     <span className="d-block">

@@ -392,8 +392,8 @@ const Customers = ({ currentMembers, addMode, setAddMode }) => {
                         addMode={addMode}
                         setAddMode={setAddMode}
                         sizePerPageList={sizePerPageList}
-                        // pageSize={sizePerPageList[2].value}
-                        pageSize={20}
+                        pageSize={sizePerPageList[2].value}
+                        // pageSize={20}
                         isSortable={true}
                         pagination={true}
                         isSelectable={false}
