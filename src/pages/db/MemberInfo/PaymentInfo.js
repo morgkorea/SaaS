@@ -30,7 +30,7 @@ const PaymentInfo = ({ member }) => {
 
             const amounts = products.map((data) => data.adjustedPrice);
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            const averageValue = Math.floor(totalValue / amounts.length);
+            const averageValue = amounts.length > 0 ? Math.floor(totalValue / amounts.length) : 0;
 
             setAllProducts(products);
             setTotalValue(totalValue);

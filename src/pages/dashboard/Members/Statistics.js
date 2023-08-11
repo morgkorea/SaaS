@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 
@@ -21,16 +21,19 @@ const Statistics = ({
 
     const [taSeokExpires, setTaSeokExpires] = useState(0); // 타석 만료예정
     const [lessonExpires, setLessonExpires] = useState(0); // 레슨 만료예정
-
-    const allMembers = members.length || 0; // 전체회원
-    const newMembers = members.filter((member) => {
-        const createdDate = new Date(member.createdDate);
-        const createdMonth = createdDate.getMonth() + 1;
-        
-        return createdMonth === currentMonth;
-    });
-    const previousMembers = allMembers - newMembers.length;
     const [expiredMembers, setExpiredMembers] = useState(0); // 기간 만료회원
+
+    // 상담 유입
+    const newMembers = useMemo(() => {
+        return members.filter((member) => {
+            const createdDate = new Date(member.createdDate);
+            const createdMonth = createdDate.getMonth() + 1;
+
+            return createdMonth === currentMonth;
+        });
+    }, [members, currentMonth]);
+    const previousMembers = members.length - newMembers.length;
+
     
     // 타석/레슨 만료예정
     useEffect(() => {
@@ -201,7 +204,7 @@ const Statistics = ({
                             height={186}
                             icon="uil uil-users-alt float-end"
                             title="전체 회원"
-                            stats={allMembers + '명'}
+                            stats={members.length + '명'}
                             trend={{
                                 textClass: `text-${
                                     calculatePercentageChange(previousMembers, newMembers) >= 0
