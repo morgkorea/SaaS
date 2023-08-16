@@ -47,51 +47,18 @@ const Counsel = () => {
                 </Col>
             </Row>
 
-            <Row>
-                <Col xxl={4}>
+            {/* <Row>
+                <Col>
                     <Statistics members={members} />
                 </Col>
-                <Col xxl={8}>
-                    <Row>
-                        <Col>
-                            <BarChart members={members} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Card>
-                                <Table responsive className="table-centered table-nowrap mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>신규상담</th>
-                                            <th>신규등록</th>
-                                            <th>신규등록률</th>
-                                            <th>재등록대상</th>
-                                            <th>재등록</th>
-                                            <th>이탈</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style={{ borderTop: '1px solid #f7f7f7' }}>
-                                        {items.map((item, idx) => {
-                                            return (
-                                                <tr key={idx}>
-                                                    <td>84명</td>
-                                                    {/* <td>${item.price.toFixed(2)}</td> */}
-                                                    <td>56명</td>
-                                                    <td>72%</td>
-                                                    <td>3명</td>
-                                                    <td>23명</td>
-                                                    <td>120명</td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </Table>
-                            </Card>
-                        </Col>
-                    </Row>
+            </Row> */}
+
+            <Row>
+                <Col>
+                    <BarChart members={members} />
                 </Col>
             </Row>
+
             <Row>
                 <Col>
                     <PerformanceChart members={members} />

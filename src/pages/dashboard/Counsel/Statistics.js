@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatisticsWidget from '../../../components/StatisticsWidget';
 
@@ -8,7 +8,7 @@ const Statistics = ({ members }) => {
     // * -------------------------------
     // * 신규
     // * -------------------------------
-    
+
     // 유입
     const newMembers = members.filter((member) => {
         const createdDate = new Date(member.createdDate);
@@ -60,14 +60,8 @@ const Statistics = ({ members }) => {
     const newRegistrationsRate = newMembers.length !== 0 ? (newRegistrations / newMembers.length) * 100 : 0;
 
     // 전달 신규등록률
-    const previousMonthNewRegistrationsRate = previousMonthNewMembers !== 0 
-        ? (previousMonthNewRegistrations / previousMonthNewMembers) * 100 : 0;
-
-
-
-
-
-
+    const previousMonthNewRegistrationsRate =
+        previousMonthNewMembers !== 0 ? (previousMonthNewRegistrations / previousMonthNewMembers) * 100 : 0;
 
     // * -------------------------------
     // * 재등록
@@ -141,10 +135,8 @@ const Statistics = ({ members }) => {
     const reRegistrationsRate = allProjectsCount > 0 ? (reRegistrations / allProjectsCount) * 100 : 0;
 
     // 전달 재등록률
-    const previousMonthReRegistrationsRate = allProjectsCount > 0 ? (previousMonthReRegistrations / allProjectsCount) * 100 : 0;
-
-
-
+    const previousMonthReRegistrationsRate =
+        allProjectsCount > 0 ? (previousMonthReRegistrations / allProjectsCount) * 100 : 0;
 
     // * -------------------------------
     // * 전달대비
@@ -164,153 +156,336 @@ const Statistics = ({ members }) => {
         return isNaN(cappedChange) ? 0 : cappedChange;
     };
 
+
+
+    // * -------------------------------
+    // * 목표
+    // * -------------------------------ㄴ
+    const [targetSales, setTargetSales] = useState(0);
+  
+    const handleTargetChange = (event) => {
+      setTargetSales(Number(event.target.value));
+    };
+  
+    const calculateProgress = () => {
+      if (targetSales === 0) {
+        return 0;
+      }
+      const progress = (newRegistrationsRate / targetSales) * 100;
+      return Math.min(100, progress);
+    };
+
+
+                      
     return (
         <Row>
-            <Col xs={6}>
-                <StatisticsWidget
-                    icon="mdi mdi-account-multiple"
-                    title="신규등록률"
-                    border="primary"
-                    stats={newRegistrationsRate.toFixed(0) + '%'}
-                    trend={{
-                        textClass: `text-${
-                            calculatePercentageChange(previousMonthNewRegistrationsRate, newRegistrationsRate) >= 0
-                                ? 'success'
-                                : 'danger'
-                        }`,
-                        icon: `mdi mdi-arrow-${
-                            calculatePercentageChange(previousMonthNewRegistrationsRate, newRegistrationsRate) >= 0
-                                ? 'up'
-                                : 'down'
-                        }-bold`,
-                        value: `${Math.abs(
-                            isNaN(calculatePercentageChange(previousMonthNewRegistrationsRate, newRegistrationsRate))
-                                ? 0
-                                : calculatePercentageChange(
-                                      previousMonthNewRegistrationsRate,
-                                      newRegistrationsRate
-                                  ).toFixed(2)
-                        )}%`,
-                        time: '전달 대비',
-                    }}
-                />
+            <Col sx={12} xl={6}>
+                <h4>레슨</h4>
+                <Row>
+                    <Col xs={6}>
+                        <p>신규등록률: {newRegistrationsRate.toFixed(2)}%</p>
+                        <label>
+                            목표:
+                            <input type="number" value={targetSales} onChange={handleTargetChange} />
+                        </label>
+                        <p>달성률: {calculateProgress().toFixed(2)}%</p>
+                        <p>달성하기 위해 {(100 - calculateProgress()).toFixed(2)}% 남았습니다</p>
+                    </Col>
+
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="재등록률"
+                            border="primary"
+                            stats={reRegistrationsRate.toFixed(0) + '%'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate) >=
+                                    0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate) >=
+                                    0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(
+                                        previousMonthReRegistrationsRate,
+                                        reRegistrationsRate
+                                    ).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="신규등록"
+                            stats={newRegistrations + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthNewRegistrations, newRegistrations) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthNewRegistrations, newRegistrations) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previousMonthNewRegistrations, newRegistrations).toFixed(
+                                        2
+                                    )
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="재등록"
+                            stats={reRegistrations + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthReRegistrations, reRegistrations) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthReRegistrations, reRegistrations) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previousMonthReRegistrations, reRegistrations).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="상담유입"
+                            stats={newMembers.length + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthNewMembers, newMembers) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthNewMembers, newMembers) >= 0 ? 'up' : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previousMonthNewMembers, newMembers).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="재등록대상"
+                            stats={reRegisteredMembersCount + '명'}
+                            link={{
+                                value: '/database/members-db',
+                            }}
+                        />
+                    </Col>
+                </Row>
             </Col>
 
-            <Col xs={6}>
-                <StatisticsWidget
-                    icon="mdi mdi-account-multiple"
-                    title="재등록률"
-                    border="primary"
-                    stats={reRegistrationsRate.toFixed(0) + '%'}
-                    trend={{
-                        textClass: `text-${
-                            calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate) >= 0
-                                ? 'success'
-                                : 'danger'
-                        }`,
-                        icon: `mdi mdi-arrow-${
-                            calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate) >= 0
-                                ? 'up'
-                                : 'down'
-                        }-bold`,
-                        value: `${Math.abs(
-                            calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate).toFixed(2)
-                        )}%`,
-                        time: '전달 대비',
-                    }}
-                />
-            </Col>
+            <Col sx={12} xl={6}>
+                <h4>타석</h4>
+                <Row>
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="신규등록률"
+                            border="primary"
+                            stats={newRegistrationsRate.toFixed(0) + '%'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(
+                                        previousMonthNewRegistrationsRate,
+                                        newRegistrationsRate
+                                    ) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(
+                                        previousMonthNewRegistrationsRate,
+                                        newRegistrationsRate
+                                    ) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    isNaN(
+                                        calculatePercentageChange(
+                                            previousMonthNewRegistrationsRate,
+                                            newRegistrationsRate
+                                        )
+                                    )
+                                        ? 0
+                                        : calculatePercentageChange(
+                                              previousMonthNewRegistrationsRate,
+                                              newRegistrationsRate
+                                          ).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
 
-            <Col xs={6}>
-                <StatisticsWidget
-                    icon="mdi mdi-account-multiple"
-                    title="신규등록"
-                    stats={newRegistrations + '명'}
-                    trend={{
-                        textClass: `text-${
-                            calculatePercentageChange(previousMonthNewRegistrations, newRegistrations) >= 0
-                                ? 'success'
-                                : 'danger'
-                        }`,
-                        icon: `mdi mdi-arrow-${
-                            calculatePercentageChange(previousMonthNewRegistrations, newRegistrations) >= 0
-                                ? 'up'
-                                : 'down'
-                        }-bold`,
-                        value: `${Math.abs(
-                            calculatePercentageChange(previousMonthNewRegistrations, newRegistrations).toFixed(2)
-                        )}%`,
-                        time: '전달 대비',
-                    }}
-                />
-            </Col>
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="재등록률"
+                            border="primary"
+                            stats={reRegistrationsRate.toFixed(0) + '%'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate) >=
+                                    0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthReRegistrationsRate, reRegistrationsRate) >=
+                                    0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(
+                                        previousMonthReRegistrationsRate,
+                                        reRegistrationsRate
+                                    ).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
 
-            <Col xs={6}>
-                <StatisticsWidget
-                    icon="mdi mdi-account-multiple"
-                    title="재등록"
-                    stats={reRegistrations + '명'}
-                    trend={{
-                        textClass: `text-${
-                            calculatePercentageChange(previousMonthReRegistrations, reRegistrations) >= 0
-                                ? 'success'
-                                : 'danger'
-                        }`,
-                        icon: `mdi mdi-arrow-${
-                            calculatePercentageChange(previousMonthReRegistrations, reRegistrations) >= 0
-                                ? 'up'
-                                : 'down'
-                        }-bold`,
-                        value: `${Math.abs(
-                            calculatePercentageChange(previousMonthReRegistrations, reRegistrations).toFixed(2)
-                        )}%`,
-                        time: '전달 대비',
-                    }}
-                />
-            </Col>
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="신규등록"
+                            stats={newRegistrations + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthNewRegistrations, newRegistrations) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthNewRegistrations, newRegistrations) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previousMonthNewRegistrations, newRegistrations).toFixed(
+                                        2
+                                    )
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
 
-            <Col xs={6}>
-                <StatisticsWidget
-                    icon="mdi mdi-account-multiple"
-                    title="상담유입"
-                    stats={newMembers.length + '명'}
-                    trend={{
-                        textClass: `text-${
-                            calculatePercentageChange(previousMonthNewMembers, newMembers) >= 0 ? 'success' : 'danger'
-                        }`,
-                        icon: `mdi mdi-arrow-${
-                            calculatePercentageChange(previousMonthNewMembers, newMembers) >= 0 ? 'up' : 'down'
-                        }-bold`,
-                        value: `${Math.abs(
-                            calculatePercentageChange(previousMonthNewMembers, newMembers).toFixed(2)
-                        )}%`,
-                        time: '전달 대비',
-                    }}
-                />
-            </Col>
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="재등록"
+                            stats={reRegistrations + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthReRegistrations, reRegistrations) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthReRegistrations, reRegistrations) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previousMonthReRegistrations, reRegistrations).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
 
-            <Col xs={6}>
-                <StatisticsWidget
-                    icon="mdi mdi-account-multiple"
-                    title="재등록대상"
-                    stats={reRegisteredMembersCount + '명'}
-                    trend={{
-                        textClass: `text-${
-                            calculatePercentageChange(previousMonthReRegisteredMembers, reRegisteredMembersCount) >= 0
-                                ? 'success'
-                                : 'danger'
-                        }`,
-                        icon: `mdi mdi-arrow-${
-                            calculatePercentageChange(previousMonthReRegisteredMembers, reRegisteredMembersCount) >= 0
-                                ? 'up'
-                                : 'down'
-                        }-bold`,
-                        value: `${Math.abs(
-                            calculatePercentageChange(previousMonthReRegisteredMembers, reRegisteredMembersCount).toFixed(2)
-                        )}%`,
-                        time: '전달 대비',
-                    }}
-                />
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="상담유입"
+                            stats={newMembers.length + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(previousMonthNewMembers, newMembers) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(previousMonthNewMembers, newMembers) >= 0 ? 'up' : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(previousMonthNewMembers, newMembers).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+
+                    <Col xs={6}>
+                        <StatisticsWidget
+                            icon="mdi mdi-account-multiple"
+                            title="재등록대상"
+                            stats={reRegisteredMembersCount + '명'}
+                            trend={{
+                                textClass: `text-${
+                                    calculatePercentageChange(
+                                        previousMonthReRegisteredMembers,
+                                        reRegisteredMembersCount
+                                    ) >= 0
+                                        ? 'success'
+                                        : 'danger'
+                                }`,
+                                icon: `mdi mdi-arrow-${
+                                    calculatePercentageChange(
+                                        previousMonthReRegisteredMembers,
+                                        reRegisteredMembersCount
+                                    ) >= 0
+                                        ? 'up'
+                                        : 'down'
+                                }-bold`,
+                                value: `${Math.abs(
+                                    calculatePercentageChange(
+                                        previousMonthReRegisteredMembers,
+                                        reRegisteredMembersCount
+                                    ).toFixed(2)
+                                )}%`,
+                                time: '전달 대비',
+                            }}
+                        />
+                    </Col>
+                </Row>
             </Col>
         </Row>
     );

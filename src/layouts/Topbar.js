@@ -89,7 +89,7 @@ const ProfileMenus = [
     // {
     //     label: 'My Account',
     //     icon: 'mdi mdi-account-circle',
-    //     redirectTo: '#',
+    //     redirectTo: '../pages/profile',
     // },
     // {
     //     label: 'Settings',

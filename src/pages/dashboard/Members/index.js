@@ -256,7 +256,7 @@ const MemberDashboard = () => {
                                         return (
                                             <Nav.Item key={index} onClick={() => setIndex(tab.id)}>
                                                 <Nav.Link as={Link} to="#" eventKey={tab.title}>
-                                                    <span className="d-none d-md-block">{tab.title}</span>
+                                                    <span>{tab.title}</span>
                                                 </Nav.Link>
                                             </Nav.Item>
                                         );

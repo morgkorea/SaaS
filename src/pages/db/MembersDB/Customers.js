@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import Table from './Table';
 import { useState } from 'react';
@@ -206,17 +206,17 @@ const LessonActiveColumn = ({ row }) => {
 }
 
 const taSeokActive = (row) => {
-    const availableProducts = row.original?.availableProducts;
+    const availableProducts = row.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
-
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox') ? '활성' : '비활성';
+    
     return isActive;
 };
 
 const lessonActive = (row) => {
-    const availableProducts = row.original?.availableProducts;
+    const availableProducts = row.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson') ? '활성' : '비활성';
 
     return isActive;
 };
@@ -339,21 +339,18 @@ const columns = [
         Header: '평균결제금액',
         accessor: averagePayAccessor,
         Cell: AveragePayAmount,
-        sortType: 'basic',
         sort: true,
     },
     {
         Header: '타석 활성여부',
         accessor: taSeokActive,
         Cell: TaSeokActiveColumn,
-        sortType: 'basic',
         sort: true,
     },
     {
         Header: '레슨 활성여부',
         accessor: lessonActive,
         Cell: LessonActiveColumn,
-        sortType: 'basic',
         sort: true,
     },
 ];
@@ -380,6 +377,7 @@ const sizePerPageList = [
         value: 50,
     },
 ];
+
 const Customers = ({ currentMembers, addMode, setAddMode }) => {
 
     return (
