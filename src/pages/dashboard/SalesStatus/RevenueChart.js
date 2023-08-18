@@ -27,8 +27,6 @@ const RevenueChart = ({
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
     const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState(periodSaelsDataInit);
 
-    const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
-
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
         const month = datePickDate.getMonth();
@@ -273,7 +271,9 @@ const RevenueChart = ({
                             <Col md={6}>
                                 <p className="text-muted mb-0 mt-3">이번 {selectedPeriod === 'month' ? '달' : '주'}</p>
                                 <h2 className="fw-normal mb-3">
-                                    <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
+                                    <small
+                                        className="mdi mdi-checkbox-blank-circle align-middle me-1"
+                                        style={{ color: '#8990f6' }}></small>
                                     <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
                                         {(currentPeriodTotalSales - currentRefundPrice).toLocaleString()}원
                                     </span>
@@ -312,7 +312,9 @@ const RevenueChart = ({
                             <Col md={6}>
                                 <p className="text-muted mb-0 mt-3">오늘</p>
                                 <h2 className="fw-normal mb-3">
-                                    <small className="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
+                                    <small
+                                        className="mdi mdi-checkbox-blank-circle align-middle me-1"
+                                        style={{ color: '#8990f6' }}></small>
                                     <span style={{ color: currentPeriodTotalSales < 0 ? '#FA5C7C' : '' }}>
                                         {(currentPeriodTotalSales - currentRefundPrice).toLocaleString()}원
                                     </span>
