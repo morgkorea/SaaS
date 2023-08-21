@@ -336,10 +336,12 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         <td>
                             <input
                                 type="checkbox"
-                                checked={privateInfoChecked}
+                                defaultChecked={privateInfoChecked}
                                 onChange={privateInfoChange}
-                                name="privateInfo"
+                                className="custom-checkbox"
+                                id="privacyCheckbox"
                             />
+                            <label htmlFor="privacyCheckbox">ㅤ</label>
                         </td>
                     </tr>
                     <tr>
@@ -347,10 +349,12 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         <td>
                             <input
                                 type="checkbox"
-                                checked={marketingChecked}
+                                defaultChecked={marketingChecked}
                                 onChange={marketingChange}
-                                name="marketing"
+                                className="custom-checkbox"
+                                id="marketingCheckbox"
                             />
+                            <label htmlFor="marketingCheckbox">ㅤ</label>
                         </td>
                     </tr>
                 </tbody>

@@ -36,7 +36,7 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
                             <Table
                                 columns={columns}
                                 data={data}
-                                pageSize={20}
+                                pageSize={12}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}

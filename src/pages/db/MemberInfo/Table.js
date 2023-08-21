@@ -107,21 +107,15 @@ const Table = ({ member }) => {
                     <tr>
                         <th>개인정보수집동의</th>
                         <td>
-                            {member?.privateInfoAllow === true ? (
-                                <i className="mdi mdi-check widget-icon2" />
-                            ) : (
-                                <i className="mdi mdi-check" />
-                            )}
+                            <input type="checkbox" checked={member?.privateInfoAllow} className="custom-checkbox" readOnly id="privateInfoCheckbox" />
+                            <label htmlFor="privateInfoCheckbox">ㅤ</label>
                         </td>
                     </tr>
                     <tr>
                         <th>마케팅활용동의</th>
                         <td>
-                            {member?.marketingRecieveAllow === true ? (
-                                <i className="mdi mdi-check widget-icon2" />
-                            ) : (
-                                <i className="mdi mdi-check" />
-                            )}
+                            <input type="checkbox" checked={member?.marketingRecieveAllow} className="custom-checkbox" readOnly id="marketingCheckbox" />
+                            <label htmlFor="marketingCheckbox">ㅤ</label>
                         </td>
                     </tr>
                 </tbody>

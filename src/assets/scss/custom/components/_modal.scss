@@ -85,4 +85,91 @@
     }
 }
 
+// 하은 style 추가
+.add-modal .modal-content {
+    width: 780px;
+    padding: 30px 50px;
+}
+.add-modal-content {
+    display: grid;
+    gap: 16px;
+    
+    label {
+        margin-bottom: 6px;
+        color: #6C757D;
+        font-weight: normal;
+    }
+    .react-select__control {
+        border-color: #EEF2F7;
+    }
+    .react-select__placeholder {
+        color: #98A6AD;
+        font-weight: normal;
+    }
+    input.add-modal-input {
+        width: 100%;
+        min-height: 38px;
+        border: 1px solid #EEF2F7;
+        padding: 0 12px;
+        font-weight: normal;
+        border-radius: 6px;
+    }
+    input[type="date"]::-webkit-datetime-edit-text,
+    input[type="date"]::-webkit-datetime-edit-month-field,
+    input[type="date"]::-webkit-datetime-edit-day-field,
+    input[type="date"]::-webkit-datetime-edit-year-field {
+        color: #98A6AD;
+        font-weight: normal;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        color: #98A6AD;
+        opacity: 0.3;
+    }
+}
 
+
+
+
+/* 하은 - 커스텀 체크박스 스타일 */
+.custom-checkbox {
+    display: none;
+}
+
+.custom-checkbox + label {
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+}
+
+.custom-checkbox + label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    background: white no-repeat center center;
+    background-image: url("../../../images/svg/check_disabled.svg");
+    border: none;
+    outline: none;
+    appearance: none;
+}
+
+/* 활성화 체크 모양 */
+.custom-checkbox:checked + label::before {
+    background: white no-repeat center center;
+    background-image: url("../../../images/svg/check.svg");
+    border: none;
+    outline: none;
+    appearance: none;
+}
+.custom-checkbox:checked:disabled + label::before {
+    background: white no-repeat center center;
+    background-image: url("../../../images/svg/check_disabled.svg");
+    border: none;
+    outline: none;
+    appearance: none;
+}
+.add-modal-content input.add-modal-input.invalid {
+    border: 1px solid #FA5C7C;
+}

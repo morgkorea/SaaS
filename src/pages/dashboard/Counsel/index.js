@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Table, Card } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import PerformanceChart from './PerformanceChart';
 import BarChart from './BarChart';
 import { collection, getDocs } from 'firebase/firestore';
@@ -47,11 +47,11 @@ const Counsel = () => {
                 </Col>
             </Row>
 
-            {/* <Row>
+            <Row>
                 <Col>
                     <Statistics members={members} />
                 </Col>
-            </Row> */}
+            </Row>
 
             <Row>
                 <Col>

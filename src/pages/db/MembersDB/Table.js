@@ -10,8 +10,7 @@ import {
 } from 'react-table';
 import classNames from 'classnames';
 import Pagination from './Pagination';
-import AddCell from './AddCell';
-import { Button } from 'react-bootstrap';
+import AddModal from './AddModal';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
@@ -23,7 +22,8 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
 
     return (
         <div className={classNames(searchBoxClass)}>
-            <span className="d-flex align-items-center">
+            <span className="d-flex align-items-center form-control">
+                <i className="mdi mdi-magnify search-icon" />
                 <input
                     value={value || ''}
                     onChange={(e) => {
@@ -31,7 +31,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
                         onChange(e.target.value);
                     }}
                     placeholder="회원 찾기"
-                    className="form-control w-auto ms-1"
+                    className="w-auto ms-1 border-0"
                 />
             </span>
         </div>
@@ -80,15 +80,6 @@ const Table = (props: TableProps) => {
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
-    const addMode = props['addMode'] || false;
-    const setAddMode = props['setAddMode'] || false;
-    const childComponentRef = useRef(null);
-
-    const onClickAdd = () => {
-        if (!addMode) {
-            setAddMode((prev) => !prev); // add 모드로 변경
-        }
-    };
 
     const dataTable = useTable(
         {
@@ -150,35 +141,29 @@ const Table = (props: TableProps) => {
         <>
             <div className="d-flex justify-content-between">
                 <div>
-                    {isSearchable && (
-                        <GlobalFilter
-                            preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
-                            globalFilter={dataTable.state.globalFilter}
-                            setGlobalFilter={dataTable.setGlobalFilter}
-                            searchBoxClass={props['searchBoxClass']}
-                        />
-                    )}
+                    <h5>현재 <span className='text-primary'>{dataTable.data.length}명</span> 의 회원분들과 함께 하고 있어요!</h5>
                 </div>
-                <div>
-                    {!addMode ? (
-                        <Button onClick={onClickAdd}>회원 등록하기</Button>
-                    ) : (
-                        <Button
-                            onClick={() => {
-                                childComponentRef.current.updateFirestoreAddMember();
-                            }}>
-                            저장하기
-                        </Button>
-                    )}
+                <div className='d-flex'>
+                    <div>
+                        {isSearchable && (
+                            <GlobalFilter
+                                preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
+                                globalFilter={dataTable.state.globalFilter}
+                                setGlobalFilter={dataTable.setGlobalFilter}
+                                searchBoxClass={props['searchBoxClass']}
+                            />
+                        )}
+                    </div>
+                    <div className='ms-2'>
+                        <AddModal/>
+                    </div>
                 </div>
             </div>
 
-            {/* <div className="table-responsive member-table" style={{ minHeight: '600px' }}> */}
             <div className="table-responsive member-table" style={{ minHeight: '344px' }}>
-                <table
-                        {...dataTable.getTableProps()}
-                        className={classNames('table table-centered react-table', props['tableClass'], 'sales')}
-                    >
+                <table {...dataTable.getTableProps()}
+                    className={classNames('table table-centered react-table', props['tableClass'], 'sales')}
+                >
                         <thead className={props['theadClass']}>
                             {dataTable.headerGroups.map((headerGroup) => (
                                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -198,7 +183,6 @@ const Table = (props: TableProps) => {
                             ))}
                         </thead>
                         <tbody {...dataTable.getTableBodyProps()}>
-                            {addMode ? <AddCell ref={childComponentRef} /> : null}
                             {rows.length === 0 ? (
                                 <tr className='dataless' style={{height: '500px'}}>
                                     <td colSpan={dataTable.columns.length}>
@@ -227,6 +211,7 @@ const Table = (props: TableProps) => {
                         </tbody>
                 </table>
             </div>
+            
             {pagination && <Pagination tableProps={dataTable} sizePerPageList={props['sizePerPageList']} />}
         </>
     );

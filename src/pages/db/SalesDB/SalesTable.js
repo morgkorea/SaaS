@@ -7,7 +7,28 @@ import PageTitle from '../../../components/PageTitle';
 import Table from '../../../components/Table';
 
 const SalesTable = ({ data, columns }): React$Element<any> => {
-    const sizePerPageList = [];
+    const sizePerPageList = [
+    // {
+    //     text: '5',
+    //     value: 5,
+    // },
+    // {
+    //     text: '10',
+    //     value: 10,
+    // },
+    // {
+    //     text: '15',
+    //     value: 15,
+    // },
+    // {
+    //     text: '25',
+    //     value: 25,
+    // },
+    // {
+    //     text: '50',
+    //     value: 50,
+    // },
+];
     return (
         <>
             <PageTitle title={'매출 DB'} />
@@ -19,7 +40,7 @@ const SalesTable = ({ data, columns }): React$Element<any> => {
                             <Table
                                 columns={columns}
                                 data={data}
-                                pageSize={20}
+                                pageSize={10}
                                 sizePerPageList={sizePerPageList}
                                 isSortable={true}
                                 pagination={true}

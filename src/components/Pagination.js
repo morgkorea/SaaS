@@ -87,7 +87,7 @@ const Pagination = ({ tableProps, sizePerPageList, pageVisible, styleCenter }: P
             style={styleCenter ? { display: 'flex', justifyContent: 'center' } : null}>
             {sizePerPageList.length > 0 && (
                 <div className="d-inline-block me-3">
-                    <label className="me-1">Display :</label>
+                    <label className="me-1">페이지 당 표시 개수 :</label>
                     <select
                         value={tableProps.state.pageSize}
                         onChange={(e) => {

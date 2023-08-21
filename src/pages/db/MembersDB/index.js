@@ -8,7 +8,7 @@ import moment from 'moment';
 
 const MembersDB = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
-    const [addMode, setAddMode] = useState(false);
+
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
@@ -97,15 +97,16 @@ const MembersDB = () => {
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
-                        <h4 className="page-title">회원현황</h4>
+                        <h4 className="page-title">회원 DB</h4>
                     </div>
                 </Col>
             </Row>
             <Row>
                 <Col xs={12}>
-                    <Customers currentMembers={currentMembers} addMode={addMode} setAddMode={setAddMode} />
+                    <Customers currentMembers={currentMembers} />
                 </Col>
             </Row>
+            
         </>
     );
 };

@@ -28,7 +28,8 @@ const GlobalFilter = ({
 
     return (
         <div className={classNames(searchBoxClass)}>
-            <span className="d-flex align-items-center">
+            <span className="d-flex align-items-center form-control" style={{maxWidth: '200px'}}>
+                <i className="mdi mdi-magnify search-icon" />
                 <input
                     value={value || ''}
                     onChange={(e) => {
@@ -36,7 +37,7 @@ const GlobalFilter = ({
                         onChange(e.target.value);
                     }}
                     placeholder={productTablePlaceholder}
-                    className="form-control w-auto ms-1"
+                    className="w-auto ms-1 border-0"
                 />
             </span>
         </div>
@@ -169,9 +170,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 />
             )}
 
-            <div
-                className="table-responsive mt-3"
-                style={{ minHeight: props.minHeight ? `${props.minHeight}px` : '600px' }}>
+            <div className="table-responsive mt-3" style={{ minHeight: '344px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>

@@ -18,7 +18,8 @@ const onClickMemberInfo = ({ row }) => {
 const MarketingInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.marketingRecieveAllow} readOnly />
+            <input type="checkbox" checked={row.original.marketingRecieveAllow} className="custom-checkbox" readOnly id="marketingCheckbox" />
+            <label htmlFor="marketingCheckbox">ㅤ</label>
         </div>
     );
 };
@@ -26,7 +27,8 @@ const MarketingInputColumn = ({ row }) => {
 const PrivateInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.privateInfoAllow} readOnly />
+            <input type="checkbox" checked={row.original.privateInfoAllow} className="custom-checkbox" readOnly id="privateInfoCheckbox" />
+            <label htmlFor="privateInfoCheckbox">ㅤ</label>
         </div>
     );
 };
@@ -378,7 +380,7 @@ const sizePerPageList = [
     },
 ];
 
-const Customers = ({ currentMembers, addMode, setAddMode }) => {
+const Customers = ({ currentMembers }) => {
 
     return (
         <>
@@ -387,11 +389,9 @@ const Customers = ({ currentMembers, addMode, setAddMode }) => {
                     <Table
                         columns={columns}
                         data={currentMembers}
-                        addMode={addMode}
-                        setAddMode={setAddMode}
                         sizePerPageList={sizePerPageList}
-                        pageSize={sizePerPageList[2].value}
-                        // pageSize={20}
+                        pageSize={sizePerPageList[1].value}
+                        // pageSize={12}
                         isSortable={true}
                         pagination={true}
                         isSelectable={false}
