@@ -97,6 +97,7 @@ export const firestoreMemebersFieldSchema = {
     amountPaymentAverage: '', //평균결제금액
     audience: '', //오디언스
     activation: false, //활성여부 false || true
+    region: '',
     memo: [],
     //이용가능상품
     availableProducts: [
