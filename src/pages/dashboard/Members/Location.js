@@ -6,7 +6,7 @@ import SortableTable from './SortableTable';
 const Location = ({ members }) => {
     const totalNumber = members.length;
     const LocationMap = members.reduce((acc, member) => {
-        const regions = member.region.toLowerCase().trim();
+        const regions = member.region?.toLowerCase().trim();
 
         if (regions === '') {
             acc['기타'] = (acc['기타'] || 0) + 1;
