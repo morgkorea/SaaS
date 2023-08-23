@@ -47,11 +47,11 @@ const Counsel = () => {
                 </Col>
             </Row>
 
-            <Row>
+            {/* <Row>
                 <Col>
                     <Statistics members={members} />
                 </Col>
-            </Row>
+            </Row> */}
 
             <Row>
                 <Col>

@@ -132,13 +132,15 @@
 
 /* 하은 - 커스텀 체크박스 스타일 */
 .custom-checkbox {
-    display: none;
+    opacity: 0;
 }
 
 .custom-checkbox + label {
     position: relative;
-    padding-left: 25px;
+    margin-left: -13px;
+    padding-left: 30px;
     cursor: pointer;
+    
 }
 
 .custom-checkbox + label::before {
@@ -163,6 +165,7 @@
     outline: none;
     appearance: none;
 }
+
 .custom-checkbox:checked:disabled + label::before {
     background: white no-repeat center center;
     background-image: url("../../../images/svg/check_disabled.svg");
@@ -170,6 +173,7 @@
     outline: none;
     appearance: none;
 }
+
 .add-modal-content input.add-modal-input.invalid {
     border: 1px solid #FA5C7C;
 }

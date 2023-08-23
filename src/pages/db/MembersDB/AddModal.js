@@ -16,7 +16,7 @@ const AddModal = forwardRef((props, ref) => {
 
     const [nameValue, setNameValue] = useState('');
     const [sexValue, setSexValue] = useState('');
-    const [birthDateValue, setBirthDateValue] = useState('1980-01-01');
+    const [birthDateValue, setBirthDateValue] = useState('1990-01-01');
     const [phoneValue, setPhoneValue] = useState('');
     const [locationValue, setLocationValue] = useState('');
     const [regionValue, setRegionValue] = useState('');
@@ -24,14 +24,15 @@ const AddModal = forwardRef((props, ref) => {
     const [purposeValue, setPurposeValue] = useState('');
     const [productValue, setProductValue] = useState('');
     const [hoursUseValue, setHoursUseValue] = useState('');
-    // const [injuriesValue, setInjuriesValue] = useState('');
+    const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
-    const [isChecked, setChecked] = React.useState(true);
-    const [isChecked2, setChecked2] = React.useState(true);
+    const [marketingChecked, setMarketingChecked] = React.useState(true);
+    const [privateInfoChecked, setPrivateInfoChecked] = React.useState(true);
 
     const handleFocus = (e) => {
         const { value } = e.target;
+
         if (!value) {
             e.target.placeholder = '';
         }
@@ -50,13 +51,15 @@ const AddModal = forwardRef((props, ref) => {
         }
     };
 
-    function handleChange(event) {
-        setChecked(event.target.checked);
+    function marketingChange(event) {
+        setMarketingChecked(event.target.checked);
     }
-    function handleChange2(event) {
-        setChecked2(event.target.checked);
+
+    function privateInfoChange(event) {
+        setPrivateInfoChecked(event.target.checked);
     }
-    const handleChange3 = (event) => {
+
+    const handlePhoneNumberChange = (event) => {
         const inputPhoneNumber = event.target.value;
         setPhoneValue(inputPhoneNumber);
 
@@ -65,9 +68,14 @@ const AddModal = forwardRef((props, ref) => {
         setIsValid(phoneRegex.test(inputPhoneNumber));
     };
 
+    const handleInjurySelectChange = (selectedOption) => {
+        setInjuriedPartValue(selectedOption.value);
+        setInjuriesValue(selectedOption.value === '없음' ? '무' : '유');
+    };
+
     const updateFirestoreAddMember = async () => {
-        if (!nameValue || !phoneValue) {
-            alert(!nameValue ? '이름을 입력해주세요.' : '연락처를 입력해주세요.');
+        if (!nameValue || !isValid) {
+            alert(!nameValue ? '성함을 입력해주세요.' : '연락처를 확인해주세요.');
             return;
         }
 
@@ -86,11 +94,11 @@ const AddModal = forwardRef((props, ref) => {
             golfPurpose: purposeValue,
             product: productValue,
             hoursUse: hoursUseValue,
-            // injuries: injuriesValue,
+            injuries: injuriesValue,
             injuriedPart: injuriedPartValue,
             inflowPath: inflowPathValue,
-            marketingRecieveAllow: isChecked,
-            privateInfoAllow: isChecked2,
+            marketingRecieveAllow: marketingChecked,
+            privateInfoAllow: privateInfoChecked,
         };
 
         await addDoc(memberRef, newMemberData);
@@ -113,41 +121,24 @@ const AddModal = forwardRef((props, ref) => {
     const [modal, setModal] = useState(false);
     const [size, setSize] = useState(null);
     const [className, setClassName] = useState(null);
-    const [scroll, setScroll] = useState(null);
 
     const toggle = () => {
         setModal(!modal);
     };
 
-    const openModalWithSize = (size) => {
-        setSize(size);
-        setClassName(null);
-        setScroll(null);
-        toggle();
-    };
-
     const openModalWithClass = (className) => {
         setClassName(className);
         setSize(null);
-        setScroll(null);
-        toggle();
-    };
-    
-    const openModalWithScroll = () => {
-        setScroll(true);
-        setSize(null);
-        setClassName(null);
         toggle();
     };
 
     return (
         <>
-            <Button variant="primary" onClick={toggle}>
+            <Button variant="primary" onClick={() => openModalWithClass('modal-dialog-centered')}>
                 회원 등록하기
             </Button>
-
-            <Modal show={modal} className='add-modal'>
-                <Modal.Header onHide={toggle} closeButton className='border-0'>
+            <Modal show={modal} className="add-modal" size={'lg'} dialogClassName={className} backdrop="static">
+                <Modal.Header onHide={toggle} closeButton className="border-0">
                     <h4 className="modal-title">회원정보 등록</h4>
                 </Modal.Header>
                 <Modal.Body className="add-modal-content">
@@ -183,9 +174,8 @@ const AddModal = forwardRef((props, ref) => {
                             {isValid ? (
                                 <i className="uil uil-check-circle text-primary ms-1 opacity-0"></i>
                             ) : (
-                                <span className='text-danger'>
-                                    <i className="uil uil-exclamation-triangle mx-1"/>
-                                    올바른 번호를 입력해주세요.
+                                <span className="text-danger ms-1">
+                                    <small>올바른 형식의 번호를 입력해주세요.</small>
                                 </span>
                             )}
                             <input
@@ -200,7 +190,7 @@ const AddModal = forwardRef((props, ref) => {
                                 }}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
-                                onChange={handleChange3}
+                                onChange={handlePhoneNumberChange}
                             />
                         </Col>
                         <Col>
@@ -214,7 +204,7 @@ const AddModal = forwardRef((props, ref) => {
                                     { value: '여성', label: '여성' },
                                 ]}></Select>
                         </Col>
-                    </Row>     
+                    </Row>
                     <Row>
                         <Col>
                             <label>위치</label>
@@ -287,7 +277,7 @@ const AddModal = forwardRef((props, ref) => {
                                     { value: '낮', label: '낮' },
                                     { value: '저녁', label: '저녁' },
                                     { value: '밤', label: '밤' },
-                            ]}></Select>
+                                ]}></Select>
                         </Col>
                         <Col>
                             <label>관심상품</label>
@@ -299,7 +289,7 @@ const AddModal = forwardRef((props, ref) => {
                                     { value: '타석', label: '타석' },
                                     { value: '레슨', label: '레슨' },
                                     { value: '기타', label: '기타' },
-                            ]}></Select>
+                                ]}></Select>
                         </Col>
                     </Row>
                     <Row>
@@ -325,36 +315,53 @@ const AddModal = forwardRef((props, ref) => {
                         <Col>
                             <label>부상전적</label>
                             <Select
-                                    classNamePrefix="react-select"
-                                    placeholder="부상전적이 없으면 없음을 선택해주세요."
-                                    onChange={(e) => setInjuriedPartValue(e.value)}
-                                    options={[
-                                        { value: '없음', label: '없음' },
-                                        { value: '팔꿈치', label: '팔꿈치' },
-                                        { value: '허리', label: '허리' },
-                                        { value: '무릎', label: '무릎' },
-                                        { value: '손목', label: '손목' },
-                                        { value: '어깨', label: '어깨' },
-                                        { value: '등', label: '등' },
-                                        { value: '손가락', label: '손가락' },
-                                        { value: '기타', label: '기타' },
-                            ]}></Select>
+                                classNamePrefix="react-select"
+                                placeholder="선택"
+                                onChange={handleInjurySelectChange}
+                                options={[
+                                    { value: '없음', label: '없음' },
+                                    { value: '팔꿈치', label: '팔꿈치' },
+                                    { value: '허리', label: '허리' },
+                                    { value: '무릎', label: '무릎' },
+                                    { value: '손목', label: '손목' },
+                                    { value: '어깨', label: '어깨' },
+                                    { value: '등', label: '등' },
+                                    { value: '손가락', label: '손가락' },
+                                    { value: '기타', label: '기타' },
+                                ]}></Select>
                         </Col>
                     </Row>
+
                     <div className="d-flex justify-content-center mt-3">
                         <div>
-                            <input type="checkbox" defaultChecked={true} onChange={handleChange} className="custom-checkbox" id="marketingCheckbox" />
-                            <label for="marketingCheckbox" className='opacity-0'>마케팅 수신동의</label>
+                            <input
+                                type="checkbox"
+                                defaultChecked={true}
+                                onChange={marketingChange}
+                                className="custom-checkbox"
+                                id="mCheckbox"
+                            />
+                            <label htmlFor="mCheckbox">마케팅 수신동의</label>
                         </div>
-                        <div className='ms-2'>
-                            <input type="checkbox" defaultChecked={true} onChange={handleChange2} className="custom-checkbox" id="privacyCheckbox" />
-                            <label for="privacyCheckbox" className='me-1'>개인정보 수집동의</label>
+                        <div className="ms-2">
+                            <input
+                                type="checkbox"
+                                defaultChecked={true}
+                                onChange={privateInfoChange}
+                                className="custom-checkbox"
+                                id="pCheckbox"
+                            />
+                            <label htmlFor="pCheckbox">개인정보 수집동의</label>
                         </div>
                     </div>
-                    <div className='d-flex justify-content-center mt-3'>
-                        <Button className='px-5' variant="primary"onClick={() => {
-                            updateFirestoreAddMember();
-                        }}>
+
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button
+                            className="px-5"
+                            variant="primary"
+                            onClick={() => {
+                                updateFirestoreAddMember();
+                            }}>
                             등록
                         </Button>
                     </div>

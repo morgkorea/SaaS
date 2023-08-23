@@ -311,6 +311,7 @@ const columns = [
     {
         Header: '부상부위',
         accessor: 'injuriedPart',
+        Cell: ({ value }) => value === '없음' ? '' : value,
         sort: true,
     },
     {

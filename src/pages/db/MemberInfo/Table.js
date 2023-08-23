@@ -101,7 +101,7 @@ const Table = ({ member }) => {
                     <tr>
                         <th>부상 전적</th>
                         <td>
-                            {member?.injuries} {member?.injuriedPart ? '/' : null} {member?.injuriedPart}
+                            {member?.injuriedPart}
                         </td>
                     </tr>
                     <tr>
