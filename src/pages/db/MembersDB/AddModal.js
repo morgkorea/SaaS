@@ -32,7 +32,7 @@ const AddModal = forwardRef((props, ref) => {
 
     const handleFocus = (e) => {
         const { value } = e.target;
-
+        
         if (!value) {
             e.target.placeholder = '';
         }
@@ -94,7 +94,7 @@ const AddModal = forwardRef((props, ref) => {
             golfPurpose: purposeValue,
             product: productValue,
             hoursUse: hoursUseValue,
-            injuries: injuriesValue,
+            injuries: injuriesValue, 
             injuriedPart: injuriedPartValue,
             inflowPath: inflowPathValue,
             marketingRecieveAllow: marketingChecked,
@@ -204,7 +204,7 @@ const AddModal = forwardRef((props, ref) => {
                                     { value: '여성', label: '여성' },
                                 ]}></Select>
                         </Col>
-                    </Row>
+                    </Row>     
                     <Row>
                         <Col>
                             <label>위치</label>
@@ -277,7 +277,7 @@ const AddModal = forwardRef((props, ref) => {
                                     { value: '낮', label: '낮' },
                                     { value: '저녁', label: '저녁' },
                                     { value: '밤', label: '밤' },
-                                ]}></Select>
+                            ]}></Select>
                         </Col>
                         <Col>
                             <label>관심상품</label>
@@ -289,7 +289,7 @@ const AddModal = forwardRef((props, ref) => {
                                     { value: '타석', label: '타석' },
                                     { value: '레슨', label: '레슨' },
                                     { value: '기타', label: '기타' },
-                                ]}></Select>
+                            ]}></Select>
                         </Col>
                     </Row>
                     <Row>
@@ -315,20 +315,20 @@ const AddModal = forwardRef((props, ref) => {
                         <Col>
                             <label>부상전적</label>
                             <Select
-                                classNamePrefix="react-select"
-                                placeholder="선택"
-                                onChange={handleInjurySelectChange}
-                                options={[
-                                    { value: '없음', label: '없음' },
-                                    { value: '팔꿈치', label: '팔꿈치' },
-                                    { value: '허리', label: '허리' },
-                                    { value: '무릎', label: '무릎' },
-                                    { value: '손목', label: '손목' },
-                                    { value: '어깨', label: '어깨' },
-                                    { value: '등', label: '등' },
-                                    { value: '손가락', label: '손가락' },
-                                    { value: '기타', label: '기타' },
-                                ]}></Select>
+                                    classNamePrefix="react-select"
+                                    placeholder="선택"
+                                    onChange={handleInjurySelectChange}
+                                    options={[
+                                        { value: '없음', label: '없음' },
+                                        { value: '팔꿈치', label: '팔꿈치' },
+                                        { value: '허리', label: '허리' },
+                                        { value: '무릎', label: '무릎' },
+                                        { value: '손목', label: '손목' },
+                                        { value: '어깨', label: '어깨' },
+                                        { value: '등', label: '등' },
+                                        { value: '손가락', label: '손가락' },
+                                        { value: '기타', label: '기타' },
+                            ]}></Select>
                         </Col>
                     </Row>
 
@@ -336,19 +336,19 @@ const AddModal = forwardRef((props, ref) => {
                         <div>
                             <input
                                 type="checkbox"
-                                defaultChecked={true}
-                                onChange={marketingChange}
+                                defaultChecked={true} 
+                                onChange={marketingChange} 
                                 className="custom-checkbox"
                                 id="mCheckbox"
                             />
                             <label htmlFor="mCheckbox">마케팅 수신동의</label>
                         </div>
                         <div className="ms-2">
-                            <input
-                                type="checkbox"
-                                defaultChecked={true}
-                                onChange={privateInfoChange}
-                                className="custom-checkbox"
+                            <input 
+                                type="checkbox" 
+                                defaultChecked={true} 
+                                onChange={privateInfoChange} 
+                                className="custom-checkbox" 
                                 id="pCheckbox"
                             />
                             <label htmlFor="pCheckbox">개인정보 수집동의</label>

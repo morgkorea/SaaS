@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import { Badge, Card } from 'react-bootstrap';
 import Table from './Table';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import classNames from 'classnames';
 
 const onClickMemberInfo = ({ row }) => {
     return (
@@ -191,12 +192,49 @@ const averagePayAccessor = (row) => {
     return averageValue;
 };
 
+
+
+
+
+
+
+
 const TaSeokActiveColumn = ({ row }) => {
     const availableProducts = row.original?.availableProducts;
 
     const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
 
-    return <>{isActive ? '활성' : '비활성'}</>;
+    let content = null;
+    let badgeColor = "";
+
+    if (isActive) {
+        const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
+        
+        if (batterBoxProduct) {
+            const dDay = batterBoxProduct.dDay;
+
+            if (dDay <= 10) {
+                badgeColor = "danger";
+            } else if (dDay <= 30) {
+                badgeColor = "warning";
+            } else {
+                badgeColor = "success";
+            }
+
+            content = `D - ${dDay}`;
+        }
+    } else {
+        content = "비활성";
+        badgeColor = "dark";
+    }
+
+    return (
+         <div className="text-center">
+            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+                {content}
+            </Badge>
+        </div>
+    );
 }
 
 const LessonActiveColumn = ({ row }) => {
@@ -204,23 +242,66 @@ const LessonActiveColumn = ({ row }) => {
 
     const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
 
-    return <>{isActive ? '활성' : '비활성'}</>;
+    let content = null;
+    let badgeColor = "";
+
+    if (isActive) {
+        const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
+        if (lessonProduct) {
+            const dDay = lessonProduct.dDay;
+
+            if (dDay <= 10) {
+                badgeColor = "danger";
+            } else if (dDay <= 30) {
+                badgeColor = "warning";
+            } else {
+                badgeColor = "success";
+            }
+
+            content = `D - ${dDay}`;
+
+            content = `D - ${dDay}`;
+        }
+    } else {
+        content = '비활성';
+        badgeColor = "dark";
+    }
+
+    return (
+        <div className="text-center">
+           <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+                {content}
+            </Badge>
+       </div>
+   );
 }
 
 const taSeokActive = (row) => {
     const availableProducts = row.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox') ? '활성' : '비활성';
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
+    if (isActive) {
+        const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
+        if (batterBoxProduct) {
+            return batterBoxProduct.dDay;
+        }
+    }
     
-    return isActive;
+    return -1;
 };
 
 const lessonActive = (row) => {
     const availableProducts = row.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson') ? '활성' : '비활성';
+    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
+    if (isActive) {
+        const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
+        if (lessonProduct) {
+            return lessonProduct.dDay;
+        }
+    }
 
-    return isActive;
+    return -1;
 };
 
 const columns = [
