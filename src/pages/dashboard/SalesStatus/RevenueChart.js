@@ -27,8 +27,6 @@ const RevenueChart = ({
     const [currentPeriodSalesData, setCurrentPeriodSalesData] = useState(periodSaelsDataInit);
     const [previousPeriodSalesData, setPreviousPeriodSalesData] = useState(periodSaelsDataInit);
 
-    const [weeksOfMinMaxDate, setWeeksOfMinMaxDate] = useState([]);
-
     const getCurrentPeriodOfDate = (datePickDate) => {
         const year = datePickDate.getFullYear();
         const month = datePickDate.getMonth();

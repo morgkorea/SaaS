@@ -86,11 +86,11 @@ const Notifications = [
 
 // get the profilemenu
 const ProfileMenus = [
-    {
-        label: 'My Account',
-        icon: 'mdi mdi-account-circle',
-        redirectTo: '../pages/profile',
-    },
+    // {
+    //     label: 'My Account',
+    //     icon: 'mdi mdi-account-circle',
+    //     redirectTo: '../pages/profile',
+    // },
     // {
     //     label: 'Settings',
     //     icon: 'mdi mdi-account-edit',

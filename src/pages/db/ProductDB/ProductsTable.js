@@ -25,10 +25,10 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
         //     value: data.length,
         // },
     ];
+
     return (
         <>
             <PageTitle title={'상품 DB'} />
-
             <Row>
                 <Col>
                     <Card>

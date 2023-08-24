@@ -92,7 +92,7 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
     const toggle = () => {
         setModal(!modal);
     };
-
+    // console.log(email)
     const updateFirestoreSalesData = async () => {
         const currentDocId = paymentData?.uid;
         const salesProducts =
@@ -140,7 +140,6 @@ const PaymentRefundModal = ({ modal, setModal, paymentData }) => {
             setRefundEachProducts([...refundEachProductsArray]);
         }
     };
-    console.log(refundEachProducts);
     const handleRefundButtonClick = async () => {
         try {
             await updateFirestoreSalesData();

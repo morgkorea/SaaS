@@ -17,7 +17,7 @@ const ProductsTable = ({ productsData, productsActivationHandler, offset, limit 
                 return '';
         }
     };
-
+  
     return (
         <Card style={{ minHeight: '600px' }}>
             <Card.Body>

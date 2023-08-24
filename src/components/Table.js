@@ -174,7 +174,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
-                    <thead className={props['theadClass']}>
+                    <thead className={props['theadClass']} style={{ overflowX: 'auto' }}>
                         {dataTable.headerGroups.map((headerGroup) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => (

@@ -74,6 +74,10 @@ export const firestoreProductsFieldSchema = {
     createdDate: '', // type:string yyyy-mm-dd
     modifiedDate: '', // type:string yyyy-mm-dd
 };
+export const firestoreMembersMemoSchema = {
+    contents: '', //type: string ,
+    created: '', //type: string 생성날짜,시간 yyyy-mm-dd hh:mm
+};
 export const firestoreMemebersFieldSchema = {
     ownerId: '',
     typeFormToken: '',
@@ -97,7 +101,10 @@ export const firestoreMemebersFieldSchema = {
     amountPaymentAverage: '', //평균결제금액
     audience: '', //오디언스
     activation: false, //활성여부 false || true
-    memo: [],
+    region: '',
+    memo: [
+        //  {...firestoreMembersMemo}
+    ],
     //이용가능상품
     availableProducts: [
         // { ...firestoreSalesProductSchema }
@@ -108,6 +115,7 @@ export const firestoreMemebersFieldSchema = {
         // { ...firestoreSalesProductSchema }
     ],
 };
+
 export const firestoreMarketingFieldSchema = {
     marketingDate: '2023-06-11', //날짜
     platform: 'banner', //플랫폼

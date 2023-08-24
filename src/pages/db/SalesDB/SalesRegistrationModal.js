@@ -415,7 +415,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         justifyContent: 'space-between',
                         width: '49%',
                         minWidth: '162px',
-                        height: '80px',
+                        height: '70px',
                         border: '2px solid #03C780',
                         borderRadius: '6px',
                         padding: '9px 15px',
@@ -437,7 +437,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         <div style={{ color: '#6C757D', fontSize: '14px' }}>{isSelectedMember.phone}</div>
                     </div>
 
-                    <div>
+                    <div style={{ display: 'grid', placeItems: 'center' }}>
                         <i className="mdi mdi-radiobox-marked" style={{ color: '#03C780', fontSize: '24px' }}></i>
                     </div>
                 </div>
@@ -453,7 +453,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             justifyContent: 'space-between',
                             width: '49%',
                             minWidth: '162px',
-                            height: '80px',
+                            height: '70px',
                             border: isHoveredCard === idx ? '2px solid #03C780' : '1px solid #EEF2F7',
                             borderRadius: '6px',
                             padding: isHoveredCard === idx ? '9px 15px' : '10px 16px',
@@ -479,7 +479,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             <div style={{ color: '#6C757D', fontSize: '14px' }}>{member.phone}</div>
                         </div>
 
-                        <div>
+                        <div style={{ display: 'grid', placeItems: 'center' }}>
                             <i
                                 className="mdi mdi-radiobox-blank"
                                 style={{ color: isHoveredCard === idx ? '#03C780' : '#EEF2F7', fontSize: '24px' }}></i>
@@ -722,18 +722,36 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                             </select>
                         </div>
                     </div> */}
-                            <div
-                                className="p-2"
-                                style={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    justifyContent: 'space-between',
-                                    overflowY: 'auto',
-                                    maxHeight: '300px',
-                                }}>
-                                {' '}
-                                {createSearchedMembersCard(searchedMembersList, isSelectedMember)}
-                            </div>
+                            {searchedMembersList.length ? (
+                                <div
+                                    className="p-2"
+                                    style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        justifyContent: 'space-between',
+                                        overflowY: 'auto',
+                                        maxHeight: '300px',
+                                    }}>
+                                    {createSearchedMembersCard(searchedMembersList, isSelectedMember)}
+                                </div>
+                            ) : (
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        placeItems: 'center',
+                                        paddingTop: '60px',
+                                        fontSize: '80px',
+                                        color: '#DEE2E6',
+                                    }}>
+                                    <i className="mdi mdi-account-search"></i>
+                                    <div
+                                        style={{
+                                            fontSize: '20px',
+                                        }}>
+                                        회원을 검색해주세요
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 );
@@ -755,7 +773,7 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                                         if (product.activation && product.product.length) {
                                             return (
                                                 <option key={product.product + '_' + idx} value={idx}>
-                                                    {product.product}
+                                                    {product.product && product.product}
                                                 </option>
                                             );
                                         }
@@ -1263,7 +1281,68 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                 productArray.push(product.data());
             });
 
-            setProductsList(productArray);
+            // 상품리스트 정렬 --------------------------------------------------------
+            // 정렬조건
+            // type값 비교 -> 'batterBox', 'lesson', 'locker', 'etc' 순서 로 정렬 후 그룹화
+            // product값 비교 -> 레벤슈타인 거리, 문자열 유사도 검사
+
+            // --------------------------------------------------------
+            const typeOrder = ['batterBox', 'lesson', 'locker', 'etc'];
+
+            //
+
+            const editDistance = (str1, str2) => {
+                str1 = str1.toLowerCase();
+                str2 = str2.toLowerCase();
+                const costs = Array.from({ length: str2.length + 1 }, (_, i) => i);
+                for (let i = 1; i <= str1.length; i++) {
+                    let lastValue = i;
+                    for (let j = 1; j <= str2.length; j++) {
+                        let newValue = costs[j - 1];
+                        if (str1.charAt(i - 1) !== str2.charAt(j - 1))
+                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                    costs[str2.length] = lastValue;
+                }
+                return costs[str2.length];
+            };
+            const getSimilarity = (str1, str2) => {
+                let longer = str1;
+                let shorter = str2;
+                if (str1.length < str2.length) {
+                    longer = str2;
+                    shorter = str1;
+                }
+                const longerLength = longer.length;
+                if (longerLength === 0) return 1.0;
+                return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+            };
+
+            const groupedData = productArray.reduce((acc, item) => {
+                const type = item.type;
+                if (!acc[type]) {
+                    acc[type] = [item];
+                } else {
+                    acc[type].push(item);
+                }
+                return acc;
+            }, {});
+
+            const sortedData = typeOrder.flatMap((type) => {
+                if (groupedData[type]) {
+                    const sortedGroup = groupedData[type].sort((a, b) => {
+                        const referenceText = productArray[0]?.product ? productArray[0].product : '타석';
+                        return getSimilarity(a.product, referenceText) - getSimilarity(b.product, referenceText);
+                    });
+                    return sortedGroup;
+                } else {
+                    return [];
+                }
+            });
+
+            setProductsList(sortedData);
         });
 
         return () => {

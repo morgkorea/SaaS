@@ -172,7 +172,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     };
     const getExpirationPeriod = (event) => {
         setExpirationPeriod(event.target.value);
-        console.log(event.target.value);
     };
     const getExpirationCount = (event) => {
         let count = event.target.value;
@@ -180,7 +179,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
             count = 0;
         }
         setExpirationCount(Number(count));
-        console.log(expirationCount);
     };
 
     const getRegularPrice = (event) => {
@@ -190,7 +188,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         if (isNaN(Number(price)) || price < 0) {
             price = 0;
         }
-
         if (price > 0) {
             setValidationError({ ...validationError, regularPrice: false });
         }
@@ -247,7 +244,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     onChange={(e) => {
                                         getProductName(e);
                                     }}
-                                    placeholder={'ex) [타석] - 1개월권'}
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
@@ -313,16 +309,18 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     <option>10개월</option>
                                     <option>11개월</option>
                                     <option>12개월</option>
-                                    <option>30일</option>
-                                    <option>60일</option>
-                                    <option>90일</option>
-                                    <option>120일</option>
-                                    <option>150일</option>
-                                    <option>180일</option>
                                     <option>1일</option>
                                     <option>7일</option>
                                     <option>14일</option>
                                     <option>15일</option>
+                                    <option>30일</option>
+                                    <option>50일</option>
+                                    <option>60일</option>
+                                    <option>90일</option>
+                                    <option>100일</option>
+                                    <option>120일</option>
+                                    <option>150일</option>
+                                    <option>180일</option>
                                 </select>
                             </Col>
                             <Col>
