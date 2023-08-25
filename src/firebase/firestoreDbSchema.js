@@ -26,6 +26,8 @@ export const firestoreSalesProductSchema = {
     startDate: '', //type: string (yyyy-MM-dd) 시작일
     endDate: '', // type: string (yyyy-MM-dd) 종료일
     expirationPeriod: '', //type string "1개월","150일"
+    paymentDate: '',
+    paymentTime: '',
     refund: false,
     refundDate: false,
     refundAdjustment: 0, // type: number 원래 환불 금액과 실제 환불 금액 사이의 차액
@@ -53,7 +55,9 @@ export const firestoreSalesFieldSchema = {
     ], //type : array, elements : object 결제상품
     totalPaymentPrice: 0, //type: number 결제총액
     remainingPaymentPrice: 0, //type: number 미결제금액
-    paymentInfo: [{ ...firestorePaymentInfoFieldSchema }], //type: array, element: object
+    paymentInfo: [
+        // { ...firestorePaymentInfoFieldSchema }
+    ], //type: array, element: object
     paymentMemo: '', //type: string결제메모
     refund: false, // type: boolean 환불여부
     refundDate: '', //type: string yyyy-MM-dd 환불일
