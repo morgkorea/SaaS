@@ -53,7 +53,7 @@ const SessionsChart = ({
             const year = createdDate.getFullYear();
             const month = createdDate.getMonth();
             const day = createdDate.getDate();
-            
+
             if (year < currentYear) {
                 monthlyAccumulation++;
                 monthlyData[0] = monthlyAccumulation;
