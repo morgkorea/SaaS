@@ -94,6 +94,8 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
+    const noDataMessage = props['noDataMessage'] || false;
+    
     const dataTable = useTable(
         {
             columns: props['columns'],
@@ -193,26 +195,26 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                    {rows.length === 0 ? (
+                        {rows.length === 0 ? (
                             <tr className='dataless' style={{height: '500px'}}>
-                                <td colSpan={dataTable.columns.length}>
-                                    등록된 상품이 없습니다. 상품 등록을 해주세요.
-                                    <span className="d-block">
-                                        <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
-                                    </span>
-                                </td>
-                            </tr>
-                        ) : (
-                        (rows || []).map((row, i) => {
-                            dataTable.prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()}>
-                                    {row.cells.map((cell) => {
-                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                                    })}
+                                    <td colSpan={dataTable.columns.length}>
+                                            {noDataMessage}
+                                        <span className="d-block">
+                                            <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
+                                        </span>
+                                    </td>
                                 </tr>
-                            );
-                        })
+                            ) : (
+                            (rows || []).map((row, i) => {
+                                dataTable.prepareRow(row);
+                                return (
+                                    <tr {...row.getRowProps()}>
+                                        {row.cells.map((cell) => {
+                                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                                        })}
+                                    </tr>
+                                );
+                            })
                         )}
                     </tbody>
                 </table>

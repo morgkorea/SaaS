@@ -45,35 +45,51 @@ const SessionsChart = ({
         const dailyData = new Array(labels.length).fill(0);
         const monthlyData = new Array(12).fill(0);
     
+        let monthlyAccumulation = 0;
+        let dailyAccumulation = 0;
+        
         for (const member of members) {
             const createdDate = new Date(member.createdDate);
             const year = createdDate.getFullYear();
             const month = createdDate.getMonth();
             const day = createdDate.getDate();
             
+            if (year < currentYear) {
+                monthlyAccumulation++;
+                monthlyData[0] = monthlyAccumulation;
+            }
+
+            if (year < currentYear || month < currentMonth) {
+                dailyAccumulation++;
+                dailyData[0] = dailyAccumulation;
+            }
+
             if (year === currentYear) {
-                monthlyData[month]++;
-                
+                monthlyAccumulation++;
+
+                console.log(dailyData, dailyAccumulation)
+
                 if (month === currentMonth) {
                     const currentDate = new Date();
                     const currentDay = currentDate.getDate();
+
                     
-                    for (let i = day; i <= currentDay; i++) {
-                        dailyData[i - 1]++;
-                    }
-                    
-                    for (let i = currentDay + 1; i <= new Date(currentYear, currentMonth + 1, 0).getDate(); i++) {
-                        dailyData[i - 1] = dailyData[currentDay - 1];
+                    // 일별 데이터 누적
+                    for (let dayIndex = currentDay + 1; dayIndex <= new Date(currentYear, currentMonth + 1, 0).getDate(); dayIndex++) {
+                        dailyData[dayIndex - 1] = dailyAccumulation;
                     }
                 }
-                
+
+                monthlyData[month] = monthlyAccumulation;
+
+                // 월별 데이터 누적
                 for (let i = month + 1; i <= currentMonth; i++) {
                     monthlyData[i] = monthlyData[currentMonth];
                 }
-                
                 for (let i = currentMonth + 1; i < 12; i++) {
                     monthlyData[i] = monthlyData[currentMonth];
                 }
+
             }
         }
     
