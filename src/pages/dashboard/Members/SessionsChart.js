@@ -3,15 +3,87 @@ import Chart from 'react-apexcharts';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
-const SessionsChart = ({ 
-    activateBatterboxMembers, 
-    activateLessonMembers, 
-    monthlyActivateBatterboxMembers = [], 
+function getCurrentMonthMemberCount(members) {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    const currentMonthIncludedMembers = members.filter((member) => {
+        const createdDate = new Date(member.createdDate);
+        return createdDate.getFullYear() === currentYear && createdDate.getMonth() === currentMonth;
+    }).length;
+
+    const currentMonthMembers = members.length - currentMonthIncludedMembers;
+
+    return currentMonthMembers;
+}
+
+function calculateDailyAndMonthlyData(members, isMonthlyView) {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentMonthOfDays = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+    let monthlyAccumulation = 0;
+    let currentMonthMembers = getCurrentMonthMemberCount(members); // 이번달 회원 수를 저장하는 변수
+
+    const dailyData = new Array(currentMonthOfDays).fill(0);
+    const monthlyData = new Array(12).fill(0);
+
+    console.log('1', dailyData);
+
+    for (const member of members) {
+        const createdDate = new Date(member.createdDate);
+        const year = createdDate.getFullYear();
+        const month = createdDate.getMonth();
+        const day = createdDate.getDate();
+
+        if (year < currentYear) {
+            monthlyAccumulation++;
+            monthlyData[0] = monthlyAccumulation;
+        }
+
+        if (year === currentYear && month === currentMonth) {
+            for (let i = day - 1; i < currentMonthOfDays; i++) {
+                dailyData[i] = currentMonthMembers;
+            }
+        }
+
+        if (year === currentYear) {
+            monthlyAccumulation++;
+
+            if (month === currentMonth) {
+                currentMonthMembers++; // 이번달 회원 수 증가
+
+                for (let i = day - 1; i < currentMonthOfDays; i++) {
+                    dailyData[i]++;
+                }
+            }
+
+            monthlyData[month] = monthlyAccumulation;
+
+            for (let i = month + 1; i <= currentMonth; i++) {
+                monthlyData[i] = monthlyData[currentMonth];
+            }
+            for (let i = currentMonth + 1; i < 12; i++) {
+                monthlyData[i] = monthlyData[currentMonth];
+            }
+        }
+    }
+    console.log('2', dailyData);
+    return isMonthlyView ? dailyData : monthlyData;
+}
+
+const SessionsChart = ({
+    activateBatterboxMembers,
+    activateLessonMembers,
+    monthlyActivateBatterboxMembers = [],
     monthlyActivateLessonMembers = [],
     members,
-    index 
+    index,
 }) => {
     const [isMonthlyView, setIsMonthlyView] = useState(true);
+    const [dataToShow, setDataToShow] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const sortedMembers = members.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
     const now = new Date(new Date().toISOString().split('T')[0] + ' 00:00:00');
@@ -41,79 +113,81 @@ const SessionsChart = ({
               .map((_, idx) => idx + 1 + '월');
 
     // 전체회원 추이
-    function calculateDailyAndMonthlyData(members) {
-        const dailyData = new Array(labels.length).fill(0);
-        const monthlyData = new Array(12).fill(0);
-    
-        let monthlyAccumulation = 0;
-        let dailyAccumulation = 0;
-        
-        for (const member of members) {
-            const createdDate = new Date(member.createdDate);
-            const year = createdDate.getFullYear();
-            const month = createdDate.getMonth();
-            const day = createdDate.getDate();
+    // function calculateDailyAndMonthlyData(members) {
+    //     const dailyData = new Array(labels.length).fill(0);
+    //     const monthlyData = new Array(12).fill(0);
 
-            if (year < currentYear) {
-                monthlyAccumulation++;
-                monthlyData[0] = monthlyAccumulation;
-            }
+    //     let monthlyAccumulation = 0;
+    //     let dailyAccumulation = 0;
 
-            if (year < currentYear || month < currentMonth) {
-                dailyAccumulation++;
-                dailyData[0] = dailyAccumulation;
-            }
+    //     for (const member of members) {
+    //         const createdDate = new Date(member.createdDate);
+    //         const year = createdDate.getFullYear();
+    //         const month = createdDate.getMonth();
+    //         const day = createdDate.getDate();
 
-            if (year === currentYear) {
-                monthlyAccumulation++;
+    //         if (year < currentYear) {
+    //             monthlyAccumulation++;
+    //             monthlyData[0] = monthlyAccumulation;
+    //         }
 
-                console.log(dailyData, dailyAccumulation)
+    //         if (year < currentYear || month < currentMonth) {
+    //             dailyAccumulation++;
+    //             dailyData[0] = dailyAccumulation;
+    //         }
 
-                if (month === currentMonth) {
-                    const currentDate = new Date();
-                    const currentDay = currentDate.getDate();
+    //         if (year === currentYear) {
+    //             monthlyAccumulation++;
 
-                    
-                    // 일별 데이터 누적
-                    for (let dayIndex = currentDay + 1; dayIndex <= new Date(currentYear, currentMonth + 1, 0).getDate(); dayIndex++) {
-                        dailyData[dayIndex - 1] = dailyAccumulation;
-                    }
-                }
+    //             if (month === currentMonth) {
+    //                 const currentDate = new Date();
+    //                 const currentDay = currentDate.getDate();
 
-                monthlyData[month] = monthlyAccumulation;
+    //                 // 일별 데이터 누적
+    //                 for (let dayIndex = currentDay + 1; dayIndex <= new Date(currentYear, currentMonth + 1, 0).getDate(); dayIndex++) {
+    //                     dailyData[dayIndex - 1] = dailyAccumulation;
+    //                 }
+    //             }
 
-                // 월별 데이터 누적
-                for (let i = month + 1; i <= currentMonth; i++) {
-                    monthlyData[i] = monthlyData[currentMonth];
-                }
-                for (let i = currentMonth + 1; i < 12; i++) {
-                    monthlyData[i] = monthlyData[currentMonth];
-                }
+    //             monthlyData[month] = monthlyAccumulation;
 
-            }
-        }
-    
-        return isMonthlyView ? dailyData : monthlyData;
-    }
+    //             // 월별 데이터 누적
+    //             for (let i = month + 1; i <= currentMonth; i++) {
+    //                 monthlyData[i] = monthlyData[currentMonth];
+    //             }
+    //             for (let i = currentMonth + 1; i < 12; i++) {
+    //                 monthlyData[i] = monthlyData[currentMonth];
+    //             }
+
+    //         }
+    //     }
+
+    //     return isMonthlyView ? dailyData : monthlyData;
+    // }
+
+    useEffect(() => {
+        const data = calculateDailyAndMonthlyData(members, isMonthlyView);
+        setDataToShow(data);
+    }, [members, isMonthlyView]);
 
     const apexBarChartData = [
         {
             name: '전체회원 추이',
-            data: calculateDailyAndMonthlyData(sortedMembers),
+            data: dataToShow,
         },
     ];
 
     const apexBarChartData2 = [
         {
             name: '타석활성 회원 추이',
-            data:  isMonthlyView ? activateBatterboxMembers : monthlyActivateBatterboxMembers
+            data: isMonthlyView ? activateBatterboxMembers : monthlyActivateBatterboxMembers,
         },
     ];
 
     const apexBarChartData3 = [
         {
             name: '레슨활성 회원 추이',
-            data: isMonthlyView ? activateLessonMembers : monthlyActivateLessonMembers
+            data: isMonthlyView ? activateLessonMembers : monthlyActivateLessonMembers,
         },
     ];
 
@@ -240,13 +314,12 @@ const SessionsChart = ({
             },
         },
     };
-    
+
     useEffect(() => {
         if (monthlyActivateBatterboxMembers.length > 0 && monthlyActivateLessonMembers.length > 0) {
             setDataLoaded(true);
         }
     }, [monthlyActivateBatterboxMembers, monthlyActivateLessonMembers]);
-
 
     return (
         <>
