@@ -5,6 +5,7 @@ import Table from './Table';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 
 const onClickMemberInfo = ({ row }) => {
     return (
@@ -16,10 +17,29 @@ const onClickMemberInfo = ({ row }) => {
     );
 };
 
+const CreatedTimeColumn = ({ row }) => {
+    const timeString = row.original.createdTime; // 시간 형식의 문자열을 가져옵니다.
+    const time = moment(timeString, 'HH:mm:ss'); // 시간 형식 문자열을 'HH:mm:ss' 형식으로 Moment 객체로 변환합니다.
+
+    if (time.isValid()) {
+        const formattedTime = time.format('A hh:mm'); // AM/PM과 hh:mm 형식으로 변환합니다.
+        return formattedTime;
+    } else {
+        return 'Invalid date';
+    }
+};
+
+
 const MarketingInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.marketingRecieveAllow} className="custom-checkbox" readOnly id="marketingCheckbox" />
+            <input
+                type="checkbox"
+                checked={row.original.marketingRecieveAllow}
+                className="custom-checkbox"
+                readOnly
+                id="marketingCheckbox"
+            />
             <label htmlFor="marketingCheckbox">ㅤ</label>
         </div>
     );
@@ -28,7 +48,13 @@ const MarketingInputColumn = ({ row }) => {
 const PrivateInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.privateInfoAllow} className="custom-checkbox" readOnly id="privateInfoCheckbox" />
+            <input
+                type="checkbox"
+                checked={row.original.privateInfoAllow}
+                className="custom-checkbox"
+                readOnly
+                id="privateInfoCheckbox"
+            />
             <label htmlFor="privateInfoCheckbox">ㅤ</label>
         </div>
     );
@@ -73,6 +99,21 @@ const AudienceColumn = ({ row }) => {
 
     return <>{audienceValue}</>;
 };
+
+const audienceAccessor = (row) => {
+    const availableProducts = row.availableProducts || [];
+    const unavailableProducts = row.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+
+    if (allProducts.length === 0) {
+        return '잠재';
+    } else if (allProducts.length === 1) {
+        return '신규';
+    } else {
+        return '재등록';
+    }
+};
+
 
 const CumulativePayCount = ({ row }) => {
     const [allProducts, setAllProducts] = useState(0);
@@ -155,11 +196,10 @@ const cumulativePayAccessor = (row) => {
         Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
-        // const amounts = products.map((data) => data.adjustedPrice);
         const amounts = products
-                .filter((product) => product.deleted_at === false && product.refund === false)
-                .map((data) => data.adjustedPrice)
-                .filter((amount) => !isNaN(amount) && amount !== 0);
+            .filter((product) => product.deleted_at === false && product.refund === false)
+            .map((data) => data.adjustedPrice)
+            .filter((amount) => !isNaN(amount) && amount !== 0);
         totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     }
 
@@ -179,11 +219,10 @@ const averagePayAccessor = (row) => {
         Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
-        // const amounts = products.map((data) => data.adjustedPrice);
         const amounts = products
-                .filter((product) => product.deleted_at === false && product.refund === false)
-                .map((data) => data.adjustedPrice)
-                .filter((amount) => !isNaN(amount) && amount !== 0);
+            .filter((product) => product.deleted_at === false && product.refund === false)
+            .map((data) => data.adjustedPrice)
+            .filter((amount) => !isNaN(amount) && amount !== 0);
         const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
         averageValue = Math.floor(totalValue / amounts.length);
@@ -192,58 +231,57 @@ const averagePayAccessor = (row) => {
     return averageValue;
 };
 
-
-
-
-
-
-
-
 const TaSeokActiveColumn = ({ row }) => {
     const availableProducts = row.original?.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'batterBox');
 
     let content = null;
-    let badgeColor = "";
+    let badgeColor = '';
 
     if (isActive) {
         const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
-        
+
         if (batterBoxProduct) {
             const dDay = batterBoxProduct.dDay;
 
             if (dDay <= 10) {
-                badgeColor = "danger";
+                badgeColor = 'danger';
             } else if (dDay <= 30) {
-                badgeColor = "warning";
+                badgeColor = 'warning';
             } else {
-                badgeColor = "success";
+                badgeColor = 'success';
             }
 
             content = `D - ${dDay}`;
         }
     } else {
-        content = "비활성";
-        badgeColor = "dark";
+        content = '비활성';
+        badgeColor = 'dark';
     }
 
     return (
-         <div className="text-center">
+        <div className="text-center">
             <Badge bg="" className={`badge-${badgeColor}-lighten`}>
                 {content}
             </Badge>
         </div>
     );
-}
+};
 
 const LessonActiveColumn = ({ row }) => {
     const availableProducts = row.original?.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'lesson');
 
     let content = null;
-    let badgeColor = "";
+    let badgeColor = '';
 
     if (isActive) {
         const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
@@ -251,11 +289,11 @@ const LessonActiveColumn = ({ row }) => {
             const dDay = lessonProduct.dDay;
 
             if (dDay <= 10) {
-                badgeColor = "danger";
+                badgeColor = 'danger';
             } else if (dDay <= 30) {
-                badgeColor = "warning";
+                badgeColor = 'warning';
             } else {
-                badgeColor = "success";
+                badgeColor = 'success';
             }
 
             content = `D - ${dDay}`;
@@ -264,36 +302,42 @@ const LessonActiveColumn = ({ row }) => {
         }
     } else {
         content = '비활성';
-        badgeColor = "dark";
+        badgeColor = 'dark';
     }
 
     return (
         <div className="text-center">
-           <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
                 {content}
             </Badge>
-       </div>
-   );
-}
+        </div>
+    );
+};
 
 const taSeokActive = (row) => {
     const availableProducts = row.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'batterBox');
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'batterBox');
     if (isActive) {
         const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
         if (batterBoxProduct) {
             return batterBoxProduct.dDay;
         }
     }
-    
+
     return -1;
 };
 
 const lessonActive = (row) => {
     const availableProducts = row.availableProducts;
 
-    const isActive = availableProducts && Array.isArray(availableProducts) && availableProducts.some((product) => product.productType === 'lesson');
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'lesson');
     if (isActive) {
         const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
         if (lessonProduct) {
@@ -319,6 +363,7 @@ const columns = [
     {
         Header: '시간',
         accessor: 'createdTime',
+        Cell: CreatedTimeColumn,
         sort: true,
     },
 
@@ -345,7 +390,7 @@ const columns = [
     },
     {
         Header: '유형',
-        accessor: 'audience',
+        accessor: audienceAccessor,
         Cell: AudienceColumn,
         sort: true,
     },
@@ -392,7 +437,7 @@ const columns = [
     {
         Header: '부상부위',
         accessor: 'injuriedPart',
-        Cell: ({ value }) => value === '없음' ? '' : value,
+        Cell: ({ value }) => (value === '없음' ? '' : value),
         sort: true,
     },
     {
@@ -463,7 +508,6 @@ const sizePerPageList = [
 ];
 
 const Customers = ({ currentMembers }) => {
-
     return (
         <>
             <Card>

@@ -84,7 +84,7 @@ const AddModal = forwardRef((props, ref) => {
             ...firestoreMemebersFieldSchema,
             name: nameValue,
             createdDate: moment().format('YYYY-MM-DD'),
-            createdTime: moment().format('A hh:mm'),
+            createdTime: moment().format('hh:mm:ss'),
             sex: sexValue,
             birthDate: birthDateValue,
             phone: phoneValue,

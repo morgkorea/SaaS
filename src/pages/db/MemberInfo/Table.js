@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 
 const getAudienceValue = (member) => {
@@ -18,6 +19,7 @@ const Table = ({ member }) => {
     const phoneNumber = member.phone;
     const digitsOnly = phoneNumber.replace(/\D/g, '');
 
+
     let countryCode = '';
     let phoneNumberDigits = digitsOnly;
 
@@ -25,6 +27,10 @@ const Table = ({ member }) => {
         countryCode = '';
         phoneNumberDigits = digitsOnly.slice(1);
     }
+
+    const formattedCreatedTime = member?.createdTime
+    ? moment(member.createdTime, "hh:mm:ss").format('A hh:mm')
+    : '';
 
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
     const phone = countryCode + formattedPhoneNumber;
@@ -71,7 +77,7 @@ const Table = ({ member }) => {
                     <tr>
                         <th>생성일자</th>
                         <td>
-                            {member?.createdDate} {member?.createdTime ? '/' : null} {member?.createdTime}
+                            {member?.createdDate} {member?.createdTime ? '/' : null} {formattedCreatedTime}
                         </td>
                     </tr>
                     <tr>
