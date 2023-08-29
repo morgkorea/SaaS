@@ -30,8 +30,6 @@ function calculateDailyAndMonthlyData(members, isMonthlyView) {
     const dailyData = new Array(currentMonthOfDays).fill(0);
     const monthlyData = new Array(12).fill(0);
 
-    console.log('1', dailyData);
-
     for (const member of members) {
         const createdDate = new Date(member.createdDate);
         const year = createdDate.getFullYear();
@@ -70,7 +68,7 @@ function calculateDailyAndMonthlyData(members, isMonthlyView) {
             }
         }
     }
-    console.log('2', dailyData);
+    
     return isMonthlyView ? dailyData : monthlyData;
 }
 

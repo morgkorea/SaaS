@@ -27,8 +27,6 @@ const MemberInfo = () => {
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = id ? doc(firestoreDB, 'Users', email, 'Members', id) : null;
 
-    // console.log(member)
-
     useEffect(() => {
         if (memberRef) {
             const unsubscribe = onSnapshot(memberRef, (snapshot) => {
