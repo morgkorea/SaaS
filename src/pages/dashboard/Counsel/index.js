@@ -5,6 +5,7 @@ import BarChart from './BarChart';
 import { collection, getDocs } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { firestoreDB } from '../../../firebase/firebase';
+import Statistics from './Statistics';
 
 const Counsel = () => {
     const [members, setMembers] = useState([]);
@@ -24,6 +25,18 @@ const Counsel = () => {
         getMembers();
     }, []);
 
+    const [items, setItems] = useState([
+        {
+            id: 1,
+            name: 'Amazing Modern Chair',
+            size: 'Large',
+            color: 'Light Green',
+            price: 148.66,
+            qty: 5,
+            total: 743.3,
+        },
+    ]);
+
     return (
         <>
             <Row>
@@ -34,14 +47,21 @@ const Counsel = () => {
                 </Col>
             </Row>
 
+            {/* <Row>
+                <Col>
+                    <Statistics members={members} />
+                </Col>
+            </Row> */}
+
             <Row>
                 <Col>
                     <BarChart members={members} />
                 </Col>
             </Row>
+
             <Row>
                 <Col>
-                    <PerformanceChart members={members}/>
+                    <PerformanceChart members={members} />
                 </Col>
             </Row>
         </>

@@ -98,9 +98,9 @@ const HorizontalLayout = ({ children }: HorizontalLayoutProps, state: Horizontal
                         </Container>
                     </div>
 
-                    <Suspense fallback={loading()}>
+                    {/* <Suspense fallback={loading()}>
                         <Footer />
-                    </Suspense>
+                    </Suspense> */}
 
                     {showRightSidebar && (
                         <Suspense fallback={loading()}>

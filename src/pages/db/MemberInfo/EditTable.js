@@ -5,11 +5,26 @@ import { firestoreDB } from '../../../firebase/firebase';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const getAudienceValue = (member) => {
+    const availableProducts = member.availableProducts || [];
+    const unavailableProducts = member.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+
+    if (allProducts.length === 0) {
+        return '잠재';
+    } else if (allProducts.length === 1) {
+        return '신규';
+    } else {
+        return '재등록';
+    }
+};
+
 const EditTable = forwardRef(({ member, email, id }, ref) => {
     const notify = () => toast('개인정보가 수정되었습니다.');
+    const [isValid, setIsValid] = useState(true);
 
     const [nameValue, setNameValue] = useState(member.name);
-    const [sexValue, setSexValue] = useState('');
+    const [sexValue, setSexValue] = useState(member.sex);
     const [birthDateValue, setBirthDateValue] = useState(member.birthDate);
     const [phoneValue, setPhoneValue] = useState(member.phone);
     const [locationValue, setLocationValue] = useState(member.location);
@@ -23,9 +38,11 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [inflowPathValue, setInflowPathValue] = useState(member.inflowPath);
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
+    const audienceValue = getAudienceValue(member);
 
     const handleFocus = (e) => {
         const { value } = e.target;
+
         if (!value) {
             e.target.placeholder = '';
         }
@@ -35,11 +52,11 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
         const { name, value } = e.target;
         if (!value) {
             if (name === 'name') {
-                e.target.placeholder = '성함';
+                e.target.placeholder = '성함을 입력해주세요.';
             } else if (name === 'phone') {
-                e.target.placeholder = '연락처';
+                e.target.placeholder = '010-0000-0000';
             } else if (name === 'region') {
-                e.target.placeholder = '지역';
+                e.target.placeholder = '거주지를 입력해주세요.';
             }
         }
     };
@@ -47,11 +64,31 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     function privateInfoChange(event) {
         setPrivateInfoChecked(event.target.checked);
     }
+
     function marketingChange(event) {
         setMarketingChecked(event.target.checked);
     }
 
+    const handlePhoneNumberChange = (event) => {
+        const inputPhoneNumber = event.target.value;
+        setPhoneValue(inputPhoneNumber);
+
+        const phoneRegex = /^\d{3}-\d{4}-\d{4}$/;
+
+        setIsValid(phoneRegex.test(inputPhoneNumber));
+    };
+
+    const handleInjurySelectChange = (selectedOption) => {
+        setInjuriedPartValue(selectedOption.value);
+        setInjuriesValue(selectedOption.value === '없음' ? '무' : '유');
+    };
+
     const editUser = async () => {
+        if (!nameValue || !isValid) {
+            alert(!nameValue ? '성함을 입력해주세요.' : '연락처를 확인해주세요.');
+            return;
+        }
+
         const memberRef = doc(firestoreDB, 'Users', email, 'Members', id);
         const editData = {
             name: nameValue,
@@ -138,7 +175,11 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 type="tel"
                                 pattern="[0-9]*"
                                 value={phoneValue}
-                                onChange={(e) => setPhoneValue(e.target.value)}
+                                onChange={handlePhoneNumberChange}
+                                onInput={(e) => {
+                                    const onlyNumbersAndHyphen = e.target.value.replace(/[^0-9-]/g, '');
+                                    setPhoneValue(onlyNumbersAndHyphen);
+                                }}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
                             />
@@ -182,9 +223,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     </tr>
                     <tr>
                         <th>유형</th>
-                        <td>
-                            {member.audience}
-                        </td>
+                        <td>{audienceValue}</td>
                     </tr>
                     <tr>
                         <th>골프 경력</th>
@@ -278,7 +317,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 ]}></Select>
                         </td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                         <th>부상 전적</th>
                         <td className="me-2">
                             <Select
@@ -291,27 +330,26 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                     { value: '무', label: '무' },
                                 ]}></Select>
                         </td>
-                    </tr>
+                    </tr> */}
                     <tr>
                         <th>부상 부위</th>
                         <td>
-                            {injuriesValue === '무' ? null : (
-                                <Select
-                                    className="react-select"
-                                    classNamePrefix="react-select"
-                                    placeholder={member.injuriedPart ? member.injuriedPart : '선택'}
-                                    onChange={(e) => setInjuriedPartValue(e.value)}
-                                    options={[
-                                        { value: '팔꿈치', label: '팔꿈치' },
-                                        { value: '허리', label: '허리' },
-                                        { value: '무릎', label: '무릎' },
-                                        { value: '손목', label: '손목' },
-                                        { value: '어깨', label: '어깨' },
-                                        { value: '등', label: '등' },
-                                        { value: '손가락', label: '손가락' },
-                                        { value: '기타', label: '기타' },
-                                    ]}></Select>
-                            )}
+                            <Select
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                placeholder={member.injuriedPart ? member.injuriedPart : '선택'}
+                                onChange={handleInjurySelectChange}
+                                options={[
+                                    { value: '없음', label: '없음' },
+                                    { value: '팔꿈치', label: '팔꿈치' },
+                                    { value: '허리', label: '허리' },
+                                    { value: '무릎', label: '무릎' },
+                                    { value: '손목', label: '손목' },
+                                    { value: '어깨', label: '어깨' },
+                                    { value: '등', label: '등' },
+                                    { value: '손가락', label: '손가락' },
+                                    { value: '기타', label: '기타' },
+                                ]}></Select>
                         </td>
                     </tr>
                     <tr>
@@ -319,10 +357,12 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         <td>
                             <input
                                 type="checkbox"
-                                checked={privateInfoChecked}
+                                defaultChecked={privateInfoChecked}
                                 onChange={privateInfoChange}
-                                name="privateInfo"
+                                className="custom-checkbox"
+                                id="privacyCheckbox"
                             />
+                            <label htmlFor="privacyCheckbox">ㅤ</label>
                         </td>
                     </tr>
                     <tr>
@@ -330,10 +370,12 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                         <td>
                             <input
                                 type="checkbox"
-                                checked={marketingChecked}
+                                defaultChecked={marketingChecked}
                                 onChange={marketingChange}
-                                name="marketing"
+                                className="custom-checkbox"
+                                id="marketingCheckbox"
                             />
+                            <label htmlFor="marketingCheckbox">ㅤ</label>
                         </td>
                     </tr>
                 </tbody>

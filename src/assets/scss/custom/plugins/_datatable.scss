@@ -10,10 +10,6 @@
     }
 }
 
-
-
-
-
 table.dataTable {
     border-collapse: collapse !important;
     margin-bottom: 15px !important;
@@ -124,8 +120,7 @@ table.dataTable {
 .dataTables_info {
     font-weight: $font-weight-semibold;
 }
-
-
+  
 // Responsive data table
 table.dataTable.dtr-inline.collapsed {
     > tbody {

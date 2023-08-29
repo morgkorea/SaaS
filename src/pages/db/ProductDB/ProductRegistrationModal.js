@@ -1,18 +1,16 @@
 // @flow
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Modal, Alert } from 'react-bootstrap';
-
+import { Row, Col, Button, Modal, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-
 import { doc, getDoc, setDoc, collection } from 'firebase/firestore';
-
 import { firestoreDB } from '../../../firebase/firebase';
 import { firestoreProductsFieldSchema } from '../../../firebase/firestoreDbSchema';
-
 import * as yup from 'yup';
 
 //loading spinner
 import Spinner from '../../../components/Spinner';
+import Select from 'react-select';
+
 
 const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     // const [modal, setModal] = useState(false);
@@ -184,7 +182,8 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
     };
 
     const getRegularPrice = (event) => {
-        let price = event.target.value;
+        // let price = event.target.value;
+        let price = event.target.value.replace(/,/g, '');
 
         if (isNaN(Number(price)) || price < 0) {
             price = 0;
@@ -192,9 +191,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         if (price > 0) {
             setValidationError({ ...validationError, regularPrice: false });
         }
-        //is update?
 
         setRegularPrice(Number(price));
+        // setRegularPrice(Number(price));
+        // console.log(regularPrice);
     };
 
     useEffect(() => {
@@ -214,21 +214,31 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
         <>
             <Modal show={modal} onHide={toggle} size={size} centered={true}>
                 <Modal.Header className="border-bottom-0" onHide={toggle} closeButton></Modal.Header>
+
                 <Modal.Body style={{ height: '500px', padding: '0px 60px' }}>
                     <h4 className="modal-title mb-3 ">상품 등록</h4>
-                    <Alert variant="info" className="mb-3" style={{ color: '#1E5B6D' }}>
+                    <Alert variant="primary" className="mb-3">
                         <span className="fw-bold">패키지 상품 관련 안내</span> - 패키지는 각각의 단품상품 등록 후
                         매출등록에서 금액조정을 해주셔야 해요.
                     </Alert>
+
                     <div className="container">
                         <Row className="mb-4">
-                            <Col className="">
+                            <Col>
                                 <div className="mb-1">
-                                    {' '}
                                     <span>상품명</span>
-                                    <i className="mdi mdi-help-circle-outline" />
+                                    <OverlayTrigger style={{width: '100%'}} overlay={<Tooltip id="tooltip-disabled">
+                                        <div >
+                                            Tip. 상품카테고리-유효기간/횟수로 상품명을 만드시는걸 추천드려요.
+                                        </div>
+                                        </Tooltip>}>
+                                    <span className="d-inline-block">
+                                        <button disabled style={{ pointerEvents: 'none', border: 'none', background: 'none' }}>
+                                            <i className="uil uil-question-circle" />
+                                        </button>
+                                    </span>
+                                </OverlayTrigger>
                                 </div>
-
                                 <input
                                     type="text"
                                     onChange={(e) => {
@@ -244,11 +254,10 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                     {validationError.productName}
                                 </div>
                             </Col>
-                            <Col className="">
+                            <Col>
                                 <div className="mb-1">
                                     <span>카테고리</span>
                                 </div>
-
                                 <select
                                     onChange={(e) => {
                                         getProductType(e);
@@ -267,17 +276,17 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 </select>
                             </Col>
                         </Row>
+
                         <Row className="mb-4">
                             <Col>
                                 <div className="mb-1">
-                                    {' '}
                                     <span>유효기간</span>
                                 </div>
                                 <select
                                     onChange={(e) => {
                                         getExpirationPeriod(e);
                                     }}
-                                    className="w-100 p-1"
+                                    className="w-100 p-1"t
                                     style={{
                                         height: '40px',
                                         border: '1px solid #DEE2E6',
@@ -313,58 +322,47 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                 </select>
                             </Col>
                             <Col>
-                                <div className="mb-1">
-                                    {' '}
-                                    <span>유효횟수</span>
-                                </div>
+                                <div className="mb-1"><span>유효횟수</span></div>
                                 <input
-                                    onChange={(e) => {
-                                        getExpirationCount(e);
-                                    }}
+                                    value={expirationCount.toLocaleString()}
+                                    onChange={(e) => getExpirationCount(e)}
                                     type="text"
                                     className="w-100 p-1"
                                     style={{
                                         height: '40px',
                                         border: '1px solid #DEE2E6',
-                                        borderRadius: ' 2px',
+                                        borderRadius: '2px',
+                                        color: expirationCount === 0 ? '#98A6AD' : '#313A46',
                                     }}
-                                    value={expirationCount}
                                     disabled={productType === 'locker' || productType === 'etc'}></input>
                             </Col>
                         </Row>
+
                         <Row className="mb-4">
                             <Col>
                                 <div style={{ position: 'relative' }}>
-                                    <div className="mb-1">
-                                        {' '}
-                                        <span>상품 가격</span>
-                                    </div>
+                                    <div className="mb-1"><span>상품 가격</span></div>
                                     <input
+                                        value={regularPrice.toLocaleString()}
+                                        onChange={(e) => getRegularPrice(e)}
                                         type="text"
                                         className="w-100 p-1"
-                                        onChange={(e) => {
-                                            getRegularPrice(e);
-                                        }}
-                                        value={regularPrice}
                                         style={{
                                             height: '40px',
                                             border: `1px solid ${validationError.regularPrice ? '#fa5c7c' : '#DEE2E6'}`,
-                                            borderRadius: ' 2px',
-                                        }}></input>
-
+                                            borderRadius: '2px',
+                                            color: regularPrice === 0 ? '#98A6AD' : '#313A46',
+                                        }}/>
                                     <span style={{ position: 'absolute', right: '20px', bottom: '10px' }}>원</span>
                                 </div>
-
                                 <div style={{ color: '#fa5c7c', fontSize: '12px', marginTop: '2px' }}>
                                     {validationError.regularPrice}
                                 </div>
                             </Col>
-
                             <Col>
                                 <div className="mb-1">
                                     <span>판매등록</span>
                                 </div>
-
                                 <div className="d-flex justify-content-between">
                                     <button
                                         onClick={() => {
@@ -373,8 +371,8 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${activation ? '#727CF5' : '#DEE2E6'}`,
-                                            color: activation ? '#727CF5' : '#DEE2E6',
+                                            border: `1px solid ${activation ? '#0acf97' : '#DEE2E6'}`,
+                                            color: activation ? '#0acf97' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
                                         }}>
@@ -387,8 +385,8 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         style={{
                                             width: '150px',
                                             height: '40px',
-                                            border: `1px solid ${!activation ? '#727CF5' : '#DEE2E6'}`,
-                                            color: !activation ? '#727CF5' : '#DEE2E6',
+                                            border: `1px solid ${!activation ? '#0acf97' : '#DEE2E6'}`,
+                                            color: !activation ? '#0acf97' : '#DEE2E6',
                                             borderRadius: ' 2px',
                                             backgroundColor: '#FFFFFF',
                                         }}>
@@ -399,6 +397,7 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                         </Row>
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer className="d-flex justify-content-center border-top-0 ">
                     <Button
                         onClick={putFirestoreProductRegistration}

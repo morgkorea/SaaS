@@ -1,49 +1,73 @@
 // @flow
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { firestoreDB } from '../../firebase/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const SellerBox = (): React$Element<any> => {
-    return (
-        <Card>
-            <Card.Body>
-                <h4 className="header-title mt-0 mb-3">Seller Information</h4>
-                <p className="text-muted font-13">
-                    Hye, I’m Michael Franklin residing in this beautiful world. I create websites and mobile apps with
-                    great UX and UI design. I have done work with big companies like Nokia, Google and Yahoo. Meet me or
-                    Contact me for any queries. One Extra line for filling space. Fill as many you want.
-                </p>
+    const [myProfile, setMyProfile] = useState(null);
+    const email = useSelector((state) => state.Auth?.user.email);
+    const docRef = doc(firestoreDB, 'Users', email);
 
-                <hr />
+    const fetchMyProfile = async () => {
+        try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                setMyProfile(docSnap.data());
+            } else {
+                console.log('No such document!');
+            }
+        } catch (error) {
+            console.error('Error fetching my profile:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchMyProfile();
+    }, []);
+
+    return (
+        <Card style={{marginTop: '2rem'}}>
+            <Card.Body>
+                <h4 className="header-title mt-0 mb-3 text-dark">내 정보</h4>
 
                 <div className="text-start">
-                    <p className="text-muted">
-                        <strong>Full Name :</strong> <span className="ms-2">Michael A. Franklin</span>
+                    <p className="text-dark">
+                        <strong>사업장 :</strong> <span className="text-muted ms-2">{myProfile?.store}</span>
                     </p>
 
-                    <p className="text-muted">
-                        <strong>Mobile :</strong>
-                        <span className="ms-2">(+12) 123 1234 567</span>
+                    <p className="text-dark">
+                        <strong>성함 :</strong> 
+                        <span className="text-muted ms-2">{myProfile?.username}</span>
                     </p>
 
-                    <p className="text-muted">
-                        <strong>Email :</strong> <span className="ms-2">coderthemes@gmail.com</span>
+                    <p className="text-dark">
+                        <strong>로그인 아이디 :</strong> 
+                        <span className="text-muted ms-2">{myProfile?.email}</span>
                     </p>
 
-                    <p className="text-muted">
-                        <strong>Location :</strong> <span className="ms-2">USA</span>
+                    <p className="text-dark">
+                        <strong>이메일 :</strong> 
+                        <span className="text-muted ms-2">{myProfile?.email}</span>
+                    </p>
+                    
+                    <p className="text-dark">
+                        <strong>연락처 :</strong>
+                        <span className="text-muted ms-2">{myProfile?.ownerPhone}</span>
                     </p>
 
-                    <p className="text-muted mb-0">
-                        <strong>Elsewhere :</strong>
+                    <p className="text-dark mb-0">
+                        <strong>SNS :</strong>
                         <Link className="d-inline-block ms-2 text-muted" to="#">
                             <i className="mdi mdi-facebook"></i>
                         </Link>
                         <Link className="d-inline-block ms-2 text-muted" to="#">
-                            <i className="mdi mdi-twitter"></i>
+                            <i className="mdi mdi-instagram"></i>
                         </Link>
                         <Link className="d-inline-block ms-2 text-muted" to="#">
-                            <i className="mdi mdi-skype"></i>
+                            <i className="mdi mdi-twitter"></i>
                         </Link>
                     </p>
                 </div>

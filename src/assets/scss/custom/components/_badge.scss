@@ -22,7 +22,9 @@
     }
   }
 }
-
+.badge-dark-lighten {
+  opacity: .5;
+}
 // Outline badge
 
 @each $color, $value in $theme-colors {

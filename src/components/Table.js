@@ -10,6 +10,7 @@ import {
 } from 'react-table';
 import classNames from 'classnames';
 import Pagination from './Pagination';
+import { ReactComponent as Warning } from '../assets/images/warning.svg';
 
 // Define a default UI for filtering
 const GlobalFilter = ({
@@ -27,7 +28,8 @@ const GlobalFilter = ({
 
     return (
         <div className={classNames(searchBoxClass)}>
-            <span className="d-flex align-items-center">
+            <span className="d-flex align-items-center form-control" style={{maxWidth: '200px'}}>
+                <i className="mdi mdi-magnify search-icon" />
                 <input
                     value={value || ''}
                     onChange={(e) => {
@@ -35,7 +37,7 @@ const GlobalFilter = ({
                         onChange(e.target.value);
                     }}
                     placeholder={productTablePlaceholder}
-                    className="form-control w-auto ms-1"
+                    className="w-auto ms-1 border-0"
                 />
             </span>
         </div>
@@ -92,6 +94,8 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
+    const noDataMessage = props['noDataMessage'] || false;
+    
     const dataTable = useTable(
         {
             columns: props['columns'],
@@ -168,9 +172,7 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                 />
             )}
 
-            <div
-                className="table-responsive mt-4"
-                style={{ minHeight: props.minHeight ? `${props.minHeight}px` : '800px' }}>
+            <div className="table-responsive mt-3" style={{ minHeight: '344px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
@@ -193,16 +195,27 @@ const Table = (props: TableProps): React$Element<React$FragmentType> => {
                         ))}
                     </thead>
                     <tbody {...dataTable.getTableBodyProps()}>
-                        {(rows || []).map((row, i) => {
-                            dataTable.prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()}>
-                                    {row.cells.map((cell) => {
-                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                                    })}
+                        {rows.length === 0 ? (
+                            <tr className='dataless' style={{height: '500px'}}>
+                                    <td colSpan={dataTable.columns.length}>
+                                            {noDataMessage}
+                                        <span className="d-block">
+                                            <Warning style={{ width: '12rem', height: '12rem', marginTop: '1rem' }} />
+                                        </span>
+                                    </td>
                                 </tr>
-                            );
-                        })}
+                            ) : (
+                            (rows || []).map((row, i) => {
+                                dataTable.prepareRow(row);
+                                return (
+                                    <tr {...row.getRowProps()}>
+                                        {row.cells.map((cell) => {
+                                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                                        })}
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>

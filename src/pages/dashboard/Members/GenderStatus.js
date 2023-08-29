@@ -4,27 +4,20 @@ import { Doughnut } from 'react-chartjs-2';
 import CardTitle from '../../../components/CardTitle';
 
 const GenderStatus = ({ members }) => {
-    let man = 0;
-    let woman = 0;
-    let junior = 0;
-
-    members.forEach((member) => {
-        if (member.sex === '남성') {
-            return man++;
-        } else if (member.sex === '여성') {
-            return woman++;
-        } else {
-            return junior++;
-        }
-    });
+    const totalMembers = members.length;
+    const genderCounts = members.reduce((acc, member) => {
+        const { sex } = member;
+        acc[sex === '남성' ? 'man' : sex === '여성' ? 'woman' : 'etc']++;
+        return acc;
+    }, { man: 0, woman: 0, etc: 0 });
 
     const colors = ['#727cf5', '#fa5c7c', '#0acf97'];
     const donutChartData = {
         labels: ['남성', '여성', '기타'],
         datasets: [
             {
-                data: [man, woman, junior],
-                backgroundColor: colors,
+                data: totalMembers === 0 ? [1, 1, 1] : [genderCounts.man, genderCounts.woman, genderCounts.etc],
+                backgroundColor: totalMembers === 0 ? ['#F5F5F5', '#F5F5F5', '#F5F5F5'] : colors,
                 borderColor: 'transparent',
                 borderWidth: '2',
             },
@@ -47,12 +40,6 @@ const GenderStatus = ({ members }) => {
                 <CardTitle
                     containerClass="d-flex align-items-center justify-content-between py-1"
                     title="성별 추이"
-                    // menuItems={[
-                    //     { label: 'Weekly Report' },
-                    //     { label: 'Monthly Report' },
-                    //     { label: 'Action' },
-                    //     { label: 'Settings' },
-                    // ]}
                 />
                 <div className="my-4" style={{ height: '180px' }}>
                     <Doughnut data={donutChartData} options={donutChartOpts} />
@@ -60,9 +47,9 @@ const GenderStatus = ({ members }) => {
                 <Row className="text-center mt-2 py-2">
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-checkbox-blank text-primary mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank mt-3 h3" style={{color: '#727cf5'}}></i>
                             <h3 className="fw-normal">
-                                <span>{man}명</span>
+                                <span>{genderCounts.man}명</span>
                             </h3>
                             <p className="text-muted mb-0">남성</p>
                         </div>
@@ -71,7 +58,7 @@ const GenderStatus = ({ members }) => {
                         <div className="my-2 my-sm-0">
                             <i className="mdi mdi-checkbox-blank text-danger mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>{woman}명</span>
+                                <span>{genderCounts.woman}명</span>
                             </h3>
                             <p className="text-muted mb-0">여성</p>
                         </div>
@@ -80,7 +67,7 @@ const GenderStatus = ({ members }) => {
                         <div className="my-2 my-sm-0">
                             <i className="mdi mdi-checkbox-blank text-success mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>{junior}명</span>
+                                <span>{genderCounts.etc}명</span>
                             </h3>
                             <p className="text-muted mb-0">기타</p>
                         </div>

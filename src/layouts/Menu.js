@@ -8,7 +8,7 @@ import { findAllParent, findMenuItem } from '../helpers/menu';
 
 const MenuItemWithChildren = ({ item, linkClassName, subMenuClassNames, activeMenuItems, toggleMenu }) => {
     const [open, setOpen] = useState(activeMenuItems.includes(item.key));
-
+    
     useEffect(() => {
         setOpen(activeMenuItems.includes(item.key));
     }, [activeMenuItems, item]);

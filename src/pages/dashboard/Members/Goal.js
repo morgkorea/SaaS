@@ -30,7 +30,7 @@ const Goal = ({ members }) => {
             {
                 Header: '목적',
                 accessor: 'name',
-                width: '30%',
+                width: '35%',
             },
             {
                 Header: '인원',
@@ -41,7 +41,7 @@ const Goal = ({ members }) => {
             {
                 Header: '비율',
                 accessor: 'rate',
-                width: '45%',
+                width: '40%',
                 Cell: ({ value }) => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {value}%

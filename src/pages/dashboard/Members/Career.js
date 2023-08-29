@@ -30,7 +30,7 @@ const Career = ({ members }) => {
     const columns = React.useMemo(
         () => [
             {
-                Header: '경력기간',
+                Header: '경력',
                 accessor: 'name',
                 width: '30%',
             },

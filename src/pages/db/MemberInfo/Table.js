@@ -1,8 +1,24 @@
+import moment from 'moment';
 import React from 'react';
+
+const getAudienceValue = (member) => {
+    const availableProducts = member.availableProducts || [];
+    const unavailableProducts = member.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+  
+    if (allProducts.length === 0) {
+      return '잠재';
+    } else if (allProducts.length === 1) {
+      return '신규';
+    } else {
+      return '재등록';
+    }
+};
 
 const Table = ({ member }) => {
     const phoneNumber = member.phone;
     const digitsOnly = phoneNumber.replace(/\D/g, '');
+
 
     let countryCode = '';
     let phoneNumberDigits = digitsOnly;
@@ -12,9 +28,14 @@ const Table = ({ member }) => {
         phoneNumberDigits = digitsOnly.slice(1);
     }
 
-    const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
+    const formattedCreatedTime = member?.createdTime
+    ? moment(member.createdTime, "hh:mm:ss").format('A hh:mm')
+    : '';
 
+    const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
     const phone = countryCode + formattedPhoneNumber;
+
+    const audienceValue = getAudienceValue(member);
 
     return (
         <>
@@ -56,12 +77,12 @@ const Table = ({ member }) => {
                     <tr>
                         <th>생성일자</th>
                         <td>
-                            {member?.createdDate} {member?.createdTime ? '/' : null} {member?.createdTime}
+                            {member?.createdDate} {member?.createdTime ? '/' : null} {formattedCreatedTime}
                         </td>
                     </tr>
                     <tr>
                         <th>유형</th>
-                        <td>{member?.audience}</td>
+                        <td>{audienceValue}</td>
                     </tr>
                     <tr>
                         <th>골프 경력</th>
@@ -86,27 +107,21 @@ const Table = ({ member }) => {
                     <tr>
                         <th>부상 전적</th>
                         <td>
-                            {member?.injuries} {member?.injuriedPart ? '/' : null} {member?.injuriedPart}
+                            {member?.injuriedPart}
                         </td>
                     </tr>
                     <tr>
                         <th>개인정보수집동의</th>
                         <td>
-                            {member?.privateInfoAllow === true ? (
-                                <i className="mdi mdi-check widget-icon2" />
-                            ) : (
-                                <i className="mdi mdi-check" />
-                            )}
+                            <input type="checkbox" checked={member?.privateInfoAllow} className="custom-checkbox" readOnly id="privateInfoCheckbox" />
+                            <label htmlFor="privateInfoCheckbox">ㅤ</label>
                         </td>
                     </tr>
                     <tr>
                         <th>마케팅활용동의</th>
                         <td>
-                            {member?.marketingRecieveAllow === true ? (
-                                <i className="mdi mdi-check widget-icon2" />
-                            ) : (
-                                <i className="mdi mdi-check" />
-                            )}
+                            <input type="checkbox" checked={member?.marketingRecieveAllow} className="custom-checkbox" readOnly id="marketingCheckbox" />
+                            <label htmlFor="marketingCheckbox">ㅤ</label>
                         </td>
                     </tr>
                 </tbody>

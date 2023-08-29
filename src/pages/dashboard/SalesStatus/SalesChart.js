@@ -122,7 +122,7 @@ const SalesChart = ({ sortedByPeriodSalesData, selectedPeriod, datePickDate }) =
 
                 <div className="chart-widget-list">
                     <p>
-                        <i className="mdi mdi-square text-primary"></i> 타석
+                        <i className="mdi mdi-square" style={{color: '#727cf5'}}></i> 타석
                         <span className="float-end">{amountProductsSales.batterBox.toLocaleString()}원</span>
                     </p>
                     <p>

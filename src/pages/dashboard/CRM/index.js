@@ -30,7 +30,7 @@ const Crm = () => {
     const getMembers = async () => {
         const data = await getDocs(memberRef);
 
-        console.log(data);
+        // console.log(data);
         setCurrentMembers(
             data.map((doc) => ({
                 id: doc.id,

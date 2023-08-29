@@ -15,27 +15,24 @@ import Products from './Products';
 const Profile = (): React$Element<React$FragmentType> => {
     return (
         <>
-            <PageTitle
+            {/* <PageTitle
                 breadCrumbItems={[
                     { label: 'Pages', path: '/pages/profile' },
                     { label: 'Profile', path: '/pages/profile', active: true },
                 ]}
                 title={'Profile'}
-            />
+            /> */}
 
             <Row>
                 <Col sm={12}>
-                    {/* User information */}
-                    <UserBox />
-                </Col>
+                    <SellerBox />
+                </Col> 
             </Row>
 
-            <Row>
+            {/* <Row>
                 <Col xl={4}>
-                    {/* User's seller information */}
-                    <SellerBox />
+                    <UserBox />
 
-                    {/* Contact information */}
                     <Card className="text-white bg-info overflow-hidden">
                         <Card.Body>
                             <div className="toll-free-box text-center">
@@ -47,21 +44,17 @@ const Profile = (): React$Element<React$FragmentType> => {
                         </Card.Body>
                     </Card>
 
-                    {/* User's recent messages */}
                     <Messages />
                 </Col>
 
                 <Col xl={8}>
-                    {/* User's performance */}
                     <BarChart />
 
-                    {/* Some statistics */}
                     <Statistics />
 
-                    {/* Products */}
                     <Products />
                 </Col>
-            </Row>
+            </Row> */}
         </>
     );
 };
