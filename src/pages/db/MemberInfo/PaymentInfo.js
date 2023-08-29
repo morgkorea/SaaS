@@ -28,6 +28,10 @@ const PaymentInfo = ({ member }) => {
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = amounts.length > 0 ? Math.floor(totalValue / amounts.length) : 0;
 
+            const refunds = [...member.availableProducts, ...member.unavailableProducts].filter((product) => {
+                return product.refund === true;
+            });
+
             setAllProducts(products);
             setTotalValue(totalValue);
             setAverageValue(averageValue);
@@ -98,42 +102,42 @@ const PaymentInfo = ({ member }) => {
                                         </div>
                                     );
                                 })}
-                                {
-                                    refundProducts.map((data, index) => {
-                                        return (
-                                            <div key={index} className="member-info-card">
-                                                <div className="d-flex align-items-center justify-content-between">
-                                                    <div className="d-flex">
-                                                        <h4 className="number text-warning">환불건</h4>
-                                                        <div className="payment-info">
-                                                            <div className="d-flex" style={{ color: '#ccc'}}>
+                                {refundProducts.map((data, index) => {
+                                    return (
+                                        <div key={index} className="member-info-card">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <div className="d-flex">
+                                                    <h4 className="number text-warning">환불건</h4>
+                                                    <div className="payment-info">
+                                                        <div className="d-flex" style={{ color: '#ccc' }}>
+                                                            <div>
+                                                                <p>{data.product}</p>
+                                                            </div>
+                                                            {!data.expirationPeriod ? null : (
                                                                 <div>
-                                                                    <p>{data.product}</p>
+                                                                    <p>{data.expirationPeriod}</p>
                                                                 </div>
-                                                                {!data.expirationPeriod ? null : (
-                                                                    <div>
-                                                                        <p>{data.expirationPeriod}</p>
-                                                                    </div>
-                                                                )}
-                                                                <div>
-                                                                    <p>{data.discountRate}% 할인</p>
-                                                                </div>
-                                                                <div>
-                                                                    <p>
-                                                                        {data.startDate} ~ {data.endDate}
-                                                                    </p>
-                                                                </div>
+                                                            )}
+                                                            <div>
+                                                                <p>{data.discountRate}% 할인</p>
+                                                            </div>
+                                                            <div>
+                                                                <p>
+                                                                    {data.startDate} ~ {data.endDate}
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div>
-                                                        <h4 style={{ color: '#ccc'}}>{data.adjustedPrice.toLocaleString()}원</h4>
-                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h4 style={{ color: '#ccc' }}>
+                                                        {data.adjustedPrice.toLocaleString()}원
+                                                    </h4>
                                                 </div>
                                             </div>
-                                        );
-                                    })
-                                }
+                                        </div>
+                                    );
+                                })}
                             </div>
                             <div className="position-absolute bottom-0 end-0 p-4">
                                 <div className="payment-amount">
