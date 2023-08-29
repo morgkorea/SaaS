@@ -7,7 +7,7 @@ import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const PerformanceChart = ({ members }) => {
     const timeSlots = [
-        // '06:00',
+        '06:00',
         '07:00',
         '08:00',
         '09:00',

@@ -10,7 +10,6 @@ import {
 } from 'react-table';
 import classNames from 'classnames';
 import Pagination from './Pagination';
-import AddModal from './AddModal';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
@@ -153,9 +152,6 @@ const Table = (props: TableProps) => {
                                 searchBoxClass={props['searchBoxClass']}
                             />
                         )}
-                    </div>
-                    <div className='ms-2'>
-                        <AddModal/>
                     </div>
                 </div>
             </div>

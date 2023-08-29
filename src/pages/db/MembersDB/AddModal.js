@@ -134,9 +134,17 @@ const AddModal = forwardRef((props, ref) => {
 
     return (
         <>
-            <Button variant="primary" onClick={() => openModalWithClass('modal-dialog-centered')}>
+            {/* <Button variant="primary" onClick={() => openModalWithClass('modal-dialog-centered')}>
                 회원 등록하기
-            </Button>
+            </Button> */}
+             <div className="circle-btn avatar-md" 
+                onClick={() => openModalWithClass('modal-dialog-centered')}
+            >
+                <span className="avatar-title bg-primary text-white font-20 rounded-circle shadow-lg">
+                    <i className="mdi mdi-plus" />
+                </span>
+            </div>
+            
             <Modal show={modal} className="add-modal" size={'lg'} dialogClassName={className} backdrop="static">
                 <Modal.Header onHide={toggle} closeButton className="border-0">
                     <h4 className="modal-title">회원정보 등록</h4>
