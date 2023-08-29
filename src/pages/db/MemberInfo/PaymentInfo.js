@@ -24,10 +24,6 @@ const PaymentInfo = ({ member }) => {
                 return product.deleted_at === false && product.refund === false;
             });
 
-            const refunds = [...member.availableProducts, ...member.unavailableProducts].filter((product) => {
-                return product.refund === true;
-            });
-
             const amounts = products.map((data) => data.adjustedPrice);
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = amounts.length > 0 ? Math.floor(totalValue / amounts.length) : 0;

@@ -62,7 +62,7 @@ function* login({ payload: { email, password } }) {
 
         yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, loginUserData));
     } catch (error) {
-        console.log('login error: ' + error.message);
+        console.log(error.message);
         yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, errorConverter(error.code)));
         api.setLoggedInUser(null);
         setAuthorization(null);
@@ -122,7 +122,7 @@ function* signup({ payload: { username, phone, email, password } }) {
 
         api.setLoggedInUser(firebaseAuthSession);
     } catch (error) {
-        console.log('signup error message :', error.message);
+        console.log(error.message);
 
         api.setLoggedInUser(null);
         yield call(firebaseDeleteUserApi);
