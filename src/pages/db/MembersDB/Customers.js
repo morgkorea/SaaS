@@ -18,9 +18,7 @@ const onClickMemberInfo = ({ row }) => {
 };
 
 const CreatedTimeColumn = ({ row }) => {
-    console.log(row)
     const timeString = row.original.createdTime; 
-
     const formattedTimeA = moment(timeString, 'A hh:mm');
     const formattedTimeHH = moment(timeString, 'HH:mm:ss');
 
