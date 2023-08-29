@@ -16,10 +16,25 @@ const getAudienceValue = (member) => {
 };
 
 const Table = ({ member }) => {
+    const formattedCreatedTime = member?.createdTime
+    ? (() => {
+        const timeA = moment(member.createdTime, "A hh:mm");
+        const timeHH = moment(member.createdTime, "HH:mm:ss");
+
+        if (timeA.isValid()) {
+            return timeA.format('A hh:mm');
+        } else if (timeHH.isValid()) {
+            const time = moment(member.createdTime, "HH:mm:ss");
+            return time.format('A hh:mm');
+        } else {
+            return 'Invalid date';
+        }
+    })()
+    : '';
+    
     const phoneNumber = member.phone;
     const digitsOnly = phoneNumber.replace(/\D/g, '');
-
-
+    
     let countryCode = '';
     let phoneNumberDigits = digitsOnly;
 
@@ -28,12 +43,10 @@ const Table = ({ member }) => {
         phoneNumberDigits = digitsOnly.slice(1);
     }
 
-    const formattedCreatedTime = member?.createdTime
-    ? moment(member.createdTime, "hh:mm:ss").format('A hh:mm')
-    : '';
-
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
     const phone = countryCode + formattedPhoneNumber;
+
+
 
     const audienceValue = getAudienceValue(member);
 
