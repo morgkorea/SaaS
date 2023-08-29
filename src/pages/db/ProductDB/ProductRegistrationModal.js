@@ -269,7 +269,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         borderRadius: ' 2px',
                                         cursor: 'pointer',
                                     }}>
-                                    <option value="" selected disabled>선택</option>
                                     <option value="batterBox">타석</option>
                                     <option value="lesson">레슨</option>
                                     <option value="locker">락커</option>
@@ -296,7 +295,6 @@ const ProductRegistrationModal = ({ modal, setModal, productsData }) => {
                                         backgroundColor: productType === 'etc' ? '#FAFAFA' : '',
                                     }}
                                     disabled={productType === 'etc'}>
-                                    <option value="" selected disabled>선택</option>
                                     <option>1개월</option>
                                     <option>2개월</option>
                                     <option>3개월</option>
