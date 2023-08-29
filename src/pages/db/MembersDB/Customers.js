@@ -1,9 +1,11 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Badge, Card } from 'react-bootstrap';
 import Table from './Table';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import classNames from 'classnames';
+import moment from 'moment';
 
 const onClickMemberInfo = ({ row }) => {
     return (
@@ -15,10 +17,30 @@ const onClickMemberInfo = ({ row }) => {
     );
 };
 
+const CreatedTimeColumn = ({ row }) => {
+    const timeString = row.original.createdTime; // 시간 형식의 문자열을 가져옵니다.
+    const time = moment(timeString, 'HH:mm:ss'); // 시간 형식 문자열을 'HH:mm:ss' 형식으로 Moment 객체로 변환합니다.
+
+    if (time.isValid()) {
+        const formattedTime = time.format('A hh:mm'); // AM/PM과 hh:mm 형식으로 변환합니다.
+        return formattedTime;
+    } else {
+        return 'Invalid date';
+    }
+};
+
+
 const MarketingInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.marketingRecieveAllow} readOnly />
+            <input
+                type="checkbox"
+                checked={row.original.marketingRecieveAllow}
+                className="custom-checkbox"
+                readOnly
+                id="marketingCheckbox"
+            />
+            <label htmlFor="marketingCheckbox">ㅤ</label>
         </div>
     );
 };
@@ -26,7 +48,14 @@ const MarketingInputColumn = ({ row }) => {
 const PrivateInputColumn = ({ row }) => {
     return (
         <div className="text-center">
-            <input type="checkbox" checked={row.original.privateInfoAllow} readOnly />
+            <input
+                type="checkbox"
+                checked={row.original.privateInfoAllow}
+                className="custom-checkbox"
+                readOnly
+                id="privateInfoCheckbox"
+            />
+            <label htmlFor="privateInfoCheckbox">ㅤ</label>
         </div>
     );
 };
@@ -51,6 +80,41 @@ const PhoneColumn = ({ row }) => {
     return countryCode + formattedPhoneNumber;
 };
 
+const AudienceColumn = ({ row }) => {
+    const [audienceValue, setAudienceValue] = useState(0);
+    const availableProducts = row.original?.availableProducts || [];
+    const unavailableProducts = row.original?.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+
+    useEffect(() => {
+        // allProducts 배열의 길이를 기준으로 '잠재', '신규', '재등록'을 설정
+        if (allProducts.length === 0) {
+            setAudienceValue('잠재');
+        } else if (allProducts.length === 1) {
+            setAudienceValue('신규');
+        } else {
+            setAudienceValue('재등록');
+        }
+    }, [allProducts]);
+
+    return <>{audienceValue}</>;
+};
+
+const audienceAccessor = (row) => {
+    const availableProducts = row.availableProducts || [];
+    const unavailableProducts = row.unavailableProducts || [];
+    const allProducts = availableProducts.concat(unavailableProducts);
+
+    if (allProducts.length === 0) {
+        return '잠재';
+    } else if (allProducts.length === 1) {
+        return '신규';
+    } else {
+        return '재등록';
+    }
+};
+
+
 const CumulativePayCount = ({ row }) => {
     const [allProducts, setAllProducts] = useState(0);
     const availableProducts = row.original?.availableProducts;
@@ -58,7 +122,14 @@ const CumulativePayCount = ({ row }) => {
 
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
-            const products = [...availableProducts, ...unavailableProducts];
+            const filteredAvailableProducts = availableProducts.filter(
+                (product) => !product.deleted_at && !product.refund
+            );
+            const filteredUnavailableProducts = unavailableProducts.filter(
+                (product) => !product.deleted_at && !product.refund
+            );
+
+            const products = [...filteredAvailableProducts, ...filteredUnavailableProducts];
             setAllProducts(products.length);
         }
     }, [availableProducts, unavailableProducts]);
@@ -74,7 +145,11 @@ const CumulativePayAmount = ({ row }) => {
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
-            const amounts = products.map((data) => data.adjustedPrice);
+            const amounts = products
+                .filter((product) => product.deleted_at === false && product.refund === false)
+                .map((data) => data.adjustedPrice)
+                .filter((amount) => !isNaN(amount) && amount !== 0);
+
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
             setTotalValue(totalValue);
@@ -92,7 +167,12 @@ const AveragePayAmount = ({ row }) => {
     useEffect(() => {
         if (availableProducts && unavailableProducts) {
             const products = [...availableProducts, ...unavailableProducts];
-            const amounts = products.map((data) => data.adjustedPrice);
+
+            const amounts = products
+                .filter((product) => product.deleted_at === false && product.refund === false)
+                .map((data) => data.adjustedPrice)
+                .filter((amount) => !isNaN(amount) && amount !== 0);
+
             const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
             const averageValue = Math.floor(totalValue / amounts.length);
 
@@ -110,11 +190,16 @@ const cumulativePayAccessor = (row) => {
     let totalValue = 0;
 
     if (
-        availableProducts && Array.isArray(availableProducts) &&
-        unavailableProducts && Array.isArray(unavailableProducts)
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        unavailableProducts &&
+        Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
-        const amounts = products.map((data) => data.adjustedPrice);
+        const amounts = products
+            .filter((product) => product.deleted_at === false && product.refund === false)
+            .map((data) => data.adjustedPrice)
+            .filter((amount) => !isNaN(amount) && amount !== 0);
         totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     }
 
@@ -128,17 +213,139 @@ const averagePayAccessor = (row) => {
     let averageValue = 0;
 
     if (
-        availableProducts && Array.isArray(availableProducts) &&
-        unavailableProducts && Array.isArray(unavailableProducts)
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        unavailableProducts &&
+        Array.isArray(unavailableProducts)
     ) {
         const products = [...availableProducts, ...unavailableProducts];
-        const amounts = products.map((data) => data.adjustedPrice);
+        const amounts = products
+            .filter((product) => product.deleted_at === false && product.refund === false)
+            .map((data) => data.adjustedPrice)
+            .filter((amount) => !isNaN(amount) && amount !== 0);
         const totalValue = amounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
         averageValue = Math.floor(totalValue / amounts.length);
     }
 
     return averageValue;
+};
+
+const TaSeokActiveColumn = ({ row }) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'batterBox');
+
+    let content = null;
+    let badgeColor = '';
+
+    if (isActive) {
+        const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
+
+        if (batterBoxProduct) {
+            const dDay = batterBoxProduct.dDay;
+
+            if (dDay <= 10) {
+                badgeColor = 'danger';
+            } else if (dDay <= 30) {
+                badgeColor = 'warning';
+            } else {
+                badgeColor = 'success';
+            }
+
+            content = `D - ${dDay}`;
+        }
+    } else {
+        content = '비활성';
+        badgeColor = 'dark';
+    }
+
+    return (
+        <div className="text-center">
+            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+                {content}
+            </Badge>
+        </div>
+    );
+};
+
+const LessonActiveColumn = ({ row }) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'lesson');
+
+    let content = null;
+    let badgeColor = '';
+
+    if (isActive) {
+        const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
+        if (lessonProduct) {
+            const dDay = lessonProduct.dDay;
+
+            if (dDay <= 10) {
+                badgeColor = 'danger';
+            } else if (dDay <= 30) {
+                badgeColor = 'warning';
+            } else {
+                badgeColor = 'success';
+            }
+
+            content = `D - ${dDay}`;
+
+            content = `D - ${dDay}`;
+        }
+    } else {
+        content = '비활성';
+        badgeColor = 'dark';
+    }
+
+    return (
+        <div className="text-center">
+            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+                {content}
+            </Badge>
+        </div>
+    );
+};
+
+const taSeokActive = (row) => {
+    const availableProducts = row.availableProducts;
+
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'batterBox');
+    if (isActive) {
+        const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
+        if (batterBoxProduct) {
+            return batterBoxProduct.dDay;
+        }
+    }
+
+    return -1;
+};
+
+const lessonActive = (row) => {
+    const availableProducts = row.availableProducts;
+
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'lesson');
+    if (isActive) {
+        const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
+        if (lessonProduct) {
+            return lessonProduct.dDay;
+        }
+    }
+
+    return -1;
 };
 
 const columns = [
@@ -156,6 +363,7 @@ const columns = [
     {
         Header: '시간',
         accessor: 'createdTime',
+        Cell: CreatedTimeColumn,
         sort: true,
     },
 
@@ -182,7 +390,8 @@ const columns = [
     },
     {
         Header: '유형',
-        accessor: 'audience',
+        accessor: audienceAccessor,
+        Cell: AudienceColumn,
         sort: true,
     },
     {
@@ -228,6 +437,7 @@ const columns = [
     {
         Header: '부상부위',
         accessor: 'injuriedPart',
+        Cell: ({ value }) => (value === '없음' ? '' : value),
         sort: true,
     },
     {
@@ -245,7 +455,7 @@ const columns = [
     {
         Header: '누적결제수',
         Cell: CumulativePayCount,
-        sort: true,
+        sort: false,
     },
     {
         Header: 'LTV(누적결제금액)',
@@ -258,28 +468,46 @@ const columns = [
         Header: '평균결제금액',
         accessor: averagePayAccessor,
         Cell: AveragePayAmount,
-        sortType: 'basic',
         sort: true,
     },
     {
         Header: '타석 활성여부',
-        accessor: 'taSeokActive',
-        Cell: ({ value }) => (value ? '활성' : '비활성'),
-        sortType: 'basic',
+        accessor: taSeokActive,
+        Cell: TaSeokActiveColumn,
         sort: true,
     },
     {
         Header: '레슨 활성여부',
-        accessor: 'lessonActive',
-        Cell: ({ value }) => (value ? '활성' : '비활성'),
-        sortType: 'basic',
+        accessor: lessonActive,
+        Cell: LessonActiveColumn,
         sort: true,
     },
 ];
 
-const Customers = ({ currentMembers, addMode, setAddMode }) => {
-    const location = useLocation();
+const sizePerPageList = [
+    {
+        text: '5',
+        value: 5,
+    },
+    {
+        text: '10',
+        value: 10,
+    },
+    {
+        text: '15',
+        value: 15,
+    },
+    {
+        text: '25',
+        value: 25,
+    },
+    {
+        text: '50',
+        value: 50,
+    },
+];
 
+const Customers = ({ currentMembers }) => {
     return (
         <>
             <Card>
@@ -287,10 +515,9 @@ const Customers = ({ currentMembers, addMode, setAddMode }) => {
                     <Table
                         columns={columns}
                         data={currentMembers}
-                        addMode={addMode}
-                        setAddMode={setAddMode}
-                        // sizePerPageList={sizePerPageList}
-                        pageSize={20}
+                        sizePerPageList={sizePerPageList}
+                        pageSize={sizePerPageList[1].value}
+                        // pageSize={12}
                         isSortable={true}
                         pagination={true}
                         isSelectable={false}

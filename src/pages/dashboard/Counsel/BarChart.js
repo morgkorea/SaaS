@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card } from 'react-bootstrap';
+import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 
 const BarChart = ({ members }) => {
     const inflowPathList = [
@@ -34,7 +35,7 @@ const BarChart = ({ members }) => {
         return acc;
     }, {});
 
-    const groups = inflowPathList.map((path) => (groupedData[path] ? path : '기타'));
+    const hasData = inflowPathList.some((path) => groupedData[path] > 0);
 
     const chartOpts = {
         chart: {
@@ -68,7 +69,7 @@ const BarChart = ({ members }) => {
             colors: ['#fff'],
         },
         xaxis: {
-            categories: groups,
+            categories: inflowPathList,
             axisBorder: { show: false },
             axisTicks: { show: false },
         },
@@ -100,7 +101,7 @@ const BarChart = ({ members }) => {
     const chartData = [
         {
             name: '',
-            data: groups.map((path) => groupedData[path] || 0),
+            data: inflowPathList.map((path) => groupedData[path] || 0),
         },
     ];
 
@@ -109,6 +110,21 @@ const BarChart = ({ members }) => {
             <Card.Body>
                 <h4 className="header-title mb-3">유입경로</h4>
                 <Chart options={chartOpts} series={chartData} type="bar" className="apex-charts" height={340} />
+                {!hasData && (
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                textAlign: 'center',
+                                width: '100%',
+                            }}
+                        >
+                            아직 표기할 데이터가 없어요.
+                            <span className='d-block'><Warning style={{ width: '8rem', height: '8rem', marginTop: '1rem' }} /></span>
+                        </div>
+                    )}
             </Card.Body>
         </Card>
     );

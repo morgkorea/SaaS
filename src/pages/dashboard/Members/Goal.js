@@ -6,7 +6,7 @@ import SortableTable from './SortableTable';
 const Goal = ({ members }) => {
     const totalNumber = members.length;
     const purposeMap = members.reduce((acc, member) => {
-        const golfPurpose = member.golfPurpose.toLowerCase().trim();
+        const golfPurpose = member.golfPurpose?.toLowerCase().trim();
 
         if (golfPurpose === '') {
             acc['기타'] = (acc['기타'] || 0) + 1;
@@ -30,7 +30,7 @@ const Goal = ({ members }) => {
             {
                 Header: '목적',
                 accessor: 'name',
-                width: '30%',
+                width: '35%',
             },
             {
                 Header: '인원',
@@ -41,7 +41,7 @@ const Goal = ({ members }) => {
             {
                 Header: '비율',
                 accessor: 'rate',
-                width: '45%',
+                width: '40%',
                 Cell: ({ value }) => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {value}%

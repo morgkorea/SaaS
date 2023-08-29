@@ -1,5 +1,5 @@
 const MENU_ITEMS = [
-    { key: 'dashboards', label: '대시보드', isTitle: true },
+    // { key: 'dashboards', label: '대시보드', isTitle: true },
     {
         key: 'dashboards',
         label: '대시보드',
@@ -47,7 +47,7 @@ const MENU_ITEMS = [
             // },
         ],
     },
-    { key: 'database', label: 'DB', isTitle: true },
+    // { key: 'database', label: 'DB', isTitle: true },
     {
         key: 'database',
         label: 'DB',

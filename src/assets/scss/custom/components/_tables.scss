@@ -4,13 +4,11 @@
 
 //Table centered (Custom)
 .table-centered {
-
     th,
     td {
         vertical-align: middle !important;
     }
 }
-
 
 // Custom table components (Custom)
 .table {
@@ -91,14 +89,11 @@
 
 // Tables fluid
 .table-nowrap {
-
     th,
     td {
         white-space: nowrap;
     }
 }
-
-// 하은
 div.member-table {
     position: relative;
     border-collapse: collapse;
@@ -118,6 +113,9 @@ div.member-table tbody>tr td:first-child {
 div.member-table tbody>tr td:first-child {
     box-shadow: -20px 0 5px -20px rgba(0, 0, 0, 0.05) inset;
 }
+div.member-table tbody>tr td:nth-child(1):hover {
+    cursor: pointer;
+}
 
 body[data-layout-color="dark"] div.member-table thead>tr th:nth-child(1),
 body[data-layout-color="dark"] div.member-table tbody>tr td:nth-child(1) {
@@ -125,17 +123,35 @@ body[data-layout-color="dark"] div.member-table tbody>tr td:nth-child(1) {
     border-right: 2px solid var(--ct-border-color);
 }
 
-div.member-table tbody>tr td:nth-child(1):hover {
-    cursor: pointer;
+div tbody>tr.dataless td {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+div tbody>tr.dataless td:first-child {
+    box-shadow: none;
+    border: none;
+    min-width: 100%;
+}
+div.member-table tbody>tr.dataless td {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+div.member-table tbody>tr.dataless td:first-child {
+    box-shadow: none;
+    border: none;
+    min-width: 100%;
 }
 
 
-
 table {
-
     // Table Hover
     &.table-hover {
-
         thead,
         tbody {
             tr {
@@ -281,6 +297,7 @@ table.basic-table tbody>tr>td {
 }
 
 table.basic-table input,
+input,
 select,
 textarea,
 input[type=date]:invalid,
@@ -291,9 +308,20 @@ input[type=date]:invalid,
     font-weight: 500;
 }
 
+input::placeholder {
+    color: #98A6AD;
+}
 
-
-
+select {
+    &:has(option:checked:first-child) {
+        color: #98A6AD;
+        text-transform: uppercase;
+    }
+    option {
+        color: #313A46;
+        text-transform: none;
+    }
+}
 .member-info-list {
     position: relative;
     overflow-y: scroll;
@@ -323,17 +351,14 @@ body[data-layout-color="dark"] {
     .member-info-list::after {
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, var(--ct-card-bg) 100%);
     }
-    table.basic-table input,
-select,
-textarea,
-input[type=date]:invalid,
-.react-select__single-value,
-.react-select__single-value option:checked,
-.react-select__placeholder {
-    color: var( --ct-body-color);
-    font-weight: 500;
-}
-   
+    table.basic-table input, select, textarea,
+    input[type=date]:invalid,
+    .react-select__single-value,
+    .react-select__single-value option:checked,
+    .react-select__placeholder {
+        color: var( --ct-body-color);
+        font-weight: 500;
+    }
 }
 
 .member-info-card {

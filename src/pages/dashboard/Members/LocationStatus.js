@@ -7,31 +7,21 @@ import CardTitle from '../../../components/CardTitle';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const LocationStatus = ({ members }) => {
-    let home = 0;
-    let office = 0;
-    let etc = 0;
+    const totalMembers = members.length;
+    const locationCounts = members.reduce((acc, member) => {
+        const {location} = member;
+        acc[location === '자택' ? 'home' : location === '직장' ? 'office' : 'etc']++;
+        return acc;
+    }, {home: 0, office: 0, etc: 0})
 
-    function gender() {
-        members.map((user) => {
-            if (user.location === '자택') {
-                return home++;
-            } else if (user.location === '직장') {
-                return office++;
-            } else {
-                return etc++;
-            }
-        });
-    }
-    gender();
-
-    const colors = ['#0acf97', '#727cf5', '#fa5c7c'];
+    const colors = ['#727cf5', '#fa5c7c', '#0acf97'];
 
     const donutChartData = {
         labels: ['자택', '직장', '기타'],
         datasets: [
             {
-                data: [home, office, etc],
-                backgroundColor: colors,
+                data: totalMembers === 0 ? [1, 1, 1] : [locationCounts.home, locationCounts.office, locationCounts.etc],
+                backgroundColor: totalMembers === 0 ? ['#F5F5F5', '#F5F5F5', '#F5F5F5'] : colors,
                 borderColor: 'transparent',
                 borderWidth: '3',
             },
@@ -54,12 +44,6 @@ const LocationStatus = ({ members }) => {
                 <CardTitle
                     containerClass="d-flex align-items-center justify-content-between py-1"
                     title="위치 추이"
-                    // menuItems={[
-                    //     { label: 'Weekly Report' },
-                    //     { label: 'Monthly Report' },
-                    //     { label: 'Action' },
-                    //     { label: 'Settings' },
-                    // ]}
                 />
 
                 <div className="my-4" style={{ height: '180px' }}>
@@ -69,9 +53,9 @@ const LocationStatus = ({ members }) => {
                 <Row className="text-center mt-2 py-2">
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-checkbox-blank text-success mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank mt-3 h3"  style={{color: '#727cf5'}}></i>
                             <h3 className="fw-normal">
-                                <span>{home}</span>
+                                <span>{locationCounts.home}명</span>
                             </h3>
                             <p className="text-muted mb-0">자택</p>
                         </div>
@@ -79,9 +63,9 @@ const LocationStatus = ({ members }) => {
 
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-checkbox-blank text-primary mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank text-danger mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>{office}</span>
+                                <span>{locationCounts.office}명</span>
                             </h3>
                             <p className="text-muted mb-0">직장</p>
                         </div>
@@ -89,9 +73,9 @@ const LocationStatus = ({ members }) => {
 
                     <Col sm={4}>
                         <div className="my-2 my-sm-0">
-                            <i className="mdi mdi-checkbox-blank text-danger mt-3 h3"></i>
+                            <i className="mdi mdi-checkbox-blank text-primary mt-3 h3"></i>
                             <h3 className="fw-normal">
-                                <span>{etc}</span>
+                                <span>{locationCounts.etc}명</span>
                             </h3>
                             <p className="text-muted mb-0">기타</p>
                         </div>

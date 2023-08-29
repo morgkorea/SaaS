@@ -25,6 +25,7 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
         //     value: data.length,
         // },
     ];
+    const NoDataMessage = "상품정보가 없어요 상품 등록을 해주세요.";
 
     return (
         <>
@@ -33,20 +34,19 @@ const ProductsTable = ({ data, columns }): React$Element<any> => {
                 <Col>
                     <Card>
                         <Card.Body>
-                            <div>
-                                <Table
-                                    columns={columns}
-                                    data={data}
-                                    pageSize={20}
-                                    sizePerPageList={sizePerPageList}
-                                    isSortable={true}
-                                    pagination={true}
-                                    isSearchable={true}
-                                    tablePurpose={{ id: '7', desc: true }}
-                                    productTablePlaceholder={'상품명 / 코드 검색'}
-                                    paginationStyleCenter={true}
-                                />
-                            </div>
+                            <Table
+                                columns={columns}
+                                data={data}
+                                pageSize={12}
+                                sizePerPageList={sizePerPageList}
+                                isSortable={true}
+                                pagination={true}
+                                isSearchable={true}
+                                tablePurpose={{ id: '7', desc: true }}
+                                productTablePlaceholder={'상품명 / 코드 검색'}
+                                paginationStyleCenter={true}
+                                noDataMessage={NoDataMessage}
+                            />
                         </Card.Body>
                     </Card>
                 </Col>

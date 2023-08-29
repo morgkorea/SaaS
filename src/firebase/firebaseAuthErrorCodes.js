@@ -6,6 +6,8 @@ export const firebaseAuthErrorCodes = {
     'auth/user-token-expired': '이메일 인증 유효시간이 경과하였습니다. 재인증 해주세요',
     'auth/missing-email': '이메일을 입력해주세요.',
     'auth/requires-recent-login': '유효한 이메일을 입력해주세요.',
+    'auth/too-many-requests':
+        '로그인 시도가 여러 번 실패하여 이 계정에 대한 액세스가 일시적으로 비활성화되었습니다. 비밀번호를 재설정하여 즉시 복원하거나 나중에 다시 시도할 수 있습니다.',
 };
 
 // firebase auth error message

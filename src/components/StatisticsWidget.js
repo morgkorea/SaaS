@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 const StatisticsWidget = (props) => {
     const textClass = props.textClass || 'text-muted';
@@ -34,6 +35,9 @@ const StatisticsWidget = (props) => {
                         </span>
                         <span className="text-nowrap">{props.trend.time}</span>
                     </p>
+                )}
+                {props.link && (
+                    <Link to={props.link.value} style={{ color: '#fa5c7c' }}>확인하기</Link>
                 )}
             </Card.Body>
         </Card>
