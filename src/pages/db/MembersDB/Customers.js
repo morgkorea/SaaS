@@ -18,22 +18,16 @@ const onClickMemberInfo = ({ row }) => {
 };
 
 const CreatedTimeColumn = ({ row }) => {
-    const timeString = row.original.createdTime; 
-    const formattedTimeA = moment(timeString, 'A hh:mm');
-    const formattedTimeHH = moment(timeString, 'HH:mm:ss');
+    const timeString = row.original.createdTime; // 시간 형식의 문자열을 가져옵니다.
+    const time = moment(timeString, 'HH:mm:ss'); // 시간 형식 문자열을 'HH:mm:ss' 형식으로 Moment 객체로 변환합니다.
 
-    if (formattedTimeA.isValid()) {
-        const formattedTime = formattedTimeA.format('A hh:mm');
-        return formattedTime;
-    } else if (formattedTimeHH.isValid()) {
-        const time = moment(timeString, 'HH:mm:ss');
-        const formattedTime = time.format('A hh:mm');
+    if (time.isValid()) {
+        const formattedTime = time.format('A hh:mm'); // AM/PM과 hh:mm 형식으로 변환합니다.
         return formattedTime;
     } else {
         return 'Invalid date';
     }
 };
-
 
 
 const MarketingInputColumn = ({ row }) => {
@@ -119,6 +113,7 @@ const audienceAccessor = (row) => {
         return '재등록';
     }
 };
+
 
 const CumulativePayCount = ({ row }) => {
     const [allProducts, setAllProducts] = useState(0);

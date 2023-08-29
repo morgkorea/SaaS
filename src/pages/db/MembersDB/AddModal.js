@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { firestoreDB } from '../../../firebase/firebase';
 import { firestoreMemebersFieldSchema } from '../../../firebase/firestoreDbSchema';
 import { addDoc, collection } from 'firebase/firestore';
+import moment from 'moment';
 import Select from 'react-select';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
@@ -82,8 +83,8 @@ const AddModal = forwardRef((props, ref) => {
         const newMemberData = {
             ...firestoreMemebersFieldSchema,
             name: nameValue,
-            createdDate: new Date().toISOString().split('T')[0],
-            createdTime: new Date().toTimeString().split(' ')[0],
+            createdDate: moment().format('YYYY-MM-DD'),
+            createdTime: moment().format('hh:mm:ss'),
             sex: sexValue,
             birthDate: birthDateValue,
             phone: phoneValue,
@@ -133,6 +134,9 @@ const AddModal = forwardRef((props, ref) => {
 
     return (
         <>
+            {/* <Button variant="primary" onClick={() => openModalWithClass('modal-dialog-centered')}>
+                회원 등록하기
+            </Button> */}
              <div className="circle-btn avatar-md" 
                 onClick={() => openModalWithClass('modal-dialog-centered')}
             >
