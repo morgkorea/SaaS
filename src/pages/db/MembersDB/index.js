@@ -6,6 +6,7 @@ import { firestoreDB } from '../../../firebase/firebase';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 import AddModal from './AddModal.js';
+import Customers2 from './Customers2.js';
 
 const MembersDB = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
@@ -105,6 +106,18 @@ const MembersDB = () => {
             <Row>
                 <Col xs={12}>
                     <Customers currentMembers={currentMembers} />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12}>
+                    <div className="page-title-box">
+                        <h4 className="page-title">회원 관리</h4>
+                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12}>
+                    <Customers2 currentMembers={currentMembers} />
                 </Col>
             </Row>
            <AddModal/>
