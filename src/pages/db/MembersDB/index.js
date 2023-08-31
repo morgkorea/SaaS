@@ -96,7 +96,7 @@ const MembersDB = () => {
 
     return (
         <>
-            <Row>
+            {/* <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
                         <h4 className="page-title">회원 DB</h4>
@@ -107,7 +107,7 @@ const MembersDB = () => {
                 <Col xs={12}>
                     <Customers currentMembers={currentMembers} />
                 </Col>
-            </Row>
+            </Row> */}
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">

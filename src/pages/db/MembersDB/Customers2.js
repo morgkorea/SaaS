@@ -510,211 +510,238 @@ const tabContents = [
         id: '1',
         title: '전체회원',
         group: [
-            { text: '전체' },
+            { category: '전체' },
             {
-                text: '상품별',
+                category: '상품별',
                 subgroup: [
-                    { text: '만료예정회원' },
-                    { text: '만료회원' },
+                    { subcategory: '잔여 30일 이상' },
+                    { subcategory: '만료 14일전' },
+                    { subcategory: '만료 7일전' },
+                    { subcategory: '만료 회원' },
+                    { subcategory: '휴회/일시정지 회원' },
                 ],
             },
             {
-                text: '구력별',
-                subgroup: [
-                    { text: '1년' },
-                    { text: '2년' },
-                    { text: '3년' },
-                ],
+                category: '구력별',
+                subgroup: [{ subcategory: '1년' }, { subcategory: '2년' }, { subcategory: '3년' }],
             },
             {
-                text: '연령별',
-                subgroup: [
-                    { text: '10대' },
-                    { text: '20대' },
-                    { text: '30대' },
-                ],
+                category: '연령별',
+                subgroup: [{ subcategory: '10대' }, { subcategory: '20대' }, { subcategory: '30대' }],
             },
             {
-                text: '유형별',
-                subgroup: [
-                    { text: '잠재' },
-                    { text: '신규' },
-                    { text: '재등록' },
-                ],
+                category: '유형별',
+                subgroup: [{ subcategory: '잠재' }, { subcategory: '신규' }, { subcategory: '재등록' }],
             },
             {
-                text: '목적별',
-                subgroup: [
-                    { text: '입문' },
-                    { text: '비거리향상' },
-                    { text: '스코어' },
-                ],
+                category: '목적별',
+                subgroup: [{ subcategory: '입문' }, { subcategory: '비거리향상' }, { subcategory: '스코어' }],
             },
             {
-                text: '관심상품별',
-                subgroup: [
-                    { text: '레슨' },
-                    { text: '타석' },
-                ],
+                category: '관심상품별',
+                subgroup: [{ subcategory: '레슨' }, { subcategory: '타석' }],
             },
             {
-                text: '유입경로별',
-                subgroup: [
-                    { text: '카카오톡' },
-                    { text: '전단지' },
-                    { text: '네이버' },
-                ],
+                category: '유입경로별',
+                subgroup: [{ subcategory: '카카오톡' }, { subcategory: '전단지' }, { subcategory: '네이버' }],
             },
         ],
     },
     {
         id: '2',
         title: '레슨회원',
+        type: 'lesson',
         group: [
-            { text: '전체' },
-            { text: '잔여 30일 이상' },
-            { text: '만료 14일전' },
-            { text: '만료 7일전' },
+            { category: '전체' },
+            { category: '잔여 30일 이상' },
+            { category: '만료 14일전' },
+            { category: '만료 7일전' },
         ],
     },
     {
         id: '3',
         title: '타석회원',
+        type: 'batterBox',
         group: [
-            { text: '전체' },
-            { text: '잔여 30일 이상' },
-            { text: '만료 14일전' },
-            { text: '만료 7일전' },
+            { category: '전체' },
+            { category: '잔여 30일 이상' },
+            { category: '만료 14일전' },
+            { category: '만료 7일전' },
         ],
     },
 ];
 
-function filterMembers(members, title, filterText) {
-    const groupMap = tabContents.find(tab => tab.title === title)?.group || [];
-    
+function filterMembers(members, titleFilter, groupFilter, subgroupFilter) {
     return members.filter(member => {
-        const groupText = groupMap.find(group => group.text === filterText);
-        if (groupText) {
-            switch (groupText.text) {
-                case '전체':
-                    return true;
-                case '잔여 30일 이상':
-                    return member.daysRemaining >= 30;
-                case '만료 14일전':
-                    return member.daysRemaining > 0 && member.daysRemaining <= 14;
-                case '만료 7일전':
-                    return member.daysRemaining > 0 && member.daysRemaining <= 7;
-                case '만료 회원':
-                    return member.daysRemaining <= 0;
-                case '휴회/일시정지 회원':
-                    return member.status === '휴회' || member.status === '일시정지';
-                default:
-                    return true;
-            }
+        const tabContent = tabContents.find(tab => tab.title === titleFilter);
+
+        if (!tabContent) {
+            return false;
         }
-        return true;
+
+        // 1차 분류
+        // if (titleFilter === '전체회원') {
+        //     return true;
+        // } else if (titleFilter === '레슨회원') {
+        //     return member.availableProducts.some(product => product.productType === 'lesson');
+        // } else if (titleFilter === '타석회원') {
+        //     return member.availableProducts.some(product => product.productType === 'batterBox');
+        // }
+
+        // 1차 분류된 데이터를 가지고 2차 분류
+        if (groupFilter) {
+            const group = tabContent.group.find(g => g.category === groupFilter);
+
+            if (!group) {
+                return false;
+            }
+
+            // 2차 분류
+            if (subgroupFilter) {
+                const subgroup = group.subgroup.find(subg => subg.subcategory === subgroupFilter);
+
+                if (!subgroup) {
+                    return false;
+                }
+
+                // Apply subgroupFilter conditions
+                switch (subgroup.subcategory) {
+                    case '잔여 30일 이상':
+                        return member.availableProducts.some(product => product.dDay >= 30);
+                    case '만료 14일전':
+                        return member.availableProducts.some(product => product.dDay < 14 && product.dDay >= 7);
+                    case '만료 7일전':
+                        return member.availableProducts.some(product => product.dDay < 7);
+                    case '만료 회원':
+                        return member.availableProducts.length === 0 && member.unavailableProducts.length >= 1;
+                    default:
+                        return true;
+                }
+            } else {
+                // Apply groupFilter conditions
+                switch (groupFilter) {
+                    case '전체':
+                        return true;
+                    case '잔여 30일 이상':
+                        return member.availableProducts.some(product => product.dDay >= 30);
+                    case '만료 14일전':
+                        return member.availableProducts.some(product => product.dDay < 14 && product.dDay >= 7);
+                    case '만료 7일전':
+                        return member.availableProducts.some(product => product.dDay < 7);
+                    default:
+                        return true;
+                }
+            }
+        } else {
+            return true;
+        }
     });
 }
 
+
 const Customers2 = ({ currentMembers }) => {
+
     return (
         <>
             <Card>
                 <Card.Body>
+                    <Tab.Container defaultActiveKey="전체회원">
+                        <Nav variant="tabs" className="nav-bordered" as="ul">
+                            {tabContents.map((tab, index) => {
+                                return (
+                                    <Nav.Item key={index} as="li">
+                                        <Nav.Link as={Link} to="#" eventKey={tab.title}>
+                                            <i className={classnames(tab.icon, 'd-md-none', 'd-block', 'me-1')}></i>
+                                            <span className="d-none d-md-block">{tab.title}</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                );
+                            })}
+                        </Nav>
 
-<Tab.Container defaultActiveKey="Profile">
-    <Nav variant="tabs" className="nav-bordered" as="ul">
-        {tabContents.map((tab, index) => {
-            return (
-                <Nav.Item key={index} as="li">
-                    <Nav.Link as={Link} to="#" eventKey={tab.title}>
-                        <i className={classnames(tab.icon, 'd-md-none', 'd-block', 'me-1')}></i>
-                        <span className="d-none d-md-block">{tab.title}</span>
-                    </Nav.Link>
-                </Nav.Item>
-            );
-        })}
-    </Nav>
+                        <Tab.Content>
+                            {tabContents.map((tab, tabIndex) => {
+                                return (
+                                    <Tab.Pane eventKey={tab.title} id={tab.id} key={tabIndex}>
+                                        <Row>
+                                            <Col sm="12">
+                                                <Tab.Container defaultActiveKey="전체회원">
+                                                    <Nav>
+                                                        {tab.group.map((group, groupIndex) => {
+                                                            if (group.subgroup) {
+                                                                return (
+                                                                    <NavDropdown
+                                                                        key={groupIndex}
+                                                                        title={group.category}
+                                                                        id={`group-dropdown-${groupIndex}`}>
+                                                                        {group.subgroup.map((subgroup, subgroupIndex) => (
+                                                                                <NavDropdown.Item
+                                                                                    key={subgroupIndex}
+                                                                                    as={Link}
+                                                                                    to="#"
+                                                                                    eventKey={subgroup.subcategory}>
+                                                                                    {subgroup.subcategory}
+                                                                                </NavDropdown.Item>
+                                                                            )
+                                                                        )}
+                                                                    </NavDropdown>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <Nav.Item key={groupIndex}>
+                                                                        <Nav.Link
+                                                                            as={Link}
+                                                                            to="#"
+                                                                            eventKey={group.category}>
+                                                                            <span className="d-none d-md-block">
+                                                                                {group.category}
+                                                                            </span>
+                                                                        </Nav.Link>
+                                                                    </Nav.Item>
+                                                                );
+                                                            }
+                                                        })}
+                                                    </Nav>
 
-    <Tab.Content>
-        {tabContents.map((tab, tabIndex) => {
-            return (
-                <Tab.Pane eventKey={tab.title} id={tab.id} key={tabIndex}>
-                    <Row>
-                        <Col sm="12">
-                            <Tab.Container defaultActiveKey="Profile">
-                            <Nav variant="pills" className="bg-nav-pills">
-    {tab.group.map((group, groupIndex) => {
-        if (group.subgroup) {
-            return (
-                <NavDropdown key={groupIndex} title={group.text} id={`group-dropdown-${groupIndex}`}>
-                    {group.subgroup.map((subgroup, subgroupIndex) => (
-                        <NavDropdown.Item
-                            key={subgroupIndex}
-                            as={Link}
-                            to="#"
-                            eventKey={subgroup.text}
-                        >
-                            {subgroup.text}
-                        </NavDropdown.Item>
-                    ))}
-                </NavDropdown>
-            );
-        } else {
-            return (
-                <Nav.Item key={groupIndex}>
-                    <Nav.Link
-                        as={Link}
-                        to="#"
-                        eventKey={group.text}
-                    >
-                        <span className="d-none d-md-block">
-                            {group.text}
-                        </span>
-                    </Nav.Link>
-                </Nav.Item>
-            );
-        }
-    })}
-</Nav>
-
-                                <Tab.Content>
-                                    {tab.group.map((group, groupIndex) => {
-                                        return (
-                                            <Tab.Pane
-                                                eventKey={group.text}
-                                                id={groupIndex}
-                                                key={groupIndex}>
-                                                <Row>
-                                                    <Col sm="12">
-                                                        <p className="mt-3">{group.text}</p>
-                                                        <Table2
-                                                            columns={columns}
-                                                            // data={currentMembers}
-                                                            data={filterMembers(currentMembers, group.text)}
-                                                            sizePerPageList={sizePerPageList}
-                                                            pageSize={sizePerPageList[1].value}
-                                                            isSortable={true}
-                                                            pagination={true}
-                                                            isSelectable={false}
-                                                            isSearchable={true}
-                                                            searchBoxClass="mb-3"
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Tab.Pane>
-                                        );
-                                    })}
-                                </Tab.Content>
-                            </Tab.Container>
-                        </Col>
-                    </Row>
-                </Tab.Pane>
-            );
-        })}
-    </Tab.Content>
-</Tab.Container>
-
+                                                    {/* table */}
+                                                    <Tab.Content>
+                                                        {tab.group.map((group, groupIndex) => {
+                                                            return (
+                                                                <Tab.Pane
+                                                                    eventKey={group.category}
+                                                                    id={groupIndex}
+                                                                    key={groupIndex}>
+                                                                    <Row>
+                                                                        <Col sm="12">
+                                                                            <p className="my-5">
+                                                                                {group.category} 데이터 보여주기
+                                                                            </p>
+                                                                            <Table2
+                                                                                columns={columns}
+                                                                                // data={currentMembers}
+                                                                                data={filterMembers(currentMembers, tab.title, group.category, group.subgroup)}
+                                                                                sizePerPageList={sizePerPageList}
+                                                                                pageSize={sizePerPageList[1].value}
+                                                                                isSortable={true}
+                                                                                pagination={true}
+                                                                                isSelectable={false}
+                                                                                isSearchable={true}
+                                                                                searchBoxClass="mb-3"
+                                                                            />
+                                                                        </Col>
+                                                                    </Row>
+                                                                </Tab.Pane>
+                                                            );
+                                                        })}
+                                                    </Tab.Content>
+                                                </Tab.Container>
+                                            </Col>
+                                        </Row>
+                                    </Tab.Pane>
+                                );
+                            })}
+                        </Tab.Content>
+                    </Tab.Container>
                 </Card.Body>
             </Card>
         </>
