@@ -572,70 +572,72 @@ const tabContents = [
 ];
 
 function filterMembers(members, titleFilter, groupFilter, subgroupFilter) {
-    return members.filter(member => {
+    // 1차 필터링
+    const filteredMembers = members.filter(member => {
         const tabContent = tabContents.find(tab => tab.title === titleFilter);
+
+        // type 검사
+        const typeFilter = tabContent ? tabContent.type : null;
 
         if (!tabContent) {
             return false;
         }
 
-        // 1차 분류
-        // if (titleFilter === '전체회원') {
-        //     return true;
-        // } else if (titleFilter === '레슨회원') {
-        //     return member.availableProducts.some(product => product.productType === 'lesson');
-        // } else if (titleFilter === '타석회원') {
-        //     return member.availableProducts.some(product => product.productType === 'batterBox');
-        // }
+        if (titleFilter === '전체회원') {
+            return true;
+        } else if (titleFilter === '레슨회원') {
+            return member.availableProducts.some(product => product.productType === typeFilter); 
+        } else if (titleFilter === '타석회원') {
+            return member.availableProducts.some(product => product.productType === typeFilter);
+        }
+    });
 
-        // 1차 분류된 데이터를 가지고 2차 분류
-        if (groupFilter) {
-            const group = tabContent.group.find(g => g.category === groupFilter);
+    // 2차 필터링
+    return filteredMembers.filter(member => {
+        const tabContent = tabContents.find(tab => tab.title === titleFilter);
+        const group = tabContent.group.find(g => g.category === groupFilter);
 
-            if (!group) {
+        const typeFilter = tabContent ? tabContent.type : null;
+
+        if (!group) {
+            return false;
+        }
+
+        // subgroupFilter 별로 구하기
+        if (subgroupFilter) {
+            const subgroup = group.subgroup.find(subg => subg.subcategory === subgroupFilter);
+            if (!subgroup) {
                 return false;
             }
 
-            // 2차 분류
-            if (subgroupFilter) {
-                const subgroup = group.subgroup.find(subg => subg.subcategory === subgroupFilter);
-
-                if (!subgroup) {
-                    return false;
-                }
-
-                // Apply subgroupFilter conditions
-                switch (subgroup.subcategory) {
-                    case '잔여 30일 이상':
-                        return member.availableProducts.some(product => product.dDay >= 30);
-                    case '만료 14일전':
-                        return member.availableProducts.some(product => product.dDay < 14 && product.dDay >= 7);
-                    case '만료 7일전':
-                        return member.availableProducts.some(product => product.dDay < 7);
-                    case '만료 회원':
-                        return member.availableProducts.length === 0 && member.unavailableProducts.length >= 1;
-                    default:
-                        return true;
-                }
-            } else {
-                // Apply groupFilter conditions
-                switch (groupFilter) {
-                    case '전체':
-                        return true;
-                    case '잔여 30일 이상':
-                        return member.availableProducts.some(product => product.dDay >= 30);
-                    case '만료 14일전':
-                        return member.availableProducts.some(product => product.dDay < 14 && product.dDay >= 7);
-                    case '만료 7일전':
-                        return member.availableProducts.some(product => product.dDay < 7);
-                    default:
-                        return true;
-                }
+            switch (subgroup.subcategory) {
+                case '잔여 30일 이상':
+                    return member.availableProducts.some(product => product.productType === typeFilter && product.dDay >= 30);
+                case '만료 14일전':
+                    return member.availableProducts.some(product => product.productType === typeFilter && product.dDay < 14);
+                case '만료 7일전':
+                    return member.availableProducts.some(product => product.productType === typeFilter &&  product.dDay < 7);
+                case '만료 회원':
+                    return member.availableProducts.length === 0 && member.unavailableProducts.length >= 1;
+                default:
+                    return true;
             }
         } else {
-            return true;
+            switch (groupFilter) {
+                case '전체':
+                    return true;
+                case '잔여 30일 이상':
+                    return member.availableProducts.some(product => product.productType === typeFilter && product.dDay >= 30);
+                case '만료 14일전':
+                    return member.availableProducts.some(product => product.productType === typeFilter && product.dDay < 14);
+                case '만료 7일전':
+                    return member.availableProducts.some(product => product.productType === typeFilter &&  product.dDay < 7);
+                default:
+                    return true;
+            }
         }
     });
+
 }
 
 
@@ -665,8 +667,9 @@ const Customers2 = ({ currentMembers }) => {
                                     <Tab.Pane eventKey={tab.title} id={tab.id} key={tabIndex}>
                                         <Row>
                                             <Col sm="12">
-                                                <Tab.Container defaultActiveKey="전체회원">
-                                                    <Nav>
+                                                <Tab.Container defaultActiveKey="전체">
+                                                    <Nav variant="pills" className="rounded-nav">
+
                                                         {tab.group.map((group, groupIndex) => {
                                                             if (group.subgroup) {
                                                                 return (
@@ -675,14 +678,15 @@ const Customers2 = ({ currentMembers }) => {
                                                                         title={group.category}
                                                                         id={`group-dropdown-${groupIndex}`}>
                                                                         {group.subgroup.map((subgroup, subgroupIndex) => (
-                                                                                <NavDropdown.Item
-                                                                                    key={subgroupIndex}
-                                                                                    as={Link}
-                                                                                    to="#"
-                                                                                    eventKey={subgroup.subcategory}>
-                                                                                    {subgroup.subcategory}
-                                                                                </NavDropdown.Item>
-                                                                            )
+                                                                            <NavDropdown.Item
+                                                                                key={subgroupIndex}
+                                                                                as={Link}
+                                                                                to="#"
+                                                                                eventKey={subgroup.subcategory}
+                                                                                >
+                                                                                {subgroup.subcategory}
+                                                                            </NavDropdown.Item>
+                                                                        )
                                                                         )}
                                                                     </NavDropdown>
                                                                 );
@@ -701,6 +705,7 @@ const Customers2 = ({ currentMembers }) => {
                                                                 );
                                                             }
                                                         })}
+
                                                     </Nav>
 
                                                     {/* table */}
@@ -713,13 +718,16 @@ const Customers2 = ({ currentMembers }) => {
                                                                     key={groupIndex}>
                                                                     <Row>
                                                                         <Col sm="12">
-                                                                            <p className="my-5">
-                                                                                {group.category} 데이터 보여주기
-                                                                            </p>
+                                                                            <h5>{tab.title} {group.category} 목록</h5>
                                                                             <Table2
                                                                                 columns={columns}
                                                                                 // data={currentMembers}
-                                                                                data={filterMembers(currentMembers, tab.title, group.category, group.subgroup)}
+                                                                                data={filterMembers(
+                                                                                    currentMembers, 
+                                                                                    tab.title, 
+                                                                                    group.category, 
+                                                                                    group.subgroup ? group.subgroup[0].subcategory : null
+                                                                                )}
                                                                                 sizePerPageList={sizePerPageList}
                                                                                 pageSize={sizePerPageList[1].value}
                                                                                 isSortable={true}
