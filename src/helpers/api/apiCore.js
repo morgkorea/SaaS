@@ -328,7 +328,7 @@ class APICore {
         }
     };
 
-    naverSenseSmsApi = (timeStamp) => {
+    naverSenseSmsApi = (phone, timeStamp) => {
         const header = {
             'Content-Type': 'application/json; charset=utf-8',
             'x-ncp-apigw-timestamp': timeStamp,
