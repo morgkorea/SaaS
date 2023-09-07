@@ -6,7 +6,7 @@ import { firestoreDB } from '../../../firebase/firebase';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 import AddModal from './AddModal.js';
-import Customers2 from './Customers2.js';
+import CustomersIndex from './CustomersIndex.js';
 
 const MembersDB = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
@@ -25,7 +25,8 @@ const MembersDB = () => {
             const todayDate = moment();
             const birthday = birthDate ? moment(birthDate, 'YYYY-MM-DD') : null;
             const age = birthDate ? todayDate.diff(birthday, 'years') : null;
-            const ageGroup = age !== null
+            const ageGroup =
+                age !== null
                     ? age < 20
                         ? '10대'
                         : age < 30
@@ -42,6 +43,23 @@ const MembersDB = () => {
             updatedMember.age = age;
             updatedMember.ageGroup = ageGroup;
 
+            // 오디언스
+            const availableProducts = updatedMember.availableProducts || [];
+            const unavailableProducts = updatedMember.unavailableProducts || [];
+            const allProducts = availableProducts.concat(unavailableProducts);
+
+            let audienceValue = '';
+
+            if (allProducts.length === 0) {
+                audienceValue = '잠재';
+            } else if (allProducts.length === 1) {
+                audienceValue = '신규';
+            } else {
+                audienceValue = '재등록';
+            }
+            
+            updatedMember.audience = audienceValue;
+
             if (Array.isArray(updatedMember.availableProducts)) {
                 // 상품 필터링
                 const availableProducts = updatedMember.availableProducts.filter((product) => {
@@ -52,7 +70,7 @@ const MembersDB = () => {
                     const endDate = new Date(new Date(product?.endDate).toISOString().split('T')[0] + ' 00:00:00');
                     return endDate < today;
                 });
-                
+
                 updatedMember.availableProducts = availableProducts;
                 updatedMember.unavailableProducts = [
                     ...(updatedMember.unavailableProducts || []),
@@ -96,6 +114,7 @@ const MembersDB = () => {
 
     return (
         <>
+            {/* 기존 회원DB Table */}
             {/* <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
@@ -117,10 +136,10 @@ const MembersDB = () => {
             </Row>
             <Row>
                 <Col xs={12}>
-                    <Customers2 currentMembers={currentMembers} />
+                    <CustomersIndex currentMembers={currentMembers} />
                 </Col>
             </Row>
-           <AddModal/>
+            <AddModal />
         </>
     );
 };

@@ -496,3 +496,20 @@ button.basic-icon {
         text-align: center;
     }
 }
+
+.customers-table {
+    position: relative;
+}
+
+div.customers-table tbody>tr.dataless td {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+div.customers-table tbody>tr.dataless td:first-child {
+    box-shadow: none;
+    border: none;
+    min-width: 100%;
+}

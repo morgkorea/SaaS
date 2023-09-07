@@ -55,25 +55,7 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     );
 });
 
-type TableProps = {
-    isSearchable?: boolean,
-    isSortable?: boolean,
-    pagination?: boolean,
-    isSelectable?: boolean,
-    isExpandable?: boolean,
-    pageSize: number,
-    columns: Array<any>,
-    data: Array<any>,
-    searchBoxClass?: string,
-    tableClass?: string,
-    theadClass?: string,
-    sizePerPageList: {
-        text: string,
-        value: number,
-    }[],
-};
-
-const Table2 = (props: TableProps) => {
+const CustomersTable = (props: TableProps) => {
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
@@ -141,8 +123,8 @@ const Table2 = (props: TableProps) => {
             <div className="d-flex justify-content-between">
                 <div>
                     <h5>
-                        현재 <span className="text-primary">{dataTable.data.length}명</span> 의 회원분들과 함께 하고
-                        있어요!
+                        현재 <span className="text-primary">{dataTable.data.length}명</span>
+                        의 회원분들과 함께 하고 있어요!
                     </h5>
                 </div>
                 <div className="d-flex">
@@ -159,7 +141,7 @@ const Table2 = (props: TableProps) => {
                 </div>
             </div>
 
-            <div className="table-responsive member-table" style={{ minHeight: '344px' }}>
+            <div className="table-responsive customers-table" style={{ minHeight: '344px' }}>
                 <table
                     {...dataTable.getTableProps()}
                     className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
@@ -215,4 +197,4 @@ const Table2 = (props: TableProps) => {
     );
 };
 
-export default Table2;
+export default CustomersTable;

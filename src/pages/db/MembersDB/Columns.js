@@ -1,11 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Badge, Card } from 'react-bootstrap';
-import Table from './Table';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import classNames from 'classnames';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { Badge } from 'react-bootstrap';
+
+const checkboxColumn = ({ row }) => {
+    return (
+        <div className="text-center">
+            <input
+                type="checkbox"
+                className=""
+                id=""
+            />
+            <label htmlFor=""></label>
+        </div>
+    );
+};
 
 const onClickMemberInfo = ({ row }) => {
     return (
@@ -28,7 +37,6 @@ const CreatedTimeColumn = ({ row }) => {
         return 'Invalid date';
     }
 };
-
 
 const MarketingInputColumn = ({ row }) => {
     return (
@@ -60,7 +68,7 @@ const PrivateInputColumn = ({ row }) => {
     );
 };
 
-const PhoneColumn = ({ row }) => {
+const PhoneColumn = React.memo(({ row }) => {
     const phoneNumber = row.original.phone || '';
 
     const digitsOnly = phoneNumber.replace(/\D/g, '');
@@ -78,9 +86,9 @@ const PhoneColumn = ({ row }) => {
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
 
     return countryCode + formattedPhoneNumber;
-};
+});
 
-const CumulativePayCount = ({ row }) => {
+const CumulativePayCount = React.memo(({ row }) => {
     const [allProducts, setAllProducts] = useState(0);
     const availableProducts = row.original?.availableProducts;
     const unavailableProducts = row.original?.unavailableProducts;
@@ -100,9 +108,9 @@ const CumulativePayCount = ({ row }) => {
     }, [availableProducts, unavailableProducts]);
 
     return <>{allProducts !== 0 ? allProducts.toLocaleString() : '-'}</>;
-};
+});
 
-const CumulativePayAmount = ({ row }) => {
+const CumulativePayAmount = React.memo(({ row }) => {
     const [totalValue, setTotalValue] = useState(0);
     const availableProducts = row.original?.availableProducts;
     const unavailableProducts = row.original?.unavailableProducts;
@@ -122,9 +130,9 @@ const CumulativePayAmount = ({ row }) => {
     }, [availableProducts, unavailableProducts]);
 
     return <>{totalValue !== 0 ? totalValue.toLocaleString() : '-'}</>;
-};
+});
 
-const AveragePayAmount = ({ row }) => {
+const AveragePayAmount = React.memo(({ row }) => {
     const [averageValue, setAverageValue] = useState(0);
     const availableProducts = row.original?.availableProducts;
     const unavailableProducts = row.original?.unavailableProducts;
@@ -146,8 +154,92 @@ const AveragePayAmount = ({ row }) => {
     }, [availableProducts, unavailableProducts]);
 
     return <>{!isNaN(averageValue) && averageValue !== 0 ? averageValue.toLocaleString() : '-'}</>;
-};
+});
 
+const TaSeokActiveColumn = React.memo(({ row }) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'batterBox');
+
+    let content = null;
+    let badgeColor = '';
+
+    if (isActive) {
+        const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
+
+        if (batterBoxProduct) {
+            const dDay = batterBoxProduct.dDay;
+
+            if (dDay <= 10) {
+                badgeColor = 'danger';
+            } else if (dDay <= 30) {
+                badgeColor = 'warning';
+            } else {
+                badgeColor = 'success';
+            }
+
+            content = `D - ${dDay}`;
+        }
+    } else {
+        content = '비활성';
+        badgeColor = 'dark';
+    }
+
+    return (
+        <div className="text-center">
+            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+                {content}
+            </Badge>
+        </div>
+    );
+});
+
+const LessonActiveColumn = React.memo(({ row }) => {
+    const availableProducts = row.original?.availableProducts;
+
+    const isActive =
+        availableProducts &&
+        Array.isArray(availableProducts) &&
+        availableProducts.some((product) => product.productType === 'lesson');
+
+    let content = null;
+    let badgeColor = '';
+
+    if (isActive) {
+        const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
+        if (lessonProduct) {
+            const dDay = lessonProduct.dDay;
+
+            if (dDay <= 10) {
+                badgeColor = 'danger';
+            } else if (dDay <= 30) {
+                badgeColor = 'warning';
+            } else {
+                badgeColor = 'success';
+            }
+
+            content = `D - ${dDay}`;
+
+            content = `D - ${dDay}`;
+        }
+    } else {
+        content = '비활성';
+        badgeColor = 'dark';
+    }
+
+    return (
+        <div className="text-center">
+            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
+                {content}
+            </Badge>
+        </div>
+    );
+});
+
+// accessor
 const cumulativePayAccessor = (row) => {
     const availableProducts = row.availableProducts;
     const unavailableProducts = row.unavailableProducts;
@@ -196,89 +288,6 @@ const averagePayAccessor = (row) => {
     return averageValue;
 };
 
-const TaSeokActiveColumn = ({ row }) => {
-    const availableProducts = row.original?.availableProducts;
-
-    const isActive =
-        availableProducts &&
-        Array.isArray(availableProducts) &&
-        availableProducts.some((product) => product.productType === 'batterBox');
-
-    let content = null;
-    let badgeColor = '';
-
-    if (isActive) {
-        const batterBoxProduct = availableProducts.find((product) => product.productType === 'batterBox');
-
-        if (batterBoxProduct) {
-            const dDay = batterBoxProduct.dDay;
-
-            if (dDay <= 10) {
-                badgeColor = 'danger';
-            } else if (dDay <= 30) {
-                badgeColor = 'warning';
-            } else {
-                badgeColor = 'success';
-            }
-
-            content = `D - ${dDay}`;
-        }
-    } else {
-        content = '비활성';
-        badgeColor = 'dark';
-    }
-
-    return (
-        <div className="text-center">
-            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
-                {content}
-            </Badge>
-        </div>
-    );
-};
-
-const LessonActiveColumn = ({ row }) => {
-    const availableProducts = row.original?.availableProducts;
-
-    const isActive =
-        availableProducts &&
-        Array.isArray(availableProducts) &&
-        availableProducts.some((product) => product.productType === 'lesson');
-
-    let content = null;
-    let badgeColor = '';
-
-    if (isActive) {
-        const lessonProduct = availableProducts.find((product) => product.productType === 'lesson');
-        if (lessonProduct) {
-            const dDay = lessonProduct.dDay;
-
-            if (dDay <= 10) {
-                badgeColor = 'danger';
-            } else if (dDay <= 30) {
-                badgeColor = 'warning';
-            } else {
-                badgeColor = 'success';
-            }
-
-            content = `D - ${dDay}`;
-
-            content = `D - ${dDay}`;
-        }
-    } else {
-        content = '비활성';
-        badgeColor = 'dark';
-    }
-
-    return (
-        <div className="text-center">
-            <Badge bg="" className={`badge-${badgeColor}-lighten`}>
-                {content}
-            </Badge>
-        </div>
-    );
-};
-
 const taSeokActive = (row) => {
     const availableProducts = row.availableProducts;
 
@@ -313,7 +322,12 @@ const lessonActive = (row) => {
     return -1;
 };
 
-const columns = [
+const Columns = [
+    {
+        Header: ' ',
+        id: 'checkbox',
+        Cell: checkboxColumn,
+    },
     {
         Header: '성함',
         accessor: 'name',
@@ -443,50 +457,5 @@ const columns = [
     },
 ];
 
-const sizePerPageList = [
-    {
-        text: '5',
-        value: 5,
-    },
-    {
-        text: '10',
-        value: 10,
-    },
-    {
-        text: '15',
-        value: 15,
-    },
-    {
-        text: '25',
-        value: 25,
-    },
-    {
-        text: '50',
-        value: 50,
-    },
-];
 
-const Customers = ({ currentMembers }) => {
-    return (
-        <>
-            <Card>
-                <Card.Body>
-                    <Table
-                        columns={columns}
-                        data={currentMembers}
-                        sizePerPageList={sizePerPageList}
-                        pageSize={sizePerPageList[1].value}
-                        // pageSize={12}
-                        isSortable={true}
-                        pagination={true}
-                        isSelectable={false}
-                        isSearchable={true}
-                        searchBoxClass="mb-3"
-                    />
-                </Card.Body>
-            </Card>
-        </>
-    );
-};
-
-export default Customers;
+export default Columns;
