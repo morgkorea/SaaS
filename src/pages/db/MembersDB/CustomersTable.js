@@ -55,6 +55,7 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     );
 });
 
+
 const CustomersTable = (props: TableProps) => {
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
@@ -144,7 +145,7 @@ const CustomersTable = (props: TableProps) => {
             <div className="table-responsive customers-table" style={{ minHeight: '344px' }}>
                 <table
                     {...dataTable.getTableProps()}
-                    className={classNames('table table-centered react-table', props['tableClass'], 'sales')}>
+                    className={classNames('table table-centered react-table', props['tableClass'])}>
                     <thead className={props['theadClass']}>
                         {dataTable.headerGroups.map((headerGroup) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>

@@ -10,7 +10,8 @@ import CustomersIndex from './CustomersIndex.js';
 
 const MembersDB = () => {
     const [currentMembers, setCurrentMembers] = useState([]);
-
+    const [isLoading, setIsLoading] = useState(true);
+    
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
 
@@ -95,6 +96,8 @@ const MembersDB = () => {
             const docRef = doc(firestoreDB, 'Users', email, 'Members', updatedMember.id);
             updateDoc(docRef, updatedMember);
         });
+
+        setIsLoading(false);
     };
 
     const getMembers = async () => {
@@ -136,7 +139,11 @@ const MembersDB = () => {
             </Row>
             <Row>
                 <Col xs={12}>
-                    <CustomersIndex currentMembers={currentMembers} />
+                    {isLoading ? (
+                        <div>Loading...</div>
+                    ) : (
+                        <CustomersIndex currentMembers={currentMembers} />
+                    )}
                 </Col>
             </Row>
             <AddModal />

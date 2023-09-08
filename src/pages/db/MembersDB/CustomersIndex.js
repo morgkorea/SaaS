@@ -8,12 +8,12 @@ const CustomersIndex = ({ currentMembers }) => {
     const [tabContents, setTabContents] = useState(data);
     const [activeTab, setActiveTab] = useState('전체회원');
     const [activeGroup, setActiveGroup] = useState('전체');
-
+    
     const handleSubgroupClick = (subcategory) => {
         setActiveGroup(subcategory);
     };
 
-    const filteredMembers = useMemo(() => {
+    const filtered = useMemo(() => {
         function filterMembers(members, titleFilter, groupFilter) {
 
             // 1차 필터링
@@ -34,7 +34,7 @@ const CustomersIndex = ({ currentMembers }) => {
                 }
             });
 
-            // 클릭한 groupFilter 상위의 titleFilter를 가지고 2차 필터링
+            // 2차 필터링
             return filteredMembers.filter((member) => {
                 const tabContent = data.find((tab) => tab.title === titleFilter);
                 const group = groupFilter;
@@ -61,7 +61,7 @@ const CustomersIndex = ({ currentMembers }) => {
                             (product) => product.productType === typeFilter && product.dDay < 7
                         );
                     // 상품별
-                    case '활성회원':
+                    case '활성':
                         return (
                             member.availableProducts &&
                             member.availableProducts.length > 0 &&
@@ -69,7 +69,7 @@ const CustomersIndex = ({ currentMembers }) => {
                                 (product) => product.productType === 'batterBox' || product.productType === 'lesson'
                             )
                         );
-                    case '만료회원':
+                    case '만료':
                         return (
                             (!member.availableProducts || member.availableProducts.length === 0) &&
                             member.unavailableProducts &&
@@ -126,7 +126,6 @@ const CustomersIndex = ({ currentMembers }) => {
                         return member.product === '레슨';
                     case '타석':
                         return member.product === '타석';
-
                     // 유입경로
                     case '네이버':
                         return member.inflowPath === '네이버';
@@ -151,7 +150,9 @@ const CustomersIndex = ({ currentMembers }) => {
                 }
             });
         }
+
         return filterMembers(currentMembers, activeTab, activeGroup);
+
     }, [currentMembers, activeTab, activeGroup]);
 
     return (
@@ -172,79 +173,77 @@ const CustomersIndex = ({ currentMembers }) => {
                             })}
                         </Nav>
 
-                        <Tab.Content>
-                            {tabContents.map((tab) => {
-                                if (!tab.group || tab.group.length === 0) {
-                                    return null;
-                                }
-
-return (
-    <Tab.Pane eventKey={tab.title} key={tab.id}>
-        <Row>
-            <Col sm="12">
-                <Tab.Container activeKey={activeGroup} onSelect={(key) => setActiveGroup(key)}>
-                    <Nav variant="pills" className="rounded-nav">
-                        {tab.group.map((group) =>
-                            group.subgroup ? (
-                                <NavDropdown
-                                    key={group.category}
-                                    title={group.category}
-                                    id={`group-dropdown-${group.category}`}>
-                                    {group.subgroup.map((subgroup) => (
-                                        <NavDropdown.Item
-                                            key={subgroup.subcategory}
-                                            eventKey={subgroup.subcategory}
-                                            onClick={() =>handleSubgroupClick(subgroup.subcategory)}
-                                        >
-                                            {subgroup.subcategory}
-                                        </NavDropdown.Item>
-                                    ))}
-                                </NavDropdown>
-                            ) : (
-                                <Nav.Item key={group.category}>
-                                    <Nav.Link eventKey={group.category} onClick={() => setActiveGroup(group.category)}>
-                                        {group.category}
-                                    </Nav.Link>
-                                </Nav.Item>
-                            )
-                        )}
-                    </Nav>
-
-                    <Tab.Content>
-                        {tab.group.map((group, groupIndex) =>
-                            group.subgroup ? (
-                                <>
-                                    {group.subgroup.map((subgroup) => (
-                                        <Tab.Pane key={subgroup.subcategory} eventKey={subgroup.subcategory}>
-                                            <Row>
-                                                <Col sm="12">
-                                                    <CustomersTableWrap data={filteredMembers} />
-                                                </Col>
-                                            </Row>
-                                        </Tab.Pane>
-                                    ))}
-                                </>
-                            ) : 
-                            <Tab.Pane
-                                eventKey={group.category}
-                                id={groupIndex}
-                                key={groupIndex}
-                            >
-                                <Row>
-                                    <Col sm="12">
-                                        <CustomersTableWrap data={filteredMembers} />
-                                    </Col>
-                                </Row>
-                             </Tab.Pane>
-                        )}
-                    </Tab.Content>
-                </Tab.Container>
-            </Col>
-        </Row>
-    </Tab.Pane>
-);
-                            })}
-                        </Tab.Content>
+<Tab.Content>
+    {tabContents.map((tab) => {
+        if (!tab.group || tab.group.length === 0) {
+            return null;
+        }
+        return (
+            <Tab.Pane eventKey={tab.title} key={tab.id}>
+                <Row>
+                    <Col sm="12">
+                        <Tab.Container activeKey={activeGroup} onSelect={(key) => setActiveGroup(key)}>
+                            <Nav variant="pills" className="rounded-nav">
+                                {tab.group.map((group) =>
+                                    group.subgroup ? (
+                                        <NavDropdown
+                                            key={group.category}
+                                            title={group.category}
+                                            id={`group-dropdown-${group.category}`}>
+                                            {group.subgroup.map((subgroup) => (
+                                                <NavDropdown.Item
+                                                    key={subgroup.subcategory}
+                                                    eventKey={subgroup.subcategory}
+                                                    onClick={() =>handleSubgroupClick(subgroup.subcategory)}
+                                                >
+                                                    {subgroup.subcategory}
+                                                </NavDropdown.Item>
+                                            ))}
+                                        </NavDropdown>
+                                    ) : (
+                                        <Nav.Item key={group.category}>
+                                            <Nav.Link eventKey={group.category} onClick={() => setActiveGroup(group.category)}>
+                                                {group.category}
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                    )
+                                )}
+                            </Nav>
+                            <Tab.Content>
+                                {tab.group.map((group, groupIndex) =>
+                                    group.subgroup ? (
+                                        <>
+                                            {group.subgroup.map((subgroup) => (
+                                                <Tab.Pane key={subgroup.subcategory} eventKey={subgroup.subcategory}>
+                                                    <Row>
+                                                        <Col sm="12">
+                                                            <CustomersTableWrap data={filtered} />
+                                                        </Col>
+                                                    </Row>
+                                                </Tab.Pane>
+                                            ))}
+                                        </>
+                                    ) : 
+                                    <Tab.Pane
+                                        eventKey={group.category}
+                                        id={groupIndex}
+                                        key={groupIndex}
+                                    >
+                                        <Row>
+                                            <Col sm="12">
+                                                <CustomersTableWrap data={filtered} />
+                                            </Col>
+                                        </Row>
+                                    </Tab.Pane>
+                                )}
+                            </Tab.Content>
+                        </Tab.Container>
+                    </Col>
+                </Row>
+            </Tab.Pane>
+        );
+    })}
+</Tab.Content>
                     </Tab.Container>
                 </Card.Body>
             </Card>

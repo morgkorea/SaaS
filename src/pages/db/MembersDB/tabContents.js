@@ -4,8 +4,8 @@ const tabContents = [
         title: '전체회원',
         group: [
             { category: '전체' },
-            { category: '활성회원' },
-            { category: '만료회원' },
+            { category: '활성' },
+            { category: '만료' },
             {
                 category: '구력별',
                 subgroup: [
@@ -23,7 +23,7 @@ const tabContents = [
                     { subcategory: '30대' },
                     { subcategory: '40대' },
                     { subcategory: '50대' },
-                    { subcategory: '60대 이상' },
+                    // { subcategory: '60대 이상' },
                 ],
             },
             {
