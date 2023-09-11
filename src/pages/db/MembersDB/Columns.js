@@ -109,7 +109,7 @@ const Info = ({ row }) => {
 const onClickMemberInfo = ({ row }) => {
     return (
         <>
-            <Link to={`/database/member-info`} state={{ member: row.original }}>
+            <Link to={`/database/member-info`} state={{ member: row.original }} className='more'>
                 상세보기
             </Link>
         </>
