@@ -92,10 +92,9 @@ const MembersDB = () => {
                 const docRef = doc(firestoreDB, 'Users', email, 'Members', updatedMember.id);
                 updateDoc(docRef, updatedMember);
             });
-            console.log('ok')
             return true;
         } catch (error) {
-            console.error('Firestore 업데이트 에러:', error);
+            console.error(error);
             return false;
         }
     };
