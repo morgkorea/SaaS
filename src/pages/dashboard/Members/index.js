@@ -250,11 +250,11 @@ const MemberDashboard = () => {
     const tabContents = [
         {
             id: 1,
-            title: '활성',
+            title: '전체',
         },
         {
             id: 2,
-            title: '전체',
+            title: '활성',
         },
     ];
 
@@ -264,7 +264,7 @@ const MemberDashboard = () => {
                 <Col xs={12}>
                     <div className="page-title-box">
                         <div className="page-title-right">
-                            <Tab.Container defaultActiveKey="활성">
+                            <Tab.Container defaultActiveKey="전체">
                                 <Nav variant="pills" justify className="bg-nav-pills">
                                     {tabContents.map((tab, index) => {
                                         return (
@@ -283,7 +283,7 @@ const MemberDashboard = () => {
                 </Col>
             </Row>
 
-            {index === 1 ? (
+            {index === 2 ? (
                 <>
                     <Row>
                         {show ? (
