@@ -125,7 +125,7 @@ const CustomersTable = (props: TableProps) => {
                 <div>
                     <h5>
                         현재 <span className="text-primary">{dataTable.data.length}명</span>
-                        의 회원분들과 함께 하고 있어요!
+                        의 회원분들이 함께 하고 있어요!
                     </h5>
                 </div>
                 <div className="d-flex">

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Card, Col, Nav, NavDropdown, Row, Tab } from 'react-bootstrap';
+import { Card, Col, Nav, NavDropdown, Row, Spinner, Tab } from 'react-bootstrap';
 import { useState } from 'react';
 import data from './tabContents';
 import CustomersTableWrap from './CustomersTableWrap';
@@ -13,11 +13,14 @@ const CustomersIndex = () => {
     const [tabContents, setTabContents] = useState(data);
     const [activeTab, setActiveTab] = useState('전체회원');
     const [activeGroup, setActiveGroup] = useState('전체');
-    
+    const [isLoading, setIsLoading] = useState(false);
+
     const email = useSelector((state) => state.Auth?.user.email);
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true); 
+
             const q = query(collection(firestoreDB, 'Users', email, 'Members'));
             const querySnapshot = await getDocs(q);
             const members = [];
@@ -30,12 +33,26 @@ const CustomersIndex = () => {
             });
 
             setFilteredMembers(members);
+            setIsLoading(false);
         };
 
         fetchData();
     }, [activeTab, activeGroup, email])
 
-    function applyTitleFilter(member, titleFilter) {
+    // type 찾기
+    function getTypeForActiveTab(activeTab) {
+        for (const tab of tabContents) {
+          if (tab.title === activeTab) {
+            return tab.type;
+          }
+        }
+        return null; 
+    }
+
+    const selectedType = getTypeForActiveTab(activeTab);
+      
+
+    function applyTitleFilter(member, titleFilter) {         
         switch (titleFilter) {
             case '전체회원':
                 return true;
@@ -68,6 +85,15 @@ const CustomersIndex = () => {
                         (product) => product.productType === 'batterBox' || product.productType === 'lesson'
                     )
                 );
+
+            // 레슨 & 타석
+            case '잔여 30일 이상':
+                return member.availableProducts.some(product => product.productType === selectedType && product.dDay >= 30);
+            case '만료 14일전':
+                return member.availableProducts.some(product => product.productType === selectedType && product.dDay < 14);
+            case '만료 7일전':
+                return member.availableProducts.some(product => product.productType === selectedType &&  product.dDay < 7);
+
             // 구력별
             case '비기너':
                 return member.golfPeriod === '비기너';
@@ -120,7 +146,7 @@ const CustomersIndex = () => {
             case '레슨':
                 return member.product === '레슨';
             case '타석':
-                    return member.product === '타석';
+                return member.product === '타석';
             
             // 유입경로
             case '네이버':
@@ -141,7 +167,6 @@ const CustomersIndex = () => {
                 return member.inflowPath === '전단지';
             case '외부간판 및 현수막':
                 return member.inflowPath === '외부간판 및 현수막';
-            
             default:
                 return false;
         }
@@ -157,7 +182,7 @@ const CustomersIndex = () => {
                 <Card.Body>
                     <Tab.Container activeKey={activeTab} onSelect={(key) => setActiveTab(key)}>
                         <Nav variant="tabs" className="nav-bordered" as="ul">
-                            {data.map((tab) => {
+                            {tabContents.map((tab) => {
                                 if (!tab.group || tab.group.length === 0) {
                                     return null;
                                 }
@@ -206,28 +231,42 @@ const CustomersIndex = () => {
                                 )}
                             </Nav>
                             <Tab.Content>
-                                {tab.group.map((group, groupIndex) =>
+                                {tab.group.map((group) =>
                                     group.subgroup ? (
-                                        <>
-                                            {group.subgroup.map((subgroup) => (
-                                                <Tab.Pane key={subgroup.subcategory} eventKey={subgroup.subcategory}>
-                                                    <Row>
-                                                        <Col sm="12">
+                                        group.subgroup.map((subgroup) => (
+                                            <Tab.Pane key={subgroup.subcategory} eventKey={subgroup.subcategory}>
+                                                <Row>
+                                                    <Col sm="12">
+                                                        {isLoading ? (
+                                                            <div className='position-relative' style={{height: '450px'}}>
+                                                                <div className='position-absolute top-50 start-50 translate-middle'>
+                                                                    <Spinner className="spinner-border-lg" tag="span" color="white" />
+                                                                </div>
+                                                            </div>
+                                                        ) : (
                                                             <CustomersTableWrap data={filteredMembers} />
-                                                        </Col>
-                                                    </Row>
-                                                </Tab.Pane>
-                                            ))}
-                                        </>
+                                                        )}
+                                                    </Col>
+                                                </Row>
+                                            </Tab.Pane>
+                                        ))
                                     ) : 
                                     <Tab.Pane
                                         eventKey={group.category}
-                                        id={groupIndex}
-                                        key={groupIndex}
+                                        id={group.category}
+                                        key={group.category}
                                     >
                                         <Row>
                                             <Col sm="12">
-                                                <CustomersTableWrap data={filteredMembers} />
+                                                {isLoading ? (
+                                                    <div className='position-relative' style={{height: '450px'}}>
+                                                        <div className='position-absolute top-50 start-50 translate-middle'>
+                                                            <Spinner className="spinner-border-lg" tag="span" color="white" />
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <CustomersTableWrap data={filteredMembers} />
+                                                )}
                                             </Col>
                                         </Row>
                                     </Tab.Pane>
