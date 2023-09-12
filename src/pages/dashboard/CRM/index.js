@@ -58,7 +58,6 @@ const Crm = () => {
             golfPeriod: 'test', //골프경력
             golfPurpose: 'test', //골프목적
             hoursUse: 'test', //이용시간
-            injuries: 'test', //부상전적
             injuriedPart: 'test', //부상부위
             marketingRecieveAllow: false, //마케팅수신동의
             privateInfoAllow: false, //개인정보수집동의

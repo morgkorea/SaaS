@@ -177,3 +177,11 @@
 .add-modal-content input.add-modal-input.invalid {
     border: 1px solid #FA5C7C;
 }
+.more {
+    color: #98A6AD;
+    text-decoration: underline;
+    text-underline-position: under;
+    &:hover {
+        color: #6C757D;
+    }
+}

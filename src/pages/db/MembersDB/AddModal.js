@@ -24,7 +24,6 @@ const AddModal = forwardRef((props, ref) => {
     const [purposeValue, setPurposeValue] = useState('');
     const [productValue, setProductValue] = useState('');
     const [hoursUseValue, setHoursUseValue] = useState('');
-    const [injuriesValue, setInjuriesValue] = useState('');
     const [injuriedPartValue, setInjuriedPartValue] = useState('');
     const [inflowPathValue, setInflowPathValue] = useState('');
     const [marketingChecked, setMarketingChecked] = React.useState(true);
@@ -70,7 +69,6 @@ const AddModal = forwardRef((props, ref) => {
 
     const handleInjurySelectChange = (selectedOption) => {
         setInjuriedPartValue(selectedOption.value);
-        setInjuriesValue(selectedOption.value === '없음' ? '무' : '유');
     };
 
     const updateFirestoreAddMember = async () => {
@@ -94,7 +92,6 @@ const AddModal = forwardRef((props, ref) => {
             golfPurpose: purposeValue,
             product: productValue,
             hoursUse: hoursUseValue,
-            injuries: injuriesValue, 
             injuriedPart: injuriedPartValue,
             inflowPath: inflowPathValue,
             marketingRecieveAllow: marketingChecked,
