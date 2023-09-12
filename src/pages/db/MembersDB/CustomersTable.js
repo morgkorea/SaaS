@@ -11,6 +11,7 @@ import {
 import classNames from 'classnames';
 import Pagination from './Pagination';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
@@ -54,7 +55,6 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
         </>
     );
 });
-
 
 const CustomersTable = (props: TableProps) => {
     const isSearchable = props['isSearchable'] || false;
@@ -122,14 +122,16 @@ const CustomersTable = (props: TableProps) => {
     return (
         <>
             <div className="d-flex justify-content-between">
-                <div>
-                    <h5>
-                        현재 <span className="text-primary">{dataTable.data.length}명</span>
-                        의 회원분들이 함께 하고 있어요!
-                    </h5>
-                </div>
                 <div className="d-flex">
                     <div>
+                        <h5>
+                            현재 <span className="text-primary">{dataTable.data.length}명</span>의 회원분들이 함께 하고
+                            있어요!
+                        </h5>
+                    </div>
+                </div>
+                <div className="d-flex">
+                    <div> 
                         {isSearchable && (
                             <GlobalFilter
                                 preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
@@ -138,6 +140,12 @@ const CustomersTable = (props: TableProps) => {
                                 searchBoxClass={props['searchBoxClass']}
                             />
                         )}
+                    </div>
+                    <div className='ms-2'>
+                        <OverlayTrigger
+                            overlay={<Tooltip id="tooltip-disabled"><b>서비스 준비중</b>입니다.</Tooltip>}>
+                            <Button>문자 메시지 전송</Button>
+                        </OverlayTrigger>
                     </div>
                 </div>
             </div>

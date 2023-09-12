@@ -245,6 +245,7 @@ body[data-layout-color="dark"] {
     }
 }
 
+// 하은 table - style 수정
 
 table.basic-table {
     width: 100%;
@@ -514,37 +515,37 @@ div.customers-table tbody>tr.dataless td:first-child {
     border: none;
     min-width: 100%;
 }
-// .customers-table td:nth-child(1) {
-//     width: 5%
-// }
-// .customers-table td:nth-child(2) {
-//     width: 10%
-// }
-// .customers-table td:nth-child(3) {
-//     width: 15%
-// }
-// .customers-table td:nth-child(4) {
-//     width: 15%
-// }
-// .customers-table td:nth-child(5) {
-//     width: 50%
-// }
-// .customers-table td:nth-child(6) {
-//     width: 5%
-// }
-
 .customers-table td:nth-child(1) {
-    width: 10%
-}
-.customers-table td:nth-child(2) {
-    width: 15%
-}
-.customers-table td:nth-child(3) {
-    width: 20%
-}
-.customers-table td:nth-child(4) {
-    width: 50%
-}
-.customers-table td:nth-child(5) {
     width: 5%
 }
+.customers-table td:nth-child(2) {
+    width: 10%
+}
+.customers-table td:nth-child(3) {
+    width: 15%
+}
+.customers-table td:nth-child(4) {
+    width: 15%
+}
+.customers-table td:nth-child(5) {
+    width: 50%
+}
+.customers-table td:nth-child(6) {
+    width: 5%
+}
+
+// .customers-table td:nth-child(1) {
+//     width: 10%
+// }
+// .customers-table td:nth-child(2) {
+//     width: 15%
+// }
+// .customers-table td:nth-child(3) {
+//     width: 20%
+// }
+// .customers-table td:nth-child(4) {
+//     width: 50%
+// }
+// .customers-table td:nth-child(5) {
+//     width: 5%
+// }
