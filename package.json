@@ -1,6 +1,6 @@
 {
     "name": "morg-saas",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "private": true,
     "dependencies": {
         "@fullcalendar/bootstrap": "^5.10.1",
@@ -99,6 +99,7 @@
         ]
     },
     "devDependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "flow-bin": "^0.153.0",
         "prettier": "2.3.1",
         "redux-saga-test-plan": "^4.0.1"
