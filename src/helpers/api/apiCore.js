@@ -327,6 +327,15 @@ class APICore {
             this.setLoggedInUser({ token, ...user, ...modifiedUser });
         }
     };
+
+    naverSenseSmsApi = (phone, timeStamp) => {
+        const header = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-ncp-apigw-timestamp': timeStamp,
+            'x-ncp-iam-access-key': 'Sub Account Access Key',
+            'x-ncp-apigw-signature-v2': 'API Gateway Signature',
+        };
+    };
 }
 
 /*

@@ -80,41 +80,6 @@ const PhoneColumn = ({ row }) => {
     return countryCode + formattedPhoneNumber;
 };
 
-const AudienceColumn = ({ row }) => {
-    const [audienceValue, setAudienceValue] = useState(0);
-    const availableProducts = row.original?.availableProducts || [];
-    const unavailableProducts = row.original?.unavailableProducts || [];
-    const allProducts = availableProducts.concat(unavailableProducts);
-
-    useEffect(() => {
-        // allProducts 배열의 길이를 기준으로 '잠재', '신규', '재등록'을 설정
-        if (allProducts.length === 0) {
-            setAudienceValue('잠재');
-        } else if (allProducts.length === 1) {
-            setAudienceValue('신규');
-        } else {
-            setAudienceValue('재등록');
-        }
-    }, [allProducts]);
-
-    return <>{audienceValue}</>;
-};
-
-const audienceAccessor = (row) => {
-    const availableProducts = row.availableProducts || [];
-    const unavailableProducts = row.unavailableProducts || [];
-    const allProducts = availableProducts.concat(unavailableProducts);
-
-    if (allProducts.length === 0) {
-        return '잠재';
-    } else if (allProducts.length === 1) {
-        return '신규';
-    } else {
-        return '재등록';
-    }
-};
-
-
 const CumulativePayCount = ({ row }) => {
     const [allProducts, setAllProducts] = useState(0);
     const availableProducts = row.original?.availableProducts;
@@ -390,8 +355,7 @@ const columns = [
     },
     {
         Header: '유형',
-        accessor: audienceAccessor,
-        Cell: AudienceColumn,
+        accessor: 'audience',
         sort: true,
     },
     {
@@ -427,11 +391,6 @@ const columns = [
     {
         Header: '이용시간대',
         accessor: 'hoursUse',
-        sort: true,
-    },
-    {
-        Header: '부상전적',
-        accessor: 'injuries',
         sort: true,
     },
     {

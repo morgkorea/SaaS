@@ -1,20 +1,6 @@
 import moment from 'moment';
 import React from 'react';
 
-const getAudienceValue = (member) => {
-    const availableProducts = member.availableProducts || [];
-    const unavailableProducts = member.unavailableProducts || [];
-    const allProducts = availableProducts.concat(unavailableProducts);
-  
-    if (allProducts.length === 0) {
-      return '잠재';
-    } else if (allProducts.length === 1) {
-      return '신규';
-    } else {
-      return '재등록';
-    }
-};
-
 const Table = ({ member }) => {
     const formattedCreatedTime = member?.createdTime
     ? (() => {
@@ -45,10 +31,6 @@ const Table = ({ member }) => {
 
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
     const phone = countryCode + formattedPhoneNumber;
-
-
-
-    const audienceValue = getAudienceValue(member);
 
     return (
         <>
@@ -95,7 +77,7 @@ const Table = ({ member }) => {
                     </tr>
                     <tr>
                         <th>유형</th>
-                        <td>{audienceValue}</td>
+                        <td>{member?.audience}</td>
                     </tr>
                     <tr>
                         <th>골프 경력</th>

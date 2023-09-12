@@ -96,7 +96,7 @@ export const firestoreMemebersFieldSchema = {
     golfPeriod: '', //골프경력
     golfPurpose: '', //골프목적
     hoursUse: '', //이용시간
-    injuries: '', //부상전적
+    // injuries: '', //부상전적
     injuriedPart: '', //부상부위
     marketingRecieveAllow: false, //마케팅수신동의
     privateInfoAllow: false, //개인정보수집동의
@@ -105,7 +105,9 @@ export const firestoreMemebersFieldSchema = {
     amountPaymentAverage: '', //평균결제금액
     audience: '', //오디언스
     activation: false, //활성여부 false || true
-    region: '',
+    region: '', // 지역
+    inflowPath: '', // 유입경로
+    product: '', // 관심상품
     memo: [
         //  {...firestoreMembersMemo}
     ],
@@ -168,7 +170,7 @@ export const firestoreConsultingFieldSchema = [
         golfPeriod: '', //골프경력
         golfPurpose: '', //골프목적
         hoursUse: '', //이용시간
-        injuries: '', //부상전적
+        // injuries: '', //부상전적
         injuredPart: '', //부상부위
         registrationType: '', //등록구분
         etcConsulting: '', //기타상담내용
