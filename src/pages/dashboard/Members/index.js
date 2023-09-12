@@ -249,11 +249,11 @@ const MemberDashboard = () => {
 
     const tabContents = [
         {
-            id: 1,
+            id: 2,
             title: '전체',
         },
         {
-            id: 2,
+            id: 1,
             title: '활성',
         },
     ];
@@ -283,7 +283,7 @@ const MemberDashboard = () => {
                 </Col>
             </Row>
 
-            {index === 2 ? (
+            {index === 1 ? (
                 <>
                     <Row>
                         {show ? (
