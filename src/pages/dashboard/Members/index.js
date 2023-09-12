@@ -245,16 +245,16 @@ const MemberDashboard = () => {
     }, []);
 
     const [show, setShow] = useState(true);
-    const [index, setIndex] = useState(1);
+    const [index, setIndex] = useState(2);
 
     const tabContents = [
         {
             id: 1,
-            title: '전체',
+            title: '활성',
         },
         {
             id: 2,
-            title: '활성',
+            title: '전체',
         },
     ];
 
@@ -283,7 +283,7 @@ const MemberDashboard = () => {
                 </Col>
             </Row>
 
-            {index === 2 ? (
+            {index === 1 ? (
                 <>
                     <Row>
                         {show ? (
