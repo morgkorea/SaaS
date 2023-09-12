@@ -35,7 +35,7 @@ function CustomersTableWrap({ data }) {
                 pageSize={sizePerPageList[1].value}
                 isSortable={true}
                 pagination={true}
-                isSelectable={false} // 체크박스
+                isSelectable={true} // 체크박스
                 isSearchable={true}
                 searchBoxClass="mb-3"
             />

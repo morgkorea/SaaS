@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card, Col, Nav, NavDropdown, Row, Spinner, Tab } from 'react-bootstrap';
 import { useState } from 'react';
 import data from './tabContents';
@@ -16,8 +16,15 @@ const CustomersIndex = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const email = useSelector((state) => state.Auth?.user.email);
+    const prevActiveTabRef = useRef(activeTab);
 
     useEffect(() => {
+        if (prevActiveTabRef.current !== activeTab) {
+            setActiveGroup('전체');
+        }
+
+        prevActiveTabRef.current = activeTab;
+        
         const fetchData = async () => {
             setIsLoading(true); 
 
