@@ -79,7 +79,6 @@ const MemberDashboard = () => {
                             ...(Array.isArray(member.unavailableProducts) ? member.unavailableProducts : []),
                         ];
 
-                        console.log('allOfProducts', allOfProducts);
                         if (allOfProducts.length > 0) {
                             allOfProducts
                                 .filter((product) => product.productType === productType && !product.deleted_at)
