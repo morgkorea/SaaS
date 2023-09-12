@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 const CurrentUsageInfo = ({ member }) => {
-    // console.log(member)
     const hasTaSeokProduct = (member.availableProducts || []).some((product) => {
         return product && product.product && product.productType === 'batterBox';
     });

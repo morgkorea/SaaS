@@ -65,3 +65,18 @@ body[data-layout-color="dark"] {
         border-bottom: 2px solid #{rgba(map-get($dark-grays, "600"), 0.2)};
     }
 }
+
+// 하은 style 추가
+.rounded-nav {
+    display: flex;
+    gap: 0.625rem;
+    margin: 1rem 0;
+}
+
+.rounded-nav .nav-link {
+    background: #EFEFEF;
+    border-radius: 3.125rem;
+    padding: 0.25rem 1rem;
+    color: #6C757D;
+    font-size: 0.875rem;
+}

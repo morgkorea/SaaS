@@ -5,20 +5,6 @@ import { firestoreDB } from '../../../firebase/firebase';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const getAudienceValue = (member) => {
-    const availableProducts = member.availableProducts || [];
-    const unavailableProducts = member.unavailableProducts || [];
-    const allProducts = availableProducts.concat(unavailableProducts);
-
-    if (allProducts.length === 0) {
-        return '잠재';
-    } else if (allProducts.length === 1) {
-        return '신규';
-    } else {
-        return '재등록';
-    }
-};
-
 const EditTable = forwardRef(({ member, email, id }, ref) => {
     const notify = () => toast('개인정보가 수정되었습니다.');
     const [isValid, setIsValid] = useState(true);
@@ -33,12 +19,11 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
     const [purposeValue, setPurposeValue] = useState(member.golfPurpose);
     const [productValue, setProductValue] = useState(member.product);
     const [hoursUseValue, setHoursUseValue] = useState(member.hoursUse);
-    const [injuriesValue, setInjuriesValue] = useState(member.injuries);
     const [injuriedPartValue, setInjuriedPartValue] = useState(member.injuriedPart);
     const [inflowPathValue, setInflowPathValue] = useState(member.inflowPath);
     const [privateInfoChecked, setPrivateInfoChecked] = useState(member.privateInfoAllow);
     const [marketingChecked, setMarketingChecked] = useState(member.marketingRecieveAllow);
-    const audienceValue = getAudienceValue(member);
+
 
     const handleFocus = (e) => {
         const { value } = e.target;
@@ -80,7 +65,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
 
     const handleInjurySelectChange = (selectedOption) => {
         setInjuriedPartValue(selectedOption.value);
-        setInjuriesValue(selectedOption.value === '없음' ? '무' : '유');
     };
 
     const editUser = async () => {
@@ -101,7 +85,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
             golfPurpose: purposeValue,
             product: productValue,
             hoursUse: hoursUseValue,
-            injuries: injuriesValue,
             injuriedPart: injuriedPartValue,
             inflowPath: inflowPathValue,
             privateInfoAllow: privateInfoChecked,
@@ -223,7 +206,7 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                     </tr>
                     <tr>
                         <th>유형</th>
-                        <td>{audienceValue}</td>
+                        <td>{member?.audience}</td>
                     </tr>
                     <tr>
                         <th>골프 경력</th>
@@ -317,20 +300,6 @@ const EditTable = forwardRef(({ member, email, id }, ref) => {
                                 ]}></Select>
                         </td>
                     </tr>
-                    {/* <tr>
-                        <th>부상 전적</th>
-                        <td className="me-2">
-                            <Select
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                placeholder={member.injuries ? member.injuries : '선택'}
-                                onChange={(e) => setInjuriesValue(e.value)}
-                                options={[
-                                    { value: '유', label: '유' },
-                                    { value: '무', label: '무' },
-                                ]}></Select>
-                        </td>
-                    </tr> */}
                     <tr>
                         <th>부상 부위</th>
                         <td>
