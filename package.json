@@ -103,5 +103,6 @@
         "flow-bin": "^0.153.0",
         "prettier": "2.3.1",
         "redux-saga-test-plan": "^4.0.1"
-    }
+    },
+    "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
 }
