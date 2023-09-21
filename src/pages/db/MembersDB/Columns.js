@@ -24,14 +24,50 @@ const Created = ({ row }) => {
     const createdTime = row.original?.createdTime;
 
     const date = createdDate ? new Date(createdDate) : null;
-    const time = createdTime ? new Date(`1970-01-01T${createdTime}`) : null;
+    
+    let time;
+    let formattedTime = '';
+
+    if (createdTime) {
+        // 시간 형식이 "00:00:00"인 경우
+        if (createdTime.match(/^\d{2}:\d{2}:\d{2}$/)) {
+            const timeParts = createdTime.split(':');
+            const hours = parseInt(timeParts[0], 10);
+            const minutes = parseInt(timeParts[1], 10);
+            const seconds = parseInt(timeParts[2], 10);
+            time = new Date();
+            time.setHours(hours, minutes, seconds, 0);
+        }
+        // 시간 형식이 "pm 3:00" 또는 "am 12:00"인 경우
+        else if (createdTime.match(/^(am|pm) \d{1,2}:\d{2}$/i)) {
+            const timeParts = createdTime.split(' ');
+            const isPM = timeParts[0].toLowerCase() === 'pm';
+            const timeString = timeParts[1];
+            
+            const timeParts2 = timeString.split(':');
+            let hours = parseInt(timeParts2[0], 10);
+            const minutes = parseInt(timeParts2[1], 10);
+
+            // PM 시간을 24시간 형식으로 변환
+            if (isPM && hours !== 12) {
+                hours += 12;
+            }
+
+            time = new Date();
+            time.setHours(hours, minutes, 0, 0);
+        }
+
+        if (time) {
+            formattedTime = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+        }
+    }
 
     const formattedDate = date ? `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일` : '';
-    const formattedTime = time ? `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}` : '';
 
     return (
         <>
-            {formattedDate} {formattedTime}
+            <span style={{width: '104px', display: 'inline-block'}}>{formattedDate}</span>
+            <span>{formattedTime}</span>
         </>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useEffect, forwardRef, useState } from 'react';
 import {
     useTable,
     useSortBy,
@@ -73,7 +73,7 @@ const CustomersTable = (props: TableProps) => {
         isSortable && useSortBy,
         isExpandable && useExpanded,
         pagination && usePagination,
-        isSelectable && useRowSelect,
+        isSelectable && useRowSelect, // useRowSelect 훅 추가
         (hooks) => {
             isSelectable &&
                 hooks.visibleColumns.push((columns) => [
@@ -117,7 +117,7 @@ const CustomersTable = (props: TableProps) => {
         }
     );
 
-    let rows = pagination ? dataTable.page : dataTable.rows;
+    const rows = pagination ? dataTable.page : dataTable.rows;
 
     return (
         <>
