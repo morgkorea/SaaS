@@ -21,6 +21,7 @@ const CustomersIndex = () => {
     useEffect(() => {
         if (prevActiveTabRef.current !== activeTab) {
             setActiveGroups(['전체']);
+            setActiveSubcategory('')
         }
 
         prevActiveTabRef.current = activeTab;
@@ -186,29 +187,32 @@ const CustomersIndex = () => {
     }
 
     const handleSubgroupClick = (group) => {
-        const isActive = activeGroups.includes(group);
-    
-        let newActiveGroups = [];
-    
-        if (isActive) {
-            newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== group && activeGroup !== '전체');
+        if (group === '전체') {
+            setActiveGroups(['전체']);
         } else {
-            if (group === '전체') {
-                newActiveGroups = ['전체'];
+            const isActive = activeGroups.includes(group);
+            const isMaxReached = activeGroups.length >= 5;
+    
+            let newActiveGroups = [];
+    
+            if (isActive) {
+                newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== group && activeGroup !== '전체');
             } else {
+                if (isMaxReached) {
+                    return;
+                }
+    
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
                 newActiveGroups.push(group);
             }
+    
+            setActiveGroups(newActiveGroups);
         }
-        setActiveGroups(newActiveGroups);
     };
     
-
     function isGroupActive(group) {
         return activeGroups.includes(group) ? 'active' : '';
     }
-
-    console.log('activeGroups : ', activeGroups, 'filteredMembers:', filteredMembers.length);
 
     return (
         <>
@@ -244,7 +248,9 @@ const CustomersIndex = () => {
                                                                 <NavDropdown
                                                                     key={group.category}
                                                                     title={activeSubcategory[group.category] || group.category}
-                                                                    id={`group-dropdown-${group.category}`}>
+                                                                    id={`group-dropdown-${group.category}`}
+                                                                    className={activeSubcategory[group.category] ? 'show' : ''}
+                                                                >
                                                                     {group.subgroup.map((subgroup) => (
                                                                         <NavDropdown.Item
                                                                             key={subgroup.subcategory}
@@ -253,7 +259,6 @@ const CustomersIndex = () => {
                                                                                 handleSubgroupClick(subgroup.subcategory)
                                                                                 setActiveSubcategory({ [group.category]: subgroup.subcategory });
                                                                             }}
-                                                                            
                                                                         >
                                                                             {subgroup.subcategory}
                                                                         </NavDropdown.Item>
@@ -263,9 +268,7 @@ const CustomersIndex = () => {
                                                                 <Nav.Item key={group.category}>
                                                                     <Nav.Link
                                                                         eventKey={group.category}
-                                                                        onClick={() =>
-                                                                            handleSubgroupClick(group.category)
-                                                                        }
+                                                                        onClick={() => handleSubgroupClick(group.category)}
                                                                         className={isGroupActive(group.category)}
                                                                     >
                                                                         {group.category}
@@ -275,77 +278,59 @@ const CustomersIndex = () => {
                                                         )}
                                                     </Nav>
 
-                                                    <Tab.Content>
-                                                        {tabContents.map((tab) => {
-                                                            if (!tab.group || tab.group.length === 0) {
-                                                                return null;
-                                                            }
-                                                            return (
-                                                                <Tab.Pane eventKey={tab.title} key={tab.id}>
-                                                                    <Row>
-                                                                        <Col sm="12">
-                                                                            <Tab.Container onSelect={() => {}}>
-                                                                                <Nav
-                                                                                    variant="pills"
-                                                                                    className="rounded-nav">
-                                                                                    {tab.group.map((group) =>
-                                                                                        group.subgroup ? (
-                                                                                            <NavDropdown
-                                                                                                key={group.category}
-                                                                                                title={group.category}
-                                                                                                id={`group-dropdown-${group.category}`}>
-                                                                                                {group.subgroup.map(
-                                                                                                    (subgroup) => (
-                                                                                                        <NavDropdown.Item
-                                                                                                            key={
-                                                                                                                subgroup.subcategory
-                                                                                                            }
-                                                                                                            eventKey={
-                                                                                                                subgroup.subcategory
-                                                                                                            }
-                                                                                                            onClick={() =>
-                                                                                                                handleSubgroupClick(
-                                                                                                                    subgroup.subcategory
-                                                                                                                )
-                                                                                                            }
-                                                                                                            className={isGroupActive(
-                                                                                                                subgroup.subcategory
-                                                                                                            )}>
-                                                                                                            {
-                                                                                                                subgroup.subcategory
-                                                                                                            }
-                                                                                                        </NavDropdown.Item>
-                                                                                                    )
-                                                                                                )}
-                                                                                            </NavDropdown>
-                                                                                        ) : (
-                                                                                            <Nav.Item
-                                                                                                key={group.category}>
-                                                                                                <Nav.Link
-                                                                                                    eventKey={
-                                                                                                        group.category
-                                                                                                    }
-                                                                                                    onClick={() =>
-                                                                                                        handleSubgroupClick(
-                                                                                                            group.category
-                                                                                                        )
-                                                                                                    }
-                                                                                                    className={isGroupActive(
-                                                                                                        group.category
-                                                                                                    )}>
-                                                                                                    {group.category}
-                                                                                                </Nav.Link>
-                                                                                            </Nav.Item>
-                                                                                        )
-                                                                                    )}
-                                                                                </Nav>
-                                                                            </Tab.Container>
-                                                                        </Col>
-                                                                    </Row>
-                                                                </Tab.Pane>
-                                                            );
-                                                        })}
-                                                    </Tab.Content>
+    <Tab.Content>
+        {tabContents.map((tab) => {
+            if (!tab.group || tab.group.length === 0) {
+                return null;
+            }
+            return (
+                <Tab.Pane eventKey={tab.title} key={tab.id}>
+                    <Row>
+                        <Col sm="12">
+                            <Tab.Container onSelect={() => {}}>
+                                <Nav
+                                    variant="pills"
+                                    className="rounded-nav">
+                                    {tab.group.map((group) =>
+                                        group.subgroup ? (
+                                            <NavDropdown
+                                                key={group.category}
+                                                title={group.category}
+                                                id={`group-dropdown-${group.category}`}>
+                                                {group.subgroup.map(
+                                                    (subgroup) => (
+                                                        <NavDropdown.Item
+                                                            key={subgroup.subcategory}
+                                                            eventKey={subgroup.subcategory}
+                                                            onClick={() => handleSubgroupClick(subgroup.subcategory)}
+                                                            className={isGroupActive(subgroup.subcategory)}
+                                                        >
+                                                            {subgroup.subcategory}
+                                                        </NavDropdown.Item>
+                                                    )
+                                                )}
+                                            </NavDropdown>
+                                        ) : (
+                                            <Nav.Item
+                                                key={group.category}>
+                                                <Nav.Link
+                                                    eventKey={group.category}
+                                                    onClick={() => handleSubgroupClick(group.category)}
+                                                    className={isGroupActive(group.category)}
+                                                >
+                                                    {group.category}
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        )
+                                    )}
+                                </Nav>
+                            </Tab.Container>
+                        </Col>
+                    </Row>
+                </Tab.Pane>
+            );
+        })}
+    </Tab.Content>
                                                 </Tab.Container>
                                             </Col>
                                         </Row>
@@ -353,12 +338,17 @@ const CustomersIndex = () => {
                                 );
                             })}
                         </Tab.Content>
-                        <CustomersTableWrap
-                            data={filteredMembers.filter(
-                                (member) =>
-                                    applyGroupFilter(member, activeGroups) && applyTitleFilter(member, activeTab)
-                            )}
-                        />
+                        
+                        <p>{activeGroups}</p>
+                        {isLoading ? (
+                            <div className='position-relative' style={{height: '450px'}}>
+                                <div className='position-absolute top-50 start-50 translate-middle'>
+                                    <Spinner className="spinner-border-lg" tag="span" color="white" />
+                                </div>
+                            </div>
+                        ) : (
+                            <CustomersTableWrap data={filteredMembers} />
+                        )}
                     </Tab.Container>
                 </Card.Body>
             </Card>

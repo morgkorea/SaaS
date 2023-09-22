@@ -40,7 +40,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     const defaultRef = useRef();
-    const resolvedRef: any = ref || defaultRef;
+    const resolvedRef = ref || defaultRef;
 
     useEffect(() => {
         resolvedRef.current.indeterminate = indeterminate;
@@ -56,43 +56,52 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     );
 });
 
-const CustomersTable = (props: TableProps) => {
+const CustomersTable = (props) => {
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
 
+
     const dataTable = useTable(
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { pageSize: props['pageSize'] || 5 },
+            initialState: { 
+                pageSize: props['pageSize'] || 5,
+                selectedRowIds: {}, // 초기 선택 상태 설정
+            },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,
         isExpandable && useExpanded,
         pagination && usePagination,
-        isSelectable && useRowSelect, // useRowSelect 훅 추가
+        isSelectable && useRowSelect,
         (hooks) => {
             isSelectable &&
                 hooks.visibleColumns.push((columns) => [
                     {
                         id: 'selection',
                         Header: ({ getToggleAllPageRowsSelectedProps }) => (
-                            <div>
-                                <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+                            <div style={{ display: 'flex' }}>
+                                <IndeterminateCheckbox
+                                    {...getToggleAllPageRowsSelectedProps()} 
+                                    onClick={() => toggleAllRows(dataTable.toggleAllRowsSelected)}
+                                />
                             </div>
                         ),
                         Cell: ({ row }) => (
                             <div>
-                                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                                <IndeterminateCheckbox 
+                                    {...row.getToggleRowSelectedProps()} 
+                                    onClick={() => toggleSingleRow(row)}
+                                />
                             </div>
                         ),
                     },
                     ...columns,
                 ]);
-
             isExpandable &&
                 hooks.visibleColumns.push((columns) => [
                     {
@@ -119,6 +128,21 @@ const CustomersTable = (props: TableProps) => {
 
     const rows = pagination ? dataTable.page : dataTable.rows;
 
+    const toggleAllRows = (toggleRowsSelected) => {
+        toggleRowsSelected();
+    };
+
+    const toggleSingleRow = (row) => {
+        const memberId = row.original.id;
+
+        dataTable.toggleRowSelected(memberId);
+    };
+
+    const selectedRowIds = dataTable.state.selectedRowIds;
+    const selectedMemberIds = Object.keys(selectedRowIds).filter((id) => selectedRowIds[id]);
+
+    console.log('Selected Member IDs:', selectedMemberIds);
+    
     return (
         <>
             <div className="d-flex justify-content-between">
@@ -128,6 +152,7 @@ const CustomersTable = (props: TableProps) => {
                             현재 <span className="text-primary">{dataTable.data.length}명</span>의 회원분들이 함께 하고
                             있어요!
                         </h5>
+                        <h5>선택: {selectedMemberIds.length}명</h5>
                     </div>
                 </div>
                 <div className="d-flex">
