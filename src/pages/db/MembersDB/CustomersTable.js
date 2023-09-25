@@ -141,7 +141,7 @@ const CustomersTable = (props) => {
     const selectedRowIds = dataTable.state.selectedRowIds;
     const selectedMemberIds = Object.keys(selectedRowIds).filter((id) => selectedRowIds[id]);
 
-    console.log('Selected Member IDs:', selectedMemberIds);
+    // console.log('Selected Member IDs:', selectedMemberIds);
     
     return (
         <>

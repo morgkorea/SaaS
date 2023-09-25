@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Card, Col, Nav, NavDropdown, Row, Spinner, Tab } from 'react-bootstrap';
+import { Button, Card, Col, Dropdown, Nav, NavDropdown, Row, Spinner, Tab } from 'react-bootstrap';
 import { useState } from 'react';
 import data from './tabContents';
 import CustomersTableWrap from './CustomersTableWrap';
@@ -13,7 +13,8 @@ const CustomersIndex = () => {
     const [tabContents, setTabContents] = useState(data);
     const [activeTab, setActiveTab] = useState('전체회원');
     const [activeGroups, setActiveGroups] = useState(['전체']);
-    const [activeSubcategory, setActiveSubcategory] = useState('');
+    const [selectedSubcategory, setSelectedSubcategory] = useState({});
+
     const [isLoading, setIsLoading] = useState(false);
     const email = useSelector((state) => state.Auth?.user.email);
     const prevActiveTabRef = useRef(activeTab);
@@ -21,7 +22,6 @@ const CustomersIndex = () => {
     useEffect(() => {
         if (prevActiveTabRef.current !== activeTab) {
             setActiveGroups(['전체']);
-            setActiveSubcategory('')
         }
 
         prevActiveTabRef.current = activeTab;
@@ -186,9 +186,11 @@ const CustomersIndex = () => {
         });
     }
 
-    const handleSubgroupClick = (group) => {
+    const handleSubgroupClick = (group, subgroup) => {
+        
         if (group === '전체') {
             setActiveGroups(['전체']);
+            setSelectedSubcategory('')
         } else {
             const isActive = activeGroups.includes(group);
             const isMaxReached = activeGroups.length >= 5;
@@ -203,13 +205,19 @@ const CustomersIndex = () => {
                 }
     
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
-                newActiveGroups.push(group);
+                newActiveGroups.push(subgroup || group);
+                // subgroup이 있으면 subgroup을 저장해야함
             }
     
             setActiveGroups(newActiveGroups);
+
+            setSelectedSubcategory({
+                ...selectedSubcategory,
+                [group]: subgroup,
+            });
         }
     };
-    
+
     function isGroupActive(group) {
         return activeGroups.includes(group) ? 'active' : '';
     }
@@ -242,41 +250,40 @@ const CustomersIndex = () => {
                                         <Row>
                                             <Col sm="12">
                                                 <Tab.Container onSelect={() => {}}>
-                                                    <Nav variant="pills" className="rounded-nav">
-                                                        {tab.group.map((group) =>
-                                                            group.subgroup ? (
-                                                                <NavDropdown
-                                                                    key={group.category}
-                                                                    title={activeSubcategory[group.category] || group.category}
-                                                                    id={`group-dropdown-${group.category}`}
-                                                                    className={activeSubcategory[group.category] ? 'show' : ''}
-                                                                >
-                                                                    {group.subgroup.map((subgroup) => (
-                                                                        <NavDropdown.Item
-                                                                            key={subgroup.subcategory}
-                                                                            eventKey={subgroup.subcategory}
-                                                                            onClick={() => {
-                                                                                handleSubgroupClick(subgroup.subcategory)
-                                                                                setActiveSubcategory({ [group.category]: subgroup.subcategory });
-                                                                            }}
-                                                                        >
-                                                                            {subgroup.subcategory}
-                                                                        </NavDropdown.Item>
-                                                                    ))}
-                                                                </NavDropdown>
-                                                            ) : (
-                                                                <Nav.Item key={group.category}>
-                                                                    <Nav.Link
-                                                                        eventKey={group.category}
-                                                                        onClick={() => handleSubgroupClick(group.category)}
-                                                                        className={isGroupActive(group.category)}
-                                                                    >
-                                                                        {group.category}
-                                                                    </Nav.Link>
-                                                                </Nav.Item>
-                                                            )
-                                                        )}
-                                                    </Nav>
+                                                  
+    <div className="d-flex flex-wrap mb-2">
+        {tab.group.map((group) =>
+            group.subgroup ? (
+                <Dropdown key={group.category}>
+                    <Dropdown.Toggle
+                        variant={selectedSubcategory[group.category] ? 'success' : 'light'} 
+                        className='rounded-pill me-2 mt-2'
+                    >
+                        {selectedSubcategory[group.category] || group.category}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {group.subgroup.map((subgroup) => (
+                            <Dropdown.Item
+                                key={subgroup.subcategory}
+                                onClick={() => handleSubgroupClick(group.category, subgroup.subcategory)}
+                            >
+                                {subgroup.subcategory}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+            ) : (
+            <Button
+                key={group.category}
+                variant={activeGroups.includes(group.category) ? 'success' : 'light'}
+                className='rounded-pill me-2 mt-2'
+                onClick={() => handleSubgroupClick(group.category, null)}
+            >
+                    {group.category}
+            </Button>
+            )
+        )}
+    </div>
 
     <Tab.Content>
         {tabContents.map((tab) => {
