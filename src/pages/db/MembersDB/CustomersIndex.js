@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Button, Card, Col, Dropdown, Nav, NavDropdown, Row, Spinner, Tab } from 'react-bootstrap';
 import { useState } from 'react';
-import data from './tabContents';
-import CustomersTableWrap from './CustomersTableWrap';
 import { firestoreDB } from '../../../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { query } from 'firebase/database';
+import data from './tabContents';
+import CustomersTableWrap from './CustomersTableWrap';
 
 const CustomersIndex = () => {
     const [filteredMembers, setFilteredMembers] = useState([]);
@@ -14,14 +14,16 @@ const CustomersIndex = () => {
     const [activeTab, setActiveTab] = useState('전체회원');
     const [activeGroups, setActiveGroups] = useState(['전체']);
     const [selectedSubcategory, setSelectedSubcategory] = useState({});
-
     const [isLoading, setIsLoading] = useState(false);
     const email = useSelector((state) => state.Auth?.user.email);
     const prevActiveTabRef = useRef(activeTab);
+    const selectedType = getTypeForActiveTab(activeTab);
+
 
     useEffect(() => {
         if (prevActiveTabRef.current !== activeTab) {
             setActiveGroups(['전체']);
+            setSelectedSubcategory({});
         }
 
         prevActiveTabRef.current = activeTab;
@@ -55,8 +57,6 @@ const CustomersIndex = () => {
         }
         return null;
     }
-
-    const selectedType = getTypeForActiveTab(activeTab);
 
     function applyTitleFilter(member, titleFilter) {
         switch (titleFilter) {
@@ -187,10 +187,9 @@ const CustomersIndex = () => {
     }
 
     const handleSubgroupClick = (group, subgroup) => {
-        
         if (group === '전체') {
             setActiveGroups(['전체']);
-            setSelectedSubcategory('')
+            setSelectedSubcategory({});
         } else {
             const isActive = activeGroups.includes(group);
             const isMaxReached = activeGroups.length >= 5;
@@ -205,22 +204,49 @@ const CustomersIndex = () => {
                 }
     
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
-                newActiveGroups.push(subgroup || group);
-                // subgroup이 있으면 subgroup을 저장해야함
+
+                const newItem = subgroup || group;
+
+                if (newActiveGroups.includes(newItem)) {
+                    newActiveGroups = newActiveGroups.filter((activeGroup) => activeGroup !== newItem);
+                } else {
+                    newActiveGroups.push(newItem);
+                }
             }
     
             setActiveGroups(newActiveGroups);
-
-            setSelectedSubcategory({
-                ...selectedSubcategory,
-                [group]: subgroup,
+    
+            setSelectedSubcategory((prevSelectedSubcategory) => {
+                const updatedSelectedSubcategory = { ...prevSelectedSubcategory };
+    
+                if (updatedSelectedSubcategory[group]) {
+                    const existingItems = updatedSelectedSubcategory[group];
+                    const newItem = subgroup || group;
+    
+                    if (!existingItems.includes(newItem)) {
+                        existingItems.push(newItem);
+                    } else {
+                        updatedSelectedSubcategory[group] = existingItems.filter(item => item !== newItem);
+                    }
+    
+                    if (updatedSelectedSubcategory[group].length === 0) {
+                        delete updatedSelectedSubcategory[group];
+                    }
+                } else {
+                    updatedSelectedSubcategory[group] = [subgroup || group];
+                }
+    
+                return updatedSelectedSubcategory;
             });
         }
     };
-
+    
     function isGroupActive(group) {
         return activeGroups.includes(group) ? 'active' : '';
     }
+
+    // console.log('activeGroups', activeGroups)
+    // console.log('selectedSubcategory', selectedSubcategory)
 
     return (
         <>
