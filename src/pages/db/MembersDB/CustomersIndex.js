@@ -245,9 +245,6 @@ const CustomersIndex = () => {
         return activeGroups.includes(group) ? 'active' : '';
     }
 
-    // console.log('activeGroups', activeGroups)
-    // console.log('selectedSubcategory', selectedSubcategory)
-
     return (
         <>
             <Card>
@@ -277,13 +274,14 @@ const CustomersIndex = () => {
                                             <Col sm="12">
                                                 <Tab.Container onSelect={() => {}}>
                                                   
-    <div className="d-flex flex-wrap mb-2">
+    <div className="d-flex flex-wrap mb-3">
         {tab.group.map((group) =>
             group.subgroup ? (
                 <Dropdown key={group.category}>
                     <Dropdown.Toggle
                         variant={selectedSubcategory[group.category] ? 'success' : 'light'} 
-                        className='rounded-pill me-2 mt-2'
+                        className='rounded-pill me-2 mt-2 p-auto'
+                        style={{ padding: '4px 16px' }}
                     >
                         {selectedSubcategory[group.category] || group.category}
                     </Dropdown.Toggle>
@@ -302,7 +300,8 @@ const CustomersIndex = () => {
             <Button
                 key={group.category}
                 variant={activeGroups.includes(group.category) ? 'success' : 'light'}
-                className='rounded-pill me-2 mt-2'
+                className='rounded-pill me-2 mt-2 p-auto'
+                style={{ padding: '4px 16px' }}
                 onClick={() => handleSubgroupClick(group.category, null)}
             >
                     {group.category}
@@ -372,7 +371,7 @@ const CustomersIndex = () => {
                             })}
                         </Tab.Content>
                         
-                        <p>{activeGroups}</p>
+                        {/* <p>{activeGroups}</p> */}
                         {isLoading ? (
                             <div className='position-relative' style={{height: '450px'}}>
                                 <div className='position-absolute top-50 start-50 translate-middle'>

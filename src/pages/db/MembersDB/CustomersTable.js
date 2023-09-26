@@ -15,7 +15,7 @@ import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
-    const [value, setValue] = React.useState(globalFilter);
+    const [value, setValue] = useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
@@ -140,8 +140,6 @@ const CustomersTable = (props) => {
 
     const selectedRowIds = dataTable.state.selectedRowIds;
     const selectedMemberIds = Object.keys(selectedRowIds).filter((id) => selectedRowIds[id]);
-
-    // console.log('Selected Member IDs:', selectedMemberIds);
     
     return (
         <>
@@ -152,7 +150,7 @@ const CustomersTable = (props) => {
                             현재 <span className="text-primary">{dataTable.data.length}명</span>의 회원분들이 함께 하고
                             있어요!
                         </h5>
-                        <h5>선택: {selectedMemberIds.length}명</h5>
+                        {/* <h5>선택: {selectedMemberIds.length}명</h5> */}
                     </div>
                 </div>
                 <div className="d-flex">
