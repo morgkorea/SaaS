@@ -200,10 +200,6 @@ const CustomersIndex = () => {
             if (isActive) {
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== group && activeGroup !== '전체');
             } else {
-                if (isMaxReached) {
-                    return
-                }
-    
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
 
                 const newItem = subgroup || group;
