@@ -15,10 +15,12 @@ const CustomersIndex = () => {
     const [activeGroups, setActiveGroups] = useState(['전체']);
     const [selectedSubcategory, setSelectedSubcategory] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
+
     const email = useSelector((state) => state.Auth?.user.email);
     const prevActiveTabRef = useRef(activeTab);
     const selectedType = getTypeForActiveTab(activeTab);
-
+    const isMaxReached = activeGroups.length >= 10;
 
     useEffect(() => {
         if (prevActiveTabRef.current !== activeTab) {
@@ -192,7 +194,6 @@ const CustomersIndex = () => {
             setSelectedSubcategory({});
         } else {
             const isActive = activeGroups.includes(group);
-            const isMaxReached = activeGroups.length >= 5;
     
             let newActiveGroups = [];
     
@@ -200,7 +201,7 @@ const CustomersIndex = () => {
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== group && activeGroup !== '전체');
             } else {
                 if (isMaxReached) {
-                    return;
+                    return
                 }
     
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
@@ -244,6 +245,17 @@ const CustomersIndex = () => {
     function isGroupActive(group) {
         return activeGroups.includes(group) ? 'active' : '';
     }
+
+    useEffect(() => {
+        if (isMaxReached) {
+            setShowMessage(true);
+            const timer = setTimeout(() => {
+                setShowMessage(false);
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isMaxReached]);
 
     return (
         <>
@@ -307,6 +319,13 @@ const CustomersIndex = () => {
                     {group.category}
             </Button>
             )
+        )}
+        {showMessage && (
+            <p style={{ paddingTop: '1rem' }} 
+                className='fw-normal fs-6 mb-0 align-middle text-danger'
+            >
+                최대 선택 개수는 10개입니다.
+            </p>
         )}
     </div>
 
