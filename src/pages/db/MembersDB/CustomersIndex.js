@@ -15,7 +15,7 @@ const CustomersIndex = () => {
     const [activeGroups, setActiveGroups] = useState(['전체']);
     const [selectedSubcategory, setSelectedSubcategory] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [showMessage, setShowMessage] = useState(false);
+    // const [showMessage, setShowMessage] = useState(false);
 
     const email = useSelector((state) => state.Auth?.user.email);
     const prevActiveTabRef = useRef(activeTab);
@@ -200,6 +200,10 @@ const CustomersIndex = () => {
             if (isActive) {
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== group && activeGroup !== '전체');
             } else {
+                // if (isMaxReached) {
+                //     return
+                // }
+    
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
 
                 const newItem = subgroup || group;
@@ -242,16 +246,16 @@ const CustomersIndex = () => {
         return activeGroups.includes(group) ? 'active' : '';
     }
 
-    useEffect(() => {
-        if (isMaxReached) {
-            setShowMessage(true);
-            const timer = setTimeout(() => {
-                setShowMessage(false);
-            }, 2000);
+    // useEffect(() => {
+    //     if (isMaxReached) {
+    //         setShowMessage(true);
+    //         const timer = setTimeout(() => {
+    //             setShowMessage(false);
+    //         }, 2000);
 
-            return () => clearTimeout(timer);
-        }
-    }, [isMaxReached]);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [isMaxReached]);
 
     return (
         <>
@@ -316,13 +320,13 @@ const CustomersIndex = () => {
             </Button>
             )
         )}
-        {showMessage && (
+        {/* {showMessage && (
             <p style={{ paddingTop: '1rem' }} 
                 className='fw-normal fs-6 mb-0 align-middle text-danger'
             >
                 최대 선택 개수는 10개입니다.
             </p>
-        )}
+        )} */}
     </div>
 
     <Tab.Content>
