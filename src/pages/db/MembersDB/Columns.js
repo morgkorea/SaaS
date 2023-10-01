@@ -23,15 +23,50 @@ const Created = ({ row }) => {
     const createdDate = row.original?.createdDate;
     const createdTime = row.original?.createdTime;
 
-    const date = createdDate ? new Date(createdDate) : null;
-    const time = createdTime ? new Date(`1970-01-01T${createdTime}`) : null;
+    let formattedDate = '';
+    let formattedTime = '';
 
-    const formattedDate = date ? `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일` : '';
-    const formattedTime = time ? `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}` : '';
+    if (createdDate) {
+        const dateParts = createdDate.includes('-') ? createdDate.split('-') : [createdDate.substr(0, 4), createdDate.substr(4, 2), createdDate.substr(6, 2)];
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1;
+        const day = parseInt(dateParts[2]);
+        const date = new Date(year, month, day);
+    
+        formattedDate = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+    }
+
+    if (createdTime) {
+        // 시간 형식이 "00:00:00"인 경우
+        if (createdTime.match(/^(am|pm) \d{1,2}:\d{2}$/i)) {
+            const timeParts = createdTime.split(' ');
+            const isPM = timeParts[0].toLowerCase() === 'pm';
+            const timeString = timeParts[1];
+            
+            const timeParts2 = timeString.split(':');
+            let hours = parseInt(timeParts2[0], 10);
+            const minutes = parseInt(timeParts2[1], 10);
+    
+            // PM 시간을 24시간 형식으로 변환
+            if (isPM && hours !== 12) {
+                hours += 12;
+            }
+    
+            formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        } else if (createdTime.match(/^\d{2}:\d{2}:\d{2}$/)) {
+            const timeParts = createdTime.split(':');
+            const hours = parseInt(timeParts[0], 10);
+            const minutes = parseInt(timeParts[1], 10);
+            // const seconds = parseInt(timeParts[2], 10);
+    
+            formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+    }
 
     return (
         <>
-            {formattedDate} {formattedTime}
+            <span style={{width: '110px', display: 'inline-block'}}>{formattedDate}</span>
+            <span>{formattedTime}</span>
         </>
     );
 };
