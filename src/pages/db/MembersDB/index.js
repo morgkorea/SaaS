@@ -7,6 +7,7 @@ import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 import AddModal from './AddModal.js';
 import CustomersIndex from './CustomersIndex.js';
+import { auth } from '../../../firebase/firebase';
 
 const MembersDB = () => {
     const email = useSelector((state) => state.Auth?.user.email);
@@ -110,33 +111,40 @@ const MembersDB = () => {
     };
 
     const smsSending = async () => {
-        try {
-            await fetch('/naverSensSendSMS', {
-                method: 'POST',
-                body: JSON.stringify({
-                    type: 'SMS', // SMS, LMS, MMS (소문자 가능)
-                    contentType: 'COMM', // optional  COMM: 일반메시지, AD: 광고메시지, default: COMM
-                    countryCode: '82', // Optional, SENS에서 제공하는 국가로의 발송만 가능, default: 82
-                    from: '01071781117', // Mandatory, 발신번호, 사전 등록된 발신번호만 사용 가능
-                    subject: '기본메시지 제목 TEST', // Optional, LMS, MMS에서만 사용 가능 최대 40byte
-                    content: '기본메시지 내용 TEST', // Mandatory	SMS: 최대 90byte, LMS, MMS: 최대 2000byte
-                    messages: [
-                        {
-                            to: '01071781117', // Mandatory(필수), messages.to	수신번호, -를 제외한 숫자만 입력 가능
-                            subject: '프론트 메지 테스트', // Optional, messages.subject	개별 메시지 제목, LMS, MMS에서만 사용 가능
-                            content: '프론트 메시지 테스트', // Optional, messages.content	개별 메시지 내용, SMS: 최대 80byte, LMS, MMS: 최대 2000byte
-                        },
-                    ],
-                }),
-            }).then((response) => console.log(response));
-        } catch (error) {
-            console.log(error.message);
-        }
+        console.log('sms sending excuted');
+        // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
+        // try {
+        //     await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+        //         method: 'POST',
+        //         body: JSON.stringify({
+        //             type: 'SMS', // SMS, LMS, MMS (소문자 가능)
+        //             contentType: 'COMM', // optional  COMM: 일반메시지, AD: 광고메시지, default: COMM
+        //             countryCode: '82', // Optional, SENS에서 제공하는 국가로의 발송만 가능, default: 82
+        //             from: '01071781117', // Mandatory, 발신번호, 사전 등록된 발신번호만 사용 가능
+        //             subject: '기본메시지 제목 TEST', // Optional, LMS, MMS에서만 사용 가능 최대 40byte
+        //             content: '기본메시지 내용 TEST', // Mandatory	SMS: 최대 90byte, LMS, MMS: 최대 2000byte
+        //             messages: [
+        //                 {
+        //                     to: '01071781117', // Mandatory(필수), messages.to	수신번호, -를 제외한 숫자만 입력 가능
+        //                     subject: 'process.env test', // Optional, messages.subject	개별 메시지 제목, LMS, MMS에서만 사용 가능
+        //                     content: '마지막 테스트...', // Optional, messages.content	개별 메시지 내용, SMS: 최대 80byte, LMS, MMS: 최대 2000byte
+        //                 },
+        //             ],
+        //
+        //         }),
+        //     }).then((response) => console.log(response));
+        // } catch (error) {
+        //     console.log(error.message);
+        // }
+        console.log('auth', auth);
+        console.log('currentUser', auth.currentUser);
     };
 
     useEffect(() => {
         updateDB();
     }, []);
+
+    console.log('location.origin', window.location.origin);
 
     return (
         <>
@@ -153,7 +161,7 @@ const MembersDB = () => {
                     <Customers currentMembers={currentMembers} />
                 </Col>
             </Row> */}
-            {/* <button onClick={smsSending}>SMS sending</button> */}
+            <button onClick={smsSending}>SMS sending</button>
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
