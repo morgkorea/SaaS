@@ -1,23 +1,7 @@
-import moment from 'moment';
 import React from 'react';
 
 const Table = ({ member }) => {
-    const formattedCreatedTime = member?.createdTime
-    ? (() => {
-        const timeA = moment(member.createdTime, "A hh:mm");
-        const timeHH = moment(member.createdTime, "HH:mm:ss");
-
-        if (timeA.isValid()) {
-            return timeA.format('A hh:mm');
-        } else if (timeHH.isValid()) {
-            const time = moment(member.createdTime, "HH:mm:ss");
-            return time.format('A hh:mm');
-        } else {
-            return 'Invalid date';
-        }
-    })()
-    : '';
-    
+    // 연락처
     const phoneNumber = member.phone;
     const digitsOnly = phoneNumber.replace(/\D/g, '');
     
@@ -31,6 +15,47 @@ const Table = ({ member }) => {
 
     const formattedPhoneNumber = phoneNumberDigits.replace(/(\d{3})(\d{4})(\d{4})/, '010-$2-$3');
     const phone = countryCode + formattedPhoneNumber;
+
+    // 생성일자
+    const createdDate = member?.createdDate;
+    const createdTime = member?.createdTime;
+
+    let formattedDate = '';
+    let formattedTime = '';
+
+    if (createdDate) {
+        const dateParts = createdDate.includes('-') ? createdDate.split('-') : [createdDate.substr(0, 4), createdDate.substr(4, 2), createdDate.substr(6, 2)];
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1;
+        const day = parseInt(dateParts[2]);
+        const date = new Date(year, month, day);
+    
+        formattedDate = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+    }
+
+    if (createdTime) {
+        if (createdTime.match(/^(am|pm) \d{1,2}:\d{2}$/i)) {
+            const timeParts = createdTime.split(' ');
+            const isPM = timeParts[0].toLowerCase() === 'pm';
+            const timeString = timeParts[1];
+            
+            const timeParts2 = timeString.split(':');
+            let hours = parseInt(timeParts2[0], 10);
+            const minutes = parseInt(timeParts2[1], 10);
+    
+            if (isPM && hours !== 12) {
+                hours += 12;
+            }
+    
+            formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        } else if (createdTime.match(/^\d{2}:\d{2}:\d{2}$/)) {
+            const timeParts = createdTime.split(':');
+            const hours = parseInt(timeParts[0], 10);
+            const minutes = parseInt(timeParts[1], 10);
+    
+            formattedTime = `${hours.toString().padStart(2, '0')}시 ${minutes.toString().padStart(2, '0')}분`;
+        }
+    }
 
     return (
         <>
@@ -52,11 +77,13 @@ const Table = ({ member }) => {
                     <tr>
                         <th>생년월일</th>
                         <td>
-                            {member.birthDate ? (
+                            {member.birthDate}
+                            {member?.birthDate && member?.age && (
                                 <>
-                                    {member.birthDate} / 만 {member.age}세
+                                    <span className='mx-1'>/</span>
+                                    만 {member.age}세
                                 </>
-                            ) : null}
+                            )}
                         </td>
                     </tr>
                     <tr>
@@ -66,13 +93,17 @@ const Table = ({ member }) => {
                     <tr>
                         <th>위치</th>
                         <td>
-                            {member?.region} {member?.location ? '/' : null} {member?.location}
+                            {member?.region}
+                            {member?.region && member?.location ? <span className='mx-1'>/</span> : null} 
+                            {member?.location}
                         </td>
                     </tr>
                     <tr>
                         <th>생성일자</th>
                         <td>
-                            {member?.createdDate} {member?.createdTime ? '/' : null} {formattedCreatedTime}
+                            {formattedDate} 
+                            {member?.createdDate && member?.createdTime ? <span className='mx-1'>/</span> : null} 
+                            {formattedTime}
                         </td>
                     </tr>
                     <tr>
@@ -100,7 +131,7 @@ const Table = ({ member }) => {
                         <td>{member?.hoursUse}</td>
                     </tr>
                     <tr>
-                        <th>부상 전적</th>
+                        <th>부상 부위</th>
                         <td>
                             {member?.injuriedPart}
                         </td>

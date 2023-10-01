@@ -39,12 +39,6 @@ const MENU_ITEMS = [
             //     parentKey: 'dashboards',
             //     // badge: { variant: 'danger', text: 'New' },
             // },
-            // {
-            //     key: 'ds-marketing2',
-            //     label: '마케팅',
-            //     url: '/dashboard/marketing2',
-            //     parentKey: 'dashboards',
-            // },
         ],
     },
     // { key: 'database', label: 'DB', isTitle: true },
@@ -75,6 +69,16 @@ const MENU_ITEMS = [
             },
         ],
     },
+    {
+        key: 'shop',
+        label: 'B2B전용몰',
+        isTitle: false,
+        icon: 'uil-desktop',
+        exUrl: 'https://smartstore.naver.com/bestify',
+        target: '_blank',
+        badge: { variant: 'danger', text: 'New' },
+    },
 ];
+
 
 export default MENU_ITEMS;
