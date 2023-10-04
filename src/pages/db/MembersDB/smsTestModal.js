@@ -21,7 +21,31 @@ const SmsTestModal = ({ modal, setModal }) => {
                     {' '}
                     <h3 className="modal-title">SMS</h3>
                 </Modal.Header>
-                <Modal.Body style={{ display: 'grid', placeItems: 'center', height: '300px' }}>modal body</Modal.Body>
+                <Modal.Body style={{ display: 'grid', placeItems: 'center', height: '300px' }}>
+                    <div>
+                        <div>
+                            <div>type</div>{' '}
+                            <div>
+                                <input type="radio" name="smsType" value="sms" /> <span>sms</span>
+                                <input type="radio" name="smsType" value="lms" />
+                                <span>lms</span>
+                                <input type="radio" name="smsType" value="mms" /> <span>mms</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div>수신번호</div>
+                            <div>
+                                <input type="text" />
+                            </div>
+                        </div>
+                        <div>
+                            <div>내용</div>
+                            <div>
+                                <input type="text" />
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
             </Modal>
         </>
     );
