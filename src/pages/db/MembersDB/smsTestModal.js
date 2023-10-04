@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 
-const smsTestModal = () => {
-    const [modal, setModal] = useState(false);
-    const [size, setSize] = useState(null);
-    const [className, setClassName] = useState(null);
-
-    const toggle = () => {
-        setModal(!modal);
-    };
-
+const SmsTestModal = ({ modal, setModal }) => {
     return (
-        <div>
-            <button>sms sending test</button>
-        </div>
+        <>
+            <Modal
+                show={modal}
+                onHide={() => {
+                    setModal(!modal);
+                }}
+                size={'lg'}
+                centered={true}>
+                <Modal.Header
+                    className="border-bottom-0"
+                    onHide={() => {
+                        setModal(!modal);
+                    }}
+                    style={{ margin: '12px 0px' }}
+                    closeButton>
+                    {' '}
+                    <h3 className="modal-title">SMS</h3>
+                </Modal.Header>
+                <Modal.Body style={{ display: 'grid', placeItems: 'center', height: '300px' }}>modal body</Modal.Body>
+            </Modal>
+        </>
     );
 };
+
+export default SmsTestModal;

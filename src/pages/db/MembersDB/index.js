@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Customers from './Customers.js';
@@ -9,9 +9,13 @@ import AddModal from './AddModal.js';
 import CustomersIndex from './CustomersIndex.js';
 import { auth } from '../../../firebase/firebase';
 
+import SmsTestModal from './SmsTestModal.js';
+
 const MembersDB = () => {
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
+
+    const [smsTestModal, setSmsTestModal] = useState(false);
 
     const updateMembersDB = (data) => {
         try {
@@ -146,6 +150,9 @@ const MembersDB = () => {
 
     console.log('location.origin', window.location.origin);
 
+    const smsToggle = () => {
+        setSmsTestModal(!smsTestModal);
+    };
     return (
         <>
             {/* 기존 회원DB Table */}
@@ -161,7 +168,8 @@ const MembersDB = () => {
                     <Customers currentMembers={currentMembers} />
                 </Col>
             </Row> */}
-            <button onClick={smsSending}>SMS sending</button>
+            <button onClick={smsToggle}>sms test modal open</button>
+            {smsTestModal && <SmsTestModal modal={smsTestModal} setModal={setSmsTestModal} />}
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">
@@ -174,7 +182,6 @@ const MembersDB = () => {
                     <CustomersIndex />
                 </Col>
             </Row>
-
             <AddModal />
         </>
     );
