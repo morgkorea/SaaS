@@ -365,9 +365,6 @@ const CustomersIndex = () => {
                                 );
                             })}
                         </Tab.Content>
-                        
-                        <p>{activeGroups}</p>
-
                         {isLoading ? (
                             <div className='position-relative' style={{height: '450px'}}>
                                 <div className='position-absolute top-50 start-50 translate-middle'>
