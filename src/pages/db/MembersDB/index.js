@@ -9,13 +9,9 @@ import AddModal from './AddModal.js';
 import CustomersIndex from './CustomersIndex.js';
 import { auth } from '../../../firebase/firebase';
 
-import SmsTestModal from './SmsTestModal.js';
-
 const MembersDB = () => {
     const email = useSelector((state) => state.Auth?.user.email);
     const memberRef = collection(firestoreDB, 'Users', email, 'Members');
-
-    const [smsTestModal, setSmsTestModal] = useState(false);
 
     const updateMembersDB = (data) => {
         try {
@@ -146,9 +142,6 @@ const MembersDB = () => {
         updateDB();
     }, []);
 
-    const smsToggle = () => {
-        setSmsTestModal(!smsTestModal);
-    };
     return (
         <>
             {/* 기존 회원DB Table */}
@@ -164,8 +157,7 @@ const MembersDB = () => {
                     <Customers currentMembers={currentMembers} />
                 </Col>
             </Row> */}
-            <button onClick={smsToggle}>sms test modal open</button>
-            {smsTestModal && <SmsTestModal modal={smsTestModal} setModal={setSmsTestModal} />}
+
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box">

@@ -13,14 +13,15 @@ import Pagination from './Pagination';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+import SmsTestModal from './SmsTestModal.js';
+
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
     const [value, setValue] = useState(globalFilter);
+
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
-
-    console.log(value);
 
     return (
         <div className={classNames(searchBoxClass)}>
@@ -59,11 +60,17 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
 });
 
 const CustomersTable = (props) => {
+    const [smsTestModal, setSmsTestModal] = useState(false);
+
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
+
+    const smsToggle = () => {
+        setSmsTestModal(!smsTestModal);
+    };
 
     const dataTable = useTable(
         {
@@ -142,18 +149,18 @@ const CustomersTable = (props) => {
     const selectedRowIds = dataTable.state.selectedRowIds;
     const selectedMemberIds = Object.keys(selectedRowIds).filter((id) => selectedRowIds[id]);
 
-    useEffect(() => {
-        const selectedMember = [];
+    const checkedMembers = [];
 
-        selectedMemberIds.forEach((id) => {
-            selectedMember.push(props.data[Number(id)]);
-        });
+    selectedMemberIds.forEach((id) => {
+        checkedMembers.push(props.data[Number(id)]);
+    });
 
-        console.log('checked and selected members: ', selectedMember);
-    }, [selectedMemberIds]);
-
+    console.log('checked and selected members: ', checkedMembers);
     return (
         <>
+            {smsTestModal && (
+                <SmsTestModal modal={smsTestModal} setModal={setSmsTestModal} checkedMembers={checkedMembers} />
+            )}
             <div className="d-flex justify-content-between mb-1">
                 <div className="d-flex">
                     <div>
@@ -182,7 +189,9 @@ const CustomersTable = (props) => {
                                     <b>서비스 준비중</b>입니다.
                                 </Tooltip>
                             }>
-                            <Button>문자 메시지 전송</Button>
+                            <Button onClick={smsToggle} disabled={checkedMembers.length ? false : true}>
+                                문자 메시지 전송
+                            </Button>
                         </OverlayTrigger>
                     </div>
                 </div>
