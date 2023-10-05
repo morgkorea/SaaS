@@ -45,9 +45,9 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
 
         const handleSmsRequestData = () => {
             const requestData = {
-                type: '(SMS | LMS | MMS)',
-                contentType: '(COMM | AD)',
-                countryCode: 'string',
+                type: messageType,
+                contentType: 'COMM',
+                countryCode: '+82',
                 from: 'string',
                 subject: 'string',
                 content: 'string',
