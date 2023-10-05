@@ -5,10 +5,11 @@ import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
 import moment from 'moment';
 
-const SmsTestModal = ({ modal, setModal }) => {
+const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
+    console.log(checkedMembers);
     const [messageType, setMessageType] = useState('sms');
     const [reserveType, setReserveType] = useState(false);
-    const [receivingNumber, setReceivingNumber] = useState(['01077778888', '01092933949']);
+    const [receivingMembers, setReceivingMembers] = useState([...checkedMembers]);
     const [messageContent, setMessageContent] = useState('');
     const [messageTitle, setMessageTitle] = useState('');
     const [messageContentBytes, setMessageContentBytes] = useState(90);
@@ -38,7 +39,59 @@ const SmsTestModal = ({ modal, setModal }) => {
         }
     };
 
-    const smsTypeHandler = () => {};
+    const smsSending = async () => {
+        console.log('sms sending excuted');
+        // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
+
+        const handleSmsRequestData = () => {
+            const requestData = {
+                type: '(SMS | LMS | MMS)',
+                contentType: '(COMM | AD)',
+                countryCode: 'string',
+                from: 'string',
+                subject: 'string',
+                content: 'string',
+                messages: [
+                    {
+                        to: 'string',
+                        subject: 'string',
+                        content: 'string',
+                    },
+                ],
+                files: [
+                    {
+                        fileId: 'string',
+                    },
+                ],
+                reserveTime: 'yyyy-MM-dd HH:mm',
+                reserveTimeZone: 'string',
+            };
+        };
+
+        // try {
+        //     await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+        //         method: 'POST',
+        //         body: JSON.stringify({
+        //             type: 'SMS', // SMS, LMS, MMS (소문자 가능)
+        //             contentType: 'COMM', // optional  COMM: 일반메시지, AD: 광고메시지, default: COMM
+        //             countryCode: '82', // Optional, SENS에서 제공하는 국가로의 발송만 가능, default: 82
+        //             from: '01071781117', // Mandatory, 발신번호, 사전 등록된 발신번호만 사용 가능
+        //             subject: '기본메시지 제목 TEST', // Optional, LMS, MMS에서만 사용 가능 최대 40byte
+        //             content: '기본메시지 내용 TEST', // Mandatory	SMS: 최대 90byte, LMS, MMS: 최대 2000byte
+        //             messages: [
+        //                 {
+        //                     to: '01071781117', // Mandatory(필수), messages.to	수신번호, -를 제외한 숫자만 입력 가능
+        //                     subject: 'process.env test', // Optional, messages.subject	개별 메시지 제목, LMS, MMS에서만 사용 가능
+        //                     content: '마지막 테스트...', // Optional, messages.content	개별 메시지 내용, SMS: 최대 80byte, LMS, MMS: 최대 2000byte
+        //                 },
+        //             ],
+        //
+        //         }),
+        //     }).then((response) => console.log(response));
+        // } catch (error) {
+        //     console.log(error.message);
+        // }
+    };
 
     useEffect(() => {
         switch (messageType) {
@@ -116,10 +169,14 @@ const SmsTestModal = ({ modal, setModal }) => {
                         </div>
                         <div>
                             <div>수신번호</div>
-                            <span>{receivingNumber.length}개</span>
+                            <span>{receivingMembers.length}개</span>
                             <div>
-                                {receivingNumber.map((number, index) => {
-                                    return <span key={number}>{`${index + 1}. ${number}`}</span>;
+                                {receivingMembers.map((number, index) => {
+                                    return (
+                                        <span key={number.phone}>{`${index + 1}. ${
+                                            number.name + ' ' + number.phone
+                                        }`}</span>
+                                    );
                                 })}{' '}
                             </div>
                         </div>
