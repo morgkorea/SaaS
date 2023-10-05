@@ -43,29 +43,42 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
         console.log('sms sending excuted');
         // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
 
-        const handleSmsRequestData = () => {
-            const requestData = {
+        const messages = checkedMembers.map((member) => {
+            const phone = member.phone.relpace('-');
+            const subject = messageType !== 'sms' ? messageTitle : '';
+            const content = messageContent;
+            return {
+                to: phone,
+                subject: subject,
+                content: content,
+            };
+        });
+
+        const requestData = {
+            method: 'POST',
+            body: JSON.stringify({
                 type: messageType,
                 contentType: 'COMM',
-                countryCode: '+82',
-                from: 'string',
-                subject: 'string',
-                content: 'string',
-                messages: [
-                    {
-                        to: 'string',
-                        subject: 'string',
-                        content: 'string',
-                    },
-                ],
-                files: [
-                    {
-                        fileId: 'string',
-                    },
-                ],
-                reserveTime: 'yyyy-MM-dd HH:mm',
-                reserveTimeZone: 'string',
-            };
+                countryCode: '82',
+                from: '01071781117',
+                subject: '',
+                content: '',
+                messages: [...messages],
+                // messages: [
+                //     {
+                //         to: '',
+                //         subject: '',
+                //         content: '',
+                //     },
+                // ],
+                // files: [
+                //     {
+                //         fileId: '',
+                //     },
+                // ],
+                // reserveTime: 'yyyy-MM-dd HH:mm',
+                // reserveTimeZone: 'Asia/Seoul',
+            }),
         };
 
         // try {
