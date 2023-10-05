@@ -20,6 +20,8 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
         setGlobalFilter(value || undefined);
     }, 200);
 
+    console.log(value);
+
     return (
         <div className={classNames(searchBoxClass)}>
             <span className="d-flex align-items-center form-control">
@@ -63,12 +65,11 @@ const CustomersTable = (props) => {
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
 
-
     const dataTable = useTable(
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { 
+            initialState: {
                 pageSize: props['pageSize'] || 5,
                 selectedRowIds: {}, // 초기 선택 상태 설정
             },
@@ -86,15 +87,15 @@ const CustomersTable = (props) => {
                         Header: ({ getToggleAllPageRowsSelectedProps }) => (
                             <div style={{ display: 'flex' }}>
                                 <IndeterminateCheckbox
-                                    {...getToggleAllPageRowsSelectedProps()} 
+                                    {...getToggleAllPageRowsSelectedProps()}
                                     onClick={() => toggleAllRows(dataTable.toggleAllRowsSelected)}
                                 />
                             </div>
                         ),
                         Cell: ({ row }) => (
                             <div>
-                                <IndeterminateCheckbox 
-                                    {...row.getToggleRowSelectedProps()} 
+                                <IndeterminateCheckbox
+                                    {...row.getToggleRowSelectedProps()}
                                     onClick={() => toggleSingleRow(row)}
                                 />
                             </div>
@@ -140,7 +141,17 @@ const CustomersTable = (props) => {
 
     const selectedRowIds = dataTable.state.selectedRowIds;
     const selectedMemberIds = Object.keys(selectedRowIds).filter((id) => selectedRowIds[id]);
-    
+
+    useEffect(() => {
+        const selectedMember = [];
+
+        selectedMemberIds.forEach((id) => {
+            selectedMember.push(props.data[Number(id)]);
+        });
+
+        console.log('checked and selected members: ', selectedMember);
+    }, [selectedMemberIds]);
+
     return (
         <>
             <div className="d-flex justify-content-between mb-1">
@@ -154,7 +165,7 @@ const CustomersTable = (props) => {
                     </div>
                 </div>
                 <div className="d-flex">
-                    <div> 
+                    <div>
                         {isSearchable && (
                             <GlobalFilter
                                 preGlobalFilteredRows={dataTable.preGlobalFilteredRows}
@@ -164,9 +175,13 @@ const CustomersTable = (props) => {
                             />
                         )}
                     </div>
-                    <div className='ms-2'>
+                    <div className="ms-2">
                         <OverlayTrigger
-                            overlay={<Tooltip id="tooltip-disabled"><b>서비스 준비중</b>입니다.</Tooltip>}>
+                            overlay={
+                                <Tooltip id="tooltip-disabled">
+                                    <b>서비스 준비중</b>입니다.
+                                </Tooltip>
+                            }>
                             <Button>문자 메시지 전송</Button>
                         </OverlayTrigger>
                     </div>

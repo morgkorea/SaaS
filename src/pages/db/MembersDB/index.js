@@ -140,15 +140,11 @@ const MembersDB = () => {
         // } catch (error) {
         //     console.log(error.message);
         // }
-        console.log('auth', auth);
-        console.log('currentUser', auth.currentUser);
     };
 
     useEffect(() => {
         updateDB();
     }, []);
-
-    console.log('location.origin', window.location.origin);
 
     const smsToggle = () => {
         setSmsTestModal(!smsTestModal);
