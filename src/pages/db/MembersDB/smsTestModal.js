@@ -156,13 +156,13 @@ const SmsTestModal = ({ modal, setModal }) => {
                                         type="time"
                                         name="reserveTime"
                                         value={reserveTime}
-                                        min={reserveTime}
+                                        min={moment().add(5, 'minutes').format('HH:mm')}
                                         onChange={(event) => {
                                             const pickedTime = event.target.value;
                                             if (pickedTime > reserveTime) {
                                                 setReserveTime(event.target.value);
                                             } else {
-                                                setReserveTime(reserveTime);
+                                                setReserveTime(moment().add(5, 'minutes').format('HH:mm'));
                                             }
                                         }}
                                     />
