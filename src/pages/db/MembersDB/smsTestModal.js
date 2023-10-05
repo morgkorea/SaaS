@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import HyperDatepicker from '../../../components/Datepicker';
 import FormInput from '../../../components/FormInput';
@@ -9,7 +9,9 @@ const SmsTestModal = ({ modal, setModal }) => {
     const [reserveType, setReserveType] = useState(false);
     const [receivingNumber, setReceivingNumber] = useState(['01077778888', '01092933949']);
     const [messageContent, setMessageContent] = useState('');
-    const [messageContentBytes, setMessageContentBytes] = useState(50);
+    const [messageTitle, setMessageTitle] = useState('');
+    const [messageContentBytes, setMessageContentBytes] = useState(90);
+
     const [reserveDate, setReserveDate] = useState(moment().format('YYYY-MM-DD'));
     const [reserveTime, setReserveTime] = useState(moment().add(5, 'minutes').format('HH:mm'));
 
@@ -18,19 +20,35 @@ const SmsTestModal = ({ modal, setModal }) => {
     const calculateMessageContentBytes = (str) => {
         const encoder = new TextEncoder('utf-8');
         const byteArray = encoder.encode(str);
-        console.log(byteArray.length);
         return byteArray.length;
     };
 
-    const limitMessageContent = (content) => {
+    const limitMessageBytes = (event) => {
+        const content = event.target.value;
+        const name = event.target.name;
         const byteLength = calculateMessageContentBytes(content);
 
-        if (byteLength <= messageContentBytes) {
+        if (name === 'messageTitle' && byteLength <= 40) {
+            setMessageTitle(content);
+        }
+
+        if (name === 'messageContent' && byteLength <= messageContentBytes) {
             setMessageContent(content);
         }
     };
 
     const smsTypeHandler = () => {};
+
+    useEffect(() => {
+        switch (messageType) {
+            case 'sms':
+                return setMessageContentBytes(90);
+            case 'lms':
+                return setMessageContentBytes(2000);
+            case 'mms':
+                return setMessageContentBytes(2000);
+        }
+    }, [messageType]);
 
     return (
         <>
@@ -51,7 +69,7 @@ const SmsTestModal = ({ modal, setModal }) => {
                     {' '}
                     <h3 className="modal-title">SMS</h3>
                 </Modal.Header>
-                <Modal.Body style={{ display: 'grid', placeItems: 'center', height: '300px' }}>
+                <Modal.Body style={{ display: 'grid', placeItems: 'center' }}>
                     <div>
                         <div>
                             <div>type</div>{' '}
@@ -97,22 +115,46 @@ const SmsTestModal = ({ modal, setModal }) => {
                         </div>
                         <div>
                             <div>수신번호</div>
+                            <span>{receivingNumber.length}개</span>
                             <div>
                                 {receivingNumber.map((number, index) => {
                                     return <span key={number}>{`${index + 1}. ${number}`}</span>;
                                 })}{' '}
                             </div>
                         </div>
-                        <div>
-                            <div>내용</div>
+                        {messageType !== 'sms' && (
                             <div>
-                                <input
-                                    type="text"
-                                    value={messageContent}
-                                    onChange={(event) => {
-                                        limitMessageContent(event.target.value);
-                                    }}
-                                />
+                                <div>제목</div>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="messageTitle"
+                                        value={messageTitle}
+                                        min="40"
+                                        onChange={(event) => {
+                                            limitMessageBytes(event);
+                                        }}
+                                    />
+                                </div>
+                                <span>{calculateMessageContentBytes(messageTitle)}/40bytes</span>
+                            </div>
+                        )}
+                        <div>
+                            <div>
+                                <span>내용</span>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="messageContent"
+                                        value={messageContent}
+                                        onChange={(event) => {
+                                            limitMessageBytes(event);
+                                        }}
+                                    />
+                                </div>
+                                <span>
+                                    {calculateMessageContentBytes(messageContent)}/{messageContentBytes}bytes
+                                </span>
                             </div>
                         </div>
                         <div>
