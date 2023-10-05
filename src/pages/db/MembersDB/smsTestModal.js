@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import HyperDatepicker from '../../../components/Datepicker';
+
 import FormInput from '../../../components/FormInput';
+import FileUploader from '../../../components/FileUploader';
 import moment from 'moment';
 
 const SmsTestModal = ({ modal, setModal }) => {
@@ -15,7 +16,7 @@ const SmsTestModal = ({ modal, setModal }) => {
     const [reserveDate, setReserveDate] = useState(moment().format('YYYY-MM-DD'));
     const [reserveTime, setReserveTime] = useState(moment().add(5, 'minutes').format('HH:mm'));
 
-    console.log(reserveDate, '  ', reserveTime, 'reserveDateTime');
+    const [uploadFiles, setUploadFiles] = useState([]);
 
     const calculateMessageContentBytes = (str) => {
         const encoder = new TextEncoder('utf-8');
@@ -122,6 +123,21 @@ const SmsTestModal = ({ modal, setModal }) => {
                                 })}{' '}
                             </div>
                         </div>
+                        {messageType === 'mms' && (
+                            <div>
+                                <FileUploader
+                                    onFileUpload={(files) => {
+                                        setUploadFiles(files);
+                                    }}
+                                    accept="image/jpeg, image/jpeg"
+                                    maxFiles={3}
+                                    maxSize={30000}
+                                    filenameMaxLength={40}
+                                    showPreview={true}
+                                    dropzoneText="첨부 가능한 파일 확장자는 .jpg, .jpeg 입니다. .jpg, .jpeg 파일이 포함된 압축파일(zip, rar..)은 첨부 되지 않습니다. 첨부파일은 개당 최대 300 KB의 제한이 있으며, 총 3장으로 제한됩니다."
+                                />
+                            </div>
+                        )}
                         {messageType !== 'sms' && (
                             <div>
                                 <div>제목</div>

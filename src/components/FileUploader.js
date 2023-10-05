@@ -7,10 +7,24 @@ import Dropzone from 'react-dropzone';
 type FileUploaderProps = {
     onFileUpload?: (files: any) => void,
     showPreview?: boolean,
+    dropzoneText?: string,
+    maxSize: number,
+    filenameMaxLength: number,
+    maxFiles: number,
 };
 
 const FileUploader = (props: FileUploaderProps): React$Element<any> => {
     const [selectedFiles, setSelectedFiles] = useState([]);
+
+    /**
+     * Handled the accepted number of files
+     */
+
+    if (props.maxFiles && selectedFiles.length > props.maxFiles) {
+        const allFiles = [...selectedFiles].slice(0, props.maxFiles);
+        alert('파일은 최대 ' + props.maxFiles + '개 까지 첨부가능합니다.');
+        setSelectedFiles(allFiles);
+    }
 
     /**
      * Handled the accepted files and shows the preview
@@ -25,10 +39,25 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
                     formattedSize: formatBytes(file.size),
                 })
             );
-
             allFiles = [...selectedFiles];
             allFiles.push(...files);
             setSelectedFiles(allFiles);
+        }
+
+        /**
+         * Handled the limited filename length
+         */
+
+        if (props.filenameMaxLength) {
+            const isAllow = allFiles.every((file) => {
+                return file.name.length <= props.filenameMaxLength;
+            });
+
+            if (!isAllow) {
+                allFiles = [...selectedFiles];
+                setSelectedFiles(allFiles);
+                alert('파일 이름의 최대 길이(' + props.filenameMaxLength + '자)를 초과 했습니다.');
+            }
         }
 
         if (props.onFileUpload) props.onFileUpload(allFiles);
@@ -56,6 +85,10 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
         setSelectedFiles(newFiles);
     };
 
+    /**
+     * limited files sizes
+     */
+
     return (
         <>
             <Dropzone {...props} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
@@ -63,12 +96,18 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
                     <div className="dropzone">
                         <div className="dz-message needsclick" {...getRootProps()}>
                             <input {...getInputProps()} />
-                            <i className="h3 text-muted dripicons-cloud-upload"></i>
-                            <h5>Drop files here or click to upload.</h5>
-                            <span className="text-muted font-13">
-                                (This is just a demo dropzone. Selected files are <strong>not</strong> actually
-                                uploaded.)
-                            </span>
+                            {props.dropzoneText ? (
+                                <div>{props.dropzoneText}</div>
+                            ) : (
+                                <div>
+                                    <i className="h3 text-muted dripicons-cloud-upload"></i>
+                                    <h5>Drop files here or click to upload.</h5>
+                                    <span className="text-muted font-13">
+                                        (This is just a demo dropzone. Selected files are <strong>not</strong> actually
+                                        uploaded.)
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
