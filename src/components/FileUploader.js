@@ -11,6 +11,8 @@ type FileUploaderProps = {
     maxSize: number,
     filenameMaxLength: number,
     maxFiles: number,
+    removeDuplicatedFiles: boolean,
+    dropzoneText: boolean,
 };
 
 const FileUploader = (props: FileUploaderProps): React$Element<any> => {
@@ -19,7 +21,6 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
     /**
      * Handled the accepted number of files
      */
-
     if (props.maxFiles && selectedFiles.length > props.maxFiles) {
         const allFiles = [...selectedFiles].slice(0, props.maxFiles);
         alert('파일은 최대 ' + props.maxFiles + '개 까지 첨부가능합니다.');
@@ -49,16 +50,48 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
          */
 
         if (props.filenameMaxLength) {
-            const isAllow = allFiles.every((file) => {
+            const isAllow = allFiles?.every((file) => {
                 return file.name.length <= props.filenameMaxLength;
             });
 
             if (!isAllow) {
-                allFiles = [...selectedFiles];
-                setSelectedFiles(allFiles);
+                setSelectedFiles([...selectedFiles]);
                 alert('파일 이름의 최대 길이(' + props.filenameMaxLength + '자)를 초과 했습니다.');
             }
         }
+
+        //****************** blob ? base64 인코딩 문자열로 변환하여 중복 비교할것인지 리서치 필요
+
+        /**
+         * Handled removeDuplicatedFiles
+         */
+
+        // if (props.removeDuplicatedFiles) {
+        //     const stringifyFiles = [...selectedFiles, ...allFiles].map((file) => JSON.stringify(file));
+
+        //     const removeDuplicatedFiles = [...new Set(stringifyFiles)];
+
+        //     const array = ['C', 'A', 'B', 'A', 'C', 'D', 'C', 'C', 'E', 'D'];
+
+        //     let result1 = [...new Set(array)];
+        //     console.log('allFiles', allFiles);
+        //     console.log(removeDuplicatedFiles);
+        // }
+
+        // if (props.removeDuplicatedFiles && selectedFiles.length > 0) {
+        //     const uniqueMap = new Map();
+
+        //     const uploadedFiles = [...selectedFiles, ...allFiles];
+        //     console.log('remove duplicated files excuted', uploadedFiles);
+        //     uploadedFiles.forEach((file) => {
+        //         const stringifyFile = JSON.stringify(file);
+        //         uniqueMap.set(stringifyFile, file);
+        //         console.log('stringifyFile : ', stringifyFile);
+        //     });
+
+        //     const removeDuplicateFiles = Array.from(uniqueMap.values());
+        //     setSelectedFiles([...removeDuplicateFiles]);
+        // }
 
         if (props.onFileUpload) props.onFileUpload(allFiles);
     };

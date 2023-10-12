@@ -6,7 +6,6 @@ import FileUploader from '../../../components/FileUploader';
 import moment from 'moment';
 
 const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
-    console.log(checkedMembers);
     const [messageType, setMessageType] = useState('sms');
     const [reserveType, setReserveType] = useState(false);
     const [receivingMembers, setReceivingMembers] = useState([...checkedMembers]);
@@ -15,7 +14,7 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
     const [messageContentBytes, setMessageContentBytes] = useState(90);
 
     const [reserveDate, setReserveDate] = useState(moment().format('YYYY-MM-DD'));
-    const [reserveTime, setReserveTime] = useState(moment().add(5, 'minutes').format('HH:mm'));
+    const [reserveTime, setReserveTime] = useState(moment().add(11, 'minutes').format('HH:mm'));
 
     const [uploadFiles, setUploadFiles] = useState([]);
 
@@ -40,71 +39,69 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
     };
 
     const smsSending = async () => {
-        console.log('sms sending excuted');
         // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
+        // const messages = checkedMembers.map((member) => {
+        //     const phone = member.phone.replace(/-/g, '');
+        //     return {
+        //         to: phone,
+        //     };
+        // });
 
-        const messages = checkedMembers.map((member) => {
-            const phone = member.phone.relpace('-');
-            const subject = messageType !== 'sms' ? messageTitle : '';
-            const content = messageContent;
-            return {
-                to: phone,
-                subject: subject,
-                content: content,
-            };
-        });
+        // console.log('messages : ', messages);
 
-        const requestData = {
-            method: 'POST',
-            body: JSON.stringify({
-                type: messageType,
-                contentType: 'COMM',
-                countryCode: '82',
-                from: '01071781117',
-                subject: '',
-                content: '',
-                messages: [...messages],
-                // messages: [
-                //     {
-                //         to: '',
-                //         subject: '',
-                //         content: '',
-                //     },
-                // ],
-                // files: [
-                //     {
-                //         fileId: '',
-                //     },
-                // ],
-                // reserveTime: 'yyyy-MM-dd HH:mm',
-                // reserveTimeZone: 'Asia/Seoul',
-            }),
-        };
+        // const requestData = {
+        //     type: messageType,
+        //     from: '01071781117',
+        //     content: messageContent,
+        //     messages: [...messages],
+        //     // messages: [
+        //     //     {
+        //     //         to: '',
+        //     //         subject: '',
+        //     //         content: '',
+        //     //     },
+        //     // ],
+        //     // files: [
+        //     //     {
+        //     //         fileId: '',
+        //     //     },
+        //     // ],
+        //     // reserveTime: 'yyyy-MM-dd HH:mm',
+        //     // reserveTimeZone: 'Asia/Seoul',
+        // };
 
-        // try {
-        //     await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
-        //         method: 'POST',
-        //         body: JSON.stringify({
-        //             type: 'SMS', // SMS, LMS, MMS (소문자 가능)
-        //             contentType: 'COMM', // optional  COMM: 일반메시지, AD: 광고메시지, default: COMM
-        //             countryCode: '82', // Optional, SENS에서 제공하는 국가로의 발송만 가능, default: 82
-        //             from: '01071781117', // Mandatory, 발신번호, 사전 등록된 발신번호만 사용 가능
-        //             subject: '기본메시지 제목 TEST', // Optional, LMS, MMS에서만 사용 가능 최대 40byte
-        //             content: '기본메시지 내용 TEST', // Mandatory	SMS: 최대 90byte, LMS, MMS: 최대 2000byte
-        //             messages: [
-        //                 {
-        //                     to: '01071781117', // Mandatory(필수), messages.to	수신번호, -를 제외한 숫자만 입력 가능
-        //                     subject: 'process.env test', // Optional, messages.subject	개별 메시지 제목, LMS, MMS에서만 사용 가능
-        //                     content: '마지막 테스트...', // Optional, messages.content	개별 메시지 내용, SMS: 최대 80byte, LMS, MMS: 최대 2000byte
-        //                 },
-        //             ],
-        //
-        //         }),
-        //     }).then((response) => console.log(response));
-        // } catch (error) {
-        //     console.log(error.message);
+        // if (messageType !== 'sms') {
+        //     requestData.subject = messageTitle;
+
+        //     if (messageType === 'mms') {
+
+        //         console.log('uploadFiles : ', uploadFiles);
+        //     }
         // }
+
+        // if (reserveType) {
+        //     requestData.reserveTime = `${reserveDate} ${reserveTime}`;
+        //     requestData.reserveTimeZone = 'Asia/Seoul';
+        // }
+
+        // console.log(requestData);
+
+        const uploadImageFiles = uploadFiles?.map((file) => {
+            if (file.name) {
+                console.log('file : ', file);
+            }
+        });
+        try {
+            // await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+            //     method: 'POST',
+            //     body: JSON.stringify({ ...requestData }),
+            // }).then((response) => console.log(response));
+        } catch (error) {
+            console.log(error.message);
+        }
     };
+
+    const fetchUploadImageFiles = (files) => {};
 
     useEffect(() => {
         switch (messageType) {
@@ -204,6 +201,7 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
                                     maxSize={30000}
                                     filenameMaxLength={40}
                                     showPreview={true}
+                                    removeDuplicatedFiles={true}
                                     dropzoneText="첨부 가능한 파일 확장자는 .jpg, .jpeg 입니다. .jpg, .jpeg 파일이 포함된 압축파일(zip, rar..)은 첨부 되지 않습니다. 첨부파일은 개당 최대 300 KB의 제한이 있으며, 총 3장으로 제한됩니다."
                                 />
                             </div>
@@ -284,18 +282,22 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
                                         type="time"
                                         name="reserveTime"
                                         value={reserveTime}
-                                        min={moment().add(5, 'minutes').format('HH:mm')}
+                                        min={moment().add(11, 'minutes').format('HH:mm')}
                                         onChange={(event) => {
                                             const pickedTime = event.target.value;
-                                            if (pickedTime > reserveTime) {
+                                            const currentTime = moment().add(11, 'minutes').format('HH:mm');
+                                            if (pickedTime > currentTime) {
                                                 setReserveTime(event.target.value);
                                             } else {
-                                                setReserveTime(moment().add(5, 'minutes').format('HH:mm'));
+                                                setReserveTime(moment().add(11, 'minutes').format('HH:mm'));
                                             }
                                         }}
                                     />
                                 </div>
                             )}
+                        </div>
+                        <div>
+                            <Button onClick={smsSending}>보내기</Button>
                         </div>
                     </div>
                 </Modal.Body>
