@@ -43,6 +43,17 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
             allFiles = [...selectedFiles];
             allFiles.push(...files);
             setSelectedFiles(allFiles);
+
+            const encodedBase64 = [...selectedFiles].map((file) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64Data = reader.result;
+                    console.log(base64Data);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            console.log('encodedBase64 : ', encodedBase64);
         }
 
         /**
@@ -51,6 +62,7 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
 
         if (props.filenameMaxLength) {
             const isAllow = allFiles?.every((file) => {
+                console.log(file);
                 return file.name.length <= props.filenameMaxLength;
             });
 
