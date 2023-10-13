@@ -84,18 +84,10 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
 
         //     const removeDuplicatedFiles = [...new Set(stringifyFiles)];
 
-        //     const array = ['C', 'A', 'B', 'A', 'C', 'D', 'C', 'C', 'E', 'D'];
-
-        //     let result1 = [...new Set(array)];
-        //     console.log('allFiles', allFiles);
-        //     console.log(removeDuplicatedFiles);
-        // }
-
         // if (props.removeDuplicatedFiles && selectedFiles.length > 0) {
         //     const uniqueMap = new Map();
 
         //     const uploadedFiles = [...selectedFiles, ...allFiles];
-        //     console.log('remove duplicated files excuted', uploadedFiles);
         //     uploadedFiles.forEach((file) => {
         //         const stringifyFile = JSON.stringify(file);
         //         uniqueMap.set(stringifyFile, file);
