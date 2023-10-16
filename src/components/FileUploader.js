@@ -43,18 +43,6 @@ const FileUploader = (props: FileUploaderProps): React$Element<any> => {
             allFiles = [...selectedFiles];
             allFiles.push(...files);
             setSelectedFiles(allFiles);
-
-            // blob 데이터 base64 인코딩 문자열  변환
-            const encodedBase64 = [...selectedFiles].map((file) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const base64Data = reader.result;
-                    console.log(base64Data);
-                };
-                reader.readAsDataURL(file);
-            });
-
-            console.log('encodedBase64 : ', encodedBase64);
         }
 
         /**
