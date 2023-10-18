@@ -15,12 +15,10 @@ const CustomersIndex = () => {
     const [activeGroups, setActiveGroups] = useState(['전체']);
     const [selectedSubcategory, setSelectedSubcategory] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    // const [showMessage, setShowMessage] = useState(false);
 
     const email = useSelector((state) => state.Auth?.user.email);
     const prevActiveTabRef = useRef(activeTab);
     const selectedType = getTypeForActiveTab(activeTab);
-    const isMaxReached = activeGroups.length >= 10;
 
     useEffect(() => {
         if (prevActiveTabRef.current !== activeTab) {
@@ -200,10 +198,6 @@ const CustomersIndex = () => {
             if (isActive) {
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== group && activeGroup !== '전체');
             } else {
-                // if (isMaxReached) {
-                //     return
-                // }
-    
                 newActiveGroups = activeGroups.filter((activeGroup) => activeGroup !== '전체');
 
                 const newItem = subgroup || group;
@@ -246,17 +240,6 @@ const CustomersIndex = () => {
         return activeGroups.includes(group) ? 'active' : '';
     }
 
-    // useEffect(() => {
-    //     if (isMaxReached) {
-    //         setShowMessage(true);
-    //         const timer = setTimeout(() => {
-    //             setShowMessage(false);
-    //         }, 2000);
-
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [isMaxReached]);
-
     return (
         <>
             <Card>
@@ -295,7 +278,7 @@ const CustomersIndex = () => {
                         className='rounded-pill me-2 mt-2 p-auto'
                         style={{ padding: '4px 16px' }}
                     >
-                        {selectedSubcategory[group.category] || group.category}
+                        {selectedSubcategory[group.category] ? selectedSubcategory[group.category].join(' / ') : group.category}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {group.subgroup.map((subgroup) => (
@@ -316,17 +299,10 @@ const CustomersIndex = () => {
                 style={{ padding: '4px 16px' }}
                 onClick={() => handleSubgroupClick(group.category, null)}
             >
-                    {group.category}
+                {group.category}
             </Button>
             )
         )}
-        {/* {showMessage && (
-            <p style={{ paddingTop: '1rem' }} 
-                className='fw-normal fs-6 mb-0 align-middle text-danger'
-            >
-                최대 선택 개수는 10개입니다.
-            </p>
-        )} */}
     </div>
 
     <Tab.Content>
@@ -389,8 +365,6 @@ const CustomersIndex = () => {
                                 );
                             })}
                         </Tab.Content>
-                        
-                        {/* <p>{activeGroups}</p> */}
                         {isLoading ? (
                             <div className='position-relative' style={{height: '450px'}}>
                                 <div className='position-absolute top-50 start-50 translate-middle'>
