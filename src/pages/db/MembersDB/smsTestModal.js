@@ -49,26 +49,26 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
 
         // console.log('messages : ', messages);
 
-        // const requestData = {
-        //     type: messageType,
-        //     from: '01071781117',
-        //     content: messageContent,
-        //     messages: [...messages],
-        //     // messages: [
-        //     //     {
-        //     //         to: '',
-        //     //         subject: '',
-        //     //         content: '',
-        //     //     },
-        //     // ],
-        //     // files: [
-        //     //     {
-        //     //         fileId: '',
-        //     //     },
-        //     // ],
-        //     // reserveTime: 'yyyy-MM-dd HH:mm',
-        //     // reserveTimeZone: 'Asia/Seoul',
-        // };
+        const requestData = {
+            type: messageType,
+            from: '01071781117',
+            content: messageContent,
+            messages: [...messages],
+            // messages: [
+            //     {
+            //         to: '',
+            //         subject: '',
+            //         content: '',
+            //     },
+            // ],
+            // files: [
+            //     {
+            //         fileId: '',
+            //     },
+            // ],
+            // reserveTime: 'yyyy-MM-dd HH:mm',
+            // reserveTimeZone: 'Asia/Seoul',
+        };
 
         // if (messageType !== 'sms') {
         //     requestData.subject = messageTitle;
@@ -104,10 +104,10 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
 
         console.log('encodedBase64 : ', encodedBase64);
         try {
-            // await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
-            //     method: 'POST',
-            //     body: JSON.stringify({ ...requestData }),
-            // }).then((response) => console.log(response));
+            await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+                method: 'POST',
+                body: JSON.stringify({ ...requestData }),
+            }).then((response) => console.log(response));
         } catch (error) {
             console.log(error.message);
         }
