@@ -1,7 +1,7 @@
 // @flow
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Collapse } from 'react-bootstrap';
+import { Button, Collapse } from 'react-bootstrap';
 import classNames from 'classnames';
 
 import { findAllParent, findMenuItem } from '../helpers/menu';
@@ -90,7 +90,7 @@ const MenuItem = ({ item, className, linkClassName }) => {
 const MenuItemLink = ({ item, className }) => {
     return (
         <Link
-            to={{ pathname: item.url }}
+            to={item.exUrl? item.exUrl : { pathname: item.url }}
             target={item.target}
             className={classNames('side-nav-link-ref', 'side-sub-nav-link', className)}
             data-menu-key={item.key}>

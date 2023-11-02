@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useEffect, forwardRef, useState } from 'react';
 import {
     useTable,
     useSortBy,
@@ -15,7 +15,7 @@ import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
-    const [value, setValue] = React.useState(globalFilter);
+    const [value, setValue] = useState(globalFilter);
     const onChange = useAsyncDebounce((value) => {
         setGlobalFilter(value || undefined);
     }, 200);
@@ -40,7 +40,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, se
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     const defaultRef = useRef();
-    const resolvedRef: any = ref || defaultRef;
+    const resolvedRef = ref || defaultRef;
 
     useEffect(() => {
         resolvedRef.current.indeterminate = indeterminate;
@@ -56,18 +56,22 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     );
 });
 
-const CustomersTable = (props: TableProps) => {
+const CustomersTable = (props) => {
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
     const pagination = props['pagination'] || false;
     const isSelectable = props['isSelectable'] || false;
     const isExpandable = props['isExpandable'] || false;
 
+
     const dataTable = useTable(
         {
             columns: props['columns'],
             data: props['data'],
-            initialState: { pageSize: props['pageSize'] || 5 },
+            initialState: { 
+                pageSize: props['pageSize'] || 5,
+                selectedRowIds: {}, // 초기 선택 상태 설정
+            },
         },
         isSearchable && useGlobalFilter,
         isSortable && useSortBy,
@@ -80,19 +84,24 @@ const CustomersTable = (props: TableProps) => {
                     {
                         id: 'selection',
                         Header: ({ getToggleAllPageRowsSelectedProps }) => (
-                            <div>
-                                <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+                            <div style={{ display: 'flex' }}>
+                                <IndeterminateCheckbox
+                                    {...getToggleAllPageRowsSelectedProps()} 
+                                    onClick={() => toggleAllRows(dataTable.toggleAllRowsSelected)}
+                                />
                             </div>
                         ),
                         Cell: ({ row }) => (
                             <div>
-                                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                                <IndeterminateCheckbox 
+                                    {...row.getToggleRowSelectedProps()} 
+                                    onClick={() => toggleSingleRow(row)}
+                                />
                             </div>
                         ),
                     },
                     ...columns,
                 ]);
-
             isExpandable &&
                 hooks.visibleColumns.push((columns) => [
                     {
@@ -117,17 +126,31 @@ const CustomersTable = (props: TableProps) => {
         }
     );
 
-    let rows = pagination ? dataTable.page : dataTable.rows;
+    const rows = pagination ? dataTable.page : dataTable.rows;
 
+    const toggleAllRows = (toggleRowsSelected) => {
+        toggleRowsSelected();
+    };
+
+    const toggleSingleRow = (row) => {
+        const memberId = row.original.id;
+
+        dataTable.toggleRowSelected(memberId);
+    };
+
+    const selectedRowIds = dataTable.state.selectedRowIds;
+    const selectedMemberIds = Object.keys(selectedRowIds).filter((id) => selectedRowIds[id]);
+    
     return (
         <>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between mb-1">
                 <div className="d-flex">
                     <div>
                         <h5>
                             현재 <span className="text-primary">{dataTable.data.length}명</span>의 회원분들이 함께 하고
                             있어요!
                         </h5>
+                        {/* {selectedMemberIds.length > 1 ? <>선택: {selectedMemberIds.length}명</> : null} */}
                     </div>
                 </div>
                 <div className="d-flex">
