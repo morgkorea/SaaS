@@ -38,14 +38,14 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
         }
     };
 
-    console.log('checkedMembers', checkedMembers);
-
     const smsSending = async () => {
         // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
         const messages = checkedMembers.map((member) => {
             const phone = member.phone.replace(/-/g, '');
             return {
                 to: phone,
+                subject: messageTitle,
+                content: messageContent,
             };
         });
 
@@ -53,23 +53,23 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
             type: messageType,
             from: '01071781117',
             content: messageContent,
-            messages: [],
-            // messages: [
-            //     {
-            //         to: '',
-            //         subject: '',
-            //         content: '',
-            //     },
-            // ],
-            // files: [
-            //     {
-            //         fileId: '',
-            //     },
-            // ],
-            // reserveTime: 'yyyy-MM-dd HH:mm',
-            // reserveTimeZone: 'Asia/Seoul',
+            messages: [...messages],
         };
 
+        if (reserveType) {
+            const minimumReserveTime = moment().add(11, 'minutes').format('HH:mm');
+
+            if (reserveTime < minimumReserveTime) {
+                alert('예약 발송시간을 현재시간보다 11분뒤로 설정해주세요');
+                setReserveTime(moment().add(11, 'minutes').format('HH:mm'));
+                return;
+            } else {
+                requestData['reserveTime'] = `${reserveDate} ${reserveTime}`;
+                requestData['reserveTimeZone'] = 'Asia/Seoul';
+            }
+        }
+
+        //=======================================MMS 파일첨부=========================================================
         // const uploadImageFiles = uploadFiles?.map((file) => {
         //     if (file.name) {
         //         console.log('file : ', file);
@@ -86,14 +86,14 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
         //     reader.readAsDataURL(file);
         // });
 
-        try {
-            await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
-                method: 'POST',
-                body: JSON.stringify({ ...requestData }),
-            }).then((response) => console.log(response));
-        } catch (error) {
-            console.log(error.message);
-        }
+        // try {
+        //     await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+        //         method: 'POST',
+        //         body: JSON.stringify({ ...requestData }),
+        //     }).then((response) => console.log(response));
+        // } catch (error) {
+        //     console.log(error.message);
+        // }
     };
 
     useEffect(() => {
