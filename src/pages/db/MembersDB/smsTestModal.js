@@ -53,7 +53,7 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
             type: messageType,
             from: '01071781117',
             content: messageContent,
-            messages: [...messages],
+            messages: [],
             // messages: [
             //     {
             //         to: '',

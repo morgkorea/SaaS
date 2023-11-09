@@ -27,12 +27,6 @@ const MENU_ITEMS = [
                 parentKey: 'dashboards',
             },
             // {
-            //     key: 'ds-counsel',
-            //     label: '상담',
-            //     url: '/dashboard/counsel',
-            //     parentKey: 'dashboards',
-            // },
-            // {
             //     key: 'ds-marketing',
             //     label: 'Dashboard_마케팅',
             //     url: '/dashboard/marketing',
@@ -78,7 +72,15 @@ const MENU_ITEMS = [
         target: '_blank',
         badge: { variant: 'danger', text: 'New' },
     },
+    {
+        key: 'commerce',
+        label: 'MORG Market',
+        isTitle: false,
+        icon: 'uil-desktop',
+        exUrl: 'https://morg.cafe24.com/',
+        target: '_blank',
+        badge: { variant: 'danger', text: 'New' },
+    },
 ];
-
 
 export default MENU_ITEMS;
