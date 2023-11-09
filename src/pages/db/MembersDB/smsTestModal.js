@@ -38,16 +38,16 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
         }
     };
 
+    console.log('checkedMembers', checkedMembers);
+
     const smsSending = async () => {
         // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
-        // const messages = checkedMembers.map((member) => {
-        //     const phone = member.phone.replace(/-/g, '');
-        //     return {
-        //         to: phone,
-        //     };
-        // });
-
-        // console.log('messages : ', messages);
+        const messages = checkedMembers.map((member) => {
+            const phone = member.phone.replace(/-/g, '');
+            return {
+                to: phone,
+            };
+        });
 
         const requestData = {
             type: messageType,
@@ -70,39 +70,22 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
             // reserveTimeZone: 'Asia/Seoul',
         };
 
-        // if (messageType !== 'sms') {
-        //     requestData.subject = messageTitle;
-
-        //     if (messageType === 'mms') {
-
-        //         console.log('uploadFiles : ', uploadFiles);
+        // const uploadImageFiles = uploadFiles?.map((file) => {
+        //     if (file.name) {
+        //         console.log('file : ', file);
         //     }
-        // }
+        // });
 
-        // if (reserveType) {
-        //     requestData.reserveTime = `${reserveDate} ${reserveTime}`;
-        //     requestData.reserveTimeZone = 'Asia/Seoul';
-        // }
+        // // blob 데이터 base64 인코딩 문자열  변환
+        // const encodedBase64 = [...uploadImageFiles].map((file) => {
+        //     const reader = new FileReader();
+        //     reader.onload = () => {
+        //         const base64Data = reader.result;
+        //         console.log(base64Data);
+        //     };
+        //     reader.readAsDataURL(file);
+        // });
 
-        // console.log(requestData);
-
-        const uploadImageFiles = uploadFiles?.map((file) => {
-            if (file.name) {
-                console.log('file : ', file);
-            }
-        });
-
-        // blob 데이터 base64 인코딩 문자열  변환
-        const encodedBase64 = [...uploadImageFiles].map((file) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const base64Data = reader.result;
-                console.log(base64Data);
-            };
-            reader.readAsDataURL(file);
-        });
-
-        console.log('encodedBase64 : ', encodedBase64);
         try {
             await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
                 method: 'POST',
@@ -112,8 +95,6 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
             console.log(error.message);
         }
     };
-
-    const fetchUploadImageFiles = (files) => {};
 
     useEffect(() => {
         switch (messageType) {
@@ -175,7 +156,7 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
                                     />{' '}
                                     <span>lms</span>
                                 </div>
-                                <div>
+                                {/* <div>
                                     {' '}
                                     <input
                                         type="radio"
@@ -186,7 +167,7 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
                                         }}
                                     />{' '}
                                     <span>mms</span>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div>
