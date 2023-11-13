@@ -88,16 +88,16 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
         // });
         //=========================================================================================================
 
-        // try {
-        //     await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
-        //         method: 'POST',
-        //         body: JSON.stringify({ ...requestData }),
-        //     }).then((response) => console.log(response));
-        // setSmsModalStep(2);
-        // } catch (error) {
-        //  alert(error.message)
-        //     console.log("문자 송신 오류");
-        // }
+        try {
+            await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+                method: 'POST',
+                body: JSON.stringify({ ...requestData }),
+            }).then((response) => console.log(response));
+            setSmsModalStep(2);
+        } catch (error) {
+            alert(error.message);
+            console.log('문자 송신 오류');
+        }
 
         setSmsModalStep(2);
     };
