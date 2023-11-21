@@ -150,65 +150,61 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                         </Modal.Header>
                         <Modal.Body>
                             <div>
-                                <Row>
-                                    <div style={{ display: 'flex', marginBottom: '12px' }}>
-                                        <Col xs={3} style={{ padding: '6px 8px' }}>
-                                            Type
-                                        </Col>{' '}
-                                        <Col xs={9} style={{ padding: '0px 8px' }}>
-                                            <Form style={{ display: 'flex', gap: '20px' }}>
-                                                <Form.Group
-                                                    style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
-                                                    {' '}
-                                                    <Form.Check
-                                                        type="radio"
-                                                        name="messageType"
-                                                        value="sms"
-                                                        label="SMS"
-                                                        onChange={(event) => {
-                                                            setMessageType(event.target.value);
-                                                        }}
-                                                        defaultChecked
-                                                    />{' '}
-                                                </Form.Group>
-                                                <Form.Group
-                                                    style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
-                                                    {' '}
-                                                    <Form.Check
-                                                        type="radio"
-                                                        name="messageType"
-                                                        value="lms"
-                                                        label="LMS"
-                                                        onChange={(event) => {
-                                                            setMessageType(event.target.value);
-                                                        }}
-                                                    />{' '}
-                                                </Form.Group>
-                                            </Form>
-                                            <div style={{ color: '#AAAAAA', marginTop: '4px' }}>
-                                                {generateByteLimitMessage(messageType)}
-                                            </div>
-                                        </Col>
-                                    </div>
+                                <Row style={{ marginBottom: '12px' }}>
+                                    <Col xs={3} style={{ padding: '6px 8px' }}>
+                                        Type
+                                    </Col>{' '}
+                                    <Col xs={9} style={{ padding: '0px 8px' }}>
+                                        <Form style={{ display: 'flex', gap: '20px' }}>
+                                            <Form.Group style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
+                                                {' '}
+                                                <Form.Check
+                                                    type="radio"
+                                                    name="messageType"
+                                                    value="sms"
+                                                    label="SMS"
+                                                    onChange={(event) => {
+                                                        setMessageType(event.target.value);
+                                                    }}
+                                                    defaultChecked
+                                                />{' '}
+                                            </Form.Group>
+                                            <Form.Group style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
+                                                {' '}
+                                                <Form.Check
+                                                    type="radio"
+                                                    name="messageType"
+                                                    value="lms"
+                                                    label="LMS"
+                                                    onChange={(event) => {
+                                                        setMessageType(event.target.value);
+                                                    }}
+                                                />{' '}
+                                            </Form.Group>
+                                        </Form>
+                                        <div style={{ color: '#AAAAAA', marginTop: '4px' }}>
+                                            {generateByteLimitMessage(messageType)}
+                                        </div>
+                                    </Col>
                                 </Row>
                                 <Row>
                                     {' '}
-                                    <Form.Group>
-                                        <Col>수신번호</Col>
-                                        <Col>
-                                            {' '}
-                                            <span>{receivingMembers.length}개</span>
-                                            <div>
-                                                {receivingMembers.map((number, index) => {
-                                                    return (
-                                                        <span key={number.phone}>{`${index + 1}. ${
-                                                            number.name + ' ' + number.phone
-                                                        }`}</span>
-                                                    );
-                                                })}{' '}
-                                            </div>
-                                        </Col>
-                                    </Form.Group>
+                                    <Col xs={3} style={{ padding: '6px 8px' }}>
+                                        수신번호
+                                    </Col>
+                                    <Col xs={9} style={{ padding: '0px 8px' }}>
+                                        {' '}
+                                        <span>{receivingMembers.length}개</span>
+                                        <div>
+                                            {receivingMembers.map((number, index) => {
+                                                return (
+                                                    <span key={number.phone}>{`${index + 1}. ${
+                                                        number.name + ' ' + number.phone
+                                                    }`}</span>
+                                                );
+                                            })}{' '}
+                                        </div>
+                                    </Col>
                                 </Row>
 
                                 {messageType === 'mms' && (
