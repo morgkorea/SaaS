@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Row, Col } from 'react-bootstrap';
 
 import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
@@ -150,9 +150,9 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                         </Modal.Header>
                         <Modal.Body>
                             <div>
-                                <div style={{ display: 'flex' }}>
-                                    <div>type</div>{' '}
-                                    <div>
+                                <Row style={{ display: 'flex', marginBottom: '12px' }}>
+                                    <Col xs={3}>type</Col>{' '}
+                                    <Col xs={9}>
                                         <div style={{ display: 'flex' }}>
                                             <div>
                                                 {' '}
@@ -181,8 +181,8 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                             </div>
                                         </div>
                                         <span>{generateByteLimitMessage(messageType)}</span>
-                                    </div>
-                                </div>
+                                    </Col>
+                                </Row>
                                 <div>
                                     <div>수신번호</div>
                                     <span>{receivingMembers.length}개</span>
