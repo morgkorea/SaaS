@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Row, Col } from 'react-bootstrap';
+import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
 
 import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
@@ -150,13 +150,15 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                         </Modal.Header>
                         <Modal.Body>
                             <div>
-                                <Row style={{ display: 'flex', marginBottom: '12px' }}>
-                                    <Col xs={3}>type</Col>{' '}
-                                    <Col xs={9}>
-                                        <div style={{ display: 'flex' }}>
-                                            <div>
+                                <Form.Group style={{ display: 'flex', marginBottom: '12px' }}>
+                                    <Col xs={3} style={{ padding: '6px 8px' }}>
+                                        Type
+                                    </Col>{' '}
+                                    <Col xs={9} style={{ padding: '0px 8px' }}>
+                                        <div style={{ display: 'flex', gap: '20px' }}>
+                                            <div style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
                                                 {' '}
-                                                <input
+                                                <Form.Check
                                                     type="radio"
                                                     name="messageType"
                                                     value="sms"
@@ -165,11 +167,11 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                     }}
                                                     defaultChecked
                                                 />{' '}
-                                                <span>sms</span>
+                                                <span>SMS</span>
                                             </div>
-                                            <div>
+                                            <div style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
                                                 {' '}
-                                                <input
+                                                <Form.Check
                                                     type="radio"
                                                     name="messageType"
                                                     value="lms"
@@ -177,15 +179,17 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                         setMessageType(event.target.value);
                                                     }}
                                                 />{' '}
-                                                <span>lms</span>
+                                                <span>LMS</span>
                                             </div>
                                         </div>
-                                        <span>{generateByteLimitMessage(messageType)}</span>
+                                        <div style={{ color: '#AAAAAA', marginTop: '5px' }}>
+                                            {generateByteLimitMessage(messageType)}
+                                        </div>
                                     </Col>
-                                </Row>
+                                </Form.Group>
                                 <div>
-                                    <div>수신번호</div>
-                                    <span>{receivingMembers.length}개</span>
+                                    <Col>수신번호</Col>
+                                    <Col> <span>{receivingMembers.length}개</span>
                                     <div>
                                         {receivingMembers.map((number, index) => {
                                             return (
@@ -194,7 +198,8 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                 }`}</span>
                                             );
                                         })}{' '}
-                                    </div>
+                                    </div></Col>
+                                   
                                 </div>
                                 {messageType === 'mms' && (
                                     <div>
