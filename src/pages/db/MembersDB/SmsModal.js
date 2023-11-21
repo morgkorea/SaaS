@@ -5,7 +5,7 @@ import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
 import moment from 'moment';
 
-const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
+const SmsModal = ({ modal, setModal, checkedMembers }) => {
     const [smsModalStep, setSmsModalStep] = useState(1);
     const [messageType, setMessageType] = useState('sms');
     const [reserveType, setReserveType] = useState(false);
@@ -102,6 +102,20 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
         setSmsModalStep(2);
     };
 
+    const generateByteLimitMessage = (smsType) => {
+        switch (smsType) {
+            case 'sms':
+                return '90byte 이내의 내용을 포함하는 메시지를 발송할 수 있습니다.';
+            case 'lms':
+                return '40byte 이내의 제목과 2000byte 이내의 내용을 포함하는 메시지를 발송할 수 있습니다.';
+            case 'mms':
+                return '40byte 이내의 제목과 2000byte 이내의 내용, 300kbyte 이내의 이미지 파일을 포함하는 메시지를 발송할 수 있습니다.';
+
+            default:
+                return '90byte 이내의 내용을 포함하는 메시지를 발송할 수 있습니다.';
+        }
+    };
+
     useEffect(() => {
         switch (messageType) {
             case 'sms':
@@ -134,48 +148,39 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
                             {' '}
                             <h3 className="modal-title">{messageType.toUpperCase()}</h3>
                         </Modal.Header>
-                        <Modal.Body style={{ display: 'grid', placeItems: 'center' }}>
+                        <Modal.Body>
                             <div>
-                                <div>
+                                <div style={{ display: 'flex' }}>
                                     <div>type</div>{' '}
                                     <div>
-                                        <div>
-                                            {' '}
-                                            <input
-                                                type="radio"
-                                                name="messageType"
-                                                value="sms"
-                                                onChange={(event) => {
-                                                    setMessageType(event.target.value);
-                                                }}
-                                                defaultChecked
-                                            />{' '}
-                                            <span>sms</span>
+                                        <div style={{ display: 'flex' }}>
+                                            <div>
+                                                {' '}
+                                                <input
+                                                    type="radio"
+                                                    name="messageType"
+                                                    value="sms"
+                                                    onChange={(event) => {
+                                                        setMessageType(event.target.value);
+                                                    }}
+                                                    defaultChecked
+                                                />{' '}
+                                                <span>sms</span>
+                                            </div>
+                                            <div>
+                                                {' '}
+                                                <input
+                                                    type="radio"
+                                                    name="messageType"
+                                                    value="lms"
+                                                    onChange={(event) => {
+                                                        setMessageType(event.target.value);
+                                                    }}
+                                                />{' '}
+                                                <span>lms</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            {' '}
-                                            <input
-                                                type="radio"
-                                                name="messageType"
-                                                value="lms"
-                                                onChange={(event) => {
-                                                    setMessageType(event.target.value);
-                                                }}
-                                            />{' '}
-                                            <span>lms</span>
-                                        </div>
-                                        {/* <div>
-                                    {' '}
-                                    <input
-                                        type="radio"
-                                        name="messageType"
-                                        value="mms"
-                                        onChange={(event) => {
-                                            setMessageType(event.target.value);
-                                        }}
-                                    />{' '}
-                                    <span>mms</span>
-                                </div> */}
+                                        <span>{generateByteLimitMessage(messageType)}</span>
                                     </div>
                                 </div>
                                 <div>
@@ -320,4 +325,4 @@ const SmsTestModal = ({ modal, setModal, checkedMembers }) => {
     );
 };
 
-export default SmsTestModal;
+export default SmsModal;

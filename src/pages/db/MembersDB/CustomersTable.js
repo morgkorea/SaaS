@@ -13,7 +13,7 @@ import Pagination from './Pagination';
 import { ReactComponent as Warning } from '../../../assets/images/warning.svg';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import SmsTestModal from './SmsTestModal.js';
+import SmsModal from './SmsModal.js';
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter, searchBoxClass }) => {
     const count = preGlobalFilteredRows.length;
@@ -60,7 +60,7 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
 });
 
 const CustomersTable = (props) => {
-    const [smsTestModal, setSmsTestModal] = useState(false);
+    const [isSmsModalOpen, setIsSmsModalOpen] = useState(false);
 
     const isSearchable = props['isSearchable'] || false;
     const isSortable = props['isSortable'] || false;
@@ -69,7 +69,7 @@ const CustomersTable = (props) => {
     const isExpandable = props['isExpandable'] || false;
 
     const smsToggle = () => {
-        setSmsTestModal(!smsTestModal);
+        setIsSmsModalOpen(!isSmsModalOpen);
     };
 
     const dataTable = useTable(
@@ -158,8 +158,8 @@ const CustomersTable = (props) => {
     console.log('checked and selected members: ', checkedMembers);
     return (
         <>
-            {smsTestModal && (
-                <SmsTestModal modal={smsTestModal} setModal={setSmsTestModal} checkedMembers={checkedMembers} />
+            {isSmsModalOpen && (
+                <SmsModal modal={isSmsModalOpen} setModal={setIsSmsModalOpen} checkedMembers={checkedMembers} />
             )}
             <div className="d-flex justify-content-between mb-1">
                 <div className="d-flex">
