@@ -149,7 +149,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                             <h3 className="modal-title">{messageType.toUpperCase()}</h3>
                         </Modal.Header>
                         <Modal.Body>
-                            <div>
+                            <div style={{ display: 'grid', gap: '4px' }}>
                                 <Row style={{ marginBottom: '12px' }}>
                                     <Col xs={3} style={{ padding: '6px 8px' }}>
                                         Type
@@ -228,9 +228,15 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                     </div>
                                 )}
                                 {messageType !== 'sms' && (
-                                    <div>
-                                        <div>제목</div>
-                                        <div>
+                                    <Row>
+                                        <Col xs={3} style={{ padding: '6px 8px' }}>
+                                            제목
+                                        </Col>
+                                        <Col
+                                            xs={9}
+                                            style={{
+                                                padding: '0px 8px',
+                                            }}>
                                             <input
                                                 type="text"
                                                 name="messageTitle"
@@ -240,29 +246,35 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                     limitMessageBytes(event);
                                                 }}
                                             />
-                                        </div>
-                                        <span>{calculateMessageContentBytes(messageTitle)}/40bytes</span>
-                                    </div>
+                                            <span>{' ' + calculateMessageContentBytes(messageTitle)}/40bytes</span>
+                                        </Col>
+                                    </Row>
                                 )}
                                 <Row>
                                     <Col xs={3} style={{ padding: '6px 8px' }}>
-                                       내용
-                                        
+                                        내용
                                     </Col>
-                                    <Col xs={9} style={{
+                                    <Col
+                                        xs={9}
+                                        style={{
                                             padding: '0px 8px',
                                         }}>
-                                            <input
-                                                type="text"
-                                                name="messageContent"
-                                                value={messageContent}
-                                                onChange={(event) => {
-                                                    limitMessageBytes(event);
-                                                }}
-                                            />
-                                        
+                                        <textarea
+                                            type="text"
+                                            name="messageContent"
+                                            value={messageContent}
+                                            onChange={(event) => {
+                                                limitMessageBytes(event);
+                                            }}
+                                            style={{
+                                                width: '80%',
+                                                height: '80px',
+                                            }}
+                                        />
+
                                         <span>
-                                            {calculateMessageContentBytes(messageContent)}/{messageContentBytes}bytes
+                                            {' ' + calculateMessageContentBytes(messageContent)}/{messageContentBytes}
+                                            bytes
                                         </span>
                                     </Col>
                                 </Row>
