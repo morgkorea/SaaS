@@ -192,15 +192,19 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                     <Col xs={3} style={{ padding: '6px 8px' }}>
                                         수신번호
                                     </Col>
-                                    <Col xs={9} style={{ padding: '0px 8px' }}>
+                                    <Col
+                                        xs={9}
+                                        style={{
+                                            padding: '0px 8px',
+                                        }}>
                                         {' '}
-                                        <span>{receivingMembers.length}개</span>
-                                        <div>
+                                        <div style={{ marginBottom: '5px' }}>{receivingMembers.length}건</div>
+                                        <div style={{ maxheight: '500px', overFlow: 'scroll' }}>
                                             {receivingMembers.map((number, index) => {
                                                 return (
-                                                    <span key={number.phone}>{`${index + 1}. ${
-                                                        number.name + ' ' + number.phone
-                                                    }`}</span>
+                                                    <div key={number.phone} style={{ marginBottom: '2px' }}>{`${
+                                                        index + 1
+                                                    }. ${number.name + ' ' + number.phone}`}</div>
                                                 );
                                             })}{' '}
                                         </div>
@@ -240,10 +244,14 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                         <span>{calculateMessageContentBytes(messageTitle)}/40bytes</span>
                                     </div>
                                 )}
-                                <div>
-                                    <div>
-                                        <span>내용</span>
-                                        <div>
+                                <Row>
+                                    <Col xs={3} style={{ padding: '6px 8px' }}>
+                                       내용
+                                        
+                                    </Col>
+                                    <Col xs={9} style={{
+                                            padding: '0px 8px',
+                                        }}>
                                             <input
                                                 type="text"
                                                 name="messageContent"
@@ -252,12 +260,12 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                     limitMessageBytes(event);
                                                 }}
                                             />
-                                        </div>
+                                        
                                         <span>
                                             {calculateMessageContentBytes(messageContent)}/{messageContentBytes}bytes
                                         </span>
-                                    </div>
-                                </div>
+                                    </Col>
+                                </Row>
                                 <div>
                                     <div>발송설정</div>
                                     <div>
