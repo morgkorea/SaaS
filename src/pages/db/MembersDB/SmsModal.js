@@ -278,63 +278,93 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                         </span>
                                     </Col>
                                 </Row>
-                                <div>
-                                    <div>발송설정</div>
-                                    <div>
-                                        <input
-                                            type="radio"
-                                            name="reserve"
-                                            value="immediateMessage"
-                                            onChange={(event) => {
-                                                setReserveType(false);
-                                            }}
-                                            defaultChecked
-                                        />
-                                        <span>즉시발송</span>
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="radio"
-                                            name="reserve"
-                                            value="reserveMessage"
-                                            onChange={(event) => {
-                                                setReserveType(true);
-                                            }}
-                                        />
-                                        <span>예약발송</span>
-                                    </div>
-                                    {reserveType && (
-                                        <div>
-                                            {' '}
-                                            <FormInput
-                                                type="date"
-                                                name="reserveDate"
-                                                value={reserveDate}
-                                                min={moment().format('YYYY-MM-DD')}
+                                <Row>
+                                    <Col xs={3} style={{ padding: '6px 8px' }}>
+                                        발송설정
+                                    </Col>
+                                    <Col
+                                        xs={9}
+                                        style={{
+                                            display: 'flex',
+                                            placeItems: 'center',
+                                            padding: '0px 8px',
+                                            gap: '10px',
+                                        }}>
+                                        <Form.Group style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
+                                            <Form.Check
+                                                type="radio"
+                                                name="reserve"
+                                                value="immediateMessage"
                                                 onChange={(event) => {
-                                                    setReserveDate(event.target.value);
+                                                    setReserveType(false);
+                                                }}
+                                                defaultChecked
+                                            />
+                                            <div>즉시발송</div>
+                                        </Form.Group>
+                                        <Form.Group style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
+                                            <Form.Check
+                                                type="radio"
+                                                name="reserve"
+                                                value="reserveMessage"
+                                                onChange={(event) => {
+                                                    setReserveType(true);
                                                 }}
                                             />
-                                            <FormInput
-                                                type="time"
-                                                name="reserveTime"
-                                                value={reserveTime}
-                                                min={moment().add(11, 'minutes').format('HH:mm')}
-                                                onChange={(event) => {
-                                                    const pickedTime = event.target.value;
-                                                    const currentTime = moment().add(11, 'minutes').format('HH:mm');
-                                                    if (pickedTime > currentTime) {
-                                                        setReserveTime(event.target.value);
-                                                    } else {
-                                                        setReserveTime(moment().add(11, 'minutes').format('HH:mm'));
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
+                                            <span>예약발송</span>
+                                        </Form.Group>
+
+                                        <Row>
+                                            {reserveType && (
+                                                <div style={{ display: 'flex' }}>
+                                                    {' '}
+                                                    <FormInput
+                                                        type="date"
+                                                        name="reserveDate"
+                                                        value={reserveDate}
+                                                        min={moment().format('YYYY-MM-DD')}
+                                                        onChange={(event) => {
+                                                            setReserveDate(event.target.value);
+                                                        }}
+                                                    />
+                                                    <FormInput
+                                                        type="time"
+                                                        name="reserveTime"
+                                                        value={reserveTime}
+                                                        min={moment().add(11, 'minutes').format('HH:mm')}
+                                                        onChange={(event) => {
+                                                            const pickedTime = event.target.value;
+                                                            const currentTime = moment()
+                                                                .add(11, 'minutes')
+                                                                .format('HH:mm');
+                                                            if (pickedTime > currentTime) {
+                                                                setReserveTime(event.target.value);
+                                                            } else {
+                                                                setReserveTime(
+                                                                    moment().add(11, 'minutes').format('HH:mm')
+                                                                );
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Row>
+                                    </Col>
+                                </Row>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        gap: '10px',
+                                        padding: '30px 0px',
+                                    }}>
                                     <Button onClick={smsSending}>보내기</Button>
+                                    <Button
+                                        onclick={() => {
+                                            setModal(!modal);
+                                        }}>
+                                        취소
+                                    </Button>
                                 </div>
                             </div>
                         </Modal.Body>
