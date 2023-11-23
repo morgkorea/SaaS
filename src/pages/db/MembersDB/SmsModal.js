@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Form, Button, Modal, Row, Col } from 'react-bootstrap';
+import { Form, Button, Modal, Row, Col, Spinner } from 'react-bootstrap';
 
 import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
@@ -18,6 +18,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
     const [reserveTime, setReserveTime] = useState(moment().add(11, 'minutes').format('HH:mm'));
 
     const [uploadFiles, setUploadFiles] = useState([]);
+    const [isFetching, setIsFetching] = useState(false);
 
     const calculateMessageContentBytes = (str) => {
         const encoder = new TextEncoder('utf-8');
@@ -40,6 +41,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
     };
 
     const smsSending = async () => {
+        setIsFetching(true);
         // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
         const messages = checkedMembers.map((member) => {
             const phone = member.phone.replace(/-/g, '');
@@ -99,7 +101,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
             console.log('문자 송신 오류');
         }
 
-        setSmsModalStep(2);
+        setIsFetching(false);
     };
 
     const generateByteLimitMessage = (smsType) => {
@@ -137,7 +139,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                 size={'lg'}
                 centered={true}>
                 {smsModalStep === 1 && (
-                    <div>
+                    <div style={{ padding: '30px 50px' }}>
                         <Modal.Header
                             className="border-bottom-0"
                             onHide={() => {
@@ -149,7 +151,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                             <h3 className="modal-title">{messageType.toUpperCase()}</h3>
                         </Modal.Header>
                         <Modal.Body>
-                            <div style={{ display: 'grid', gap: '4px' }}>
+                            <div style={{ display: 'grid', height: '500px', gap: '4px' }}>
                                 <Row style={{ marginBottom: '12px' }}>
                                     <Col xs={3} style={{ padding: '6px 8px' }}>
                                         Type
@@ -286,79 +288,101 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                         xs={9}
                                         style={{
                                             display: 'flex',
-                                            placeItems: 'center',
+
                                             padding: '0px 8px',
                                             gap: '10px',
                                         }}>
-                                        <Form.Group style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
-                                            <Form.Check
-                                                type="radio"
-                                                name="reserve"
-                                                value="immediateMessage"
-                                                onChange={(event) => {
-                                                    setReserveType(false);
-                                                }}
-                                                defaultChecked
-                                            />
-                                            <div>즉시발송</div>
-                                        </Form.Group>
-                                        <Form.Group style={{ display: 'flex', placeItem: 'center', gap: '4px' }}>
-                                            <Form.Check
-                                                type="radio"
-                                                name="reserve"
-                                                value="reserveMessage"
-                                                onChange={(event) => {
-                                                    setReserveType(true);
-                                                }}
-                                            />
-                                            <span>예약발송</span>
-                                        </Form.Group>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                placeItem: 'center',
+                                                gap: '4px',
+                                                marginTop: '10px',
+                                                flexWrap: 'wrap',
+                                            }}>
+                                            {' '}
+                                            <Form.Group
+                                                style={{
+                                                    display: 'flex',
+                                                    placeItem: 'center',
+                                                    width: '80px',
+                                                    gap: '4px',
+                                                }}>
+                                                <Form.Check
+                                                    type="radio"
+                                                    name="reserve"
+                                                    value="immediateMessage"
+                                                    onChange={(event) => {
+                                                        setReserveType(false);
+                                                    }}
+                                                    defaultChecked
+                                                />
+                                                <div>즉시발송</div>
+                                            </Form.Group>
+                                            <Form.Group
+                                                style={{
+                                                    display: 'flex',
+                                                    placeItem: 'center',
+                                                    width: '80px',
+                                                    gap: '4px',
+                                                }}>
+                                                <Form.Check
+                                                    type="radio"
+                                                    name="reserve"
+                                                    value="reserveMessage"
+                                                    onChange={(event) => {
+                                                        setReserveType(true);
+                                                    }}
+                                                />
+                                                <div>예약발송</div>
+                                            </Form.Group>
+                                        </div>
 
-                                        <Row>
-                                            {reserveType && (
-                                                <div style={{ display: 'flex' }}>
-                                                    {' '}
-                                                    <FormInput
-                                                        type="date"
-                                                        name="reserveDate"
-                                                        value={reserveDate}
-                                                        min={moment().format('YYYY-MM-DD')}
-                                                        onChange={(event) => {
-                                                            setReserveDate(event.target.value);
-                                                        }}
-                                                    />
-                                                    <FormInput
-                                                        type="time"
-                                                        name="reserveTime"
-                                                        value={reserveTime}
-                                                        min={moment().add(11, 'minutes').format('HH:mm')}
-                                                        onChange={(event) => {
-                                                            const pickedTime = event.target.value;
-                                                            const currentTime = moment()
-                                                                .add(11, 'minutes')
-                                                                .format('HH:mm');
-                                                            if (pickedTime > currentTime) {
-                                                                setReserveTime(event.target.value);
-                                                            } else {
-                                                                setReserveTime(
-                                                                    moment().add(11, 'minutes').format('HH:mm')
-                                                                );
-                                                            }
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-                                        </Row>
+                                        {reserveType && (
+                                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                                {' '}
+                                                <FormInput
+                                                    type="date"
+                                                    name="reserveDate"
+                                                    value={reserveDate}
+                                                    min={moment().format('YYYY-MM-DD')}
+                                                    onChange={(event) => {
+                                                        setReserveDate(event.target.value);
+                                                    }}
+                                                />
+                                                <FormInput
+                                                    type="time"
+                                                    name="reserveTime"
+                                                    value={reserveTime}
+                                                    min={moment().add(11, 'minutes').format('HH:mm')}
+                                                    onChange={(event) => {
+                                                        const pickedTime = event.target.value;
+                                                        const currentTime = moment().add(11, 'minutes').format('HH:mm');
+                                                        if (pickedTime > currentTime) {
+                                                            setReserveTime(event.target.value);
+                                                        } else {
+                                                            setReserveTime(moment().add(11, 'minutes').format('HH:mm'));
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
                                     </Col>
                                 </Row>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        gap: '10px',
-                                        padding: '30px 0px',
-                                    }}>
-                                    <Button onClick={smsSending}>보내기</Button>
+                                <div className="d-flex justify-content-center mt-3" style={{ height: '40px' }}>
+                                    <Button
+                                        onClick={smsSending}
+                                        style={{ width: '150px' }}
+                                        disabled={messageContent.length ? false : true}>
+                                        {isFetching ? (
+                                            <Spinner
+                                                size="sm
+                                    "
+                                            />
+                                        ) : (
+                                            '보내기'
+                                        )}
+                                    </Button>
                                 </div>
                             </div>
                         </Modal.Body>
