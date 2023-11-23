@@ -65,6 +65,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
             if (reserveTime < minimumReserveTime) {
                 alert('예약 발송시간을 현재시간보다 11분뒤로 설정해주세요');
                 setReserveTime(moment().add(11, 'minutes').format('HH:mm'));
+                setIsFetching(false);
                 return;
             } else {
                 requestData['reserveTime'] = `${reserveDate} ${reserveTime}`;
@@ -96,12 +97,12 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                 body: JSON.stringify({ ...requestData }),
             }).then((response) => console.log(response));
             setSmsModalStep(2);
+            setIsFetching(false);
         } catch (error) {
             alert(error.message);
             console.log('문자 송신 오류');
+            setIsFetching(false);
         }
-
-        setIsFetching(false);
     };
 
     const generateByteLimitMessage = (smsType) => {
