@@ -186,12 +186,25 @@ const CustomersTable = (props) => {
                         <OverlayTrigger
                             overlay={
                                 <Tooltip id="tooltip-disabled">
-                                    <b>서비스 준비중</b>입니다.
+                                    {checkedMembers.length ? (
+                                        <b>선택된 회원이 {checkedMembers.length}명 입니다.</b>
+                                    ) : (
+                                        <b>회원을 선택해 주세요</b>
+                                    )}
                                 </Tooltip>
                             }>
-                            <Button onClick={smsToggle} disabled={checkedMembers.length ? false : true}>
-                                문자 메시지 전송
-                            </Button>
+                            {checkedMembers.length ? (
+                                <Button onClick={smsToggle}>문자 메시지 전송</Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        backgroundColor: '#6C757D',
+                                        boxShadow: 'none',
+                                        border: '1px solid #6C757D',
+                                    }}>
+                                    문자 메시지 전송
+                                </Button>
+                            )}
                         </OverlayTrigger>
                     </div>
                 </div>
