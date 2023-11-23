@@ -359,12 +359,6 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                         padding: '30px 0px',
                                     }}>
                                     <Button onClick={smsSending}>보내기</Button>
-                                    <Button
-                                        onclick={() => {
-                                            setModal(!modal);
-                                        }}>
-                                        취소
-                                    </Button>
                                 </div>
                             </div>
                         </Modal.Body>
