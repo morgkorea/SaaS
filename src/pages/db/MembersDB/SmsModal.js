@@ -3,6 +3,7 @@ import { Form, Button, Modal, Row, Col, Spinner } from 'react-bootstrap';
 
 import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
+import checkImage from '../../../assets/images/icons/png/check-img.png';
 import moment from 'moment';
 
 const SmsModal = ({ modal, setModal, checkedMembers }) => {
@@ -390,7 +391,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                     </div>
                 )}
                 {smsModalStep === 2 && (
-                    <div>
+                    <div style={{ padding: '30px 50px' }}>
                         <Modal.Header
                             className="border-bottom-0"
                             onHide={() => {
@@ -402,10 +403,27 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                             <h3 className="modal-title">{messageType.toUpperCase()}</h3>
                         </Modal.Header>
                         <Modal.Body>
-                            <div style={{ display: 'grid', height: '400px', gap: '4px' }}>
-                                <div>문자발송완료</div>
+                            <div
+                                className="container"
+                                style={{
+                                    display: 'grid',
+                                    justifyContent: 'center',
+                                    placeItems: 'center',
+                                    marginBottom: '100px',
+                                }}>
+                                <div>
+                                    <h3
+                                        className="modal-title mb-2"
+                                        style={{ textAlign: 'center', padding: '50px 0px' }}>
+                                        문자 발송이 완료됐어요!
+                                    </h3>
+                                    <img src={checkImage} style={{ width: '200px' }} />
+                                </div>
                             </div>
-                            <div style={{ display: 'grid', placeItems: 'center' }}>
+                        </Modal.Body>
+                        <Modal.Footer style={{ justifyContent: 'center', border: 'none' }}>
+                            {' '}
+                            <div>
                                 {' '}
                                 <Button
                                     onClick={() => {
@@ -414,7 +432,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                     닫기
                                 </Button>
                             </div>
-                        </Modal.Body>
+                        </Modal.Footer>
                     </div>
                 )}
             </Modal>

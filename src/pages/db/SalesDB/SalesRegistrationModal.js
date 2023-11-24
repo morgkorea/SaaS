@@ -1151,7 +1151,6 @@ const SalesRegistrationModal = ({ modal, setModal }) => {
                         style={{
                             display: 'grid',
                             justifyContent: 'center',
-
                             placeItems: 'center',
                         }}>
                         <div>
