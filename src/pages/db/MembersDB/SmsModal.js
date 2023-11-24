@@ -6,7 +6,7 @@ import FileUploader from '../../../components/FileUploader';
 import moment from 'moment';
 
 const SmsModal = ({ modal, setModal, checkedMembers }) => {
-    const [smsModalStep, setSmsModalStep] = useState(1);
+    const [smsModalStep, setSmsModalStep] = useState(2);
     const [messageType, setMessageType] = useState('sms');
     const [reserveType, setReserveType] = useState(false);
     const [receivingMembers, setReceivingMembers] = useState([...checkedMembers]);
@@ -391,13 +391,30 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                 )}
                 {smsModalStep === 2 && (
                     <div>
-                        문자발송완료{' '}
-                        <Button
-                            onClick={() => {
+                        <Modal.Header
+                            className="border-bottom-0"
+                            onHide={() => {
                                 setModal(!modal);
-                            }}>
-                            닫기
-                        </Button>
+                            }}
+                            style={{ margin: '12px 0px' }}
+                            closeButton>
+                            {' '}
+                            <h3 className="modal-title">{messageType.toUpperCase()}</h3>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div style={{ display: 'grid', height: '400px', gap: '4px' }}>
+                                <div>문자발송완료</div>
+                            </div>
+                            <div style={{ display: 'grid', placeItems: 'center' }}>
+                                {' '}
+                                <Button
+                                    onClick={() => {
+                                        setModal(!modal);
+                                    }}>
+                                    닫기
+                                </Button>
+                            </div>
+                        </Modal.Body>
                     </div>
                 )}
             </Modal>
