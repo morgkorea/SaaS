@@ -7,7 +7,7 @@ import checkImage from '../../../assets/images/icons/png/check-img.png';
 import moment from 'moment';
 
 const SmsModal = ({ modal, setModal, checkedMembers }) => {
-    const [smsModalStep, setSmsModalStep] = useState(2);
+    const [smsModalStep, setSmsModalStep] = useState(1);
     const [messageType, setMessageType] = useState('sms');
     const [reserveType, setReserveType] = useState(false);
     const [receivingMembers, setReceivingMembers] = useState([...checkedMembers]);
@@ -194,24 +194,40 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                 <Row>
                                     {' '}
                                     <Col xs={3} style={{ padding: '6px 8px' }}>
-                                        수신번호
+                                        발신번호
                                     </Col>
                                     <Col
                                         xs={9}
                                         style={{
                                             padding: '0px 8px',
+                                            height: '150px',
+                                            overflowY: 'scroll',
                                         }}>
-                                        {' '}
-                                        <div style={{ marginBottom: '5px' }}>{receivingMembers.length}건</div>
-                                        <div style={{ maxheight: '500px', overFlow: 'scroll' }}>
+                                        <div style={{ border: '1px solid #F0F0F0' }}>
+                                            <Row
+                                                style={{
+                                                    padding: '4px 0px',
+                                                    margin: '0px',
+                                                }}>
+                                                <Col xs={1}></Col>
+                                                <Col xs={3}>이름</Col>
+                                                <Col xs={6}>연락처</Col>
+                                            </Row>
                                             {receivingMembers.map((number, index) => {
                                                 return (
-                                                    <div key={number.phone} style={{ marginBottom: '2px' }}>{`${
-                                                        index + 1
-                                                    }. ${number.name + ' ' + number.phone}`}</div>
+                                                    <Row
+                                                        style={{
+                                                            padding: '4px 0px',
+                                                            margin: '0px',
+                                                            backgroundColor: '#f6f7f8',
+                                                        }}>
+                                                        <Col xs={1} key={number.phone}>{`${index + 1} `}</Col>
+                                                        <Col xs={3}> {`${number.name}`}</Col>
+                                                        <Col xs={6}>{`${number.phone}`}</Col>
+                                                    </Row>
                                                 );
                                             })}{' '}
-                                        </div>
+                                        </div>{' '}
                                     </Col>
                                 </Row>
 
