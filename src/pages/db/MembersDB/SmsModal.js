@@ -200,10 +200,13 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                         xs={9}
                                         style={{
                                             padding: '0px 8px',
-                                            height: '150px',
-                                            overflowY: 'scroll',
+                                            
                                         }}>
-                                        <div style={{ border: '1px solid #F0F0F0' }}>
+                                        <div
+                                            style={{
+                                                border: '1px solid #F0F0F0',
+                                              
+                                            }}>
                                             <Row
                                                 style={{
                                                     padding: '4px 0px',
@@ -213,7 +216,11 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                 <Col xs={3}>이름</Col>
                                                 <Col xs={6}>연락처</Col>
                                             </Row>
-                                            {receivingMembers.map((number, index) => {
+                                            <div style={{
+                                          
+                                            height: '150px',
+                                            overflowY: 'scroll'
+                                        }}>{receivingMembers.map((number, index) => {
                                                 return (
                                                     <Row
                                                         style={{
@@ -225,8 +232,9 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                         <Col xs={3}> {`${number.name}`}</Col>
                                                         <Col xs={6}>{`${number.phone}`}</Col>
                                                     </Row>
-                                                );
-                                            })}{' '}
+                                                )
+                                            })}</div>
+                                            
                                         </div>{' '}
                                     </Col>
                                 </Row>
