@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Form, Button, Modal, Row, Col, Spinner } from 'react-bootstrap';
-
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import FormInput from '../../../components/FormInput';
 import FileUploader from '../../../components/FileUploader';
 import checkImage from '../../../assets/images/icons/png/check-img.png';
@@ -43,6 +43,11 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
 
     const smsSending = async () => {
         setIsFetching(true);
+
+        const auth = getAuth();
+        const userEmail = auth.currentUser.email;
+        const timestamp = moment().format();
+
         // "proxy": "https://asia-northeast3-morg-btob-mvp.cloudfunctions.net"
         const messages = checkedMembers.map((member) => {
             const phone = member.phone.replace(/-/g, '');
@@ -54,10 +59,14 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
         });
 
         const requestData = {
-            type: messageType,
-            from: '01071781117',
-            content: messageContent,
-            messages: [...messages],
+            userEmail: userEmail,
+            timestamp: timestamp,
+            smsData: {
+                type: messageType,
+                from: '01071781117',
+                content: messageContent,
+                messages: [...messages],
+            },
         };
 
         if (reserveType) {
@@ -81,7 +90,7 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
         //     }
         // });
 
-        // // blob 데이터 base64 인코딩 문자열  변환
+        // blob 데이터 base64 인코딩 문자열  변환
         // const encodedBase64 = [...uploadImageFiles].map((file) => {
         //     const reader = new FileReader();
         //     reader.onload = () => {
@@ -93,15 +102,16 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
         //=========================================================================================================
 
         try {
-            await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
-                method: 'POST',
-                body: JSON.stringify({ ...requestData }),
-            }).then((response) => console.log(response));
+            console.log(userEmail);
+            console.log(requestData);
+            // await fetch('https://asia-northeast3-morg-btob-mvp.cloudfunctions.net/naverSensSendSMS', {
+            //     method: 'POST',
+            //     body: JSON.stringify({ ...requestData, userEmail: userEmail }),
+            // }).then((response) => console.log(response));
             setSmsModalStep(2);
             setIsFetching(false);
         } catch (error) {
             alert(error.message);
-            console.log('문자 송신 오류');
             setIsFetching(false);
         }
     };
@@ -200,12 +210,10 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                         xs={9}
                                         style={{
                                             padding: '0px 8px',
-                                            
                                         }}>
                                         <div
                                             style={{
                                                 border: '1px solid #F0F0F0',
-                                              
                                             }}>
                                             <Row
                                                 style={{
@@ -216,25 +224,26 @@ const SmsModal = ({ modal, setModal, checkedMembers }) => {
                                                 <Col xs={3}>이름</Col>
                                                 <Col xs={6}>연락처</Col>
                                             </Row>
-                                            <div style={{
-                                          
-                                            height: '150px',
-                                            overflowY: 'scroll'
-                                        }}>{receivingMembers.map((number, index) => {
-                                                return (
-                                                    <Row
-                                                        style={{
-                                                            padding: '4px 0px',
-                                                            margin: '0px',
-                                                            backgroundColor: '#f6f7f8',
-                                                        }}>
-                                                        <Col xs={1} key={number.phone}>{`${index + 1} `}</Col>
-                                                        <Col xs={3}> {`${number.name}`}</Col>
-                                                        <Col xs={6}>{`${number.phone}`}</Col>
-                                                    </Row>
-                                                )
-                                            })}</div>
-                                            
+                                            <div
+                                                style={{
+                                                    height: '150px',
+                                                    overflowY: 'scroll',
+                                                }}>
+                                                {receivingMembers.map((number, index) => {
+                                                    return (
+                                                        <Row
+                                                            style={{
+                                                                padding: '4px 0px',
+                                                                margin: '0px',
+                                                                backgroundColor: '#f6f7f8',
+                                                            }}>
+                                                            <Col xs={1} key={number.phone}>{`${index + 1} `}</Col>
+                                                            <Col xs={3}> {`${number.name}`}</Col>
+                                                            <Col xs={6}>{`${number.phone}`}</Col>
+                                                        </Row>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>{' '}
                                     </Col>
                                 </Row>
