@@ -90,7 +90,7 @@ const Login2 = (): React$Element<React$FragmentType> => {
                     </Alert>
                 )}
 
-                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{ email: '', password: '' }}>
+                <VerticalForm onSubmit={onSubmit} resolver={schemaResolver} defaultValues={{ email: 'rnfkd@naver.com', password: 'morgsaas' }}>
                     {/* */}
                     <FormInput
                         label={t('ID (E-Mail)')}
@@ -105,9 +105,6 @@ const Login2 = (): React$Element<React$FragmentType> => {
                         name="password"
                         placeholder={t('비밀번호를 입력해주세요')}
                         containerClass={'mb-3'}>
-                        {/* <Link to="/account/forget-password2" className="text-muted float-end">
-                            <small>{t('Forgot your password?')}</small>
-                        </Link> */}
                     </FormInput>
 
                     <div className="d-grid mb-0 text-center">
